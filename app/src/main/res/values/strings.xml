@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">nakersolution.id</string>
+    <string name="logo">Logo Perusahaan</string>
+    <string name="username">Nama pengguna</string>
+    <string name="password">Kata sandi</string>
+    <string name="hide_password">Sembunyikan kata sandi</string>
+    <string name="show_password">Tampilkan Kata sandi</string>
+    <string name="login">Masuk</string>
 </resources>
