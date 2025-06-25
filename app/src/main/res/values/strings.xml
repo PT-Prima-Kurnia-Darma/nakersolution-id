@@ -2,8 +2,12 @@
     <string name="app_name">nakersolution.id</string>
     <string name="logo">Logo Perusahaan</string>
     <string name="username">Nama pengguna</string>
+    <string name="first_name">Nama depan</string>
+    <string name="last_name">Nama belakang</string>
     <string name="password">Kata sandi</string>
+    <string name="confirm_password">Konfirmasi Kata sandi</string>
     <string name="hide_password">Sembunyikan kata sandi</string>
     <string name="show_password">Tampilkan Kata sandi</string>
     <string name="login">Masuk</string>
+    <string name="sign_up">Daftar</string>
 </resources>
