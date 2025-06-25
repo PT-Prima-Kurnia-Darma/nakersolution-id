@@ -30,7 +30,7 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen() {
+fun HomeScreen(modifier: Modifier = Modifier) {
     var presses by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -41,7 +41,7 @@ fun LoginScreen() {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text("Top app bar halo")
+                    Text("Top app bar")
                 }
             )
         },
@@ -51,7 +51,7 @@ fun LoginScreen() {
                 contentColor = MaterialTheme.colorScheme.primary,
             ) {
                 Text(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     text = "Bottom app bar",
@@ -65,31 +65,15 @@ fun LoginScreen() {
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                modifier = Modifier.padding(8.dp),
+                modifier = modifier.padding(8.dp),
                 text =
                     """
-                    This is an example of a scaffold. It uses the Scaffold composable's parameters to create a screen with a simple top app bar, bottom app bar, and floating action button.
-
-                    It also contains some basic inner content, such as this text.
-                    
-                    This is an example of a scaffold. It uses the Scaffold composable's parameters to create a screen with a simple top app bar, bottom app bar, and floating action button.
-
-                    It also contains some basic inner content, such as this text.
-                    
-                    This is an example of a scaffold. It uses the Scaffold composable's parameters to create a screen with a simple top app bar, bottom app bar, and floating action button.
-
-                    It also contains some basic inner content, such as this text.
-                    
-                    This is an example of a scaffold. It uses the Scaffold composable's parameters to create a screen with a simple top app bar, bottom app bar, and floating action button.
-
-                    It also contains some basic inner content, such as this text.
-                    
                     This is an example of a scaffold. It uses the Scaffold composable's parameters to create a screen with a simple top app bar, bottom app bar, and floating action button.
 
                     It also contains some basic inner content, such as this text.
@@ -105,6 +89,6 @@ fun LoginScreen() {
 @Composable
 fun LoginScreenPreview() {
     NakersolutionidTheme {
-        LoginScreen()
+        HomeScreen()
     }
 }

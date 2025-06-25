@@ -10,4 +10,7 @@
     <string name="show_password">Tampilkan Kata sandi</string>
     <string name="login">Masuk</string>
     <string name="sign_up">Daftar</string>
+
+    <string name="need_sign_up">Belum memiliki akun? Daftar</string>
+    <string name="need_login">Sudah memiliki akun? Masuk</string>
 </resources>

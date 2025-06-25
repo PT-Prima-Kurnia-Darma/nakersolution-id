@@ -3,6 +3,8 @@ package com.nakersolutionid.nakersolutionid.features.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.R
@@ -48,7 +52,10 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit
+) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -56,9 +63,10 @@ fun SignUpScreen() {
     var confirmPassword by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isConfirmPasswordVisible by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(
@@ -67,7 +75,7 @@ fun SignUpScreen() {
             .systemBarsPadding(),
     ) {
         Image(
-            modifier = Modifier
+            modifier = modifier
                 .size(300.dp)
                 .align(Alignment.CenterHorizontally),
             painter = painterResource(id = R.drawable.logo),
@@ -75,9 +83,9 @@ fun SignUpScreen() {
         )
 
         Text(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(start = 24.dp, bottom = 8.dp),
+                .padding(start = 24.dp, bottom = 8.dp, end = 24.dp),
             text = stringResource(R.string.sign_up),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.titleLarge,
@@ -91,13 +99,13 @@ fun SignUpScreen() {
         )
 
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             OutlinedTextField(
-                modifier = Modifier.weight(1f),
+                modifier = modifier.weight(1f),
                 value = firstName,
                 onValueChange = { firstName = it },
                 colors = customColors,
@@ -107,7 +115,7 @@ fun SignUpScreen() {
             )
 
             OutlinedTextField(
-                modifier = Modifier.weight(1f),
+                modifier = modifier.weight(1f),
                 value = lastName,
                 onValueChange = { lastName = it },
                 colors = customColors,
@@ -118,7 +126,7 @@ fun SignUpScreen() {
         }
 
         OutlinedTextField(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             value = username,
@@ -131,7 +139,7 @@ fun SignUpScreen() {
         )
 
         OutlinedTextField(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             value = password,
@@ -153,7 +161,7 @@ fun SignUpScreen() {
         )
 
         OutlinedTextField(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
             value = confirmPassword,
@@ -175,13 +183,30 @@ fun SignUpScreen() {
         )
 
         Button(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
                 .padding(horizontal = 64.dp),
             onClick = {}
         ) {
             Text(stringResource(R.string.login))
+        }
+
+        TextButton(
+            modifier = modifier
+                .align(Alignment.CenterHorizontally),
+            onClick = { },
+        ) {
+            Text(
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = { onLoginClick() }
+                    ),
+                text = stringResource(R.string.need_login),
+                textDecoration = TextDecoration.Underline
+            )
         }
     }
 }
@@ -190,6 +215,6 @@ fun SignUpScreen() {
 @Composable
 fun SignUpScreenPreview() {
     NakersolutionidTheme {
-        SignUpScreen()
+        SignUpScreen(onLoginClick = {})
     }
 }
