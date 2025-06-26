@@ -20,7 +20,6 @@ import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,7 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,7 +52,8 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    onSignUpClick: () -> Unit
+    onSignUpClick: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -71,7 +70,7 @@ fun LoginScreen(
             .systemBarsPadding(),
     ) {
         Image(
-            modifier = modifier
+            modifier = Modifier
                 .size(300.dp)
                 .align(Alignment.CenterHorizontally),
             painter = painterResource(id = R.drawable.logo),
@@ -79,7 +78,7 @@ fun LoginScreen(
         )
 
         Text(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, bottom = 8.dp, end = 24.dp),
             text = stringResource(R.string.login),
@@ -95,7 +94,7 @@ fun LoginScreen(
         )
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             value = username,
@@ -108,7 +107,7 @@ fun LoginScreen(
         )
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
             value = password,
@@ -130,17 +129,17 @@ fun LoginScreen(
         )
 
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 52.dp)
                 .padding(horizontal = 64.dp),
-            onClick = {}
+            onClick = { onLoginClick() },
         ) {
             Text(stringResource(R.string.login))
         }
 
         TextButton(
-            modifier = modifier
+            modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             onClick = { },
         ) {
@@ -162,6 +161,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     NakersolutionidTheme {
-        LoginScreen(onSignUpClick = {})
+        LoginScreen(onSignUpClick = {}, onLoginClick = {})
     }
 }

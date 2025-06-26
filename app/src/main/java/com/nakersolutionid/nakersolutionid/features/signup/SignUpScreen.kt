@@ -76,7 +76,7 @@ fun SignUpScreen(
             .systemBarsPadding(),
     ) {
         Image(
-            modifier = modifier
+            modifier = Modifier
                 .size(300.dp)
                 .align(Alignment.CenterHorizontally),
             painter = painterResource(id = R.drawable.logo),
@@ -84,7 +84,7 @@ fun SignUpScreen(
         )
 
         Text(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, bottom = 8.dp, end = 24.dp),
             text = stringResource(R.string.sign_up),
@@ -100,13 +100,13 @@ fun SignUpScreen(
         )
 
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             OutlinedTextField(
-                modifier = modifier.weight(1f),
+                modifier = Modifier.weight(1f),
                 value = firstName,
                 onValueChange = { firstName = it },
                 colors = customColors,
@@ -116,7 +116,7 @@ fun SignUpScreen(
             )
 
             OutlinedTextField(
-                modifier = modifier.weight(1f),
+                modifier = Modifier.weight(1f),
                 value = lastName,
                 onValueChange = { lastName = it },
                 colors = customColors,
@@ -127,7 +127,7 @@ fun SignUpScreen(
         }
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             value = username,
@@ -140,7 +140,7 @@ fun SignUpScreen(
         )
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             value = password,
@@ -162,7 +162,7 @@ fun SignUpScreen(
         )
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
             value = confirmPassword,
@@ -184,7 +184,7 @@ fun SignUpScreen(
         )
 
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
                 .padding(horizontal = 64.dp),
@@ -194,7 +194,7 @@ fun SignUpScreen(
         }
 
         TextButton(
-            modifier = modifier
+            modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             onClick = { },
         ) {
