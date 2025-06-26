@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +19,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Article
-import androidx.compose.material.icons.outlined.Article
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.History
@@ -27,6 +28,7 @@ import androidx.compose.material.icons.outlined.UploadFile
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,7 +62,10 @@ private val menuItems = listOf(
 )
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onLogoutClick: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -69,20 +74,34 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             )
             .systemBarsPadding() // Handles status and navigation bar padding
     ) {
-        // A simple, clear title for the screen
-        Text(
-            text = "Dashboard",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp)
-        )
-        Text(
-            text = "Silakan pilih menu yang tersedia",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
-        )
+        // Header Row with Title and Logout Button
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween // Pushes items to ends
+        ) {
+            Column {
+                Text(
+                    text = "Dashboard",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = "Silakan pilih menu yang tersedia",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            IconButton(onClick = { onLogoutClick() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Logout,
+                    contentDescription = "Logout",
+                    tint = MaterialTheme.colorScheme.error // Use error color for destructive actions
+                )
+            }
+        }
 
         // LazyVerticalGrid automatically arranges items and is scrollable.
         // GridCells.Adaptive makes the layout responsive to screen size changes.
@@ -152,6 +171,6 @@ private fun MenuItemButton(
 @Composable
 fun HomeScreenPreview() {
     NakersolutionidTheme {
-        HomeScreen()
+        HomeScreen(onLogoutClick = {})
     }
 }
