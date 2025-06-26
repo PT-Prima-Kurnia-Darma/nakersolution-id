@@ -46,25 +46,27 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
  * Data class to represent a menu item on the home screen.
  * This makes the grid structure clean and easy to manage.
  */
-private data class MenuItem(
+data class MenuItem(
+    val id: Int,
     val title: String,
     val icon: ImageVector
 )
 
 // A list of all menu items. This is now the single source of truth for the grid.
 private val menuItems = listOf(
-    MenuItem("Buat Laporan", Icons.Outlined.Create),
-    MenuItem("Buat Berita Acara", Icons.Outlined.Newspaper),
-    MenuItem("Buat Sertifikat", Icons.Outlined.Description),
-    MenuItem("Buat Surat Permohonan", Icons.Outlined.UploadFile),
-    MenuItem("Buat Surat Keterangan", Icons.AutoMirrored.Outlined.Article),
-    MenuItem("Riwayat", Icons.Outlined.History),
+    MenuItem(1, "Buat Laporan", Icons.Outlined.Create),
+    MenuItem(2, "Buat Berita Acara", Icons.Outlined.Newspaper),
+    MenuItem(3, "Buat Sertifikat", Icons.Outlined.Description),
+    MenuItem(4, "Buat Surat Permohonan", Icons.Outlined.UploadFile),
+    MenuItem(5, "Buat Surat Keterangan", Icons.AutoMirrored.Outlined.Article),
+    MenuItem(6, "Riwayat", Icons.Outlined.History),
 )
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onMenuItemClick: (Int) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -86,6 +88,7 @@ fun HomeScreen(
                 Text(
                     text = "Dashboard",
                     style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
@@ -115,7 +118,7 @@ fun HomeScreen(
             items(menuItems) { item ->
                 MenuItemButton(
                     menuItem = item,
-                    onClick = { /* Handle click for item.title */ }
+                    onClick = { onMenuItemClick(item.id) }
                 )
             }
         }
@@ -171,6 +174,6 @@ private fun MenuItemButton(
 @Composable
 fun HomeScreenPreview() {
     NakersolutionidTheme {
-        HomeScreen(onLogoutClick = {})
+        HomeScreen(onLogoutClick = {}, onMenuItemClick = {})
     }
 }

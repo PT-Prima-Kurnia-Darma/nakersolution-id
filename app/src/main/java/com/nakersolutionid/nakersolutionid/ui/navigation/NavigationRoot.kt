@@ -14,6 +14,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.nakersolutionid.nakersolutionid.features.home.HomeScreen
 import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
+import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
 import kotlinx.serialization.Serializable
 
@@ -23,6 +24,8 @@ data object Login : NavKey
 data object SignUp : NavKey
 @Serializable
 data object Home : NavKey
+@Serializable
+data object Report : NavKey
 
 @Composable
 fun NavigationRoot(modifier: Modifier = Modifier) {
@@ -59,7 +62,23 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                 }
 
                 is Home -> NavEntry(key) {
-                    HomeScreen()
+                    HomeScreen(
+                        onLogoutClick = { backStack.removeLastOrNull() },
+                        onMenuItemClick = { item ->
+                            when (item) {
+                                // Handle menu item clicks here
+                                1 -> {
+                                    backStack.add(Report)
+                                }
+
+                                else -> {}
+                            }
+                        }
+                    )
+                }
+
+                is Report -> NavEntry(key) {
+                    ReportScreen()
                 }
 
                 else -> NavEntry(key) { Text("Unknown route") }

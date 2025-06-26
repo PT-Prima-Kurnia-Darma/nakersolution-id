@@ -2,6 +2,8 @@ package com.nakersolutionid.nakersolutionid
 
 import android.app.Application
 import com.nakersolutionid.nakersolutionid.di.networkModule
+import com.nakersolutionid.nakersolutionid.di.useCaseModule
+import com.nakersolutionid.nakersolutionid.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -15,7 +17,9 @@ class MyApp : Application() {
             androidContext(this@MyApp)
             modules(
                 listOf(
-                    networkModule
+                    networkModule,
+                    useCaseModule,
+                    viewModelModule
                 )
             )
         }

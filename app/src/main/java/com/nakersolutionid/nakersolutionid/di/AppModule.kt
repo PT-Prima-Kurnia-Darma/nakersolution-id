@@ -1,12 +1,20 @@
 package com.nakersolutionid.nakersolutionid.di
 
-import com.nakersolutionid.nakersolutionid.data.remote.network.ApiService
+import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
+import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
+import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
+import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+
+val useCaseModule = module {
+    factory<UserUseCase> { UserInteraction(get()) }
+}
 
 val networkModule = module {
     single {
@@ -22,6 +30,10 @@ val networkModule = module {
             .addConverterFactory(GsonConverterFactory.create())
             .client(get())
             .build()
-        retrofit.create(ApiService::class.java)
+        retrofit.create(ApiServices::class.java)
     }
+}
+
+val viewModelModule = module {
+    viewModel { SignUpViewModel(get()) }
 }
