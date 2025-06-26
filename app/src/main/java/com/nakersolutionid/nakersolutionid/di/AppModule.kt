@@ -31,7 +31,7 @@ val networkModule = module {
     }
     single {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://localhost:3000/")
+            .baseUrl("http://192.168.216.171:3000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(get())
             .build()

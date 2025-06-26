@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 
 class SignUpViewModel(private val userUseCase: UserUseCase) : ViewModel() {
 
-    private val _registrationState = MutableStateFlow<Resource<User>?>(null)
-    val registrationState: StateFlow<Resource<User>?> = _registrationState
+    private val _registrationState = MutableStateFlow<Resource<String>?>(null)
+    val registrationState: StateFlow<Resource<String>?> = _registrationState
 
     fun registerUser(name: String, username: String, password: String) {
         viewModelScope.launch {

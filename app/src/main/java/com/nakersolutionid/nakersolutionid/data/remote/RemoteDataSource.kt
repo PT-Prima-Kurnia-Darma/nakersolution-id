@@ -1,11 +1,13 @@
 package com.nakersolutionid.nakersolutionid.data.remote
 
+import com.google.gson.JsonParser
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
 
 class RemoteDataSource(private val apiServices: ApiServices) {
     fun register(request: RegisterRequest): Flow<ApiResponse<RegisterResponse>> {
@@ -13,8 +15,15 @@ class RemoteDataSource(private val apiServices: ApiServices) {
             try {
                 val response = apiServices.register(request)
                 emit(ApiResponse.Success(response))
-            } catch (e: Exception) {
-                emit(ApiResponse.Error(e.toString()))
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                errorBody?.let {
+                    val jsonElement = JsonParser.parseString(it)
+                    val detail = jsonElement
+                        .asJsonObject["message"]
+                        .asString
+                    emit(ApiResponse.Error(detail))
+                }
             }
         }
     }

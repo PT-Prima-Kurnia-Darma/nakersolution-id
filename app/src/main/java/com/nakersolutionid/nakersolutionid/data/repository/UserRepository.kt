@@ -17,16 +17,11 @@ class UserRepository(
     private val localDataSource: LocalDataSource,
     private val appExecutors: AppExecutors
 ) : IUserRepository {
-    override fun register(user: User): Flow<Resource<User>> = flow {
+    override fun register(user: User): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
         when (val apiResponse = remoteDataSource.register(RegisterRequest(user.name, user.username, user.password)).first()) {
             is ApiResponse.Success -> {
-                val registeredUser = User(
-                    name = apiResponse.data.data?.name ?: "",
-                    username = apiResponse.data.data?.username ?: "",
-                    password = "" // Do not store the password in the domain model
-                )
-                emit(Resource.Success(registeredUser))
+                emit(Resource.Success(apiResponse.data.message))
             }
             is ApiResponse.Error -> {
                 emit(Resource.Error(apiResponse.errorMessage))

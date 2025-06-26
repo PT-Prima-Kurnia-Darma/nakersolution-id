@@ -6,6 +6,5 @@ import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
 import kotlinx.coroutines.flow.Flow
 
 class UserInteraction(private val userRepository: IUserRepository): UserUseCase {
-    override fun register(user: User): Flow<Resource<User>> = userRepository.register(user)
-
+    override fun register(user: User): Flow<Resource<String>> = userRepository.register(user)
 }
