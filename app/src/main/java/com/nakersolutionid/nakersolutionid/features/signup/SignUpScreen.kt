@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,8 +51,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.R
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.di.networkModule
+import com.nakersolutionid.nakersolutionid.di.repositoryModule
+import com.nakersolutionid.nakersolutionid.di.useCaseModule
+import com.nakersolutionid.nakersolutionid.di.viewModelModule
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplication
 
 @Composable
 fun SignUpScreen(
@@ -90,6 +97,7 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth(),
             text = "Buat Akun Baru",
             style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
@@ -231,7 +239,8 @@ fun SignUpScreen(
         ) {
             Text(
                 text = "Sudah memiliki akun?",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
             )
             TextButton(onClick = onLoginClick) {
                 Text(
@@ -256,10 +265,10 @@ fun SignUpScreen(
             val errorMessage = state.message ?: "An unknown error occurred"
             // You can show a Snackbar or a Toast here
             // For example:
-            // val snackbarHostState = remember { SnackbarHostState() }
-            // LaunchedEffect(errorMessage) {
-            //     snackbarHostState.showSnackbar(errorMessage)
-            // }
+             val snackbarHostState = remember { SnackbarHostState() }
+             LaunchedEffect(errorMessage) {
+                 snackbarHostState.showSnackbar(errorMessage)
+             }
         }
         else -> {
             // Do nothing
@@ -271,7 +280,19 @@ fun SignUpScreen(
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
 @Composable
 fun SignUpScreenPreview() {
-    NakersolutionidTheme {
-        SignUpScreen(onLoginClick = {})
+    KoinApplication(application = {
+        // your preview config here
+        modules(
+            listOf(
+                networkModule,
+                useCaseModule,
+                viewModelModule,
+                repositoryModule
+            )
+        )
+    }) {
+        NakersolutionidTheme {
+            SignUpScreen(onLoginClick = {})
+        }
     }
 }
