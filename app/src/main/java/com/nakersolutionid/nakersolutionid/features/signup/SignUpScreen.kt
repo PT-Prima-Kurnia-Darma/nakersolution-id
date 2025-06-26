@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,12 +48,15 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.R
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    viewModel: SignUpViewModel = koinViewModel()
 ) {
     var firstName by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
@@ -59,6 +65,8 @@ fun SignUpScreen(
     var confirmPassword by rememberSaveable { mutableStateOf("") }
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
     var isConfirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
+    val registrationState by viewModel.registrationState.collectAsState()
 
     Column(
         modifier = modifier
@@ -194,14 +202,26 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            onClick = { /* TODO: Implement sign-up logic */ },
+            onClick = {
+                val fullName = "$firstName $lastName"
+                viewModel.registerUser(fullName, username, password)
+            },
+            enabled = registrationState !is Resource.Loading
         ) {
-            Text(
-                text = stringResource(R.string.sign_up),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            if (registrationState is Resource.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.sign_up),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
+
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -220,6 +240,29 @@ fun SignUpScreen(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
+        }
+    }
+
+    // Handle registration state
+    when (val state = registrationState) {
+        is Resource.Success -> {
+            // Navigate to login or home screen
+            LaunchedEffect(Unit) {
+                onLoginClick()
+            }
+        }
+        is Resource.Error -> {
+            // Show error message
+            val errorMessage = state.message ?: "An unknown error occurred"
+            // You can show a Snackbar or a Toast here
+            // For example:
+            // val snackbarHostState = remember { SnackbarHostState() }
+            // LaunchedEffect(errorMessage) {
+            //     snackbarHostState.showSnackbar(errorMessage)
+            // }
+        }
+        else -> {
+            // Do nothing
         }
     }
 }

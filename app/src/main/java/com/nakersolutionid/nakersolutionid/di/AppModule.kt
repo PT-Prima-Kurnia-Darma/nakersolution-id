@@ -1,9 +1,14 @@
 package com.nakersolutionid.nakersolutionid.di
 
+import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
+import com.nakersolutionid.nakersolutionid.data.repository.UserRepository
+import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
+import com.nakersolutionid.nakersolutionid.utils.AppExecutors
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.dsl.viewModel
@@ -32,6 +37,13 @@ val networkModule = module {
             .build()
         retrofit.create(ApiServices::class.java)
     }
+}
+
+val repositoryModule = module {
+    single<IUserRepository> { UserRepository(get(), get(), get()) }
+    single { LocalDataSource() }
+    single { RemoteDataSource(get()) }
+    single { AppExecutors() }
 }
 
 val viewModelModule = module {
