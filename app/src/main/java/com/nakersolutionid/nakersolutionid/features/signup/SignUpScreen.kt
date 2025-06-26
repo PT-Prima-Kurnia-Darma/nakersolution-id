@@ -190,7 +190,7 @@ fun SignUpScreen(
                 .padding(horizontal = 64.dp),
             onClick = {}
         ) {
-            Text(stringResource(R.string.login))
+            Text(stringResource(R.string.sign_up))
         }
 
         TextButton(

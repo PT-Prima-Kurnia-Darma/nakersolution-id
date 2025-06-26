@@ -118,9 +118,9 @@ private fun MenuItemButton(
         modifier = modifier
             .aspectRatio(1f), // Enforces a square 1:1 aspect ratio
         shape = RoundedCornerShape(16.dp), // Slightly more rounded corners
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        colors = ButtonDefaults.filledTonalButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         contentPadding = PaddingValues(12.dp)
     ) {
