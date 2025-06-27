@@ -1,16 +1,19 @@
 package com.nakersolutionid.nakersolutionid.di
 
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.repository.UserRepository
 import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
+import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -29,23 +32,30 @@ val networkModule = module {
             .readTimeout(120, TimeUnit.SECONDS)
             .build()
     }
-    single {
-        val retrofit = Retrofit.Builder()
+    single<Retrofit> {
+        Retrofit.Builder()
             .baseUrl("http://192.168.216.171:3000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(get())
             .build()
-        retrofit.create(ApiServices::class.java)
+    }
+    single<ApiServices> {
+        get<Retrofit>().create(ApiServices::class.java)
     }
 }
 
 val repositoryModule = module {
-    single<IUserRepository> { UserRepository(get(), get(), get()) }
     single { LocalDataSource() }
     single { RemoteDataSource(get()) }
     single { AppExecutors() }
+    single<IUserRepository> { UserRepository(get(), get(), get(), get()) }
+}
+
+val preferenceModule = module {
+    single { UserPreference(androidContext()) }
 }
 
 val viewModelModule = module {
     viewModel { SignUpViewModel(get()) }
+    viewModel { LoginViewModel(get()) }
 }

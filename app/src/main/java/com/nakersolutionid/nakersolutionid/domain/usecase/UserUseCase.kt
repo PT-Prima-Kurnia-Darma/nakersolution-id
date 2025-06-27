@@ -5,5 +5,6 @@ import com.nakersolutionid.nakersolutionid.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserUseCase {
-    fun register(user: User): Flow<Resource<String>>
+    fun register(name: String, username: String, password: String): Flow<Resource<String>>
+    fun login(username: String, password: String): Flow<Resource<String>>
 }

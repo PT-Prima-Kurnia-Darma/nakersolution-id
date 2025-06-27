@@ -51,6 +51,7 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                         },
                         onLoginClick = {
                             backStack.add(Home)
+                            backStack.removeFirstOrNull()
                         }
                     )
                 }
@@ -63,7 +64,10 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
 
                 is Home -> NavEntry(key) {
                     HomeScreen(
-                        onLogoutClick = { backStack.removeLastOrNull() },
+                        onLogoutClick = {
+                            backStack.add(Login)
+                            backStack.removeFirstOrNull()
+                        },
                         onMenuItemClick = { item ->
                             when (item) {
                                 // Handle menu item clicks here

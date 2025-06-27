@@ -26,6 +26,8 @@ import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +38,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,11 +59,15 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.R
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = koinViewModel(),
     onSignUpClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
@@ -69,6 +77,8 @@ fun LoginScreen(
 
     var usernameError by rememberSaveable { mutableStateOf<String?>(null) }
     var passwordError by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val loginState by viewModel.loginState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -212,15 +222,27 @@ fun LoginScreen(
                     }
 
                     if (isFormValid) {
-                        onLoginClick()
+                        viewModel.loginUser(username, password)
                     }
                 },
-            ) {
-                Text(
-                    text = stringResource(R.string.login),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                enabled = loginState !is Resource.Loading,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = MaterialTheme.colorScheme.primary,
+                    disabledContentColor = MaterialTheme.colorScheme.onPrimary
                 )
+            ) {
+                if (loginState is Resource.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.login),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -242,6 +264,32 @@ fun LoginScreen(
                     )
                 }
             }
+        }
+    }
+
+    // Handle registration state
+    when (val state = loginState) {
+        is Resource.Success -> {
+            // Navigate to login or home screen
+            LaunchedEffect(Unit) {
+                viewModel.onStateHandled()
+                onLoginClick()
+            }
+        }
+        is Resource.Error -> {
+            // Show error message
+            val errorMessage = state.message ?: "An unknown error occurred"
+            // You can show a Snackbar or a Toast here
+            // For example:
+            LaunchedEffect(errorMessage) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                    viewModel.onStateHandled()
+                }
+            }
+        }
+        else -> {
+            // Do nothing
         }
     }
 }

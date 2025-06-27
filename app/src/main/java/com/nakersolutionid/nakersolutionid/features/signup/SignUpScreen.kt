@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.R
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.di.networkModule
+import com.nakersolutionid.nakersolutionid.di.preferenceModule
 import com.nakersolutionid.nakersolutionid.di.repositoryModule
 import com.nakersolutionid.nakersolutionid.di.useCaseModule
 import com.nakersolutionid.nakersolutionid.di.viewModelModule
@@ -415,6 +416,7 @@ fun SignUpScreen(
         is Resource.Success -> {
             // Navigate to login or home screen
             LaunchedEffect(Unit) {
+                viewModel.onStateHandled()
                 onLoginClick()
             }
         }
@@ -423,11 +425,12 @@ fun SignUpScreen(
             val errorMessage = state.message ?: "An unknown error occurred"
             // You can show a Snackbar or a Toast here
             // For example:
-             LaunchedEffect(errorMessage) {
-                 scope.launch {
+            LaunchedEffect(errorMessage) {
+                scope.launch {
                     snackbarHostState.showSnackbar(errorMessage)
-                 }
-             }
+                    viewModel.onStateHandled()
+                }
+            }
         }
         else -> {
 //            Log.i("PEPEW", "Success")
@@ -447,7 +450,8 @@ fun SignUpScreenPreview() {
                 networkModule,
                 useCaseModule,
                 viewModelModule,
-                repositoryModule
+                repositoryModule,
+                preferenceModule
             )
         )
     }) {

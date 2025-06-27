@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid
 
 import android.app.Application
 import com.nakersolutionid.nakersolutionid.di.networkModule
+import com.nakersolutionid.nakersolutionid.di.preferenceModule
 import com.nakersolutionid.nakersolutionid.di.repositoryModule
 import com.nakersolutionid.nakersolutionid.di.useCaseModule
 import com.nakersolutionid.nakersolutionid.di.viewModelModule
@@ -21,7 +22,8 @@ class MyApp : Application() {
                     networkModule,
                     useCaseModule,
                     viewModelModule,
-                    repositoryModule
+                    repositoryModule,
+                    preferenceModule
                 )
             )
         }

@@ -16,9 +16,13 @@ class SignUpViewModel(private val userUseCase: UserUseCase) : ViewModel() {
 
     fun registerUser(name: String, username: String, password: String) {
         viewModelScope.launch {
-            userUseCase.register(User(name, username, password)).collect {
+            userUseCase.register(name, username, password).collect {
                 _registrationState.value = it
             }
         }
+    }
+
+    fun onStateHandled() {
+        _registrationState.value = null
     }
 }

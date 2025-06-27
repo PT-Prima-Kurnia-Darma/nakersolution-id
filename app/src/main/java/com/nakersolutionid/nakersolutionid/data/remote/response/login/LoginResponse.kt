@@ -1,11 +1,11 @@
-package com.nakersolutionid.nakersolutionid.data.remote.response.register
+package com.nakersolutionid.nakersolutionid.data.remote.response.login
 
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 @Parcelize
-data class RegisterResponse(
+data class LoginResponse(
 
 	@field:SerializedName("data")
 	val data: Data,
