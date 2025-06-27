@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -60,9 +58,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.R
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.di.networkModule
+import com.nakersolutionid.nakersolutionid.di.preferenceModule
+import com.nakersolutionid.nakersolutionid.di.repositoryModule
+import com.nakersolutionid.nakersolutionid.di.useCaseModule
+import com.nakersolutionid.nakersolutionid.di.viewModelModule
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplicationPreview
 
 @Composable
 fun LoginScreen(
@@ -298,7 +302,19 @@ fun LoginScreen(
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
 @Composable
 fun LoginScreenPreview() {
-    NakersolutionidTheme {
-        LoginScreen(onSignUpClick = {}, onLoginClick = {})
+    KoinApplicationPreview(application = {
+        modules(
+            listOf(
+                networkModule,
+                useCaseModule,
+                viewModelModule,
+                repositoryModule,
+                preferenceModule
+            )
+        )
+    }) {
+        NakersolutionidTheme {
+            LoginScreen(onLoginClick = {}, onSignUpClick = {})
+        }
     }
 }

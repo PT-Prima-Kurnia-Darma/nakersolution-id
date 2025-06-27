@@ -67,7 +67,7 @@ import com.nakersolutionid.nakersolutionid.di.viewModelModule
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.KoinApplication
+import org.koin.compose.KoinApplicationPreview
 
 @Composable
 fun SignUpScreen(
@@ -443,8 +443,7 @@ fun SignUpScreen(
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
 @Composable
 fun SignUpScreenPreview() {
-    KoinApplication(application = {
-        // your preview config here
+    KoinApplicationPreview(application = {
         modules(
             listOf(
                 networkModule,
