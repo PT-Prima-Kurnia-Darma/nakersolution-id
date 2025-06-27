@@ -60,6 +60,7 @@ import com.nakersolutionid.nakersolutionid.R
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.di.networkModule
 import com.nakersolutionid.nakersolutionid.di.preferenceModule
+import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.di.repositoryModule
 import com.nakersolutionid.nakersolutionid.di.useCaseModule
 import com.nakersolutionid.nakersolutionid.di.viewModelModule
@@ -303,15 +304,8 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     KoinApplicationPreview(application = {
-        modules(
-            listOf(
-                networkModule,
-                useCaseModule,
-                viewModelModule,
-                repositoryModule,
-                preferenceModule
-            )
-        )
+        // Use only the preview module
+        modules(previewModule)
     }) {
         NakersolutionidTheme {
             LoginScreen(onLoginClick = {}, onSignUpClick = {})
