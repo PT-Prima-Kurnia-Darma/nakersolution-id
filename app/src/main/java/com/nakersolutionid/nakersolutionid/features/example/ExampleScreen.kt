@@ -13,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -68,8 +69,7 @@ fun ExampleScreen(modifier: Modifier = Modifier) {
         Column(
             modifier = modifier
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 modifier = modifier.padding(8.dp),
@@ -82,6 +82,9 @@ fun ExampleScreen(modifier: Modifier = Modifier) {
                     You have pressed the floating action button $presses times.
                 """.trimIndent(),
             )
+            val a = ""
+            OutlinedTextField(value = a, onValueChange = {})
+            OutlinedTextField(value = a, onValueChange = {})
         }
     }
 }

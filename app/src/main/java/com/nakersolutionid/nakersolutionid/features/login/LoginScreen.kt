@@ -1,5 +1,10 @@
 package com.nakersolutionid.nakersolutionid.features.login
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,11 +30,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,120 +67,180 @@ fun LoginScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
-    // Using a Column with verticalArrangement.Center to better position the content
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp), // Main horizontal padding for the screen
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center // This helps center the form vertically
-    ) {
-        // Reduced the size of the logo for a more balanced look
-        Image(
-            modifier = Modifier.size(220.dp),
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = stringResource(id = R.string.logo),
-        )
+    var usernameError by rememberSaveable { mutableStateOf<String?>(null) }
+    var passwordError by rememberSaveable { mutableStateOf<String?>(null) }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-        // Added a welcome message for better UX
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Selamat Datang Kembali",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+    ) { innerPadding ->
+        // Using a Column with verticalArrangement.Center to better position the content
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
+                .padding(horizontal = 24.dp), // Main horizontal padding for the screen
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Reduced the size of the logo for a more balanced look
+            Image(
+                modifier = Modifier.size(220.dp),
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = stringResource(id = R.string.logo),
+            )
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            text = "Masuk untuk melanjutkan",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
+            // Added a welcome message for better UX
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Selamat Datang Kembali",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
 
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = username,
-            onValueChange = { username = it },
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true,
-            label = { Text(stringResource(R.string.username)) }, // Using label for better UX
-            leadingIcon = {
-                Icon(
-                    Icons.Outlined.PersonOutline,
-                    contentDescription = null // Decorative icon
-                )
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-        )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                text = "Masuk untuk melanjutkan",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = password,
-            onValueChange = { password = it },
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true,
-            label = { Text(stringResource(R.string.password)) }, // Using label
-            leadingIcon = {
-                Icon(
-                    Icons.Outlined.Lock,
-                    contentDescription = null // Decorative icon
-                )
-            },
-            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = username,
+                onValueChange = {
+                    username = it
+                    usernameError = null
+                },
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true,
+                label = { Text(stringResource(R.string.username)) }, // Using label for better UX
+                leadingIcon = {
                     Icon(
-                        imageVector = if (isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                        contentDescription = if (isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                        Icons.Outlined.PersonOutline,
+                        contentDescription = null // Decorative icon
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                isError = usernameError != null
+            )
+
+            AnimatedVisibility(
+                modifier = Modifier.fillMaxWidth(),
+                visible = usernameError != null,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Text(
+                    text = usernameError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+                    textAlign = TextAlign.Left
+                )
+            }
+
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = password,
+                onValueChange = {
+                    password = it
+                    passwordError = null
+                },
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true,
+                label = { Text(stringResource(R.string.password)) }, // Using label
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.Lock,
+                        contentDescription = null // Decorative icon
+                    )
+                },
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Icon(
+                            imageVector = if (isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                            contentDescription = if (isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                isError = passwordError != null
+            )
+
+            AnimatedVisibility(
+                modifier = Modifier.fillMaxWidth(),
+                visible = passwordError != null,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Text(
+                    text = passwordError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+                    textAlign = TextAlign.Left
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp), // Consistent button height
+                onClick = {
+                    var isFormValid = true
+
+                    if (username.isBlank()) {
+                        usernameError = "Nama pengguna diperlukan"
+                        isFormValid = false
+                    }
+                    if (password.isBlank()) {
+                        passwordError = "Kata sandi diperlukan"
+                        isFormValid = false
+                    }
+
+                    if (isFormValid) {
+                        onLoginClick()
+                    }
+                },
+            ) {
+                Text(
+                    text = stringResource(R.string.login),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Combined the "Sign up" text and button for better accessibility and UX
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Belum memiliki akun?",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                TextButton(onClick = onSignUpClick) {
+                    Text(
+                        text = stringResource(R.string.sign_up),
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp), // Consistent button height
-            onClick = { onLoginClick() },
-        ) {
-            Text(
-                text = stringResource(R.string.login),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Combined the "Sign up" text and button for better accessibility and UX
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Belum memiliki akun?",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            TextButton(onClick = onSignUpClick) {
-                Text(
-                    text = stringResource(R.string.sign_up),
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
             }
         }
     }
