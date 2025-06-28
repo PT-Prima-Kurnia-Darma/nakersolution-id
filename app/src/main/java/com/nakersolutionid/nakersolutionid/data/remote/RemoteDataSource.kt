@@ -26,6 +26,11 @@ class RemoteDataSource(private val apiServices: ApiServices) {
                         .asString
                     emit(ApiResponse.Error(detail))
                 }
+            } catch (e: Exception) {
+                e.message?.let {
+                    if (it == "timeout") emit(ApiResponse.Error("Connection timeout"))
+                }
+                emit(ApiResponse.Error("Something went wrong"))
             }
         }
     }
@@ -44,6 +49,11 @@ class RemoteDataSource(private val apiServices: ApiServices) {
                         .asString
                     emit(ApiResponse.Error(detail))
                 }
+            } catch (e: Exception) {
+                e.message?.let {
+                    if (it == "timeout") emit(ApiResponse.Error("Connection timeout"))
+                }
+                emit(ApiResponse.Error("Something went wrong"))
             }
         }
     }
