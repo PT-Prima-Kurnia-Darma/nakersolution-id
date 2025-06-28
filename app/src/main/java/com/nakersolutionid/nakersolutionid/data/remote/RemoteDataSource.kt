@@ -6,9 +6,12 @@ import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
 
 class RemoteDataSource(private val apiServices: ApiServices) {
@@ -32,7 +35,7 @@ class RemoteDataSource(private val apiServices: ApiServices) {
                 }
                 emit(ApiResponse.Error("Something went wrong"))
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     fun login(username: String, password: String): Flow<ApiResponse<LoginResponse>> {
@@ -55,6 +58,29 @@ class RemoteDataSource(private val apiServices: ApiServices) {
                 }
                 emit(ApiResponse.Error("Something went wrong"))
             }
-        }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun logout(token: String): Flow<ApiResponse<LogoutResponse>> {
+        return flow {
+            try {
+                val response = apiServices.logout("Bearer $token")
+                emit(ApiResponse.Success(response))
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                errorBody?.let {
+                    val jsonElement = JsonParser.parseString(it)
+                    val detail = jsonElement
+                        .asJsonObject["message"]
+                        .asString
+                    emit(ApiResponse.Error(detail))
+                }
+            } catch (e: Exception) {
+                e.message?.let {
+                    if (it == "timeout") emit(ApiResponse.Error("Connection timeout"))
+                }
+                emit(ApiResponse.Error("Something went wrong"))
+            }
+        }.flowOn(Dispatchers.IO)
     }
 }

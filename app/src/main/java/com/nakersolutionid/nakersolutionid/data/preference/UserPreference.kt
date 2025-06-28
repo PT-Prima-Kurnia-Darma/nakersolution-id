@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nakersolutionid.nakersolutionid.data.preference.model.UserModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preference")
@@ -38,6 +39,14 @@ class UserPreference(private val context: Context) {
                 preferences[Keys.TOKEN] ?: ""
             )
         }
+    }
+
+    // ADD THIS: Perfect for one-time, non-observing reads
+    suspend fun getUserToken(): String? {
+        // .first() is a terminal operator that gets the first emitted value
+        // from the flow and then cancels the flow's collection.
+        val preferences = context.dataStore.data.first()
+        return preferences[Keys.TOKEN]
     }
 
     suspend fun clearUser() {

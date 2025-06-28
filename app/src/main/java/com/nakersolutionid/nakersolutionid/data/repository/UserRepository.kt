@@ -6,10 +6,10 @@ import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.preference.model.UserModel
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
-import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.domain.model.User
 import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
+import com.nakersolutionid.nakersolutionid.utils.DataMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -29,9 +29,7 @@ class UserRepository(
             is ApiResponse.Error -> {
                 emit(Resource.Error(apiResponse.errorMessage))
             }
-            is ApiResponse.Empty -> {
-                // Handle empty response if necessary
-            }
+            is ApiResponse.Empty -> {}
         }
     }
 
@@ -49,9 +47,39 @@ class UserRepository(
             is ApiResponse.Error -> {
                 emit(Resource.Error(apiResponse.errorMessage))
             }
-            is ApiResponse.Empty -> {
-
-            }
+            is ApiResponse.Empty -> {}
         }
+    }
+
+    override fun logout(token: String): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        when (val apiResponse = remoteDataSource.logout(token).first()) {
+            is ApiResponse.Success -> {
+                emit(Resource.Success(apiResponse.data.message))
+            }
+            is ApiResponse.Error -> {
+                emit(Resource.Error(apiResponse.errorMessage))
+            }
+            is ApiResponse.Empty -> {}
+        }
+    }
+
+    override fun getUser(): Flow<Resource<User>> = flow {
+        emit(Resource.Loading())
+        val userModel = userPreference.getUser().first()
+        if (userModel.id.isNotEmpty()) {
+            val userDomain = DataMapper.mapModelToDomain(userModel)
+            emit(Resource.Success(userDomain))
+        } else {
+            emit(Resource.Error("No user logged in"))
+        }
+    }
+
+    override suspend fun getUserToken(): String? {
+        return userPreference.getUserToken()
+    }
+
+    override suspend fun clearUser() {
+        userPreference.clearUser()
     }
 }

@@ -1,22 +1,18 @@
 package com.nakersolutionid.nakersolutionid.features.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Article
 import androidx.compose.material.icons.automirrored.outlined.Logout
@@ -24,33 +20,35 @@ import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.UploadFile
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
+import com.nakersolutionid.nakersolutionid.ui.components.MenuItemButton
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
-
-/**
- * Data class to represent a menu item on the home screen.
- * This makes the grid structure clean and easy to manage.
- */
-data class MenuItem(
-    val id: Int,
-    val title: String,
-    val icon: ImageVector
-)
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplicationPreview
 
 // A list of all menu items. This is now the single source of truth for the grid.
 private val menuItems = listOf(
@@ -60,111 +58,108 @@ private val menuItems = listOf(
     MenuItem(4, "Buat Surat Permohonan", Icons.Outlined.UploadFile),
     MenuItem(5, "Buat Surat Keterangan", Icons.AutoMirrored.Outlined.Article),
     MenuItem(6, "Riwayat", Icons.Outlined.History),
+    MenuItem(7, "Setting", Icons.Outlined.Settings),
 )
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    viewModel: HomeScreenViewModel = koinViewModel(),
     onLogoutClick: () -> Unit,
     onMenuItemClick: (Int) -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                color = MaterialTheme.colorScheme.background
-            )
-            .systemBarsPadding() // Handles status and navigation bar padding
-    ) {
-        // Header Row with Title and Logout Button
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Pushes items to ends
-        ) {
-            Column {
-                Text(
-                    text = "Dashboard",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "Silakan pilih menu yang tersedia",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            IconButton(onClick = { onLogoutClick() }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.Logout,
-                    contentDescription = "Logout",
-                    tint = MaterialTheme.colorScheme.error // Use error color for destructive actions
-                )
-            }
-        }
+    val logoutState by viewModel.logoutState.collectAsState()
 
-        // LazyVerticalGrid automatically arranges items and is scrollable.
-        // GridCells.Adaptive makes the layout responsive to screen size changes.
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 150.dp), // Each item will be at least 150.dp wide
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp), // Padding around the entire grid
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.ime)
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
-            items(menuItems) { item ->
-                MenuItemButton(
-                    menuItem = item,
-                    onClick = { onMenuItemClick(item.id) }
-                )
+            // Header Row with Title and Logout Button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween // Pushes items to ends
+            ) {
+                Column {
+                    Text(
+                        text = "Dashboard",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "Silakan pilih menu yang tersedia",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                IconButton(onClick = { viewModel.logoutUser() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.Logout,
+                        contentDescription = "Logout",
+                        tint = MaterialTheme.colorScheme.error // Use error color for destructive actions
+                    )
+                }
+            }
+
+            // LazyVerticalGrid automatically arranges items and is scrollable.
+            // GridCells.Adaptive makes the layout responsive to screen size changes.
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 150.dp), // Each item will be at least 150.dp wide
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(16.dp), // Padding around the entire grid
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(menuItems) { item ->
+                    MenuItemButton(
+                        menuItem = item,
+                        onClick = { onMenuItemClick(item.id) }
+                    )
+                }
             }
         }
     }
-}
 
-/**
- * A reusable composable for the menu buttons.
- * This cleans up the main layout and makes the button style consistent.
- */
-@Composable
-private fun MenuItemButton(
-    menuItem: MenuItem,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .aspectRatio(1f), // Enforces a square 1:1 aspect ratio
-        shape = RoundedCornerShape(16.dp), // Slightly more rounded corners
-        colors = ButtonDefaults.filledTonalButtonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        ),
-        contentPadding = PaddingValues(12.dp)
-    ) {
-        // This column arranges the icon and text vertically and centers them.
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Icon(
-                imageVector = menuItem.icon,
-                contentDescription = menuItem.title, // Important for accessibility
-                modifier = Modifier.size(48.dp) // A good size for the icon
-            )
-            Spacer(modifier = Modifier.height(12.dp)) // Adds space between icon and text
-            Text(
-                text = menuItem.title,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.bodyMedium, // Adjusted for better fit
-                lineHeight = MaterialTheme.typography.bodyMedium.fontSize * 1.2
-            )
+    // Handle logout state
+    when (val state = logoutState) {
+        is Resource.Success -> {
+            // Navigate to login or home screen
+            LaunchedEffect(Unit) {
+                viewModel.clearUser()
+                viewModel.onStateHandled()
+                onLogoutClick()
+            }
+        }
+        is Resource.Error -> {
+            // Show error message
+            val errorMessage = state.message ?: "An unknown error occurred"
+            // You can show a Snackbar or a Toast here
+            // For example:
+            LaunchedEffect(errorMessage) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                    viewModel.onStateHandled()
+                }
+            }
+        }
+        else -> {
+            // Do nothing
         }
     }
 }
@@ -173,7 +168,12 @@ private fun MenuItemButton(
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
 @Composable
 fun HomeScreenPreview() {
-    NakersolutionidTheme {
-        HomeScreen(onLogoutClick = {}, onMenuItemClick = {})
+    KoinApplicationPreview(application = {
+        // Use only the preview module
+        modules(previewModule)
+    }) {
+        NakersolutionidTheme {
+            HomeScreen(onLogoutClick = {}, onMenuItemClick = {})
+        }
     }
 }

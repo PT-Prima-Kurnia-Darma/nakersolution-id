@@ -3,9 +3,10 @@ package com.nakersolutionid.nakersolutionid.data.remote.network
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
 import retrofit2.http.Body
-import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ApiServices {
@@ -18,4 +19,9 @@ interface ApiServices {
     suspend fun login(
         @Body request: LoginRequest
     ) : LoginResponse
+
+    @POST("auth/logout")
+    suspend fun logout(
+        @Header("Authorization") token: String
+    ) : LogoutResponse
 }

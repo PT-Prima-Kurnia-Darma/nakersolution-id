@@ -276,7 +276,7 @@ fun LoginScreen(
         }
     }
 
-    // Handle registration state
+    // Handle login state
     when (val state = loginState) {
         is Resource.Success -> {
             // Navigate to login or home screen
