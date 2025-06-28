@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.di
 
+import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
@@ -26,10 +27,15 @@ val useCaseModule = module {
 
 val networkModule = module {
     single {
+        val loggingInterceptor = if(BuildConfig.DEBUG) {
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        } else {
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+        }
         OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
             .build()
     }
     single<Retrofit> {
