@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -62,12 +63,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.R
 import com.nakersolutionid.nakersolutionid.data.Resource
-import com.nakersolutionid.nakersolutionid.di.networkModule
-import com.nakersolutionid.nakersolutionid.di.preferenceModule
 import com.nakersolutionid.nakersolutionid.di.previewModule
-import com.nakersolutionid.nakersolutionid.di.repositoryModule
-import com.nakersolutionid.nakersolutionid.di.useCaseModule
-import com.nakersolutionid.nakersolutionid.di.viewModelModule
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -102,6 +98,7 @@ fun SignUpScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,
@@ -112,9 +109,10 @@ fun SignUpScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp)
-                .padding(innerPadding),
+                .padding(innerPadding) // Apply Scaffold padding first
+                .imePadding() // 1. Apply keyboard padding to shrink the layout's bounds
+                .verticalScroll(rememberScrollState()) // 2. NOW, make the resized area scrollable
+                .padding(horizontal = 24.dp), // Apply content padding inside the scroll
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Keeping the logo and titles consistent with the Login screen
