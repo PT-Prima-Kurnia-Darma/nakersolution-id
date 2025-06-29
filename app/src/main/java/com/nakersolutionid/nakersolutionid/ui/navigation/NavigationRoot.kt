@@ -1,13 +1,16 @@
 package com.nakersolutionid.nakersolutionid.ui.navigation
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entry
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -15,6 +18,7 @@ import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.nakersolutionid.nakersolutionid.features.home.HomeScreen
 import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
 import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
+import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
 import kotlinx.serialization.Serializable
 
@@ -26,25 +30,25 @@ data object SignUp : NavKey
 data object Home : NavKey
 @Serializable
 data object Report : NavKey
+@Serializable
+data object Settings : NavKey
 
 @Composable
 fun NavigationRoot(modifier: Modifier = Modifier) {
-    val backStack = rememberNavBackStack(Login)
+    Scaffold { innerPadding ->
+        val backStack = rememberNavBackStack(Login)
 
-    NavDisplay(
-        modifier = modifier,
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryDecorators = listOf(
-            // Add the default decorators for managing scenes and saving state
-            rememberSceneSetupNavEntryDecorator(),
-            rememberSavedStateNavEntryDecorator(),
-            // Then add the view model store decorator
-            rememberViewModelStoreNavEntryDecorator()
-        ),
-        entryProvider = { key ->
-            when (key) {
-                is Login -> NavEntry(key) {
+        NavDisplay(
+            modifier = modifier.padding(innerPadding),
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            entryDecorators = listOf(
+                rememberSceneSetupNavEntryDecorator(),
+                rememberSavedStateNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
+            entryProvider = entryProvider {
+                entry<Login> {
                     LoginScreen(
                         onSignUpClick = {
                             backStack.add(SignUp)
@@ -55,14 +59,12 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                         }
                     )
                 }
-
-                is SignUp -> NavEntry(key) {
+                entry<SignUp> {
                     SignUpScreen(onLoginClick = {
                         backStack.removeLastOrNull()
                     })
                 }
-
-                is Home -> NavEntry(key) {
+                entry<Home> {
                     HomeScreen(
                         onLogoutClick = {
                             backStack.add(Login)
@@ -70,23 +72,32 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                         },
                         onMenuItemClick = { item ->
                             when (item) {
-                                // Handle menu item clicks here
                                 1 -> {
                                     backStack.add(Report)
                                 }
-
+                                7 -> {
+                                    backStack.add(Settings)
+                                }
                                 else -> {}
                             }
                         }
                     )
                 }
-
-                is Report -> NavEntry(key) {
+                entry<Report> {
                     ReportScreen()
                 }
-
-                else -> NavEntry(key) { Text("Unknown route") }
+                entry<Settings> {
+                    SettingsScreen(
+                        onBackClick = {
+                            backStack.removeLastOrNull()
+                        },
+                        onLogoutClick = {
+                            backStack.add(Login)
+                            backStack.removeRange(0, backStack.size - 1)
+                        }
+                    )
+                }
             }
-        }
-    )
+        )
+    }
 }
