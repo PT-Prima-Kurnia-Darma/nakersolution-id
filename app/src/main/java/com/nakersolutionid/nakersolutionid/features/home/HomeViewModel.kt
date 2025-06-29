@@ -20,12 +20,11 @@ class HomeViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         _uiState.update { it.copy(isLoading = isLoading) }
     }
 
-    fun onLoginClicked() {
+    fun onLogoutClicked() {
         logoutUser()
     }
 
-    fun logoutUser() {
-        val currentState = _uiState.value
+    private fun logoutUser() {
         viewModelScope.launch {
             userUseCase.logout().collect { result ->
                 _uiState.update { it.copy(logoutResult = result) }
