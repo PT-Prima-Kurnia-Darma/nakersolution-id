@@ -44,11 +44,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -75,27 +72,38 @@ fun SignUpScreen(
     onLoginClick: () -> Unit,
     viewModel: SignUpViewModel = koinViewModel()
 ) {
-//    var firstName by rememberSaveable { mutableStateOf("") }
-//    var lastName by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable { mutableStateOf("") }
-    var username by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var confirmPassword by rememberSaveable { mutableStateOf("") }
-    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
-    var isConfirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
-
-    // 1. Add state to hold potential error messages for each field.
-//    var firstNameError by rememberSaveable { mutableStateOf<String?>(null) }
-//    var lastNameError by rememberSaveable { mutableStateOf<String?>(null) }
-    var nameError by rememberSaveable { mutableStateOf<String?>(null) }
-    var usernameError by rememberSaveable { mutableStateOf<String?>(null) }
-    var passwordError by rememberSaveable { mutableStateOf<String?>(null) }
-    var confirmPasswordError by rememberSaveable { mutableStateOf<String?>(null) }
+    val uiState by viewModel.uiState.collectAsState()
 
     val registrationState by viewModel.registrationState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Handle side-effects from registrationResult
+    val registrationResult = uiState.registrationResult
+    LaunchedEffect(registrationResult) {
+        when (registrationResult) {
+            is Resource.Success -> {
+                // Navigate on success
+                viewModel.toggleLoading(false)
+                viewModel.onStateHandled()
+                onLoginClick()
+            }
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = registrationResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+                viewModel.toggleLoading(false)
+                viewModel.onStateHandled()
+            }
+            is Resource.Loading -> {
+                viewModel.toggleLoading(true)
+            }
+            else -> { /* Do nothing for Loading or null */ }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -141,57 +149,10 @@ fun SignUpScreen(
                 textAlign = TextAlign.Center
             )
 
-            // Row for first and last name
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.spacedBy(10.dp)
-//            ) {
-//                OutlinedTextField(
-//                    modifier = Modifier.weight(1f),
-//                    value = firstName,
-//                    onValueChange = {
-//                        firstName = it
-//                        firstNameError = null
-//                    },
-//                    shape = RoundedCornerShape(12.dp),
-//                    singleLine = true,
-//                    label = { Text(stringResource(R.string.first_name)) },
-//                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-//                    isError = firstNameError != null,
-//                    supportingText = {
-//                        if (firstNameError != null) {
-//                            Text(text = firstNameError!!, color = MaterialTheme.colorScheme.error)
-//                        }
-//                    }
-//                )
-//
-//                OutlinedTextField(
-//                    modifier = Modifier.weight(1f),
-//                    value = lastName,
-//                    onValueChange = {
-//                        lastName = it
-//                        lastNameError = null
-//                    },
-//                    shape = RoundedCornerShape(12.dp),
-//                    singleLine = true,
-//                    label = { Text(stringResource(R.string.last_name)) },
-//                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-//                    isError = lastNameError != null,
-//                    supportingText = {
-//                        if (lastNameError != null) {
-//                            Text(text = lastNameError!!, color = MaterialTheme.colorScheme.error)
-//                        }
-//                    }
-//                )
-//            }
-
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = name,
-                onValueChange = {
-                    name = it
-                    nameError = null
-                },
+                value = uiState.name,
+                onValueChange = { viewModel.onNameChange(it) },
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
                 label = { Text(stringResource(R.string.name)) },
@@ -202,17 +163,17 @@ fun SignUpScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                isError = nameError != null
+                isError = uiState.nameError != null
             )
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = nameError != null,
+                visible = uiState.nameError != null,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
                 Text(
-                    text = nameError ?: "",
+                    text = uiState.nameError ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp),
@@ -223,11 +184,8 @@ fun SignUpScreen(
             // Username field
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = username,
-                onValueChange = {
-                    username = it
-                    usernameError = null
-                },
+                value = uiState.username,
+                onValueChange = { viewModel.onUsernameChange(it) },
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
                 label = { Text(stringResource(R.string.username)) },
@@ -238,17 +196,17 @@ fun SignUpScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                isError = usernameError != null
+                isError = uiState.usernameError != null
             )
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = usernameError != null,
+                visible = uiState.usernameError != null,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
                 Text(
-                    text = usernameError ?: "",
+                    text = uiState.usernameError ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp),
@@ -259,36 +217,33 @@ fun SignUpScreen(
             // Password field
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = password,
-                onValueChange = {
-                    password = it
-                    passwordError = null
-                },
+                value = uiState.password,
+                onValueChange = { viewModel.onPasswordChange(it) },
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
                 label = { Text(stringResource(R.string.password)) },
                 leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    IconButton(onClick = { viewModel.togglePasswordVisibility() }) {
                         Icon(
-                            imageVector = if (isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            imageVector = if (uiState.isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                            contentDescription = if (uiState.isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
                         )
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = passwordError != null
+                isError = uiState.passwordError != null
             )
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = passwordError != null,
+                visible = uiState.passwordError != null,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
                 Text(
-                    text = passwordError ?: "",
+                    text = uiState.passwordError ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp),
@@ -299,36 +254,33 @@ fun SignUpScreen(
             // Confirm password field
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = confirmPassword,
-                onValueChange = {
-                    confirmPassword = it
-                    confirmPasswordError = null
-                },
+                value = uiState.confirmPassword,
+                onValueChange = { viewModel.onConfirmPasswordChange(it) },
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
                 label = { Text(stringResource(R.string.confirm_password)) },
                 leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
-                visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (uiState.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { isConfirmPasswordVisible = !isConfirmPasswordVisible }) {
+                    IconButton(onClick = { viewModel.toggleConfirmPasswordVisibility() }) {
                         Icon(
-                            imageVector = if (isConfirmPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (isConfirmPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            imageVector = if (uiState.isConfirmPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                            contentDescription = if (uiState.isConfirmPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
                         )
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = confirmPasswordError != null
+                isError = uiState.confirmPasswordError != null
             )
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = confirmPasswordError != null,
+                visible = uiState.confirmPasswordError != null,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
                 Text(
-                    text = confirmPasswordError ?: "",
+                    text = uiState.confirmPasswordError ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp),
@@ -343,42 +295,14 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                onClick = {
-                    var isFormValid = true
-
-                    if (name.isBlank()) {
-                        nameError = "Nama lengkap diperlukan"
-                        isFormValid = false
-                    }
-                    if (username.isBlank()) {
-                        usernameError = "Nama pengguna diperlukan"
-                        isFormValid = false
-                    }
-                    if (password.isBlank()) {
-                        passwordError = "Kata sandi diperlukan"
-                        isFormValid = false
-                    }
-                    if (confirmPassword.isBlank()) {
-                        confirmPasswordError = "Konfirmasi kata sandi diperlukan"
-                        isFormValid = false
-                    }
-                    if (password != confirmPassword) {
-                        confirmPasswordError = "Kata sandi tidak cocok"
-                        isFormValid = false
-                    }
-
-                    if (isFormValid) {
-                        val name = name
-                        viewModel.registerUser(name, username, password)
-                    }
-                },
+                onClick = { viewModel.onSignUpClicked() },
                 enabled = registrationState !is Resource.Loading,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = MaterialTheme.colorScheme.primary,
                     disabledContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                if (registrationState is Resource.Loading) {
+                if (uiState.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary
@@ -412,34 +336,6 @@ fun SignUpScreen(
                     )
                 }
             }
-        }
-    }
-
-
-    // Handle registration state
-    when (val state = registrationState) {
-        is Resource.Success -> {
-            // Navigate to login or home screen
-            LaunchedEffect(Unit) {
-                viewModel.onStateHandled()
-                onLoginClick()
-            }
-        }
-        is Resource.Error -> {
-            // Show error message
-            val errorMessage = state.message ?: "An unknown error occurred"
-            // You can show a Snackbar or a Toast here
-            // For example:
-            LaunchedEffect(errorMessage) {
-                scope.launch {
-                    snackbarHostState.showSnackbar(errorMessage)
-                    viewModel.onStateHandled()
-                }
-            }
-        }
-        else -> {
-//            Log.i("PEPEW", "Success")
-            // Do nothing
         }
     }
 }
