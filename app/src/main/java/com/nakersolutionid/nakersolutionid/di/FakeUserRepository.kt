@@ -24,12 +24,4 @@ class FakeUserRepository : IUserRepository {
     override fun getUser(): Flow<Resource<User>> {
         return flowOf(Resource.Success(User("1", "John Doe", "johndoe", "token")))
     }
-
-    override suspend fun getUserToken(): String? {
-        return "token"
-    }
-
-    override suspend fun clearUser() {
-        return
-    }
 }

@@ -56,6 +56,7 @@ class UserRepository(
         val token = userPreference.getUserToken() ?: ""
         when (val apiResponse = remoteDataSource.logout(token).first()) {
             is ApiResponse.Success -> {
+                userPreference.clearUser()
                 emit(Resource.Success(apiResponse.data.message))
             }
             is ApiResponse.Error -> {
@@ -74,13 +75,5 @@ class UserRepository(
         } else {
             emit(Resource.Error("No user logged in"))
         }
-    }
-
-    override suspend fun getUserToken(): String? {
-        return userPreference.getUserToken()
-    }
-
-    override suspend fun clearUser() {
-        userPreference.clearUser()
     }
 }

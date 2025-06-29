@@ -141,7 +141,6 @@ fun HomeScreen(
         is Resource.Success -> {
             // Navigate to login or home screen
             LaunchedEffect(Unit) {
-                viewModel.clearUser()
                 viewModel.onStateHandled()
                 onLogoutClick()
             }

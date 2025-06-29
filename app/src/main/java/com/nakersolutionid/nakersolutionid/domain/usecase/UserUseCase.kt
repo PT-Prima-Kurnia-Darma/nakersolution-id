@@ -9,6 +9,4 @@ interface UserUseCase {
     fun login(username: String, password: String): Flow<Resource<String>>
     fun logout(): Flow<Resource<String>>
     fun getUser(): Flow<Resource<User>>
-    suspend fun getUserToken(): String?
-    suspend fun clearUser()
 }

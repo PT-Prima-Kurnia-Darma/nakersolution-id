@@ -20,10 +20,6 @@ class HomeScreenViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         }
     }
 
-    suspend fun clearUser() {
-        userUseCase.clearUser()
-    }
-
     fun onStateHandled() {
         _logoutState.value = null
     }
