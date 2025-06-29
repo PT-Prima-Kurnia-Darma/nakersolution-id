@@ -1,0 +1,197 @@
+package com.nakersolutionid.nakersolutionid.features.settings
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.ui.components.SettingsItem
+import com.nakersolutionid.nakersolutionid.ui.components.SettingsTopAppBar
+import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplicationPreview
+
+@Composable
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = koinViewModel(),
+    onLogoutClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Handle side-effects from registrationResult
+    val logoutResult = uiState.logoutResult
+    LaunchedEffect(logoutResult) {
+        when (logoutResult) {
+            is Resource.Success -> {
+                // Navigate on success
+                viewModel.toggleLoading(false)
+                viewModel.onLogoutStateHandle()
+                onLogoutClick()
+            }
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = logoutResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+                viewModel.toggleLoading(false)
+                viewModel.onLogoutStateHandle()
+            }
+            is Resource.Loading -> {
+                viewModel.toggleLoading(true)
+            }
+            else -> { /* Do nothing for Loading or null */ }
+        }
+    }
+
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize(),
+        topBar = { SettingsTopAppBar(onBackClick = { onBackClick() }) },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding()
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(innerPadding)
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 14.dp)
+        ) {
+            Card(
+                onClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    SettingsItem(
+                        title = "Nama lengkap",
+                        subtitle = "Muhammad Azka Naufal",
+                        icon = Icons.Outlined.Edit,
+                        contentDescription = "Edit name",
+                        enable = !uiState.isLoading,
+                        onClick = {}
+                    )
+                    HorizontalDivider()
+                    SettingsItem(
+                        title = "Nama pengguna",
+                        subtitle = "mhmdazkanfl",
+                        icon = Icons.Outlined.Edit,
+                        contentDescription = "Edit username",
+                        enable = !uiState.isLoading,
+                        onClick = {}
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = MaterialTheme.colorScheme.primary,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    enabled = !uiState.isLoading,
+                    onClick = {}
+                ) {
+                    Text(
+                        text = "Ganti kata sandi",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledContainerColor = MaterialTheme.colorScheme.error,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    enabled = !uiState.isLoading,
+                    onClick = { viewModel.onLogoutClicked() }
+                ) {
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Text(
+                            text = "Logout",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true, name = "Phone View")
+@Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
+@Composable
+fun SettingsScreenPreview() {
+    KoinApplicationPreview(application = {
+        modules(previewModule)
+    }) {
+        NakersolutionidTheme {
+            SettingsScreen(onBackClick = {}, onLogoutClick = {})
+        }
+    }
+}
