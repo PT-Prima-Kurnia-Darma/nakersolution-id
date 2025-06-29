@@ -14,8 +14,7 @@ class HomeScreenViewModel(private val userUseCase: UserUseCase) : ViewModel() {
 
     fun logoutUser() {
         viewModelScope.launch {
-            val token = userUseCase.getUserToken() ?: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-            userUseCase.logout(token).collect {
+            userUseCase.logout().collect {
                 _logoutState.value = it
             }
         }

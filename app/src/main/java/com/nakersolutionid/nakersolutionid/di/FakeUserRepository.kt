@@ -17,7 +17,7 @@ class FakeUserRepository : IUserRepository {
         return flowOf(Resource.Success("Login successful"))
     }
 
-    override fun logout(token: String): Flow<Resource<String>> {
+    override fun logout(): Flow<Resource<String>> {
         return flowOf(Resource.Success("Logout successful"))
     }
 
