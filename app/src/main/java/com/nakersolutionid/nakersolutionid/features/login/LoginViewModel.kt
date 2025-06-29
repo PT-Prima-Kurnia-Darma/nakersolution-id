@@ -2,11 +2,8 @@ package com.nakersolutionid.nakersolutionid.features.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
-import com.nakersolutionid.nakersolutionid.features.signup.SignUpUiState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

@@ -9,7 +9,7 @@ import com.nakersolutionid.nakersolutionid.data.repository.UserRepository
 import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
-import com.nakersolutionid.nakersolutionid.features.home.HomeScreenViewModel
+import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
 import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
@@ -65,5 +65,5 @@ val preferenceModule = module {
 val viewModelModule = module {
     viewModel { SignUpViewModel(get()) }
     viewModel { LoginViewModel(get()) }
-    viewModel { HomeScreenViewModel(get()) }
+    viewModel { HomeViewModel(get()) }
 }

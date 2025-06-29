@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.UploadFile
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -64,14 +66,40 @@ private val menuItems = listOf(
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeScreenViewModel = koinViewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
     onLogoutClick: () -> Unit,
     onMenuItemClick: (Int) -> Unit
 ) {
-    val logoutState by viewModel.logoutState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Handle side-effects from registrationResult
+    val logoutResult = uiState.logoutResult
+    LaunchedEffect(logoutResult) {
+        when (logoutResult) {
+            is Resource.Success -> {
+                // Navigate on success
+                viewModel.toggleLoading(false)
+                viewModel.onStateHandled()
+                onLogoutClick()
+            }
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = logoutResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+                viewModel.toggleLoading(false)
+                viewModel.onStateHandled()
+            }
+            is Resource.Loading -> {
+                viewModel.toggleLoading(true)
+            }
+            else -> { /* Do nothing for Loading or null */ }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -108,12 +136,22 @@ fun HomeScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                IconButton(onClick = { viewModel.logoutUser() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.Logout,
-                        contentDescription = "Logout",
-                        tint = MaterialTheme.colorScheme.error // Use error color for destructive actions
-                    )
+                IconButton(
+                    onClick = { viewModel.logoutUser() },
+                    enabled = uiState.logoutResult !is Resource.Loading,
+                ) {
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.Logout,
+                            contentDescription = "Logout",
+                            tint = MaterialTheme.colorScheme.error // Use error color for destructive actions
+                        )
+                    }
                 }
             }
 
@@ -133,32 +171,6 @@ fun HomeScreen(
                     )
                 }
             }
-        }
-    }
-
-    // Handle logout state
-    when (val state = logoutState) {
-        is Resource.Success -> {
-            // Navigate to login or home screen
-            LaunchedEffect(Unit) {
-                viewModel.onStateHandled()
-                onLogoutClick()
-            }
-        }
-        is Resource.Error -> {
-            // Show error message
-            val errorMessage = state.message ?: "An unknown error occurred"
-            // You can show a Snackbar or a Toast here
-            // For example:
-            LaunchedEffect(errorMessage) {
-                scope.launch {
-                    snackbarHostState.showSnackbar(errorMessage)
-                    viewModel.onStateHandled()
-                }
-            }
-        }
-        else -> {
-            // Do nothing
         }
     }
 }
