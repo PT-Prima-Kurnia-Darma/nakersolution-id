@@ -16,13 +16,6 @@ class SignUpViewModel(private val userUseCase: UserUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _registrationState = MutableStateFlow<Resource<String>?>(null)
-    val registrationState: StateFlow<Resource<String>?> = _registrationState
-
-    fun onStateHandled() {
-        _registrationState.value = null
-    }
-
     // 2. Expose event handlers for the UI to call
     fun onNameChange(name: String) {
         _uiState.update { it.copy(name = name, nameError = null) }
@@ -38,6 +31,10 @@ class SignUpViewModel(private val userUseCase: UserUseCase) : ViewModel() {
 
     fun onConfirmPasswordChange(confirmPassword: String) {
         _uiState.update { it.copy(confirmPassword = confirmPassword, confirmPasswordError = null) }
+    }
+
+    fun onStateHandled() {
+        _uiState.update { it.copy(registrationResult = null) }
     }
 
     fun togglePasswordVisibility() {

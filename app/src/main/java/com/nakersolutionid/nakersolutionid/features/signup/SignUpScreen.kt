@@ -74,8 +74,6 @@ fun SignUpScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val registrationState by viewModel.registrationState.collectAsState()
-
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -296,7 +294,7 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .height(52.dp),
                 onClick = { viewModel.onSignUpClicked() },
-                enabled = registrationState !is Resource.Loading,
+                enabled = uiState.registrationResult !is Resource.Loading,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = MaterialTheme.colorScheme.primary,
                     disabledContentColor = MaterialTheme.colorScheme.onPrimary
