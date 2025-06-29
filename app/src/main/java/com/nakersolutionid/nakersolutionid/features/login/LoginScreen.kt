@@ -75,17 +75,36 @@ fun LoginScreen(
     onSignUpClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
-    var username by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
-
-    var usernameError by rememberSaveable { mutableStateOf<String?>(null) }
-    var passwordError by rememberSaveable { mutableStateOf<String?>(null) }
-
-    val loginState by viewModel.loginState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Handle side-effects from registrationResult
+    val loginResult = uiState.loginResult
+    LaunchedEffect(loginResult) {
+        when (loginResult) {
+            is Resource.Success -> {
+                // Navigate on success
+                viewModel.toggleLoading(false)
+                viewModel.onStateHandled()
+                onLoginClick()
+            }
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = loginResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+                viewModel.toggleLoading(false)
+                viewModel.onStateHandled()
+            }
+            is Resource.Loading -> {
+                viewModel.toggleLoading(true)
+            }
+            else -> { /* Do nothing for Loading or null */ }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -135,11 +154,8 @@ fun LoginScreen(
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = username,
-                onValueChange = {
-                    username = it
-                    usernameError = null
-                },
+                value = uiState.username,
+                onValueChange = { viewModel.onUsernameChange(it) },
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
                 label = { Text(stringResource(R.string.username)) }, // Using label for better UX
@@ -150,17 +166,17 @@ fun LoginScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                isError = usernameError != null
+                isError = uiState.usernameError != null
             )
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = usernameError != null,
+                visible = uiState.usernameError != null,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
                 Text(
-                    text = usernameError ?: "",
+                    text = uiState.usernameError ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp),
@@ -170,11 +186,8 @@ fun LoginScreen(
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = password,
-                onValueChange = {
-                    password = it
-                    passwordError = null
-                },
+                value = uiState.password,
+                onValueChange = { viewModel.onPasswordChange(it) },
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
                 label = { Text(stringResource(R.string.password)) }, // Using label
@@ -184,27 +197,27 @@ fun LoginScreen(
                         contentDescription = null // Decorative icon
                     )
                 },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    IconButton(onClick = { viewModel.togglePasswordVisibility() }) {
                         Icon(
-                            imageVector = if (isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            imageVector = if (uiState.isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                            contentDescription = if (uiState.isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
                         )
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = passwordError != null
+                isError = uiState.passwordError != null
             )
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = passwordError != null,
+                visible = uiState.passwordError != null,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
                 Text(
-                    text = passwordError ?: "",
+                    text = uiState.passwordError ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp),
@@ -218,29 +231,14 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp), // Consistent button height
-                onClick = {
-                    var isFormValid = true
-
-                    if (username.isBlank()) {
-                        usernameError = "Nama pengguna diperlukan"
-                        isFormValid = false
-                    }
-                    if (password.isBlank()) {
-                        passwordError = "Kata sandi diperlukan"
-                        isFormValid = false
-                    }
-
-                    if (isFormValid) {
-                        viewModel.loginUser(username, password)
-                    }
-                },
-                enabled = loginState !is Resource.Loading,
+                onClick = { viewModel.onLoginClicked() },
+                enabled = uiState.loginResult !is Resource.Loading,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = MaterialTheme.colorScheme.primary,
                     disabledContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                if (loginState is Resource.Loading) {
+                if (uiState.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary
@@ -273,32 +271,6 @@ fun LoginScreen(
                     )
                 }
             }
-        }
-    }
-
-    // Handle login state
-    when (val state = loginState) {
-        is Resource.Success -> {
-            // Navigate to login or home screen
-            LaunchedEffect(Unit) {
-                viewModel.onStateHandled()
-                onLoginClick()
-            }
-        }
-        is Resource.Error -> {
-            // Show error message
-            val errorMessage = state.message ?: "An unknown error occurred"
-            // You can show a Snackbar or a Toast here
-            // For example:
-            LaunchedEffect(errorMessage) {
-                scope.launch {
-                    snackbarHostState.showSnackbar(errorMessage)
-                    viewModel.onStateHandled()
-                }
-            }
-        }
-        else -> {
-            // Do nothing
         }
     }
 }

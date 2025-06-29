@@ -55,16 +55,6 @@ class SignUpViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         }
     }
 
-    private fun registerUser() {
-        val currentState = _uiState.value
-        viewModelScope.launch {
-            userUseCase.register(currentState.name, currentState.username, currentState.password)
-                .collect { result ->
-                    _uiState.update { it.copy(registrationResult = result) }
-                }
-        }
-    }
-
     // 3. Keep validation and data logic private
     private fun validateInputs(): Boolean {
         val currentState = _uiState.value
@@ -91,5 +81,15 @@ class SignUpViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         }
 
         return listOfNotNull(nameError, usernameError, passwordError, confirmPasswordError).isEmpty()
+    }
+
+    private fun registerUser() {
+        val currentState = _uiState.value
+        viewModelScope.launch {
+            userUseCase.register(currentState.name, currentState.username, currentState.password)
+                .collect { result ->
+                    _uiState.update { it.copy(registrationResult = result) }
+                }
+        }
     }
 }
