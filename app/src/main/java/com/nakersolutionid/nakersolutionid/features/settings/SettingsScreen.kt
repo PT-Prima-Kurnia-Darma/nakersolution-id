@@ -65,6 +65,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.nakersolutionid.nakersolutionid.R
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.ui.components.ChangePasswordDialog
 import com.nakersolutionid.nakersolutionid.ui.components.SettingsItem
 import com.nakersolutionid.nakersolutionid.ui.components.SettingsTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
@@ -109,6 +110,21 @@ fun SettingsScreen(
             }
             else -> { /* Do nothing for Loading or null */ }
         }
+    }
+
+    if (uiState.showChangePasswordDialog) {
+        ChangePasswordDialog(
+            uiState = uiState,
+            onValueChangeOldPassword = { viewModel.onOldPasswordChange(it) },
+            onValueChangeNewPassword = { viewModel.onNewPasswordChange(it) },
+            onValueChangeConfirmNewPassword = { viewModel.onConfirmNewPasswordChange(it) },
+            toggleOldPasswordVisibility = { viewModel.toggleOldPasswordVisibility() },
+            toggleNewPasswordVisibility = { viewModel.toggleNewPasswordVisibility() },
+            toggleConfirmNewPasswordVisibility = { viewModel.toggleConfirmNewPasswordVisibility() },
+            onDismissRequest = { viewModel.toggleChangePasswordDialog() },
+            onConfirmation = {},
+            onCancellation = { viewModel.toggleChangePasswordDialog() }
+        )
     }
 
     Scaffold(
@@ -212,7 +228,7 @@ fun SettingsScreen(
                         disabledContentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     enabled = !uiState.isLoading,
-                    onClick = {}
+                    onClick = { viewModel.toggleChangePasswordDialog() }
                 ) {
                     Text(
                         text = "Ganti kata sandi",

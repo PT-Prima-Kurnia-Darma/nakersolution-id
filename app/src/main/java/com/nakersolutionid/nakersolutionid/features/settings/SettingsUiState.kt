@@ -22,5 +22,9 @@ data class SettingsUiState(
     val confirmNewPasswordError: String? = null,
 
     val settingsResult: Resource<String>? = null,
-    val logoutResult: Resource<String>? = null
+    val logoutResult: Resource<String>? = null,
+
+    val showChangePasswordDialog: Boolean = false,
+    val showChangeNameDialog: Boolean = false,
+    val showChangeUsernameDialog: Boolean = false
 )

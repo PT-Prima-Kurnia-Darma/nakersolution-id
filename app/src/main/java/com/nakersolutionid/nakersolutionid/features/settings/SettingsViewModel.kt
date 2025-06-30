@@ -30,12 +30,40 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
             .launchIn(viewModelScope) // Launch the collection in the viewModelScope
     }
 
+    fun onOldPasswordChange(password: String) {
+        _uiState.update { it.copy(oldPassword = password, oldPasswordError = null) }
+    }
+
+    fun onNewPasswordChange(password: String) {
+        _uiState.update { it.copy(newPassword = password, newPasswordError = null) }
+    }
+
+    fun onConfirmNewPasswordChange(password: String) {
+        _uiState.update { it.copy(confirmNewPassword = password, confirmNewPasswordError = null) }
+    }
+
+    fun toggleOldPasswordVisibility() {
+        _uiState.update { it.copy(isOldPasswordVisible = !it.isOldPasswordVisible) }
+    }
+
+    fun toggleNewPasswordVisibility() {
+        _uiState.update { it.copy(isNewPasswordVisible = !it.isNewPasswordVisible) }
+    }
+
+    fun toggleConfirmNewPasswordVisibility() {
+        _uiState.update { it.copy(isConfirmNewPasswordVisible = !it.isConfirmNewPasswordVisible) }
+    }
+
     fun onLogoutStateHandle() {
         _uiState.update { it.copy(logoutResult = null) }
     }
 
     fun toggleLoading(isLoading: Boolean) {
         _uiState.update { it.copy(isLoading = isLoading) }
+    }
+
+    fun toggleChangePasswordDialog() {
+        _uiState.update { it.copy(showChangePasswordDialog = !it.showChangePasswordDialog) }
     }
 
     fun onLogoutClicked() {
