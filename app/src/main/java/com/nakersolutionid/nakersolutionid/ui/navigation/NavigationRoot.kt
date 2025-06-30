@@ -35,69 +35,67 @@ data object Settings : NavKey
 
 @Composable
 fun NavigationRoot(modifier: Modifier = Modifier) {
-    Scaffold { innerPadding ->
-        val backStack = rememberNavBackStack(Login)
+    val backStack = rememberNavBackStack(Login)
 
-        NavDisplay(
-            modifier = modifier.padding(innerPadding),
-            backStack = backStack,
-            onBack = { backStack.removeLastOrNull() },
-            entryDecorators = listOf(
-                rememberSceneSetupNavEntryDecorator(),
-                rememberSavedStateNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator()
-            ),
-            entryProvider = entryProvider {
-                entry<Login> {
-                    LoginScreen(
-                        onSignUpClick = {
-                            backStack.add(SignUp)
-                        },
-                        onLoginClick = {
-                            backStack.add(Home)
-                            backStack.removeFirstOrNull()
-                        }
-                    )
-                }
-                entry<SignUp> {
-                    SignUpScreen(onLoginClick = {
-                        backStack.removeLastOrNull()
-                    })
-                }
-                entry<Home> {
-                    HomeScreen(
-                        onLogoutClick = {
-                            backStack.add(Login)
-                            backStack.removeFirstOrNull()
-                        },
-                        onMenuItemClick = { item ->
-                            when (item) {
-                                1 -> {
-                                    backStack.add(Report)
-                                }
-                                7 -> {
-                                    backStack.add(Settings)
-                                }
-                                else -> {}
-                            }
-                        }
-                    )
-                }
-                entry<Report> {
-                    ReportScreen()
-                }
-                entry<Settings> {
-                    SettingsScreen(
-                        onBackClick = {
-                            backStack.removeLastOrNull()
-                        },
-                        onLogoutClick = {
-                            backStack.add(Login)
-                            backStack.removeRange(0, backStack.size - 1)
-                        }
-                    )
-                }
+    NavDisplay(
+        modifier = modifier,
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryDecorators = listOf(
+            rememberSceneSetupNavEntryDecorator(),
+            rememberSavedStateNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
+        entryProvider = entryProvider {
+            entry<Login> {
+                LoginScreen(
+                    onSignUpClick = {
+                        backStack.add(SignUp)
+                    },
+                    onLoginClick = {
+                        backStack.add(Home)
+                        backStack.removeFirstOrNull()
+                    }
+                )
             }
-        )
-    }
+            entry<SignUp> {
+                SignUpScreen(onLoginClick = {
+                    backStack.removeLastOrNull()
+                })
+            }
+            entry<Home> {
+                HomeScreen(
+                    onLogoutClick = {
+                        backStack.add(Login)
+                        backStack.removeFirstOrNull()
+                    },
+                    onMenuItemClick = { item ->
+                        when (item) {
+                            1 -> {
+                                backStack.add(Report)
+                            }
+                            7 -> {
+                                backStack.add(Settings)
+                            }
+                            else -> {}
+                        }
+                    }
+                )
+            }
+            entry<Report> {
+                ReportScreen()
+            }
+            entry<Settings> {
+                SettingsScreen(
+                    onBackClick = {
+                        backStack.removeLastOrNull()
+                    },
+                    onLogoutClick = {
+                        backStack.add(Login)
+                        backStack.removeRange(0, backStack.size - 1)
+                    }
+                )
+            }
+        }
+    )
 }
