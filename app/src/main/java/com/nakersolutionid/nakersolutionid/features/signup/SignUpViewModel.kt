@@ -30,8 +30,24 @@ class SignUpViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         _uiState.update { it.copy(confirmPassword = confirmPassword, confirmPasswordError = null) }
     }
 
-    fun onStateHandled() {
+    fun onStateHandledFailed() {
         _uiState.update { it.copy(registrationResult = null) }
+    }
+
+    fun onStateHandledSuccess() {
+        _uiState.update {
+            it.copy(
+                registrationResult = null,
+                name = "",
+                username = "",
+                password = "",
+                confirmPassword = "",
+                nameError = null,
+                usernameError = null,
+                passwordError = null,
+                confirmPasswordError = null
+            )
+        }
     }
 
     fun togglePasswordVisibility() {

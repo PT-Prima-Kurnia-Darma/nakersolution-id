@@ -20,8 +20,24 @@ class LoginViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         _uiState.update { it.copy(password = password, passwordError = null) }
     }
 
-    fun onStateHandled() {
-        _uiState.update { it.copy(loginResult = null) }
+    fun onStateHandledSuccess() {
+        _uiState.update {
+            it.copy(
+                loginResult = null,
+                usernameError = null,
+                passwordError = null,
+                username = "",
+                password = ""
+            )
+        }
+    }
+
+    fun onStateHandledFailed() {
+        _uiState.update {
+            it.copy(
+                loginResult = null
+            )
+        }
     }
 
     fun togglePasswordVisibility() {

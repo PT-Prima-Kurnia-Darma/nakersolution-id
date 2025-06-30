@@ -88,7 +88,7 @@ fun SignUpScreen(
             is Resource.Success -> {
                 // Navigate on success
                 viewModel.toggleLoading(false)
-                viewModel.onStateHandled()
+                viewModel.onStateHandledSuccess()
                 onLoginClick()
             }
             is Resource.Error -> {
@@ -98,7 +98,7 @@ fun SignUpScreen(
                     snackbarHostState.showSnackbar(errorMessage)
                 }
                 viewModel.toggleLoading(false)
-                viewModel.onStateHandled()
+                viewModel.onStateHandledFailed()
             }
             is Resource.Loading -> {
                 viewModel.toggleLoading(true)
