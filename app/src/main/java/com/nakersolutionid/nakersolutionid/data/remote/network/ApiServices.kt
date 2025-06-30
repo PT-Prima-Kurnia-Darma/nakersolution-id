@@ -30,7 +30,7 @@ interface ApiServices {
         @Header("Authorization") token: String
     ) : LogoutResponse
 
-    @PUT("auth/update")
+    @PUT("auth/change")
     suspend fun updateUser(
         @Header("Authorization") token: String,
         @Body request: UpdateUserRequest
