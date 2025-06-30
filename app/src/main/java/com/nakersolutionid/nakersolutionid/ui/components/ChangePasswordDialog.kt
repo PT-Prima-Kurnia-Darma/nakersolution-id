@@ -14,15 +14,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,15 +36,22 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.nakersolutionid.nakersolutionid.R
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsUiState
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
@@ -89,6 +100,8 @@ fun ChangePasswordContent(
     onConfirmation: () -> Unit,
     onCancellation: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     Card(
         modifier = modifier
             .fillMaxWidth(),
@@ -125,7 +138,13 @@ fun ChangePasswordContent(
                         )
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
                 isError = uiState.oldPasswordError != null
             )
 
@@ -161,7 +180,13 @@ fun ChangePasswordContent(
                         )
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
                 isError = uiState.newPasswordError != null
             )
 
@@ -187,7 +212,13 @@ fun ChangePasswordContent(
                 onValueChange = { onValueChangeConfirmNewPassword(it) },
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
-                label = { Text("Konfirmasi kata sandi baru") },
+                label = {
+                    Text(
+                        "Konfirmasi kata sandi baru",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 visualTransformation = if (uiState.isConfirmNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     IconButton(onClick = { toggleConfirmNewPasswordVisibility() }) {
@@ -197,7 +228,13 @@ fun ChangePasswordContent(
                         )
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
                 isError = uiState.confirmNewPasswordError != null
             )
 
@@ -224,25 +261,51 @@ fun ChangePasswordContent(
             ) {
                 TextButton(
                     modifier = Modifier,
-                    onClick = { onCancellation() }
+                    enabled = !uiState.isLoading,
+                    onClick = {
+                        focusManager.clearFocus()
+                        onCancellation()
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        disabledContainerColor = Color.Unspecified,
+                        disabledContentColor = MaterialTheme.colorScheme.error
+                    )
                 ) {
                     Text(
                         "Batal",
                         color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
                 Spacer(Modifier.width(4.dp))
 
                 Button(
-                    modifier = Modifier,
-                    onClick = { onConfirmation() }
-                ) {
-                    Text(
-                        "Simpan",
-                        style = MaterialTheme.typography.labelMedium
+                    modifier = Modifier
+                        .width(100.dp),
+                    onClick = {
+                        focusManager.clearFocus()
+                        onConfirmation()
+                    },
+                    enabled = !uiState.isLoading,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = MaterialTheme.colorScheme.primary,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimary
                     )
+                ) {
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Text(
+                            text = "Simpan",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
