@@ -83,4 +83,31 @@ class UserRepository(
             is ApiResponse.Empty -> {}
         }
     }
+
+    override fun updateUser(
+        name: String?,
+        username: String?,
+        oldPassword: String?,
+        newPassword: String?
+    ): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        val token = userPreference.getUserToken() ?: ""
+        when (val apiResponse = remoteDataSource.updateUser(name, username, oldPassword, newPassword, token).first()) {
+            is ApiResponse.Success -> {
+                val user = userPreference.getUser().first()
+                val userId = apiResponse.data.data.userId
+                val name = apiResponse.data.data.name ?: user.name
+                val username = apiResponse.data.data.username ?: user.username
+                val userModel = UserModel(userId, name, username, token)
+                userPreference.saveUser(userModel)
+                emit(Resource.Success(apiResponse.data.message))
+            }
+            is ApiResponse.Error -> {
+                emit(Resource.Error(apiResponse.errorMessage))
+            }
+            is ApiResponse.Empty -> {}
+        }
+    }
+
+    override suspend fun clearUser() = userPreference.clearUser()
 }

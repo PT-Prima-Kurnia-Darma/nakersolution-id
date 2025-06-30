@@ -11,4 +11,17 @@ class UserInteraction(private val userRepository: IUserRepository): UserUseCase 
     override fun register(name: String, username: String, password: String): Flow<Resource<String>> = userRepository.register(name, username, password)
     override fun login(username: String, password: String): Flow<Resource<String>> = userRepository.login(username, password)
     override fun logout(): Flow<Resource<String>> = userRepository.logout()
+    override fun updateUser(
+        name: String?,
+        username: String?,
+        oldPassword: String?,
+        newPassword: String?
+    ): Flow<Resource<String>> = userRepository.updateUser(
+        name,
+        username,
+        oldPassword,
+        newPassword
+    )
+
+    override suspend fun clearUser() = userRepository.clearUser()
 }

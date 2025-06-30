@@ -10,4 +10,11 @@ interface UserUseCase {
     fun register(name: String, username: String, password: String): Flow<Resource<String>>
     fun login(username: String, password: String): Flow<Resource<String>>
     fun logout(): Flow<Resource<String>>
+    fun updateUser(
+        name: String?,
+        username: String?,
+        oldPassword: String?,
+        newPassword: String?
+    ): Flow<Resource<String>>
+    suspend fun clearUser()
 }
