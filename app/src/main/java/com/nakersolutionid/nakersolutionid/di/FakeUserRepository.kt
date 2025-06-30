@@ -4,11 +4,12 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.domain.model.User
 import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeUserRepository : IUserRepository {
-    override val currentUser: StateFlow<User> = flowOf(User("", "", "", "")) as StateFlow<User>
+    override val currentUser: StateFlow<User> = MutableStateFlow(User("Fake Name", "fakeuser", "fake_token", ""))
 
     override fun register(name: String, username: String, password: String): Flow<Resource<String>> {
         // Simulate a success response for previews
