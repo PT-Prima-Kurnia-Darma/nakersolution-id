@@ -338,6 +338,10 @@ fun SignUpScreen(
 
 @Preview(showBackground = true, showSystemUi = true, name = "Phone View")
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
+@Preview(
+    name = "Tablet Portrait",
+    device = "spec:width=800dp,height=1280dp,dpi=240,orientation=portrait"
+)
 @Composable
 fun SignUpScreenPreview() {
     KoinApplicationPreview(application = {
