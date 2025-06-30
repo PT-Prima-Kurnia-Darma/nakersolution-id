@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -45,9 +46,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -74,6 +78,8 @@ fun SignUpScreen(
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val focusManager = LocalFocusManager.current
 
     // Handle side-effects from registrationResult
     val registrationResult = uiState.registrationResult
@@ -158,7 +164,13 @@ fun SignUpScreen(
                         contentDescription = null
                     )
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
                 isError = uiState.nameError != null
             )
 
@@ -191,7 +203,13 @@ fun SignUpScreen(
                         contentDescription = null
                     )
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
                 isError = uiState.usernameError != null
             )
 
@@ -228,7 +246,13 @@ fun SignUpScreen(
                         )
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
                 isError = uiState.passwordError != null
             )
 
@@ -265,7 +289,13 @@ fun SignUpScreen(
                         )
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
                 isError = uiState.confirmPasswordError != null
             )
 
@@ -291,7 +321,10 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                onClick = { viewModel.onSignUpClicked() },
+                onClick = {
+                    focusManager.clearFocus()
+                    viewModel.onSignUpClicked()
+                },
                 enabled = uiState.registrationResult !is Resource.Loading,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = MaterialTheme.colorScheme.primary,
@@ -324,7 +357,12 @@ fun SignUpScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                TextButton(onClick = onLoginClick) {
+                TextButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        onLoginClick()
+                    }
+                ) {
                     Text(
                         text = stringResource(R.string.login),
                         fontWeight = FontWeight.Bold,
