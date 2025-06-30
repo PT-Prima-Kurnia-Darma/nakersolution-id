@@ -58,6 +58,21 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         _uiState.update { it.copy(logoutResult = null) }
     }
 
+    fun onChangePasswordStateHandleSuccess() {
+        _uiState.update { it.copy(
+            changePasswordResult = null,
+            oldPassword = "",
+            newPassword = "",
+            confirmNewPassword = "",
+            oldPasswordError = null,
+            newPasswordError = null,
+        ) }
+    }
+
+    fun onChangePasswordStateHandleFailed() {
+        _uiState.update { it.copy(changePasswordResult = null) }
+    }
+
     fun toggleLoading(isLoading: Boolean) {
         _uiState.update { it.copy(isLoading = isLoading) }
     }
@@ -70,11 +85,61 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         logoutUser()
     }
 
+    fun onPasswordChangeSave() {
+        if (validateChangePasswordInputs()) {
+            changePasswordUser()
+        }
+    }
+
+    private fun validateChangePasswordInputs(): Boolean {
+        val currentState = _uiState.value
+        var oldPasswordError: String? = null
+        var newPasswordError: String? = null
+        var confirmNewPasswordError: String? = null
+
+        if (currentState.oldPassword.isBlank()) oldPasswordError = "Kata sandi lama diperlukan"
+        if (currentState.newPassword.isBlank()) newPasswordError = "Kata sandi baru diperlukan"
+        if (currentState.confirmNewPassword.isBlank()) confirmNewPasswordError = "Konfirmasi kata sandi diperlukan"
+        if (currentState.newPassword != currentState.confirmNewPassword) {
+            confirmNewPasswordError = "Kata sandi baru tidak cocok"
+        }
+
+        _uiState.update {
+            it.copy(
+                oldPasswordError = oldPasswordError,
+                newPasswordError = newPasswordError,
+                confirmNewPasswordError = confirmNewPasswordError
+            )
+        }
+
+        return listOfNotNull(oldPasswordError, newPasswordError, confirmNewPasswordError).isEmpty()
+    }
+
     private fun logoutUser() {
         viewModelScope.launch {
             userUseCase.logout().collect { result ->
                 _uiState.update { it.copy(logoutResult = result) }
             }
+        }
+    }
+
+    private fun changePasswordUser() {
+        val currentState = _uiState.value
+        viewModelScope.launch {
+            userUseCase.updateUser(
+                null,
+                null,
+                oldPassword = currentState.oldPassword,
+                newPassword = currentState.newPassword
+            ).collect { result ->
+                _uiState.update { it.copy(changePasswordResult = result) }
+            }
+        }
+    }
+
+    fun clearUser() {
+        viewModelScope.launch {
+            userUseCase.clearUser()
         }
     }
 }
