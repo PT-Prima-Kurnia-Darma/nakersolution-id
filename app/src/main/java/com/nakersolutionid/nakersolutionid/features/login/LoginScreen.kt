@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -44,9 +45,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -74,6 +78,8 @@ fun LoginScreen(
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val focusManager = LocalFocusManager.current
 
     // Handle side-effects from registrationResult
     val loginResult = uiState.loginResult
@@ -160,7 +166,13 @@ fun LoginScreen(
                         contentDescription = null // Decorative icon
                     )
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
                 isError = uiState.usernameError != null
             )
 
@@ -201,7 +213,13 @@ fun LoginScreen(
                         )
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
                 isError = uiState.passwordError != null
             )
 
@@ -226,7 +244,10 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp), // Consistent button height
-                onClick = { viewModel.onLoginClicked() },
+                onClick = {
+                    focusManager.clearFocus()
+                    viewModel.onLoginClicked()
+                },
                 enabled = uiState.loginResult !is Resource.Loading,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = MaterialTheme.colorScheme.primary,
@@ -258,7 +279,12 @@ fun LoginScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
-                TextButton(onClick = { onSignUpClick() }) {
+                TextButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        onSignUpClick()
+                    }
+                ) {
                     Text(
                         text = stringResource(R.string.sign_up),
                         fontWeight = FontWeight.Bold,
