@@ -51,7 +51,39 @@ class UserPreference(private val context: Context) {
 
     suspend fun clearUser() {
         context.dataStore.edit { preferences ->
-            preferences.clear()
+            preferences[Keys.ID] = ""
+            preferences[Keys.NAME] = ""
+            preferences[Keys.USERNAME] = ""
+            preferences[Keys.TOKEN] = ""
+        }
+    }
+
+    /**
+     * Updates a single preference value in the DataStore generically.
+     * This function allows you to update any key with a matching value type.
+     *
+     * @param key The Preferences.Key<T> you want to update.
+     * @param value The new value of type T for the given key.
+     *
+     */
+    suspend fun <T> updatePreference(key: Preferences.Key<T>, value: T) {
+        context.dataStore.edit { preferences ->
+            preferences[key] = value
+        }
+    }
+
+    /**
+     * Retrieves a single preference value from the DataStore generically as a Flow.
+     * This is useful for observing changes to a specific preference.
+     *
+     * @param key The Preferences.Key<T> you want to retrieve.
+     * @param defaultValue The default value to return if the key does not exist.
+     * @return A Flow emitting the preference value of type T.
+     *
+     */
+    fun <T> getPreference(key: Preferences.Key<T>, defaultValue: T): Flow<T> {
+        return context.dataStore.data.map { preferences ->
+            preferences[key] ?: defaultValue
         }
     }
 }
