@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName
 data class Data(
 
 	@field:SerializedName("name")
-	val name: String,
+	val name: String?,
 
 	@field:SerializedName("userId")
 	val userId: String,
 
 	@field:SerializedName("username")
-	val username: String
+	val username: String?
 ) : Parcelable
