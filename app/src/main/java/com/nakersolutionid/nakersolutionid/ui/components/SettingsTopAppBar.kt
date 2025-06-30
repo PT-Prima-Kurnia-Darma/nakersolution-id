@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,5 +33,7 @@ fun SettingsTopAppBar(
 @Preview
 @Composable
 fun SettingsTopAppBarPreview() {
-    SettingsTopAppBar(onBackClick = {})
+    NakersolutionidTheme {
+        SettingsTopAppBar(onBackClick = {})
+    }
 }
