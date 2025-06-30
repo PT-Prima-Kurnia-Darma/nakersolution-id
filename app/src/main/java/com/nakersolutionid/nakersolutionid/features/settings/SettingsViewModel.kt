@@ -30,6 +30,14 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
             .launchIn(viewModelScope) // Launch the collection in the viewModelScope
     }
 
+    fun onNameChange(name: String) {
+        _uiState.update { it.copy(newName = name, nameError = null) }
+    }
+
+    fun onUsernameChange(username: String) {
+        _uiState.update { it.copy(newUsername = username, usernameError = null) }
+    }
+
     fun onOldPasswordChange(password: String) {
         _uiState.update { it.copy(oldPassword = password, oldPasswordError = null) }
     }
@@ -59,18 +67,46 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
     }
 
     fun onChangePasswordStateHandleSuccess() {
-        _uiState.update { it.copy(
-            changePasswordResult = null,
-            oldPassword = "",
-            newPassword = "",
-            confirmNewPassword = "",
-            oldPasswordError = null,
-            newPasswordError = null,
-        ) }
+            _uiState.update { it.copy(
+                changePasswordResult = null,
+                oldPassword = "",
+                newPassword = "",
+                confirmNewPassword = "",
+                oldPasswordError = null,
+                newPasswordError = null,
+            )
+        }
     }
 
     fun onChangePasswordStateHandleFailed() {
         _uiState.update { it.copy(changePasswordResult = null) }
+    }
+
+    fun onChangeNameStateHandleSuccess() {
+            _uiState.update { it.copy(
+                changeNameResult = null,
+                newName = "",
+                nameError = null
+            )
+        }
+    }
+
+    fun onChangeNameStateHandleFailed() {
+        _uiState.update { it.copy(changeNameResult = null) }
+    }
+
+    fun onChangeUsernameStateHandleSuccess() {
+        _uiState.update {
+            it.copy(
+                changeUsernameResult = null,
+                newUsername = "",
+                usernameError = null
+            )
+        }
+    }
+
+    fun onChangeUsernameStateHandleFailed() {
+        _uiState.update { it.copy(changeUsernameResult = null) }
     }
 
     fun toggleLoading(isLoading: Boolean) {
@@ -81,6 +117,14 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         _uiState.update { it.copy(showChangePasswordDialog = !it.showChangePasswordDialog) }
     }
 
+    fun toggleChangeNameDialog() {
+        _uiState.update { it.copy(showChangeNameDialog = !it.showChangeNameDialog) }
+    }
+
+    fun toggleChangeUsernameDialog() {
+        _uiState.update { it.copy(showChangeUsernameDialog = !it.showChangeUsernameDialog) }
+    }
+
     fun onLogoutClicked() {
         logoutUser()
     }
@@ -89,6 +133,34 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         if (validateChangePasswordInputs()) {
             changePasswordUser()
         }
+    }
+
+    fun onNameChangeSave() {
+        if (validateNameInputs()) {
+            changeNameUser()
+        }
+    }
+
+    fun onUsernameChangeSave() {
+        if (validateUsernameInputs()) {
+            changeUsernameUser()
+        }
+    }
+
+    private fun validateNameInputs(): Boolean {
+        val currentState = _uiState.value
+        var nameError: String? = null
+        if (currentState.name.isBlank()) nameError = "Nama lengkap diperlukan"
+        _uiState.update { it.copy(nameError = nameError) }
+        return nameError == null
+    }
+
+    private fun validateUsernameInputs(): Boolean {
+        val currentState = _uiState.value
+        var usernameError: String? = null
+        if (currentState.username.isBlank()) usernameError = "Nama pengguna diperlukan"
+        _uiState.update { it.copy(usernameError = usernameError) }
+        return usernameError == null
     }
 
     private fun validateChangePasswordInputs(): Boolean {
@@ -133,6 +205,24 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
                 newPassword = currentState.newPassword
             ).collect { result ->
                 _uiState.update { it.copy(changePasswordResult = result) }
+            }
+        }
+    }
+
+    private fun changeNameUser() {
+        val currentState = _uiState.value
+        viewModelScope.launch {
+            userUseCase.updateUser(currentState.newName, null, null, null).collect { result ->
+                _uiState.update { it.copy(changeNameResult = result) }
+            }
+        }
+    }
+
+    private fun changeUsernameUser() {
+        val currentState = _uiState.value
+        viewModelScope.launch {
+            userUseCase.updateUser(null, currentState.newUsername, null, null).collect { result ->
+                _uiState.update { it.copy(changeUsernameResult = result) }
             }
         }
     }

@@ -38,7 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.ui.components.ChangeNameDialog
 import com.nakersolutionid.nakersolutionid.ui.components.ChangePasswordDialog
+import com.nakersolutionid.nakersolutionid.ui.components.ChangeUsernameDialog
 import com.nakersolutionid.nakersolutionid.ui.components.SettingsItem
 import com.nakersolutionid.nakersolutionid.ui.components.SettingsTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
@@ -59,7 +61,7 @@ fun SettingsScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Handle side-effects from registrationResult
+    // Handle side-effects from logoutResult
     val logoutResult = uiState.logoutResult
     LaunchedEffect(logoutResult) {
         when (logoutResult) {
@@ -67,6 +69,7 @@ fun SettingsScreen(
                 // Navigate on success
                 viewModel.toggleLoading(false)
                 viewModel.onLogoutStateHandle()
+                viewModel.clearUser()
                 onLogoutClick()
             }
             is Resource.Error -> {
@@ -85,7 +88,7 @@ fun SettingsScreen(
         }
     }
 
-    // Handle side-effects from registrationResult
+    // Handle side-effects from changePasswordResult
     val changePasswordResult = uiState.changePasswordResult
     LaunchedEffect(changePasswordResult) {
         when (changePasswordResult) {
@@ -112,6 +115,58 @@ fun SettingsScreen(
         }
     }
 
+    // Handle side-effects from changeNameResult
+    val changeNameResult = uiState.changeNameResult
+    LaunchedEffect(changeNameResult) {
+        when (changeNameResult) {
+            is Resource.Success -> {
+                // Navigate on success
+                viewModel.toggleLoading(false)
+                viewModel.onChangeNameStateHandleSuccess()
+                viewModel.toggleChangeNameDialog()
+            }
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = changeNameResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+                viewModel.toggleLoading(false)
+                viewModel.onChangeNameStateHandleFailed()
+            }
+            is Resource.Loading -> {
+                viewModel.toggleLoading(true)
+            }
+            else -> { /* Do nothing for Loading or null */ }
+        }
+    }
+
+    // Handle side-effects from changeUsernameResult
+    val changeUsernameResult = uiState.changeUsernameResult
+    LaunchedEffect(changeUsernameResult) {
+        when (changeUsernameResult) {
+            is Resource.Success -> {
+                // Navigate on success
+                viewModel.toggleLoading(false)
+                viewModel.onChangeUsernameStateHandleSuccess()
+                viewModel.toggleChangeUsernameDialog()
+            }
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = changeUsernameResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+                viewModel.toggleLoading(false)
+                viewModel.onChangeUsernameStateHandleFailed()
+            }
+            is Resource.Loading -> {
+                viewModel.toggleLoading(true)
+            }
+            else -> { /* Do nothing for Loading or null */ }
+        }
+    }
+
     if (uiState.showChangePasswordDialog) {
         ChangePasswordDialog(
             uiState = uiState,
@@ -124,6 +179,26 @@ fun SettingsScreen(
             onDismissRequest = { viewModel.toggleChangePasswordDialog() },
             onConfirmation = { viewModel.onPasswordChangeSave() },
             onCancellation = { viewModel.toggleChangePasswordDialog() }
+        )
+    }
+
+    if (uiState.showChangeNameDialog) {
+        ChangeNameDialog(
+            uiState = uiState,
+            onValueChangeName = { viewModel.onNameChange(it) },
+            onDismissRequest = { viewModel.toggleChangeNameDialog() },
+            onConfirmation = { viewModel.onNameChangeSave() },
+            onCancellation = { viewModel.toggleChangeNameDialog() }
+        )
+    }
+
+    if (uiState.showChangeUsernameDialog) {
+        ChangeUsernameDialog(
+            uiState = uiState,
+            onValueChangeUsername = { viewModel.onUsernameChange(it) },
+            onDismissRequest = { viewModel.toggleChangeUsernameDialog() },
+            onConfirmation = { viewModel.onUsernameChangeSave() },
+            onCancellation = { viewModel.toggleChangeUsernameDialog() }
         )
     }
 
@@ -169,7 +244,7 @@ fun SettingsScreen(
                         contentDescription = "Edit name",
                         enable = !uiState.isLoading,
                         position = SettingsItemShape.TOP,
-                        onClick = {}
+                        onClick = { viewModel.toggleChangeNameDialog() }
                     )
                     HorizontalDivider()
                     SettingsItem(
@@ -179,7 +254,7 @@ fun SettingsScreen(
                         contentDescription = "Edit username",
                         enable = !uiState.isLoading,
                         position = SettingsItemShape.BOTTOM,
-                        onClick = {}
+                        onClick = { viewModel.toggleChangeUsernameDialog() }
                     )
                 }
             }

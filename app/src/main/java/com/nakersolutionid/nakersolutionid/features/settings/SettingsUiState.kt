@@ -4,8 +4,10 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 
 data class SettingsUiState(
     val name: String = "",
+    val newName: String = "",
 
     val username: String = "",
+    val newUsername: String = "",
 
     val oldPassword: String = "",
     val newPassword: String = "",
@@ -17,11 +19,15 @@ data class SettingsUiState(
 
     val isLoading: Boolean = false,
 
+    val nameError: String? = null,
+    val usernameError: String? = null,
     val oldPasswordError: String? = null,
     val newPasswordError: String? = null,
     val confirmNewPasswordError: String? = null,
 
     val changePasswordResult: Resource<String>? = null,
+    val changeNameResult: Resource<String>? = null,
+    val changeUsernameResult: Resource<String>? = null,
     val logoutResult: Resource<String>? = null,
 
     val showChangePasswordDialog: Boolean = false,
