@@ -24,4 +24,15 @@ class FakeUserRepository : IUserRepository {
     override fun logout(): Flow<Resource<String>> {
         return flowOf(Resource.Success("Logout successful"))
     }
+
+    override fun updateUser(
+        name: String?,
+        username: String?,
+        oldPassword: String?,
+        newPassword: String?
+    ): Flow<Resource<String>> {
+        return flowOf(Resource.Success("Update user successful"))
+    }
+
+    override suspend fun clearUser() {}
 }
