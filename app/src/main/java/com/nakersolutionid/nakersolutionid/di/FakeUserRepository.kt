@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeUserRepository : IUserRepository {
-    override val currentUser: StateFlow<User> = MutableStateFlow(User("Fake Name", "fakeuser", "fake_token", ""))
+    override val currentUser: StateFlow<User> = MutableStateFlow(User("1", "Fake name", "Fake username", ""))
 
     override fun register(name: String, username: String, password: String): Flow<Resource<String>> {
         // Simulate a success response for previews
