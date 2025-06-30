@@ -25,7 +25,6 @@ import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,7 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.nakersolutionid.nakersolutionid.R
-import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsUiState
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
