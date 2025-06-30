@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -19,7 +20,7 @@ fun SettingsTopAppBar(
 ) {
     TopAppBar(
         modifier = modifier,
-        title = { Text("Settings") },
+        title = { Text("Pengaturan", fontWeight = FontWeight.Bold) },
         navigationIcon = {
             IconButton(
                 onClick = { onBackClick() }

@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.settings
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,26 +11,40 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +55,7 @@ import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.ui.components.SettingsItem
 import com.nakersolutionid.nakersolutionid.ui.components.SettingsTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import com.nakersolutionid.nakersolutionid.utils.SettingsItemShape
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
@@ -51,7 +67,7 @@ fun SettingsScreen(
     onLogoutClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -101,8 +117,15 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 14.dp)
         ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, bottom = 4.dp),
+                text = "Akun",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
             Card(
-                onClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -112,19 +135,51 @@ fun SettingsScreen(
                 ) {
                     SettingsItem(
                         title = "Nama lengkap",
-                        subtitle = "Muhammad Azka Naufal",
+                        subtitle = uiState.name,
                         icon = Icons.Outlined.Edit,
                         contentDescription = "Edit name",
                         enable = !uiState.isLoading,
+                        position = SettingsItemShape.TOP,
                         onClick = {}
                     )
                     HorizontalDivider()
                     SettingsItem(
                         title = "Nama pengguna",
-                        subtitle = "mhmdazkanfl",
+                        subtitle = uiState.username,
                         icon = Icons.Outlined.Edit,
                         contentDescription = "Edit username",
                         enable = !uiState.isLoading,
+                        position = SettingsItemShape.BOTTOM,
+                        onClick = {}
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, bottom = 4.dp),
+                text = "Aplikasi",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    SettingsItem(
+                        title = "Tema",
+                        subtitle = "Default sistem",
+                        icon = Icons.Outlined.ArrowDropDown,
+                        contentDescription = "Edit name",
+                        enable = !uiState.isLoading,
+                        position = SettingsItemShape.TOP,
                         onClick = {}
                     )
                 }
@@ -171,7 +226,7 @@ fun SettingsScreen(
                         )
                     } else {
                         Text(
-                            text = "Logout",
+                            text = "Keluar",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold
                         )
@@ -185,6 +240,10 @@ fun SettingsScreen(
 
 @Preview(showBackground = true, showSystemUi = true, name = "Phone View")
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
+@Preview(
+    name = "Tablet Portrait",
+    device = "spec:width=800dp,height=1280dp,dpi=240,orientation=portrait"
+)
 @Composable
 fun SettingsScreenPreview() {
     KoinApplicationPreview(application = {

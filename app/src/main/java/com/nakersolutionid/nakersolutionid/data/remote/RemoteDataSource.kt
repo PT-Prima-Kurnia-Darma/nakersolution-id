@@ -7,9 +7,11 @@ import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
+import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -86,6 +88,42 @@ class RemoteDataSource(private val apiServices: ApiServices) {
                 errorBody?.let {
                     try {
                         val parsedError = Gson().fromJson(errorBody, LogoutResponse::class.java)
+                        if (parsedError != null) {
+                            emit(ApiResponse.Error(parsedError.message))
+                        } else {
+                            emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x0)"))
+                        }
+                    } catch (e: JsonSyntaxException) {
+                        emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x1)"))
+                    }
+                } ?: run {
+                    emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x2)"))
+                }
+            } catch (e: SocketTimeoutException) {
+                emit(ApiResponse.Error("Gagal terhubung, waktu tunggu koneksi habis"))
+            } catch (e: Exception) {
+                emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x3)"))
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun updateUser(
+        name: String?,
+        username: String?,
+        oldPassword: String?,
+        newPassword: String?,
+        token: String
+    ): Flow<ApiResponse<UpdateUserResponse>> {
+        return flow {
+            try {
+                val request = UpdateUserRequest(name, username, oldPassword, newPassword)
+                val response = apiServices.updateUser("Bearer $token", request)
+                emit(ApiResponse.Success(response))
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                errorBody?.let {
+                    try {
+                        val parsedError = Gson().fromJson(errorBody, UpdateUserResponse::class.java)
                         if (parsedError != null) {
                             emit(ApiResponse.Error(parsedError.message))
                         } else {

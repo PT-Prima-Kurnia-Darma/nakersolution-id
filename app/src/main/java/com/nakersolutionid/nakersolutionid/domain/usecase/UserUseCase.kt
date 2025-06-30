@@ -3,10 +3,11 @@ package com.nakersolutionid.nakersolutionid.domain.usecase
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.domain.model.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface UserUseCase {
+    val currentUser: StateFlow<User>
     fun register(name: String, username: String, password: String): Flow<Resource<String>>
     fun login(username: String, password: String): Flow<Resource<String>>
     fun logout(): Flow<Resource<String>>
-    fun getUser(): Flow<Resource<User>>
 }

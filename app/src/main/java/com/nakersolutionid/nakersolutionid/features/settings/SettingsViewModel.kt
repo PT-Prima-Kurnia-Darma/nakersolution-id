@@ -5,12 +5,30 @@ import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        // Start observing the user data as soon as the ViewModel is created
+        userUseCase.currentUser
+            .onEach { user ->
+                // Whenever the user data changes (login, logout, profile update),
+                // this block will be executed.
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        name = user.name,
+                        username = user.username
+                    )
+                }
+            }
+            .launchIn(viewModelScope) // Launch the collection in the viewModelScope
+    }
 
     fun onLogoutStateHandle() {
         _uiState.update { it.copy(logoutResult = null) }
