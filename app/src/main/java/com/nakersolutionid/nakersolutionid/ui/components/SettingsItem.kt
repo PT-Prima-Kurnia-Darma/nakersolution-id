@@ -1,13 +1,9 @@
 package com.nakersolutionid.nakersolutionid.ui.components
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DomainAdd
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -20,6 +16,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.SettingsItemShape
 
 @Composable
@@ -86,8 +83,10 @@ fun SettingsItem(
 @Preview
 @Composable
 fun SettingsItemPreview() {
-    SettingsItem(
-        title = "Full name",
-        subtitle = "Muhammad Azka Naufal"
-    )
+    NakersolutionidTheme {
+        SettingsItem(
+            title = "Full name",
+            subtitle = "Muhammad Azka Naufal"
+        )
+    }
 }
