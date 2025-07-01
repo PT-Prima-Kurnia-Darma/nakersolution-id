@@ -41,7 +41,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -175,7 +173,7 @@ fun LoginScreen(
                     onValueChange = { viewModel.onUsernameChange(it) },
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
-                    label = { Text(stringResource(R.string.username)) }, // Using label for better UX
+                    placeholder = { Text(stringResource(R.string.username)) }, // Using label for better UX
                     leadingIcon = {
                         Icon(
                             Icons.Outlined.PersonOutline,

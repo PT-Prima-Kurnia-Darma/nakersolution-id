@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.LocalAutofillHighlightColor
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -39,6 +40,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,10 +48,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -80,6 +87,8 @@ fun SignUpScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val focusManager = LocalFocusManager.current
+    val autofillManager = LocalAutofillManager.current
+    val autoFillHighlightColor = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.5f)
 
     // Handle side-effects from registrationResult
     val registrationResult = uiState.registrationResult
@@ -151,28 +160,33 @@ fun SignUpScreen(
                 textAlign = TextAlign.Center
             )
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.name,
-                onValueChange = { viewModel.onNameChange(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = { Text(stringResource(R.string.name)) },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.AccountCircle,
-                        contentDescription = null
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                isError = uiState.nameError != null
-            )
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .semantics { contentType = ContentType.PersonFullName },
+                    value = uiState.name,
+                    onValueChange = { viewModel.onNameChange(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.name)) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Outlined.AccountCircle,
+                            contentDescription = null
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    isError = uiState.nameError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
@@ -190,28 +204,33 @@ fun SignUpScreen(
             }
 
             // Username field
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.username,
-                onValueChange = { viewModel.onUsernameChange(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = { Text(stringResource(R.string.username)) },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.PersonOutline,
-                        contentDescription = null
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                isError = uiState.usernameError != null
-            )
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .semantics { contentType = ContentType.NewUsername },
+                    value = uiState.username,
+                    onValueChange = { viewModel.onUsernameChange(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.username)) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Outlined.PersonOutline,
+                            contentDescription = null
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    isError = uiState.usernameError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
@@ -229,32 +248,36 @@ fun SignUpScreen(
             }
 
             // Password field
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.password,
-                onValueChange = { viewModel.onPasswordChange(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = { Text(stringResource(R.string.password)) },
-                leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
-                visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { viewModel.togglePasswordVisibility() }) {
-                        Icon(
-                            imageVector = if (uiState.isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (uiState.isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
-                        )
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                isError = uiState.passwordError != null
-            )
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentType = ContentType.NewPassword },
+                    value = uiState.password,
+                    onValueChange = { viewModel.onPasswordChange(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.password)) },
+                    leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
+                    visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { viewModel.togglePasswordVisibility() }) {
+                            Icon(
+                                imageVector = if (uiState.isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                contentDescription = if (uiState.isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            )
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    isError = uiState.passwordError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
@@ -272,32 +295,36 @@ fun SignUpScreen(
             }
 
             // Confirm password field
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.confirmPassword,
-                onValueChange = { viewModel.onConfirmPasswordChange(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = { Text(stringResource(R.string.confirm_password)) },
-                leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
-                visualTransformation = if (uiState.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { viewModel.toggleConfirmPasswordVisibility() }) {
-                        Icon(
-                            imageVector = if (uiState.isConfirmPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (uiState.isConfirmPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
-                        )
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
-                ),
-                isError = uiState.confirmPasswordError != null
-            )
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentType = ContentType.NewPassword },
+                    value = uiState.confirmPassword,
+                    onValueChange = { viewModel.onConfirmPasswordChange(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.confirm_password)) },
+                    leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
+                    visualTransformation = if (uiState.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { viewModel.toggleConfirmPasswordVisibility() }) {
+                            Icon(
+                                imageVector = if (uiState.isConfirmPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                contentDescription = if (uiState.isConfirmPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            )
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    ),
+                    isError = uiState.confirmPasswordError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),

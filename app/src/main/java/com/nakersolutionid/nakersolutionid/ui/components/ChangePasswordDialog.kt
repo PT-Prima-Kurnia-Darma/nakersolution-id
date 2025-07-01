@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.LocalAutofillHighlightColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
@@ -33,12 +34,17 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -99,6 +105,8 @@ fun ChangePasswordContent(
     onCancellation: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val autofillManager = LocalAutofillManager.current
+    val autoFillHighlightColor = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.5f)
 
     Card(
         modifier = modifier
@@ -120,31 +128,35 @@ fun ChangePasswordContent(
             )
 
             // Old password field
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.oldPassword,
-                onValueChange = { onValueChangeOldPassword(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = { Text("Kata sandi lama") },
-                visualTransformation = if (uiState.isOldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { toggleOldPasswordVisibility() }) {
-                        Icon(
-                            imageVector = if (uiState.isOldPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (uiState.isOldPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
-                        )
-                    }
-                },
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
-                isError = uiState.oldPasswordError != null
-            )
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentType = ContentType.Password },
+                    value = uiState.oldPassword,
+                    onValueChange = { onValueChangeOldPassword(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = { Text("Kata sandi lama") },
+                    visualTransformation = if (uiState.isOldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { toggleOldPasswordVisibility() }) {
+                            Icon(
+                                imageVector = if (uiState.isOldPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                contentDescription = if (uiState.isOldPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            )
+                        }
+                    },
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    isError = uiState.oldPasswordError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
@@ -162,31 +174,35 @@ fun ChangePasswordContent(
             }
 
             // New password field
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.newPassword,
-                onValueChange = { onValueChangeNewPassword(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = { Text("Kata sandi baru") },
-                visualTransformation = if (uiState.isNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { toggleNewPasswordVisibility() }) {
-                        Icon(
-                            imageVector = if (uiState.isNewPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (uiState.isNewPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
-                        )
-                    }
-                },
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
-                isError = uiState.newPasswordError != null
-            )
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentType = ContentType.NewPassword },
+                    value = uiState.newPassword,
+                    onValueChange = { onValueChangeNewPassword(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = { Text("Kata sandi baru") },
+                    visualTransformation = if (uiState.isNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { toggleNewPasswordVisibility() }) {
+                            Icon(
+                                imageVector = if (uiState.isNewPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                contentDescription = if (uiState.isNewPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            )
+                        }
+                    },
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    isError = uiState.newPasswordError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
@@ -204,37 +220,41 @@ fun ChangePasswordContent(
             }
 
             // Confirm new password field
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.confirmNewPassword,
-                onValueChange = { onValueChangeConfirmNewPassword(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = {
-                    Text(
-                        "Konfirmasi kata sandi baru",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                visualTransformation = if (uiState.isConfirmNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { toggleConfirmNewPasswordVisibility() }) {
-                        Icon(
-                            imageVector = if (uiState.isConfirmNewPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                            contentDescription = if (uiState.isConfirmNewPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentType = ContentType.NewPassword },
+                    value = uiState.confirmNewPassword,
+                    onValueChange = { onValueChangeConfirmNewPassword(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = {
+                        Text(
+                            "Konfirmasi kata sandi baru",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                    }
-                },
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                isError = uiState.confirmNewPasswordError != null
-            )
+                    },
+                    visualTransformation = if (uiState.isConfirmNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { toggleConfirmNewPasswordVisibility() }) {
+                            Icon(
+                                imageVector = if (uiState.isConfirmNewPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                contentDescription = if (uiState.isConfirmNewPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                            )
+                        }
+                    },
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    isError = uiState.confirmNewPasswordError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),

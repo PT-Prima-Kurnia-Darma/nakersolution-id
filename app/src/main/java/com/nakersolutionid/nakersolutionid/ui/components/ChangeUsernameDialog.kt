@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.LocalAutofillHighlightColor
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -28,10 +29,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -73,6 +79,8 @@ fun ChangeUsernameContent(
     onCancellation: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val autofillManager = LocalAutofillManager.current
+    val autoFillHighlightColor = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.5f)
 
     Card(
         modifier = modifier
@@ -94,22 +102,26 @@ fun ChangeUsernameContent(
             )
 
             // Name field
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.newUsername,
-                onValueChange = { onValueChangeUsername(it) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = { Text("Nama pengguna baru") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
-                ),
-                isError = uiState.usernameError != null
-            )
+            CompositionLocalProvider(LocalAutofillHighlightColor provides autoFillHighlightColor) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentType = ContentType.NewUsername },
+                    value = uiState.newUsername,
+                    onValueChange = { onValueChangeUsername(it) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    label = { Text("Nama pengguna baru") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    ),
+                    isError = uiState.usernameError != null
+                )
+            }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
