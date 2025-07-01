@@ -173,7 +173,7 @@ fun LoginScreen(
                     onValueChange = { viewModel.onUsernameChange(it) },
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
-                    placeholder = { Text(stringResource(R.string.username)) }, // Using label for better UX
+                    label = { Text(stringResource(R.string.username)) }, // Using label for better UX
                     leadingIcon = {
                         Icon(
                             Icons.Outlined.PersonOutline,
