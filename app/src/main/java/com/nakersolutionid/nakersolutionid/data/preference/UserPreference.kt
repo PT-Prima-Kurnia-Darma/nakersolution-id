@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preference")
+val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 
 class UserPreference(private val context: Context) {
     private object Keys {
@@ -22,7 +22,7 @@ class UserPreference(private val context: Context) {
     }
 
     suspend fun saveUser(user: UserModel) {
-        context.dataStore.edit { preferences ->
+        context.userDataStore.edit { preferences ->
             preferences[Keys.ID] = user.id
             preferences[Keys.NAME] = user.name
             preferences[Keys.USERNAME] = user.username
@@ -31,7 +31,7 @@ class UserPreference(private val context: Context) {
     }
 
     fun getUser(): Flow<UserModel> {
-        return context.dataStore.data.map { preferences ->
+        return context.userDataStore.data.map { preferences ->
             UserModel(
                 preferences[Keys.ID] ?: "",
                 preferences[Keys.NAME] ?: "",
@@ -45,12 +45,12 @@ class UserPreference(private val context: Context) {
     suspend fun getUserToken(): String? {
         // .first() is a terminal operator that gets the first emitted value
         // from the flow and then cancels the flow's collection.
-        val preferences = context.dataStore.data.first()
+        val preferences = context.userDataStore.data.first()
         return preferences[Keys.TOKEN]
     }
 
     suspend fun clearUser() {
-        context.dataStore.edit { preferences ->
+        context.userDataStore.edit { preferences ->
             preferences[Keys.ID] = ""
             preferences[Keys.NAME] = ""
             preferences[Keys.USERNAME] = ""
@@ -67,7 +67,7 @@ class UserPreference(private val context: Context) {
      *
      */
     suspend fun <T> updatePreference(key: Preferences.Key<T>, value: T) {
-        context.dataStore.edit { preferences ->
+        context.userDataStore.edit { preferences ->
             preferences[key] = value
         }
     }
@@ -82,7 +82,7 @@ class UserPreference(private val context: Context) {
      *
      */
     fun <T> getPreference(key: Preferences.Key<T>, defaultValue: T): Flow<T> {
-        return context.dataStore.data.map { preferences ->
+        return context.userDataStore.data.map { preferences ->
             preferences[key] ?: defaultValue
         }
     }

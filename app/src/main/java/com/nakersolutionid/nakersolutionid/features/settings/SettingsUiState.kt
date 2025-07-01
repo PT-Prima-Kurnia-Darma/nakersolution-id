@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.settings
 
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.utils.ThemeState
 
 data class SettingsUiState(
     val name: String = "",
@@ -32,5 +33,8 @@ data class SettingsUiState(
 
     val showChangePasswordDialog: Boolean = false,
     val showChangeNameDialog: Boolean = false,
-    val showChangeUsernameDialog: Boolean = false
+    val showChangeUsernameDialog: Boolean = false,
+
+    val currentTheme: ThemeState = ThemeState.SYSTEM,
+    val currentThemeName: String = "Default sistem"
 )

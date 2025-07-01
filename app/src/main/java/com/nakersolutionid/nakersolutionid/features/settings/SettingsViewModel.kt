@@ -2,7 +2,9 @@ package com.nakersolutionid.nakersolutionid.features.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsUseCase
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
+import com.nakersolutionid.nakersolutionid.utils.ThemeState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -10,9 +12,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
+class SettingsViewModel(
+    private val userUseCase: UserUseCase,
+    private val settingsUseCase: SettingsUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState = _uiState.asStateFlow()
+
+    suspend fun getCurrentTheme(): ThemeState = settingsUseCase.getCurrentTheme()
 
     init {
         // Start observing the user data as soon as the ViewModel is created
@@ -28,6 +35,22 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
                 }
             }
             .launchIn(viewModelScope) // Launch the collection in the viewModelScope
+
+        settingsUseCase.currentTheme
+            .onEach { theme ->
+                val themeName = when (theme) {
+                    ThemeState.LIGHT -> "Terang"
+                    ThemeState.DARK -> "Gelap"
+                    ThemeState.SYSTEM -> "Default sistem"
+                }
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        currentTheme = theme,
+                        currentThemeName = themeName
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onNameChange(name: String) {
@@ -144,6 +167,12 @@ class SettingsViewModel(private val userUseCase: UserUseCase) : ViewModel() {
     fun onUsernameChangeSave() {
         if (validateUsernameInputs()) {
             changeUsernameUser()
+        }
+    }
+
+    fun changeTheme(theme: ThemeState) {
+        viewModelScope.launch {
+            settingsUseCase.changeTheme(theme)
         }
     }
 

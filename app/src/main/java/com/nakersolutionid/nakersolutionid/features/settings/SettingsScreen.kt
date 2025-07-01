@@ -13,13 +13,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Contrast
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -29,8 +35,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
@@ -45,6 +53,7 @@ import com.nakersolutionid.nakersolutionid.ui.components.SettingsItem
 import com.nakersolutionid.nakersolutionid.ui.components.SettingsTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.SettingsItemShape
+import com.nakersolutionid.nakersolutionid.utils.ThemeState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
@@ -60,6 +69,8 @@ fun SettingsScreen(
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var expanded by remember { mutableStateOf(false) }
 
     // Handle side-effects from logoutResult
     val logoutResult = uiState.logoutResult
@@ -240,8 +251,14 @@ fun SettingsScreen(
                     SettingsItem(
                         title = "Nama lengkap",
                         subtitle = uiState.name,
-                        icon = Icons.Outlined.Edit,
-                        contentDescription = "Edit name",
+                        icons = {
+                            Icon(
+                                imageVector = Icons.Outlined.Edit,
+                                contentDescription = "Edit name",
+                                modifier = Modifier
+                                    .padding(12.dp)
+                                    .size(24.dp))
+                        },
                         enable = !uiState.isLoading,
                         position = SettingsItemShape.TOP,
                         onClick = { viewModel.toggleChangeNameDialog() }
@@ -250,8 +267,14 @@ fun SettingsScreen(
                     SettingsItem(
                         title = "Nama pengguna",
                         subtitle = uiState.username,
-                        icon = Icons.Outlined.Edit,
-                        contentDescription = "Edit username",
+                        icons = {
+                            Icon(
+                                imageVector = Icons.Outlined.Edit,
+                                contentDescription = "Edit username",
+                                modifier = Modifier
+                                    .padding(12.dp)
+                                    .size(24.dp))
+                        },
                         enable = !uiState.isLoading,
                         position = SettingsItemShape.BOTTOM,
                         onClick = { viewModel.toggleChangeUsernameDialog() }
@@ -279,12 +302,48 @@ fun SettingsScreen(
                 ) {
                     SettingsItem(
                         title = "Tema",
-                        subtitle = "Default sistem",
-                        icon = Icons.Outlined.ArrowDropDown,
-                        contentDescription = "Edit name",
+                        subtitle = uiState.currentThemeName,
+                        icons = {
+                            Icon(
+                                imageVector = Icons.Outlined.ExpandMore, // Inside let, 'it' refers to the non-null icon
+                                contentDescription = "Edit theme",
+                                modifier = Modifier
+                                    .padding(12.dp)
+                                    .size(24.dp)
+                            )
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Terang") },
+                                    leadingIcon = { Icon(Icons.Outlined.LightMode, contentDescription = null) },
+                                    onClick = {
+                                        viewModel.changeTheme(ThemeState.LIGHT)
+                                        expanded = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Gelap") },
+                                    leadingIcon = { Icon(Icons.Outlined.DarkMode, contentDescription = null) },
+                                    onClick = {
+                                        viewModel.changeTheme(ThemeState.DARK)
+                                        expanded = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Default sistem") },
+                                    leadingIcon = { Icon(Icons.Outlined.Contrast, contentDescription = null) },
+                                    onClick = {
+                                        viewModel.changeTheme(ThemeState.SYSTEM)
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        },
                         enable = !uiState.isLoading,
-                        position = SettingsItemShape.TOP,
-                        onClick = {}
+                        position = SettingsItemShape.MIDDLE,
+                        onClick = { expanded = true }
                     )
                 }
             }

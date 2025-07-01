@@ -2,11 +2,16 @@ package com.nakersolutionid.nakersolutionid.di
 
 import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.preference.SettingsPreference
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
+import com.nakersolutionid.nakersolutionid.data.repository.SettingsRepository
 import com.nakersolutionid.nakersolutionid.data.repository.UserRepository
+import com.nakersolutionid.nakersolutionid.domain.repository.ISettingsRepository
 import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
+import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsInteraction
+import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsUseCase
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
 import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
@@ -25,6 +30,7 @@ import java.util.concurrent.TimeUnit
 
 val useCaseModule = module {
     factory<UserUseCase> { UserInteraction(get()) }
+    factory<SettingsUseCase> { SettingsInteraction(get()) }
 }
 
 val networkModule = module {
@@ -57,15 +63,17 @@ val repositoryModule = module {
     single { RemoteDataSource(get()) }
     single { AppExecutors() }
     single<IUserRepository> { UserRepository(get(), get(), get(), get()) }
+    single<ISettingsRepository> { SettingsRepository(get()) }
 }
 
 val preferenceModule = module {
     single { UserPreference(androidContext()) }
+    single { SettingsPreference(androidContext()) }
 }
 
 val viewModelModule = module {
     viewModel { SignUpViewModel(get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { HomeViewModel(get()) }
-    viewModel { SettingsViewModel(get()) }
+    viewModel { SettingsViewModel(get(), get()) }
 }

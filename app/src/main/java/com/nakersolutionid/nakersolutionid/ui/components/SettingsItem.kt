@@ -26,8 +26,7 @@ fun SettingsItem(
     title: String,
     subtitle: String,
     enable: Boolean = true,
-    icon: ImageVector? = null,
-    contentDescription: String? = null,
+    icons: @Composable (() -> Unit)? = null,
     onClick: () -> Unit = {}
 ) {
     val cardCornerRadius = 12.dp
@@ -63,17 +62,7 @@ fun SettingsItem(
             },
         headlineContent = { Text(title) },
         supportingContent = { Text(subtitle) },
-        trailingContent = icon?.let {
-            {
-                Icon(
-                    imageVector = it, // Inside let, 'it' refers to the non-null icon
-                    contentDescription = contentDescription,
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .size(24.dp)
-                )
-            }
-        },
+        trailingContent = { icons?.invoke() },
         colors = ListItemDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )

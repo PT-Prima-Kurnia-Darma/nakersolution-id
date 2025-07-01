@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.di
 
+import com.nakersolutionid.nakersolutionid.domain.repository.ISettingsRepository
 import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
+import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsInteraction
+import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsUseCase
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
 import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
@@ -12,9 +15,11 @@ import org.koin.dsl.module
 
 val previewModule = module {
     single<IUserRepository> { FakeUserRepository() }
+    single<ISettingsRepository> { FakeSettingsRepository() }
     factory<UserUseCase> { UserInteraction(get()) }
+    factory<SettingsUseCase> { SettingsInteraction(get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { SignUpViewModel(get()) }
     viewModel { HomeViewModel(get()) }
-    viewModel { SettingsViewModel(get()) }
+    viewModel { SettingsViewModel(get(), get()) }
 }
