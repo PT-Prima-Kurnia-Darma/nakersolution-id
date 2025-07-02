@@ -34,7 +34,7 @@ val useCaseModule = module {
 }
 
 val networkModule = module {
-    single {
+    single<OkHttpClient> {
         val loggingInterceptor = if(BuildConfig.DEBUG) {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         } else {
@@ -48,7 +48,7 @@ val networkModule = module {
     }
     single<Retrofit> {
         Retrofit.Builder()
-            .baseUrl("http://192.168.81.171:3000/")
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(get())
             .build()
