@@ -305,6 +305,7 @@ fun LoginScreen(
                 TextButton(
                     onClick = {
                         focusManager.clearFocus()
+                        viewModel.onStateHandledSuccess()
                         onSignUpClick()
                     }
                 ) {
