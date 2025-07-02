@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/surfaceLight</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_nakersolution_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.Nakersolutionid</item>
     </style>
 </resources>
