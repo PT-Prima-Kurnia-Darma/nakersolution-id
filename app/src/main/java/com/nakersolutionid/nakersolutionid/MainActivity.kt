@@ -8,6 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
 import com.nakersolutionid.nakersolutionid.ui.navigation.NavigationRoot
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val uiState by viewModel.uiState.collectAsState()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val theme = when (uiState.currentTheme) {
                 LIGHT -> {
                     isThemeReady = true
