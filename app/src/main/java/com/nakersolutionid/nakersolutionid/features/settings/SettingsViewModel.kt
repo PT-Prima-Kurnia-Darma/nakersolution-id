@@ -185,7 +185,7 @@ class SettingsViewModel(
     private fun validateNameInputs(): Boolean {
         val currentState = _uiState.value
         var nameError: String? = null
-        if (currentState.name.isBlank()) nameError = "Nama lengkap diperlukan"
+        if (currentState.newName.isBlank()) nameError = "Nama lengkap baru diperlukan"
         _uiState.update { it.copy(nameError = nameError) }
         return nameError == null
     }
@@ -193,7 +193,7 @@ class SettingsViewModel(
     private fun validateUsernameInputs(): Boolean {
         val currentState = _uiState.value
         var usernameError: String? = null
-        if (currentState.username.isBlank()) usernameError = "Nama pengguna diperlukan"
+        if (currentState.newUsername.isBlank()) usernameError = "Nama pengguna baru diperlukan"
         _uiState.update { it.copy(usernameError = usernameError) }
         return usernameError == null
     }

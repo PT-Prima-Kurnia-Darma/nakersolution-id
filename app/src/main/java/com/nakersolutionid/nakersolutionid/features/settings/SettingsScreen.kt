@@ -187,9 +187,15 @@ fun SettingsScreen(
             toggleOldPasswordVisibility = { viewModel.toggleOldPasswordVisibility() },
             toggleNewPasswordVisibility = { viewModel.toggleNewPasswordVisibility() },
             toggleConfirmNewPasswordVisibility = { viewModel.toggleConfirmNewPasswordVisibility() },
-            onDismissRequest = { viewModel.toggleChangePasswordDialog() },
+            onDismissRequest = {
+                viewModel.toggleChangePasswordDialog()
+                viewModel.toggleChangePasswordDialog()
+            },
             onConfirmation = { viewModel.onPasswordChangeSave() },
-            onCancellation = { viewModel.toggleChangePasswordDialog() }
+            onCancellation = {
+                viewModel.onChangePasswordStateHandleSuccess()
+                viewModel.toggleChangePasswordDialog()
+            }
         )
     }
 
@@ -197,9 +203,15 @@ fun SettingsScreen(
         ChangeNameDialog(
             uiState = uiState,
             onValueChangeName = { viewModel.onNameChange(it) },
-            onDismissRequest = { viewModel.toggleChangeNameDialog() },
+            onDismissRequest = {
+                viewModel.onChangeNameStateHandleSuccess()
+                viewModel.toggleChangeNameDialog()
+            },
             onConfirmation = { viewModel.onNameChangeSave() },
-            onCancellation = { viewModel.toggleChangeNameDialog() }
+            onCancellation = {
+                viewModel.onChangeNameStateHandleSuccess()
+                viewModel.toggleChangeNameDialog()
+            }
         )
     }
 
@@ -207,9 +219,15 @@ fun SettingsScreen(
         ChangeUsernameDialog(
             uiState = uiState,
             onValueChangeUsername = { viewModel.onUsernameChange(it) },
-            onDismissRequest = { viewModel.toggleChangeUsernameDialog() },
+            onDismissRequest = {
+                viewModel.onChangeUsernameStateHandleSuccess()
+                viewModel.toggleChangeUsernameDialog()
+            },
             onConfirmation = { viewModel.onUsernameChangeSave() },
-            onCancellation = { viewModel.toggleChangeUsernameDialog() }
+            onCancellation = {
+                viewModel.onChangeUsernameStateHandleSuccess()
+                viewModel.toggleChangeUsernameDialog()
+            }
         )
     }
 
