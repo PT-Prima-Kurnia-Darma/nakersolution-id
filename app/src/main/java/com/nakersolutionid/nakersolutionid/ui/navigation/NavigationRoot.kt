@@ -1,11 +1,20 @@
 package com.nakersolutionid.nakersolutionid.ui.navigation
 
 import android.util.Log
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
@@ -36,6 +45,8 @@ fun NavigationRoot(
 ) {
     val initialScreen = if (isLoggedIn) Home else Login
     val backStack = rememberNavBackStack(initialScreen)
+    val animationSpecInt = tween<IntOffset>(durationMillis = 350) // Consistent animation duration
+    val animationSpecFloat = tween<Float>(durationMillis = 350) // Consistent animation duration
 
     NavDisplay(
         modifier = modifier,
@@ -97,6 +108,39 @@ fun NavigationRoot(
                     }
                 )
             }
-        }
+        },
+        transitionSpec = {
+            // New screen slides in from the right and fades in
+            val enter = slideInHorizontally(animationSpecInt) { it } +
+                    fadeIn(animationSpecFloat)
+
+            // Old screen scales out slightly and fades out
+            val exit = scaleOut(animationSpecFloat, targetScale = 0.95f) +
+                    fadeOut(animationSpecFloat)
+
+            enter togetherWith exit
+        },
+        popTransitionSpec = {
+            // Old screen (now on top) slides out to the right and fades out
+            val popExit = slideOutHorizontally(animationSpecInt) { it } +
+                    fadeOut(animationSpecFloat)
+
+            // New screen (that was underneath) scales in and fades in
+            val popEnter = scaleIn(animationSpecFloat, initialScale = 0.95f) +
+                    fadeIn(animationSpecFloat)
+
+            popEnter togetherWith popExit
+        },
+        // For predictive back, we can use the same animation as a standard pop
+        // The framework will handle scrubbing through the animation as the user gestures.
+        predictivePopTransitionSpec = {
+            val popExit = slideOutHorizontally(animationSpecInt) { it } +
+                    fadeOut(animationSpecFloat)
+
+            val popEnter = scaleIn(animationSpecFloat, initialScale = 0.95f) +
+                    fadeIn(animationSpecFloat)
+
+            popEnter togetherWith popExit
+        },
     )
 }
