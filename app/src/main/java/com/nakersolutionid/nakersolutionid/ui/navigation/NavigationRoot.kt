@@ -23,24 +23,19 @@ import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
 import kotlinx.serialization.Serializable
 
-@Serializable
-data object Login : NavKey
-@Serializable
-data object SignUp : NavKey
-@Serializable
-data object Home : NavKey
-@Serializable
-data object Report : NavKey
-@Serializable
-data object Settings : NavKey
+@Serializable data object Login : NavKey
+@Serializable data object SignUp : NavKey
+@Serializable data object Home : NavKey
+@Serializable data object Report : NavKey
+@Serializable data object Settings : NavKey
 
 @Composable
 fun NavigationRoot(
     modifier: Modifier = Modifier,
     isLoggedIn: Boolean
 ) {
-    val firstScreen = if (isLoggedIn) Home else Login
-    val backStack = rememberNavBackStack(firstScreen)
+    val initialScreen = if (isLoggedIn) Home else Login
+    val backStack = rememberNavBackStack(initialScreen)
 
     NavDisplay(
         modifier = modifier,
@@ -54,12 +49,11 @@ fun NavigationRoot(
         entryProvider = entryProvider {
             entry<Login> {
                 LoginScreen(
-                    onSignUpClick = {
-                        backStack.add(SignUp)
-                    },
+                    onSignUpClick = { backStack.add(SignUp) },
                     onLoginClick = {
+                        backStack.clear()
                         backStack.add(Home)
-                        backStack.removeFirstOrNull()
+//                        backStack.removeFirstOrNull()
                     }
                 )
             }
@@ -71,8 +65,9 @@ fun NavigationRoot(
             entry<Home> {
                 HomeScreen(
                     onLogoutClick = {
+                        backStack.clear()
                         backStack.add(Login)
-                        backStack.removeFirstOrNull()
+//                        backStack.removeFirstOrNull()
                     },
                     onMenuItemClick = { item ->
                         when (item) {
@@ -96,8 +91,9 @@ fun NavigationRoot(
                         backStack.removeLastOrNull()
                     },
                     onLogoutClick = {
+                        backStack.clear()
                         backStack.add(Login)
-                        backStack.removeRange(0, backStack.size - 1)
+//                        backStack.removeRange(0, backStack.size - 1)
                     }
                 )
             }
