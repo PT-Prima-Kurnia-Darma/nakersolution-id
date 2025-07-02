@@ -3,6 +3,7 @@ package com.nakersolutionid.nakersolutionid.data.preference
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -14,11 +15,12 @@ import kotlinx.coroutines.flow.map
 val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 
 class UserPreference(private val context: Context) {
-    private object Keys {
+    object Keys {
         val ID = stringPreferencesKey("user_id")
         val NAME = stringPreferencesKey("user_name")
         val USERNAME = stringPreferencesKey("user_username")
         val TOKEN = stringPreferencesKey("user_token")
+        val LOGGED_IN = booleanPreferencesKey("user_loggedin")
     }
 
     suspend fun saveUser(user: UserModel) {
@@ -58,6 +60,12 @@ class UserPreference(private val context: Context) {
         }
     }
 
+    suspend fun isLoggedIn(): Boolean {
+        val preferences = context.userDataStore.data.first()
+        val loggedIn = preferences[Keys.LOGGED_IN] == true
+        return loggedIn
+    }
+
     /**
      * Updates a single preference value in the DataStore generically.
      * This function allows you to update any key with a matching value type.
@@ -66,7 +74,7 @@ class UserPreference(private val context: Context) {
      * @param value The new value of type T for the given key.
      *
      */
-    suspend fun <T> updatePreference(key: Preferences.Key<T>, value: T) {
+    suspend fun <T> setPreference(key: Preferences.Key<T>, value: T) {
         context.userDataStore.edit { preferences ->
             preferences[key] = value
         }
@@ -84,6 +92,12 @@ class UserPreference(private val context: Context) {
     fun <T> getPreference(key: Preferences.Key<T>, defaultValue: T): Flow<T> {
         return context.userDataStore.data.map { preferences ->
             preferences[key] ?: defaultValue
+        }
+    }
+
+    suspend fun <T> deletePreference(pref: Preferences.Key<T>) {
+        context.userDataStore.edit { preferences ->
+            preferences.remove(pref)
         }
     }
 }

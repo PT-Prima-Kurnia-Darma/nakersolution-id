@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class SettingsPreference(private val context: Context) {
-    private object Keys {
+    object Keys {
         val THEME = stringPreferencesKey("settings_theme")
     }
 
@@ -55,7 +55,7 @@ class SettingsPreference(private val context: Context) {
      * @param value The new value of type T for the given key.
      *
      */
-    suspend fun <T> updatePreference(key: Preferences.Key<T>, value: T) {
+    suspend fun <T> setPreference(key: Preferences.Key<T>, value: T) {
         context.settingsDataStore.edit { preferences ->
             preferences[key] = value
         }
@@ -73,6 +73,12 @@ class SettingsPreference(private val context: Context) {
     fun <T> getPreference(key: Preferences.Key<T>, defaultValue: T): Flow<T> {
         return context.settingsDataStore.data.map { preferences ->
             preferences[key] ?: defaultValue
+        }
+    }
+
+    suspend fun <T> deletePreference(pref: Preferences.Key<T>) {
+        context.settingsDataStore.edit { preferences ->
+            preferences.remove(pref)
         }
     }
 }

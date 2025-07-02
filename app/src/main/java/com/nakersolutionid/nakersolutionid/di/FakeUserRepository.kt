@@ -35,4 +35,5 @@ class FakeUserRepository : IUserRepository {
     }
 
     override suspend fun clearUser() {}
+    override suspend fun isLoggedIn(): Boolean = true
 }

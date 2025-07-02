@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.ui.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,8 +35,12 @@ data object Report : NavKey
 data object Settings : NavKey
 
 @Composable
-fun NavigationRoot(modifier: Modifier = Modifier) {
-    val backStack = rememberNavBackStack(Login)
+fun NavigationRoot(
+    modifier: Modifier = Modifier,
+    isLoggedIn: Boolean
+) {
+    val firstScreen = if (isLoggedIn) Home else Login
+    val backStack = rememberNavBackStack(firstScreen)
 
     NavDisplay(
         modifier = modifier,

@@ -25,4 +25,5 @@ class UserInteraction(private val userRepository: IUserRepository): UserUseCase 
     )
 
     override suspend fun clearUser() = userRepository.clearUser()
+    override suspend fun isLoggedIn(): Boolean = userRepository.isLoggedIn()
 }

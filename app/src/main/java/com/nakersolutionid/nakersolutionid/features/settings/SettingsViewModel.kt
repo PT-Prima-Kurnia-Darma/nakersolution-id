@@ -20,6 +20,7 @@ class SettingsViewModel(
     val uiState = _uiState.asStateFlow()
 
     suspend fun getCurrentTheme(): ThemeState = settingsUseCase.getCurrentTheme()
+    suspend fun isLoggedIn(): Boolean = userUseCase.isLoggedIn()
 
     init {
         // Start observing the user data as soon as the ViewModel is created
@@ -46,11 +47,16 @@ class SettingsViewModel(
                 _uiState.update { currentState ->
                     currentState.copy(
                         currentTheme = theme,
-                        currentThemeName = themeName
+                        currentThemeName = themeName,
                     )
                 }
             }
             .launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            val isLoggedIn = userUseCase.isLoggedIn()
+            _uiState.update { it.copy(isLoggedIn = isLoggedIn) }
+        }
     }
 
     fun onNameChange(name: String) {

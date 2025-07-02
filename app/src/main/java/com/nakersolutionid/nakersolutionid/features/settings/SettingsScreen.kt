@@ -302,7 +302,7 @@ fun SettingsScreen(
                 ) {
                     SettingsItem(
                         title = "Tema",
-                        subtitle = uiState.currentThemeName,
+                        subtitle = uiState.currentThemeName ?: "Default sistem",
                         icons = {
                             Icon(
                                 imageVector = Icons.Outlined.ExpandMore, // Inside let, 'it' refers to the non-null icon

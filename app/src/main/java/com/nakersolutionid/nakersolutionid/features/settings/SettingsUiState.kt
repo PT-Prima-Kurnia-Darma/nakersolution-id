@@ -19,6 +19,7 @@ data class SettingsUiState(
     val isConfirmNewPasswordVisible: Boolean = false,
 
     val isLoading: Boolean = false,
+    val isLoggedIn: Boolean? = null,
 
     val nameError: String? = null,
     val usernameError: String? = null,
@@ -35,6 +36,6 @@ data class SettingsUiState(
     val showChangeNameDialog: Boolean = false,
     val showChangeUsernameDialog: Boolean = false,
 
-    val currentTheme: ThemeState = ThemeState.SYSTEM,
-    val currentThemeName: String = "Default sistem"
+    val currentTheme: ThemeState? = null,
+    val currentThemeName: String? = null,
 )

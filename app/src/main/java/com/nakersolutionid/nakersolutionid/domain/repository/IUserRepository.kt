@@ -18,4 +18,5 @@ interface IUserRepository {
         newPassword: String?
     ): Flow<Resource<String>>
     suspend fun clearUser()
+    suspend fun isLoggedIn(): Boolean
 }

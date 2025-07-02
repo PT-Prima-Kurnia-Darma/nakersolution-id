@@ -58,6 +58,7 @@ class UserRepository(
                 val message = apiResponse.data.message
                 val userModel = UserModel(user.id, user.name, user.username, token)
                 userPreference.saveUser(userModel)
+                userPreference.setPreference(UserPreference.Keys.LOGGED_IN, true)
                 emit(Resource.Success(message))
             }
             is ApiResponse.Error -> {
@@ -73,6 +74,7 @@ class UserRepository(
         when (val apiResponse = remoteDataSource.logout(token).first()) {
             is ApiResponse.Success -> {
                 userPreference.clearUser()
+                userPreference.setPreference(UserPreference.Keys.LOGGED_IN, false)
                 emit(Resource.Success(apiResponse.data.message))
             }
             is ApiResponse.Error -> {
@@ -108,4 +110,5 @@ class UserRepository(
     }
 
     override suspend fun clearUser() = userPreference.clearUser()
+    override suspend fun isLoggedIn(): Boolean = userPreference.isLoggedIn()
 }
