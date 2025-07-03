@@ -27,11 +27,32 @@ fun ElevatorScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true, name = "Phone View")
-@Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
 @Preview(
+    showBackground = true,
+    showSystemUi = true,
+    name = "Phone View",
+    group = "Phone"
+)
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    name = "Phone Portrait",
+    device = "spec:width=411dp,height=891dp,orientation=landscape",
+    group = "Phone"
+)
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    name = "Tablet View",
+    device = Devices.TABLET,
+    group = "Table"
+)
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
     name = "Tablet Portrait",
-    device = "spec:width=800dp,height=1280dp,dpi=240,orientation=portrait"
+    device = "spec:width=800dp,height=1280dp,dpi=240,orientation=portrait",
+    group = "Table"
 )
 @Composable
 fun LoginScreenPreview() {
