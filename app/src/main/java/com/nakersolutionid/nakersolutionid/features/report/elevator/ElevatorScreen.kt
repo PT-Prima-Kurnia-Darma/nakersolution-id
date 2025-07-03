@@ -3,26 +3,49 @@ package com.nakersolutionid.nakersolutionid.features.report.elevator
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
+import com.nakersolutionid.nakersolutionid.ui.components.ElevatorTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElevatorScreen(
-    modifier: Modifier = Modifier
+    viewModel: ReportViewModel = koinViewModel(),
+    modifier: Modifier = Modifier,
+    menuTitle: String,
+    onBackClick: () -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
+        topBar = {
+            ElevatorTopAppBar(
+                name = menuTitle,
+                scrollBehavior = scrollBehavior,
+                onBackClick = { onBackClick() }
+            )
+        },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-        Column(
-            modifier = modifier.padding(paddingValues)
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
-
+            item {
+                viewModel.test()
+            }
         }
     }
 }
@@ -61,7 +84,7 @@ fun LoginScreenPreview() {
         modules(previewModule)
     }) {
         NakersolutionidTheme {
-            ElevatorScreen()
+            ElevatorScreen(onBackClick = {}, menuTitle = "Elevator dan Eskalator")
         }
     }
 }

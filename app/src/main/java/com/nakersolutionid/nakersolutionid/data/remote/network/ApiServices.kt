@@ -2,11 +2,13 @@ package com.nakersolutionid.nakersolutionid.data.remote.network
 
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
+import com.nakersolutionid.nakersolutionid.data.remote.request.SendReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.ValidateTokenRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.sendreport.SendReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.validatetoken.ValidateTokenResponse
 import retrofit2.http.Body
@@ -40,4 +42,10 @@ interface ApiServices {
     suspend fun validateToken(
         @Body request: ValidateTokenRequest
     ) : ValidateTokenResponse
+
+    @POST("audits/sendData")
+    suspend fun sendReport(
+        @Header("Authorization") token: String,
+        @Body request: SendReportRequest
+    ) : SendReportResponse
 }

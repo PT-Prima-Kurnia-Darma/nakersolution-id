@@ -22,8 +22,10 @@ import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.nakersolutionid.nakersolutionid.features.home.HomeScreen
 import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
 import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
+import com.nakersolutionid.nakersolutionid.features.report.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
+import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import kotlinx.serialization.Serializable
 
 @Serializable data object Login : NavKey
@@ -31,7 +33,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object Home : NavKey
 @Serializable data object Report : NavKey
 @Serializable data object Settings : NavKey
-@Serializable data object Elevator : NavKey
+@Serializable data class Elevator(val menuTitle: String) : NavKey
 
 @Composable
 fun NavigationRoot(
@@ -92,8 +94,8 @@ fun NavigationRoot(
                 ReportScreen(
                     onBackClick = { backStack.removeLastOrNull() },
                     onMenuTypeClick = { menu ->
-                        when (menu) {
-                            6 -> backStack.add(Elevator)
+                        when (menu.id) {
+                            6 -> backStack.add(Elevator(menu.title))
                             else -> {}
                         }
                     }
@@ -111,8 +113,9 @@ fun NavigationRoot(
                     }
                 )
             }
-            entry<Elevator> {
-                Elevator
+            entry<Elevator> { navKey ->
+                val title = navKey.menuTitle
+                ElevatorScreen(menuTitle = title, onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {

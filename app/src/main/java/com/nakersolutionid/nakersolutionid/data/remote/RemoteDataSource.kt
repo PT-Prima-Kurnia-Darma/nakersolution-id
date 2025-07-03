@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.remote
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
@@ -7,10 +8,12 @@ import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
+import com.nakersolutionid.nakersolutionid.data.remote.request.SendReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.sendreport.SendReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -124,6 +127,35 @@ class RemoteDataSource(private val apiServices: ApiServices) {
                 errorBody?.let {
                     try {
                         val parsedError = Gson().fromJson(errorBody, UpdateUserResponse::class.java)
+                        if (parsedError != null) {
+                            emit(ApiResponse.Error(parsedError.message))
+                        } else {
+                            emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x0)"))
+                        }
+                    } catch (e: JsonSyntaxException) {
+                        emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x1)"))
+                    }
+                } ?: run {
+                    emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x2)"))
+                }
+            } catch (e: SocketTimeoutException) {
+                emit(ApiResponse.Error("Gagal terhubung, waktu tunggu koneksi habis"))
+            } catch (e: Exception) {
+                emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x3)"))
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun sendReport(token: String, request: SendReportRequest): Flow<ApiResponse<SendReportResponse>> {
+        return flow {
+            try {
+                val response = apiServices.sendReport("Bearer $token", request)
+                emit(ApiResponse.Success(response))
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                errorBody?.let {
+                    try {
+                        val parsedError = Gson().fromJson(errorBody, SendReportResponse::class.java)
                         if (parsedError != null) {
                             emit(ApiResponse.Error(parsedError.message))
                         } else {

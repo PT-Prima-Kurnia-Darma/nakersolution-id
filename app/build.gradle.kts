@@ -107,4 +107,7 @@ dependencies {
 
     // Preferences DataStore
     implementation(libs.androidx.datastore.preferences)
+
+    // Kotlinx Serialization-Json
+    implementation(libs.kotlinx.serialization.json)
 }
