@@ -26,6 +26,7 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "BASE_URL", properties.getProperty("BASE_URL"))
+        buildConfigField("String", "HOSTNAME", properties.getProperty("HOSTNAME"))
     }
 
     buildTypes {
