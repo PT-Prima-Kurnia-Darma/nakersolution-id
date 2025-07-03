@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,10 +27,15 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
@@ -45,8 +51,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsUiState
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChangeNameDialog(
@@ -57,16 +65,49 @@ fun ChangeNameDialog(
     onConfirmation: () -> Unit,
     onCancellation: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Handle side-effects from changeNameResult
+    val changeNameResult = uiState.changeNameResult
+    LaunchedEffect(changeNameResult) {
+        when (changeNameResult) {
+            is Resource.Success -> {}
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = changeNameResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+            }
+            is Resource.Loading -> {}
+            else -> {}
+        }
+    }
+
     Dialog(
         onDismissRequest = { onDismissRequest() }
     ) {
-        ChangeNameContent(
-            modifier = modifier,
-            uiState = uiState,
-            onValueChangeName = { onValueChangeName(it) },
-            onConfirmation = { onConfirmation() },
-            onCancellation = { onCancellation() }
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
+            contentAlignment = Alignment.Center
+        ) {
+            ChangeNameContent(
+                modifier = modifier,
+                uiState = uiState,
+                onValueChangeName = { onValueChangeName(it) },
+                onConfirmation = { onConfirmation() },
+                onCancellation = { onCancellation() }
+            )
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter) // Position it
+                    .imePadding() // Let it move up when keyboard appears
+            )
+        }
     }
 }
 
