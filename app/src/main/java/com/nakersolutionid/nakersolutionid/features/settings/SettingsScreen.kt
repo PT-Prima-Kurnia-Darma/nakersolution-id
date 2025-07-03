@@ -112,11 +112,6 @@ fun SettingsScreen(
                 onLogoutClick()
             }
             is Resource.Error -> {
-                // Show error message
-                val errorMessage = changePasswordResult.message ?: "An unknown error occurred"
-                scope.launch {
-                    snackbarHostState.showSnackbar(errorMessage)
-                }
                 viewModel.toggleLoading(false)
                 viewModel.onChangePasswordStateHandleFailed()
             }
@@ -138,11 +133,6 @@ fun SettingsScreen(
                 viewModel.toggleChangeNameDialog()
             }
             is Resource.Error -> {
-                // Show error message
-                val errorMessage = changeNameResult.message ?: "An unknown error occurred"
-                scope.launch {
-                    snackbarHostState.showSnackbar(errorMessage)
-                }
                 viewModel.toggleLoading(false)
                 viewModel.onChangeNameStateHandleFailed()
             }
@@ -164,11 +154,6 @@ fun SettingsScreen(
                 viewModel.toggleChangeUsernameDialog()
             }
             is Resource.Error -> {
-                // Show error message
-                val errorMessage = changeUsernameResult.message ?: "An unknown error occurred"
-                scope.launch {
-                    snackbarHostState.showSnackbar(errorMessage)
-                }
                 viewModel.toggleLoading(false)
                 viewModel.onChangeUsernameStateHandleFailed()
             }

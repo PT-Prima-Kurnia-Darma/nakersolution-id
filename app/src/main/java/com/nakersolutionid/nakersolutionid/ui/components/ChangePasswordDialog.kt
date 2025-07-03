@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,10 +32,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
@@ -56,8 +64,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.nakersolutionid.nakersolutionid.R
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsUiState
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChangePasswordDialog(
@@ -73,21 +83,54 @@ fun ChangePasswordDialog(
     onConfirmation: () -> Unit,
     onCancellation: () -> Unit
 ) {
-    Dialog(
-        onDismissRequest = { onDismissRequest() }
-    ) {
-        ChangePasswordContent(
-            modifier = modifier,
-            uiState = uiState,
-            onValueChangeOldPassword = { onValueChangeOldPassword(it) },
-            onValueChangeNewPassword = { onValueChangeNewPassword(it) },
-            onValueChangeConfirmNewPassword = { onValueChangeConfirmNewPassword(it) },
-            toggleOldPasswordVisibility = { toggleOldPasswordVisibility() },
-            toggleNewPasswordVisibility = { toggleNewPasswordVisibility() },
-            toggleConfirmNewPasswordVisibility = { toggleConfirmNewPasswordVisibility() },
-            onConfirmation = { onConfirmation() },
-            onCancellation = { onCancellation() }
-        )
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Handle side-effects from changePasswordResult
+    val changePasswordResult = uiState.changePasswordResult
+    LaunchedEffect(changePasswordResult) {
+        when (changePasswordResult) {
+            is Resource.Success -> {}
+            is Resource.Error -> {
+                // Show error message
+                val errorMessage = changePasswordResult.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+            }
+            is Resource.Loading -> {}
+            else -> {}
+        }
+    }
+
+    Dialog(onDismissRequest = onDismissRequest) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
+            contentAlignment = Alignment.Center
+        ) {
+            ChangePasswordContent(
+                modifier = modifier,
+                uiState = uiState,
+                onValueChangeOldPassword = onValueChangeOldPassword,
+                onValueChangeNewPassword = onValueChangeNewPassword,
+                onValueChangeConfirmNewPassword =
+                    onValueChangeConfirmNewPassword,
+                toggleOldPasswordVisibility = toggleOldPasswordVisibility,
+                toggleNewPasswordVisibility = toggleNewPasswordVisibility,
+                toggleConfirmNewPasswordVisibility =
+                    toggleConfirmNewPasswordVisibility,
+                onConfirmation = onConfirmation,
+                onCancellation = onCancellation
+            )
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter) // Position it
+                    .imePadding() // Let it move up when keyboard appears
+            )
+        }
     }
 }
 
