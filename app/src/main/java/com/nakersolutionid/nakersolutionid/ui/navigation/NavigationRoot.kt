@@ -1,6 +1,5 @@
 package com.nakersolutionid.nakersolutionid.ui.navigation
 
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -9,15 +8,10 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
@@ -37,6 +31,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object Home : NavKey
 @Serializable data object Report : NavKey
 @Serializable data object Settings : NavKey
+@Serializable data object Elevator : NavKey
 
 @Composable
 fun NavigationRoot(
@@ -94,7 +89,15 @@ fun NavigationRoot(
                 )
             }
             entry<Report> {
-                ReportScreen()
+                ReportScreen(
+                    onBackClick = { backStack.removeLastOrNull() },
+                    onMenuTypeClick = { menu ->
+                        when (menu) {
+                            6 -> backStack.add(Elevator)
+                            else -> {}
+                        }
+                    }
+                )
             }
             entry<Settings> {
                 SettingsScreen(
@@ -107,6 +110,9 @@ fun NavigationRoot(
 //                        backStack.removeRange(0, backStack.size - 1)
                     }
                 )
+            }
+            entry<Elevator> {
+                Elevator
             }
         },
         transitionSpec = {
