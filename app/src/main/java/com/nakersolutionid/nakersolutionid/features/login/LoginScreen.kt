@@ -136,11 +136,13 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Reduced the size of the logo for a more balanced look
+            Spacer(Modifier.height(32.dp))
             Image(
-                modifier = Modifier.size(220.dp),
+                modifier = Modifier.size(172.dp),
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = stringResource(id = R.string.logo),
             )
+            Spacer(Modifier.height(32.dp))
 
             // Added a welcome message for better UX
             Text(

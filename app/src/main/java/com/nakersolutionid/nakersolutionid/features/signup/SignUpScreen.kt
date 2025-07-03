@@ -135,11 +135,13 @@ fun SignUpScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Keeping the logo and titles consistent with the Login screen
+            Spacer(Modifier.height(32.dp))
             Image(
-                modifier = Modifier.size(220.dp),
+                modifier = Modifier.size(172.dp),
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = stringResource(id = R.string.logo),
             )
+            Spacer(Modifier.height(32.dp))
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
