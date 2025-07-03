@@ -1,0 +1,9 @@
+package com.nakersolutionid.nakersolutionid.domain.usecase
+
+import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.domain.model.Report
+import kotlinx.coroutines.flow.Flow
+
+interface ReportUseCase {
+    fun sendReport(request: Report): Flow<Resource<String>>
+}
