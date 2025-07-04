@@ -1,6 +1,5 @@
 package com.nakersolutionid.nakersolutionid.features.report.elevator
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,9 +8,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
 import com.nakersolutionid.nakersolutionid.ui.components.ElevatorTopAppBar
@@ -22,12 +23,14 @@ import org.koin.compose.KoinApplicationPreview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElevatorScreen(
-    viewModel: ReportViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
+    viewModel: ReportViewModel = koinViewModel(),
     menuTitle: String,
     onBackClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             ElevatorTopAppBar(
@@ -43,9 +46,7 @@ fun ElevatorScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            item {
-                viewModel.test()
-            }
+
         }
     }
 }
@@ -78,9 +79,8 @@ fun ElevatorScreen(
     group = "Table"
 )
 @Composable
-fun LoginScreenPreview() {
+fun ElevatorScreenPreview() {
     KoinApplicationPreview(application = {
-        // Use only the preview module
         modules(previewModule)
     }) {
         NakersolutionidTheme {
