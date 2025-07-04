@@ -111,4 +111,6 @@ dependencies {
 
     // Kotlinx Serialization-Json
     implementation(libs.kotlinx.serialization.json)
+
+    implementation("androidx.compose.runtime:runtime-tracing:1.8.3")
 }
