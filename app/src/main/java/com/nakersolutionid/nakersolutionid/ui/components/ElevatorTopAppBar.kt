@@ -5,8 +5,10 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,7 +22,9 @@ fun ElevatorTopAppBar(
     modifier: Modifier = Modifier,
     name: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onBackClick: () -> Unit
+    actionEnable: Boolean,
+    onBackClick: () -> Unit,
+    onSaveClick: () -> Unit
 ) {
     MediumTopAppBar(
         modifier = modifier,
@@ -29,6 +33,23 @@ fun ElevatorTopAppBar(
             IconButton(
                 onClick = { onBackClick() }
             ) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back") }
+        },
+        actions = {
+            TextButton(
+                modifier = Modifier,
+                onClick = { onSaveClick() },
+                enabled = actionEnable
+            ) {
+                /*Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Localized description"
+                )*/
+                Text(
+                    text = "SIMPAN",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         },
         scrollBehavior = scrollBehavior
     )
@@ -39,6 +60,6 @@ fun ElevatorTopAppBar(
 @Composable
 fun ElevatorTopAppBarPreview() {
     NakersolutionidTheme {
-        ElevatorTopAppBar(onBackClick = {}, name = "Instalasi Listrik dan Penyalur Petir")
+        ElevatorTopAppBar(onBackClick = {}, name = "Instalasi Listrik dan Penyalur Petir", onSaveClick = {}, actionEnable = true)
     }
 }

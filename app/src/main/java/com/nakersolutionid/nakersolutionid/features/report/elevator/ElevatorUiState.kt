@@ -227,5 +227,6 @@ data class ElevatorUiState(
     val technicalDocumentInspection: TechnicalDocumentInspectionUiState? = null,
     val inspectionAndTesting: InspectionAndTestingUiState? = null,
     val conclusion: String? = null,
-    val sendReportResult: Resource<String>? = null
+    val sendReportResult: Resource<String>? = null,
+    val isLoading: Boolean = false
 )
