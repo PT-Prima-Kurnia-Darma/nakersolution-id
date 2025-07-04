@@ -32,23 +32,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import com.nakersolutionid.nakersolutionid.ui.components.MenuItemButton
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplicationPreview
 
 private val menuItems = listOf(
-    MenuItem(1, "Instalasi Listrik dan Penyalur Petir ", Icons.Outlined.Bolt),
-    MenuItem(2, "Instalasi Proteksi Kebakaran ", Icons.Outlined.LocalFireDepartment),
-    MenuItem(3, "Pesawat Angkat dan Angkut ", Icons.Outlined.FireTruck),
-    MenuItem(4, "Pesawat Uap dan Bejana Tekan ", Icons.Outlined.Factory),
-    MenuItem(5, "Pesawat Tenaga dan Produksi ", Icons.Outlined.Construction),
-    MenuItem(6, "Elevator dan Eskalator ", Icons.Outlined.DoorSliding)
+    MenuItem(1, "Instalasi Listrik dan Penyalur Petir", Icons.Outlined.Bolt),
+    MenuItem(2, "Instalasi Proteksi Kebakaran", Icons.Outlined.LocalFireDepartment),
+    MenuItem(3, "Pesawat Angkat dan Angkut", Icons.Outlined.FireTruck),
+    MenuItem(4, "Pesawat Uap dan Bejana Tekan", Icons.Outlined.Factory),
+    MenuItem(5, "Pesawat Tenaga dan Produksi", Icons.Outlined.Construction),
+    MenuItem(6, "Elevator dan Eskalator", Icons.Outlined.DoorSliding)
 )
 
 @Composable
 fun ReportScreen(
     modifier: Modifier = Modifier,
-    onMenuTypeClick: (Int) -> Unit,
+    viewModel: ReportViewModel = koinViewModel(),
+    onMenuTypeClick: (MenuItem) -> Unit,
     onBackClick: () -> Unit
 ) {
     Scaffold(
@@ -102,7 +106,10 @@ fun ReportScreen(
                 items(menuItems) { item ->
                     MenuItemButton(
                         menuItem = item,
-                        onClick = { onMenuTypeClick(item.id) }
+                        onClick = {
+
+                            onMenuTypeClick(item)
+                        }
                     )
                 }
             }
@@ -114,7 +121,11 @@ fun ReportScreen(
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
 @Composable
 fun ReportScreenPreview() {
-    NakersolutionidTheme {
-        ReportScreen(onMenuTypeClick = {}, onBackClick = {})
+    KoinApplicationPreview(application = {
+        modules(previewModule)
+    }) {
+        NakersolutionidTheme {
+            ReportScreen(onMenuTypeClick = {}, onBackClick = {})
+        }
     }
 }

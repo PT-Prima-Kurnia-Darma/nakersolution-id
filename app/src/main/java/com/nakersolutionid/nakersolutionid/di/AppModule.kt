@@ -6,16 +6,21 @@ import com.nakersolutionid.nakersolutionid.data.preference.SettingsPreference
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
+import com.nakersolutionid.nakersolutionid.data.repository.ReportRepository
 import com.nakersolutionid.nakersolutionid.data.repository.SettingsRepository
 import com.nakersolutionid.nakersolutionid.data.repository.UserRepository
+import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
 import com.nakersolutionid.nakersolutionid.domain.repository.ISettingsRepository
 import com.nakersolutionid.nakersolutionid.domain.repository.IUserRepository
+import com.nakersolutionid.nakersolutionid.domain.usecase.ReportInteraction
+import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsUseCase
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
 import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
 import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
+import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
@@ -32,6 +37,7 @@ import java.util.concurrent.TimeUnit
 val useCaseModule = module {
     factory<UserUseCase> { UserInteraction(get()) }
     factory<SettingsUseCase> { SettingsInteraction(get()) }
+    factory<ReportUseCase> { ReportInteraction(get()) }
 }
 
 val networkModule = module {
@@ -76,6 +82,7 @@ val repositoryModule = module {
     single { AppExecutors() }
     single<IUserRepository> { UserRepository(get(), get(), get(), get()) }
     single<ISettingsRepository> { SettingsRepository(get()) }
+    single<IReportRepository> { ReportRepository(get(), get(), get()) }
 }
 
 val preferenceModule = module {
@@ -88,4 +95,5 @@ val viewModelModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { SettingsViewModel(get(), get()) }
+    viewModel { ReportViewModel(get()) }
 }
