@@ -8,6 +8,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.Report
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
+import com.nakersolutionid.nakersolutionid.utils.DataMapper.toEntity
 import com.nakersolutionid.nakersolutionid.utils.DataMapper.toNetwork
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -23,6 +24,7 @@ class ReportRepository(
         val token = userPreference.getUserToken() ?: ""
         when (val apiResponse = remoteDataSource.sendReport(token, request.toNetwork()).first()) {
             is ApiResponse.Success -> {
+                localDataSource.insertReport(request.toEntity("awawawaw"))
                 emit(Resource.Success(apiResponse.data.message))
             }
             is ApiResponse.Error -> {
