@@ -1,24 +1,7 @@
 package com.nakersolutionid.nakersolutionid.utils
 
-import com.nakersolutionid.nakersolutionid.data.remote.request.AccessibilityElevatorNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.CarDoorSpecsNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.CarNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.CarSignageNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.CounterweightGuideRailsAndBuffersNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.DrumsAndSheavesNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.ElectricalInstallationNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.FireServiceElevatorNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.GeneralDataNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.GovernorAndSafetyBrakeNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.HoistwayAndPitNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.InspectionAndTestingNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.MachineRoomAndMachineryNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.MachineRoomlessNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.ResultStatusNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.SeismicSensorNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.SendReportRequest
-import com.nakersolutionid.nakersolutionid.data.remote.request.SuspensionRopesAndBeltsNetwork
-import com.nakersolutionid.nakersolutionid.data.remote.request.TechnicalDocumentInspectionNetwork
+import com.nakersolutionid.nakersolutionid.data.local.entity.*
+import com.nakersolutionid.nakersolutionid.data.remote.request.*
 import com.nakersolutionid.nakersolutionid.domain.model.*
 import com.nakersolutionid.nakersolutionid.features.report.elevator.*
 
@@ -548,6 +531,274 @@ object DataMapper {
             technicalDocumentInspection = this.technicalDocumentInspection?.toNetwork(),
             inspectionAndTesting = this.inspectionAndTesting?.toNetwork(),
             conclusion = this.conclusion
+        )
+    }
+
+    fun Report.toEntity(id: String): ReportEntity {
+        return ReportEntity(
+            id = id, // The ID must be provided as it's not in the domain model
+            nameOfInspectionType = this.nameOfInspectionType,
+            subNameOfInspectionType = this.subNameOfInspectionType,
+            typeInspection = this.typeInspection,
+            eskOrElevType = this.eskOrElevType,
+            generalData = this.generalData?.toEntity(),
+            technicalDocumentInspection = this.technicalDocumentInspection?.toEntity(),
+            inspectionAndTesting = this.inspectionAndTesting?.toEntity(),
+            conclusion = this.conclusion
+        )
+    }
+
+
+// --- Component Mappers ---
+
+    private fun ResultStatusDomain.toEntity(): ResultStatus {
+        return ResultStatus(
+            result = this.result,
+            status = this.status
+        )
+    }
+
+    private fun GeneralDataDomain.toEntity(): GeneralData {
+        return GeneralData(
+            ownerName = this.ownerName,
+            ownerAddress = this.ownerAddress,
+            nameUsageLocation = this.nameUsageLocation,
+            addressUsageLocation = this.addressUsageLocation,
+            manufacturerOrInstaller = this.manufacturerOrInstaller,
+            elevatorType = this.elevatorType,
+            brandOrType = this.brandOrType,
+            countryAndYear = this.countryAndYear,
+            serialNumber = this.serialNumber,
+            capacity = this.capacity,
+            speed = this.speed,
+            floorsServed = this.floorsServed,
+            permitNumber = this.permitNumber,
+            inspectionDate = this.inspectionDate
+        )
+    }
+
+    private fun TechnicalDocumentInspectionDomain.toEntity(): TechnicalDocumentInspection {
+        return TechnicalDocumentInspection(
+            designDrawing = this.designDrawing,
+            technicalCalculation = this.technicalCalculation,
+            materialCertificate = this.materialCertificate,
+            controlPanelDiagram = this.controlPanelDiagram,
+            asBuiltDrawing = this.asBuiltDrawing,
+            componentCertificates = this.componentCertificates,
+            safeWorkProcedure = this.safeWorkProcedure
+        )
+    }
+
+    private fun InspectionAndTestingDomain.toEntity(): InspectionAndTesting {
+        return InspectionAndTesting(
+            machineRoomAndMachinery = this.machineRoomAndMachinery?.toEntity(),
+            suspensionRopesAndBelts = this.suspensionRopesAndBelts?.toEntity(),
+            drumsAndSheaves = this.drumsAndSheaves?.toEntity(),
+            hoistwayAndPit = this.hoistwayAndPit?.toEntity(),
+            car = this.car?.toEntity(),
+            governorAndSafetyBrake = this.governorAndSafetyBrake?.toEntity(),
+            counterweightGuideRailsAndBuffers = this.counterweightGuideRailsAndBuffers?.toEntity(),
+            electricalInstallation = this.electricalInstallation?.toEntity()
+        )
+    }
+
+    private fun MachineRoomAndMachineryDomain.toEntity(): MachineRoomAndMachinery {
+        return MachineRoomAndMachinery(
+            machineMounting = this.machineMounting?.toEntity(),
+            mechanicalBrake = this.mechanicalBrake?.toEntity(),
+            electricalBrake = this.electricalBrake?.toEntity(),
+            machineRoomConstruction = this.machineRoomConstruction?.toEntity(),
+            machineRoomClearance = this.machineRoomClearance?.toEntity(),
+            machineRoomImplementation = this.machineRoomImplementation?.toEntity(),
+            ventilation = this.ventilation?.toEntity(),
+            machineRoomDoor = this.machineRoomDoor?.toEntity(),
+            mainPowerPanelPosition = this.mainPowerPanelPosition?.toEntity(),
+            rotatingPartsGuard = this.rotatingPartsGuard?.toEntity(),
+            ropeHoleGuard = this.ropeHoleGuard?.toEntity(),
+            machineRoomAccessLadder = this.machineRoomAccessLadder?.toEntity(),
+            floorLevelDifference = this.floorLevelDifference?.toEntity(),
+            fireExtinguisher = this.fireExtinguisher?.toEntity(),
+            machineRoomless = this.machineRoomless?.toEntity(),
+            emergencyStopSwitch = this.emergencyStopSwitch?.toEntity()
+        )
+    }
+
+    private fun MachineRoomlessDomain.toEntity(): MachineRoomless {
+        return MachineRoomless(
+            panelPlacement = this.panelPlacement?.toEntity(),
+            lightingWorkArea = this.lightingWorkArea?.toEntity(),
+            lightingBetweenWorkArea = this.lightingBetweenWorkArea?.toEntity(),
+            manualBrakeRelease = this.manualBrakeRelease?.toEntity(),
+            fireExtinguisherPlacement = this.fireExtinguisherPlacement?.toEntity()
+        )
+    }
+
+    private fun SuspensionRopesAndBeltsDomain.toEntity(): SuspensionRopesAndBelts {
+        return SuspensionRopesAndBelts(
+            condition = this.condition?.toEntity(),
+            chainUsage = this.chainUsage?.toEntity(),
+            safetyFactor = this.safetyFactor?.toEntity(),
+            ropeWithCounterweight = this.ropeWithCounterweight?.toEntity(),
+            ropeWithoutCounterweight = this.ropeWithoutCounterweight?.toEntity(),
+            belt = this.belt?.toEntity(),
+            slackRopeDevice = this.slackRopeDevice?.toEntity()
+        )
+    }
+
+    private fun DrumsAndSheavesDomain.toEntity(): DrumsAndSheaves {
+        return DrumsAndSheaves(
+            drumGrooves = this.drumGrooves?.toEntity(),
+            passengerDrumDiameter = this.passengerDrumDiameter?.toEntity(),
+            governorDrumDiameter = this.governorDrumDiameter?.toEntity()
+        )
+    }
+
+    private fun HoistwayAndPitDomain.toEntity(): HoistwayAndPit {
+        return HoistwayAndPit(
+            construction = this.construction?.toEntity(),
+            walls = this.walls?.toEntity(),
+            inclinedElevatorTrackBed = this.inclinedElevatorTrackBed?.toEntity(),
+            cleanliness = this.cleanliness?.toEntity(),
+            lighting = this.lighting?.toEntity(),
+            emergencyDoorNonStop = this.emergencyDoorNonStop?.toEntity(),
+            emergencyDoorSize = this.emergencyDoorSize?.toEntity(),
+            emergencyDoorSafetySwitch = this.emergencyDoorSafetySwitch?.toEntity(),
+            emergencyDoorBridge = this.emergencyDoorBridge?.toEntity(),
+            carTopClearance = this.carTopClearance?.toEntity(),
+            pitClearance = this.pitClearance?.toEntity(),
+            pitLadder = this.pitLadder?.toEntity(),
+            pitBelowWorkingArea = this.pitBelowWorkingArea?.toEntity(),
+            pitAccessSwitch = this.pitAccessSwitch?.toEntity(),
+            pitScreen = this.pitScreen?.toEntity(),
+            hoistwayDoorLeaf = this.hoistwayDoorLeaf?.toEntity(),
+            hoistwayDoorInterlock = this.hoistwayDoorInterlock?.toEntity(),
+            floorLeveling = this.floorLeveling?.toEntity(),
+            hoistwaySeparatorBeam = this.hoistwaySeparatorBeam?.toEntity(),
+            inclinedElevatorStairs = this.inclinedElevatorStairs?.toEntity()
+        )
+    }
+
+    private fun CarDomain.toEntity(): Car {
+        return Car(
+            frame = this.frame?.toEntity(),
+            body = this.body?.toEntity(),
+            wallHeight = this.wallHeight?.toEntity(),
+            floorArea = this.floorArea?.toEntity(),
+            carAreaExpansion = this.carAreaExpansion?.toEntity(),
+            carDoor = this.carDoor?.toEntity(),
+            carDoorSpecs = this.carDoorSpecs?.toEntity(),
+            carToBeamClearance = this.carToBeamClearance?.toEntity(),
+            alarmBell = this.alarmBell?.toEntity(),
+            backupPowerARD = this.backupPowerARD?.toEntity(),
+            intercom = this.intercom?.toEntity(),
+            ventilation = this.ventilation?.toEntity(),
+            emergencyLighting = this.emergencyLighting?.toEntity(),
+            operatingPanel = this.operatingPanel?.toEntity(),
+            carPositionIndicator = this.carPositionIndicator?.toEntity(),
+            carSignage = this.carSignage?.toEntity(),
+            carRoofStrength = this.carRoofStrength?.toEntity(),
+            carTopEmergencyExit = this.carTopEmergencyExit?.toEntity(),
+            carSideEmergencyExit = this.carSideEmergencyExit?.toEntity(),
+            carTopGuardRail = this.carTopGuardRail?.toEntity(),
+            guardRailHeight300to850 = this.guardRailHeight300to850?.toEntity(),
+            guardRailHeightOver850 = this.guardRailHeightOver850?.toEntity(),
+            carTopLighting = this.carTopLighting?.toEntity(),
+            manualOperationButtons = this.manualOperationButtons?.toEntity(),
+            carInterior = this.carInterior?.toEntity()
+        )
+    }
+
+    private fun CarDoorSpecsDomain.toEntity(): CarDoorSpecs {
+        return CarDoorSpecs(
+            size = this.size?.toEntity(),
+            lockAndSwitch = this.lockAndSwitch?.toEntity(),
+            sillClearance = this.sillClearance?.toEntity()
+        )
+    }
+
+    private fun CarSignageDomain.toEntity(): CarSignage {
+        return CarSignage(
+            manufacturerName = this.manufacturerName?.toEntity(),
+            loadCapacity = this.loadCapacity?.toEntity(),
+            noSmokingSign = this.noSmokingSign?.toEntity(),
+            overloadIndicator = this.overloadIndicator?.toEntity(),
+            doorOpenCloseButtons = this.doorOpenCloseButtons?.toEntity(),
+            floorButtons = this.floorButtons?.toEntity(),
+            alarmButton = this.alarmButton?.toEntity(),
+            twoWayIntercom = this.twoWayIntercom?.toEntity()
+        )
+    }
+
+    private fun GovernorAndSafetyBrakeDomain.toEntity(): GovernorAndSafetyBrake {
+        return GovernorAndSafetyBrake(
+            governorRopeClamp = this.governorRopeClamp?.toEntity(),
+            governorSwitch = this.governorSwitch?.toEntity(),
+            safetyBrakeSpeed = this.safetyBrakeSpeed?.toEntity(),
+            safetyBrakeType = this.safetyBrakeType?.toEntity(),
+            safetyBrakeMechanism = this.safetyBrakeMechanism?.toEntity(),
+            progressiveSafetyBrake = this.progressiveSafetyBrake?.toEntity(),
+            instantaneousSafetyBrake = this.instantaneousSafetyBrake?.toEntity(),
+            safetyBrakeOperation = this.safetyBrakeOperation?.toEntity(),
+            electricalCutoutSwitch = this.electricalCutoutSwitch?.toEntity(),
+            limitSwitch = this.limitSwitch?.toEntity(),
+            overloadDevice = this.overloadDevice?.toEntity()
+        )
+    }
+
+    private fun CounterweightGuideRailsAndBuffersDomain.toEntity(): CounterweightGuideRailsAndBuffers {
+        return CounterweightGuideRailsAndBuffers(
+            counterweightMaterial = this.counterweightMaterial?.toEntity(),
+            counterweightGuardScreen = this.counterweightGuardScreen?.toEntity(),
+            guideRailConstruction = this.guideRailConstruction?.toEntity(),
+            bufferType = this.bufferType?.toEntity(),
+            bufferFunction = this.bufferFunction?.toEntity(),
+            bufferSafetySwitch = this.bufferSafetySwitch?.toEntity()
+        )
+    }
+
+    private fun ElectricalInstallationDomain.toEntity(): ElectricalInstallation {
+        return ElectricalInstallation(
+            installationStandard = this.installationStandard?.toEntity(),
+            electricalPanel = this.electricalPanel?.toEntity(),
+            backupPowerARD = this.backupPowerARD?.toEntity(),
+            groundingCable = this.groundingCable?.toEntity(),
+            fireAlarmConnection = this.fireAlarmConnection?.toEntity(),
+            fireServiceElevator = this.fireServiceElevator?.toEntity(),
+            accessibilityElevator = this.accessibilityElevator?.toEntity(),
+            seismicSensor = this.seismicSensor?.toEntity()
+        )
+    }
+
+    private fun FireServiceElevatorDomain.toEntity(): FireServiceElevator {
+        return FireServiceElevator(
+            backupPower = this.backupPower?.toEntity(),
+            specialOperation = this.specialOperation?.toEntity(),
+            fireSwitch = this.fireSwitch?.toEntity(),
+            label = this.label?.toEntity(),
+            electricalFireResistance = this.electricalFireResistance?.toEntity(),
+            hoistwayWallFireResistance = this.hoistwayWallFireResistance?.toEntity(),
+            carSize = this.carSize?.toEntity(),
+            doorSize = this.doorSize?.toEntity(),
+            travelTime = this.travelTime?.toEntity(),
+            evacuationFloor = this.evacuationFloor?.toEntity()
+        )
+    }
+
+    private fun AccessibilityElevatorDomain.toEntity(): AccessibilityElevator {
+        return AccessibilityElevator(
+            operatingPanel = this.operatingPanel?.toEntity(),
+            panelHeight = this.panelHeight?.toEntity(),
+            doorOpenTime = this.doorOpenTime?.toEntity(),
+            doorWidth = this.doorWidth?.toEntity(),
+            audioInformation = this.audioInformation?.toEntity(),
+            label = this.label?.toEntity()
+        )
+    }
+
+    private fun SeismicSensorDomain.toEntity(): SeismicSensor {
+        return SeismicSensor(
+            availability = this.availability?.toEntity(),
+            function = this.function?.toEntity()
         )
     }
 }
