@@ -1,209 +1,70 @@
 package com.nakersolutionid.nakersolutionid.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
-import com.nakersolutionid.nakersolutionid.data.local.entity.*
-import com.nakersolutionid.nakersolutionid.data.remote.request.SendReportRequest
+import com.nakersolutionid.nakersolutionid.data.local.entity.ReportEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Data Access Object (DAO) for the inspection report database.
- *
- * This interface defines all the necessary database operations, including complex
- * transactional inserts for handling nested network data, updates, deletes, and queries.
- * It is designed to be the single source of truth for interacting with the report data.
+ * Data Access Object (DAO) for the 'reports' table.
+ * This interface defines all the database operations for ReportEntity.
  */
 @Dao
 interface ReportDao {
 
     /**
-     * =========================================================================================
-     * INSERT OPERATIONS
+     * Inserts a single report into the database.
+     * If a report with the same primary key already exists, it will be replaced.
+     * This is useful for both creating new reports and updating existing ones.
      *
-     * The following methods handle inserting data into the database. The main entry point
-     * is the transactional `insertOrUpdateReports`, which is designed to be flexible and
-     * robust.
-     * =========================================================================================
+     * @param report The ReportEntity object to be inserted or updated.
      */
-
-    // Private insert methods for each entity. These are called by the public transactional method.
-    // Using OnConflictStrategy.REPLACE makes the insert operation idempotent.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertReport(report: ReportEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGeneralData(generalData: GeneralDataEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTechnicalDocuments(technicalDocument: TechnicalDocumentEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertInspectionAndTesting(inspectionAndTesting: InspectionAndTestingEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMachineRoomInspection(entity: MachineRoomInspectionEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSuspensionRopesInspection(entity: SuspensionRopesInspectionEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDrumsAndSheavesInspection(entity: DrumsAndSheavesInspectionEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertHoistwayPitInspection(entity: HoistwayPitInspectionEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCarInspection(entity: CarInspectionEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGovernorAndSafetyBrakeInspection(entity: GovernorAndSafetyBrakeInspectionEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCounterweightGuideRailsAndBuffersInspection(entity: CounterweightGuideRailsAndBuffersInspectionEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertElectricalInstallationInspection(entity: ElectricalInstallationInspectionEntity): Long
+    suspend fun insertReport(report: ReportEntity)
 
     /**
-     * Inserts one or more complete reports from the network into the normalized database.
-     * This method is transactional, meaning all operations within it will either succeed
-     * together or fail together, ensuring database consistency.
+     * Inserts a list of reports into the database.
+     * If any report in the list has a primary key that already exists, it will be replaced.
      *
-     * It flexibly accepts a variable number of `ReportNetwork` objects.
+     * @param reports A list of ReportEntity objects to insert.
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllReports(reports: List<ReportEntity>)
+
+    /**
+     * Retrieves a single report from the database by its unique ID.
      *
-     * @param reports The `ReportNetwork` objects received from the API to be inserted.
+     * @param id The primary key of the report to retrieve.
+     * @return A single ReportEntity object, or null if no report with the given ID is found.
      */
-    @Transaction
-    suspend fun insertCompleteReports(vararg reports: SendReportRequest) {
-        for (reportNetwork in reports) {
-            // 1. Insert the main Report and get its generated ID
-            val reportId = insertReport(
-                ReportEntity(
-                    nameOfInspectionType = reportNetwork.nameOfInspectionType,
-                    subNameOfInspectionType = reportNetwork.subNameOfInspectionType,
-                    typeInspection = reportNetwork.typeInspection,
-                    eskOrElevType = reportNetwork.EskOrElevType,
-                    conclusion = reportNetwork.conclusion
-                )
-            )
-
-            // 2. Insert General Data and Technical Docs, linking them with the reportId
-            reportNetwork.generalData?.let {
-                insertGeneralData(
-                    GeneralDataEntity(reportId = reportId, /* ... map other fields ... */)
-                )
-            }
-            reportNetwork.technicalDocumentInspection?.let {
-                insertTechnicalDocuments(
-                    TechnicalDocumentEntity(reportId = reportId, /* ... map other fields ... */)
-                )
-            }
-
-            // 3. Insert the main InspectionAndTesting hub entity and get its ID
-            reportNetwork.inspectionAndTesting?.let { inspection ->
-                val inspectionId = insertInspectionAndTesting(
-                    InspectionAndTestingEntity(reportId = reportId)
-                )
-
-                // 4. Insert all detailed inspection sub-entities, linking them with the inspectionId
-                inspection.machineRoomAndMachinery?.let {
-                    insertMachineRoomInspection(MachineRoomInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-                inspection.suspensionRopesAndBelts?.let {
-                    insertSuspensionRopesInspection(SuspensionRopesInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-                inspection.drumsAndSheaves?.let {
-                    insertDrumsAndSheavesInspection(DrumsAndSheavesInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-                inspection.hoistwayAndPit?.let {
-                    insertHoistwayPitInspection(HoistwayPitInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-                inspection.car?.let {
-                    insertCarInspection(CarInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-                inspection.governorAndSafetyBrake?.let {
-                    insertGovernorAndSafetyBrakeInspection(GovernorAndSafetyBrakeInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-                inspection.counterweightGuideRailsAndBuffers?.let {
-                    insertCounterweightGuideRailsAndBuffersInspection(CounterweightGuideRailsAndBuffersInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-                inspection.electricalInstallation?.let {
-                    insertElectricalInstallationInspection(ElectricalInstallationInspectionEntity(inspectionId = inspectionId, /* ... */))
-                }
-            }
-        }
-    }
-
+    @Query("SELECT * FROM reports WHERE id = :id")
+    suspend fun getReportById(id: String): ReportEntity?
 
     /**
-     * =========================================================================================
-     * QUERY OPERATIONS
-     * =========================================================================================
-     */
-
-    /**
-     * Retrieves all reports from the database as a list of `CompleteReport` objects.
-     * The `@Transaction` annotation is crucial here, as it tells Room to perform the
-     * necessary joins to assemble the related entities into the `CompleteReport` data class.
+     * Retrieves all reports from the database, ordered by their ID.
+     * This function returns a Flow, which allows you to observe the data for changes.
+     * Your UI can automatically update whenever the list of reports changes.
      *
-     * @return A Flow that emits a list of all complete reports whenever the data changes.
+     * @return A Flow emitting a list of all ReportEntity objects in the database.
      */
-    @Transaction
-    @Query("SELECT * FROM reports ORDER BY created_at DESC")
-    fun getAllCompleteReports(): Flow<List<CompleteReport>>
-
+    @Query("SELECT * FROM reports ORDER BY id DESC")
+    fun getAllReports(): Flow<List<ReportEntity>>
 
     /**
-     * =========================================================================================
-     * UPDATE OPERATIONS
-     * =========================================================================================
-     */
-
-    // Individual update methods for each entity
-    @Update
-    suspend fun updateReport(report: ReportEntity)
-
-    @Update
-    suspend fun updateGeneralData(generalData: GeneralDataEntity)
-
-    // ... Add @Update methods for every other entity as needed ...
-
-
-    /**
-     * Updates a complete report in the database within a single transaction.
-     * This ensures data consistency when modifying a report.
+     * Deletes a specific report from the database by its ID.
      *
-     * @param completeReport The `CompleteReport` object containing the updated data.
+     * @param id The primary key of the report to delete.
+     * @return The number of rows deleted. This will be 1 if the report was found and deleted, 0 otherwise.
      */
-    @Transaction
-    suspend fun updateCompleteReport(completeReport: CompleteReport) {
-        updateReport(completeReport.report)
-        completeReport.generalData?.let { updateGeneralData(it) }
-        // ... Call update for every other entity in the CompleteReport object ...
-    }
-
+    @Query("DELETE FROM reports WHERE id = :id")
+    suspend fun deleteReportById(id: String): Int
 
     /**
-     * =========================================================================================
-     * DELETE OPERATIONS
-     * =========================================================================================
+     * Deletes all reports from the database.
+     * Use this function with caution as it will clear the entire 'reports' table.
      */
-
-    /**
-     * Deletes a report from the database.
-     * Because of the `onDelete = ForeignKey.CASCADE` setting in the entity definitions,
-     * deleting a `ReportEntity` will automatically trigger the deletion of all its
-     * associated child data across all tables. This makes the delete operation simple
-     * and safe.
-     *
-     * @param report The `ReportEntity` to delete.
-     */
-    @Delete
-    suspend fun deleteReport(report: ReportEntity)
-
+    @Query("DELETE FROM reports")
+    suspend fun deleteAllReports()
 }

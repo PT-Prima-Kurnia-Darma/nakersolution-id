@@ -1,4 +1,7 @@
 package com.nakersolutionid.nakersolutionid.data.local
 
-class LocalDataSource {
+import com.nakersolutionid.nakersolutionid.data.local.dao.ReportDao
+
+class LocalDataSource(private val reportDao: ReportDao) {
+
 }
