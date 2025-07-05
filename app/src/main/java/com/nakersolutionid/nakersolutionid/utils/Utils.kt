@@ -32,7 +32,7 @@ object Utils {
             // yyyy: Year
             // HH: Hour (00-23)
             // mm: Minute
-            val outputFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy (HH:mm)", Locale.getDefault())
+            val outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy (HH:mm)", Locale.getDefault())
 
             // 3. Format the parsed date-time object into the target string format.
             parsedDateTime.format(outputFormatter)
