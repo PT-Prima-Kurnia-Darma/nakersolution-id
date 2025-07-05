@@ -219,6 +219,7 @@ data class InspectionAndTestingUiState(
 )
 
 data class ElevatorUiState(
+    val id: String? = null,
     val nameOfInspectionType: String? = null,
     val subNameOfInspectionType: String? = null,
     val typeInspection: String? = null,
@@ -228,5 +229,6 @@ data class ElevatorUiState(
     val inspectionAndTesting: InspectionAndTestingUiState? = null,
     val conclusion: String? = null,
     val sendReportResult: Resource<String>? = null,
+    val createdAt: String? = null,
     val isLoading: Boolean = false
 )

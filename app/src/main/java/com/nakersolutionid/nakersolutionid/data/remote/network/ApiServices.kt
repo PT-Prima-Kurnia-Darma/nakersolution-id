@@ -43,7 +43,7 @@ interface ApiServices {
         @Body request: ValidateTokenRequest
     ) : ValidateTokenResponse
 
-    @POST("audits/sendData")
+    @POST("elevatorEskalator/elevator/laporan")
     suspend fun sendReport(
         @Header("Authorization") token: String,
         @Body request: SendReportRequest

@@ -1,7 +1,10 @@
 package com.nakersolutionid.nakersolutionid.ui.components
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -12,8 +15,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,17 +43,24 @@ fun ElevatorTopAppBar(
             TextButton(
                 modifier = Modifier,
                 onClick = { onSaveClick() },
-                enabled = actionEnable
-            ) {
-                /*Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Localized description"
-                )*/
-                Text(
-                    text = "SIMPAN",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
+                enabled = actionEnable,
+                colors = ButtonDefaults.textButtonColors(
+                    disabledContainerColor = Color.Unspecified,
+                    disabledContentColor = MaterialTheme.colorScheme.primary
                 )
+            ) {
+                if (!actionEnable) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    Text(
+                        text = "Simpan",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
             }
         },
         scrollBehavior = scrollBehavior

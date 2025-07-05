@@ -1,7 +1,9 @@
 package com.nakersolutionid.nakersolutionid.di
 
+import androidx.room.Room
 import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.local.database.ReportDatabase
 import com.nakersolutionid.nakersolutionid.data.preference.SettingsPreference
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
@@ -18,6 +20,7 @@ import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsUseCase
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
+import com.nakersolutionid.nakersolutionid.features.history.HistoryViewModel
 import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
 import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
@@ -33,6 +36,17 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+
+val databaseModule = module {
+    factory { get<ReportDatabase>().reportDao() }
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            ReportDatabase::class.java, "Manga.db"
+        ).fallbackToDestructiveMigration(false)
+            .build()
+    }
+}
 
 val useCaseModule = module {
     factory<UserUseCase> { UserInteraction(get()) }
@@ -77,7 +91,7 @@ val networkModule = module {
 }
 
 val repositoryModule = module {
-    single { LocalDataSource() }
+    single { LocalDataSource(get()) }
     single { RemoteDataSource(get()) }
     single { AppExecutors() }
     single<IUserRepository> { UserRepository(get(), get(), get(), get()) }
@@ -96,4 +110,5 @@ val viewModelModule = module {
     viewModel { HomeViewModel(get()) }
     viewModel { SettingsViewModel(get(), get()) }
     viewModel { ReportViewModel(get()) }
+    viewModel { HistoryViewModel(get()) }
 }

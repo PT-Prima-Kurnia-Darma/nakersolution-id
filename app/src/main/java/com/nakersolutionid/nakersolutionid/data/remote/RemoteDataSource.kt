@@ -1,8 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.remote
 
-import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices

@@ -19,19 +19,20 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.nakersolutionid.nakersolutionid.features.history.HistoryScreen
 import com.nakersolutionid.nakersolutionid.features.home.HomeScreen
 import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
 import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
 import com.nakersolutionid.nakersolutionid.features.report.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
-import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import kotlinx.serialization.Serializable
 
 @Serializable data object Login : NavKey
 @Serializable data object SignUp : NavKey
 @Serializable data object Home : NavKey
 @Serializable data object Report : NavKey
+@Serializable data object History : NavKey
 @Serializable data object Settings : NavKey
 @Serializable data class Elevator(val menuTitle: String) : NavKey
 
@@ -85,6 +86,9 @@ fun NavigationRoot(
                             7 -> {
                                 backStack.add(Settings)
                             }
+                            6 -> {
+                                backStack.add(History)
+                            }
                             else -> {}
                         }
                     }
@@ -116,6 +120,9 @@ fun NavigationRoot(
             entry<Elevator> { navKey ->
                 val title = navKey.menuTitle
                 ElevatorScreen(menuTitle = title, onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<History> {
+                HistoryScreen(onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {

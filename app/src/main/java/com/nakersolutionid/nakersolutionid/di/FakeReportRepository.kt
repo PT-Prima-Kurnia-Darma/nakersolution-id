@@ -10,4 +10,8 @@ class FakeReportRepository : IReportRepository {
     override fun sendReport(request: Report): Flow<Resource<String>> {
         return flowOf(Resource.Success("Success"))
     }
+
+    override fun getAllReports(): Flow<List<Report>> {
+        return flowOf(listOf(Report()))
+    }
 }

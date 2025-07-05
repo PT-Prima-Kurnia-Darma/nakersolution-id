@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface IReportRepository {
     fun sendReport(request: Report): Flow<Resource<String>>
+    fun getAllReports(): Flow<List<Report>>
 }
