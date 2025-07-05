@@ -26,7 +26,6 @@ import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
 import com.nakersolutionid.nakersolutionid.features.report.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
-import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import kotlinx.serialization.Serializable
 
 @Serializable data object Login : NavKey

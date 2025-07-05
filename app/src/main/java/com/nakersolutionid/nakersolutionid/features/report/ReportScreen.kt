@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.DoorSliding
