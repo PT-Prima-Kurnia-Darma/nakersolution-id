@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 class ReportInteraction(private val reportRepository: IReportRepository) : ReportUseCase {
     override fun sendReport(request: Report): Flow<Resource<String>> = reportRepository.sendReport(request)
+    override fun getAllReports(): Flow<List<Report>> = reportRepository.getAllReports()
 }

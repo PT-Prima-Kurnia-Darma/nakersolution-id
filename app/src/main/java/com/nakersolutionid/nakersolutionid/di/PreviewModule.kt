@@ -9,6 +9,7 @@ import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.SettingsUseCase
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserInteraction
 import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
+import com.nakersolutionid.nakersolutionid.features.history.HistoryViewModel
 import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
 import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
@@ -29,4 +30,5 @@ val previewModule = module {
     viewModel { HomeViewModel(get()) }
     viewModel { SettingsViewModel(get(), get()) }
     viewModel { ReportViewModel(get()) }
+    viewModel { HistoryViewModel(get()) }
 }
