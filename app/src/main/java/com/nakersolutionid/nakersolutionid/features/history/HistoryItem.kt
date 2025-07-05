@@ -73,8 +73,21 @@ fun HistoryItem(
             Spacer(modifier = Modifier.height(4.dp))
 
             // Detailed information section
-            InfoRow(label = "Jenis", value = info.typeInspection)
-            InfoRow(label = "Tipe", value = info.type)
+            Text(
+                text = info.typeInspection,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = info.typeInspection,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = info.type,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
