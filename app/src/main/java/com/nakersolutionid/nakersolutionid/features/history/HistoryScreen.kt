@@ -66,7 +66,7 @@ fun HistoryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val topics = listOf("Semua", "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE")
-    val subTopics = listOf("Semua", "Laporan", "BAP", "Sertifikat", "Suket")
+    val subTopics = listOf("Semua", "Laporan", "BAP", "Sertifikat Sementara", "Surat Keterangan")
     var selectedTopic by remember { mutableStateOf(topics.first()) }
     var selectedSubTopics by remember { mutableStateOf(subTopics.first()) }
     val dummySearchResults = mutableListOf<String>()
@@ -166,7 +166,7 @@ fun FilterSheet(
         Text(
             modifier = Modifier
                 .fillMaxWidth(),
-            text = "Jenis",
+            text = "Jenis Inspeksi",
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center
         )
@@ -178,7 +178,19 @@ fun FilterSheet(
         Text(
             modifier = Modifier
                 .fillMaxWidth(),
-            text = "Tipe",
+            text = "Jenis Alat",
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
+        )
+        FilterChipRow(
+            filters = topics,
+            selectedFilter = selectedTopic,
+            onFilterSelected = onFilterSelected
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            text = "Jenis Dokumen",
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center
         )
