@@ -7,20 +7,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.DoorSliding
@@ -33,25 +27,24 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarValue
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,15 +56,6 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
-private val menuItems = listOf(
-    MenuItem(1, "Instalasi Listrik dan Penyalur Petir", Icons.Outlined.Bolt),
-    MenuItem(2, "Instalasi Proteksi Kebakaran", Icons.Outlined.LocalFireDepartment),
-    MenuItem(3, "Pesawat Angkat dan Angkut", Icons.Outlined.FireTruck),
-    MenuItem(4, "Pesawat Uap dan Bejana Tekan", Icons.Outlined.Factory),
-    MenuItem(5, "Pesawat Tenaga dan Produksi", Icons.Outlined.Construction),
-    MenuItem(6, "Elevator dan Eskalator", Icons.Outlined.DoorSliding)
-)
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
@@ -81,13 +65,24 @@ fun HistoryScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val topics = listOf("ALL", "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE")
+    val topics = listOf("Semua", "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE")
+    val subTopics = listOf("Semua", "Laporan", "BAP", "Sertifikat", "Suket")
     var selectedTopic by remember { mutableStateOf(topics.first()) }
+    var selectedSubTopics by remember { mutableStateOf(subTopics.first()) }
     val dummySearchResults = mutableListOf<String>()
 
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Scaffold(
-        topBar = { HistoryAppBar(onBackClick = { onBackClick() }) },
-        modifier = Modifier.fillMaxSize()
+        topBar = {
+            HistoryAppBar(
+                onBackClick = { onBackClick() },
+                onFilterClick = { showBottomSheet = true }
+            )
+        },
+        modifier = Modifier.fillMaxSize(),
     ) { paddingValues ->
         Column(
             modifier = modifier
@@ -100,19 +95,11 @@ fun HistoryScreen(
                     .padding(horizontal = 16.dp),
                 dummySearchResults
             )
-            FilterChipRow(
-                filters = topics,
-                selectedFilter = selectedTopic,
-                onFilterSelected = { newTopic ->
-                    selectedTopic = newTopic
-                    // TODO: Add logic here to actually filter your content based on the newTopic
-                }
-            )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
             ) {
                 items(
                     items = uiState.reports,
@@ -136,6 +123,70 @@ fun HistoryScreen(
                 }
             }
         }
+
+        if (showBottomSheet) {
+            FilterSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                },
+                sheetState = sheetState,
+                topics = topics,
+                subTopics = subTopics,
+                selectedTopic = selectedTopic,
+                selectedSubTopics = selectedSubTopics,
+                onFilterSelected = {
+                    selectedTopic = it
+                },
+                onSubFilterSelected = {
+                    selectedSubTopics = it
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterSheet(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    sheetState: SheetState,
+    topics: List<String>,
+    subTopics: List<String>,
+    selectedTopic: String,
+    selectedSubTopics: String,
+    onFilterSelected: (String) -> Unit,
+    onSubFilterSelected: (String) -> Unit
+) {
+    ModalBottomSheet(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            text = "Jenis",
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
+        )
+        FilterChipRow(
+            filters = topics,
+            selectedFilter = selectedTopic,
+            onFilterSelected = onFilterSelected
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            text = "Tipe",
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
+        )
+        FilterChipRow(
+            filters = subTopics,
+            selectedFilter = selectedSubTopics,
+            onFilterSelected = onSubFilterSelected
+        )
     }
 }
 
@@ -189,7 +240,11 @@ fun HistorySearchBar(modifier: Modifier = Modifier, searchResult: MutableList<St
 }
 
 @Composable
-private fun SearchResults(onResultClick: (String) -> Unit, modifier: Modifier = Modifier, searchResult: List<String>) {
+private fun SearchResults(
+    onResultClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    searchResult: List<String>
+) {
     LazyColumn {
         items(searchResult.reversed()) { result ->
             val resultText = result
@@ -200,20 +255,7 @@ private fun SearchResults(onResultClick: (String) -> Unit, modifier: Modifier = 
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
             )
-            /*ListItem(
-                headlineContent = { Text(resultText) },
-                colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-                modifier =
-                    Modifier.clickable { onResultClick(resultText) }
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(horizontal = 16.dp),
-            )*/
         }
-    }
-
-    Column(modifier.verticalScroll(rememberScrollState())) {
-
     }
 }
 
