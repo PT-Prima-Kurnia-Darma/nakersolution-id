@@ -3,16 +3,19 @@ package com.nakersolutionid.nakersolutionid.data.repository
 import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.local.entity.ReportEntity
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.Report
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
+import com.nakersolutionid.nakersolutionid.utils.DataMapper.toDomain
 import com.nakersolutionid.nakersolutionid.utils.DataMapper.toEntity
 import com.nakersolutionid.nakersolutionid.utils.DataMapper.toNetwork
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class ReportRepository(
     private val localDataSource: LocalDataSource,
@@ -34,4 +37,9 @@ class ReportRepository(
         }
     }
 
+    override fun getAllReports(): Flow<List<Report>> {
+        return localDataSource.getAllReports().map { listOfEntities ->
+            listOfEntities.map { it.toDomain() }
+        }
+    }
 }
