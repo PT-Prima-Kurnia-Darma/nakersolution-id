@@ -35,7 +35,8 @@ data class HistoryInfo(
     val name: String,
     val subName: String,
     val typeInspection: String,
-    val type: String
+    val type: String,
+    val createdAt: String
 )
 
 @Composable
@@ -101,7 +102,7 @@ fun HistoryItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "24-03-2025 (18:30)",
+                    info.createdAt,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Left,
@@ -153,7 +154,7 @@ private fun ActionButton(
 private fun HistoryItemPreview() {
     NakersolutionidTheme {
         HistoryItem(
-            info = HistoryInfo("Elevator dan Eskalator", "Elevator", "Pemeriksaan dan Pengujian Berkala", "Elevator Penumpang"),
+            info = HistoryInfo("Elevator dan Eskalator", "Elevator", "Pemeriksaan dan Pengujian Berkala", "Elevator Penumpang", "2024-07-26T10:00:00Z"),
             onDeleteClick = {},
             onDownloadClick = {  },
             onEditClick = {},

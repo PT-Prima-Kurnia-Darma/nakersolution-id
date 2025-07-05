@@ -26,7 +26,8 @@ data class ReportEntity(
     val generalData: GeneralData? = null,
     val technicalDocumentInspection: TechnicalDocumentInspection? = null,
     val inspectionAndTesting: InspectionAndTesting? = null,
-    val conclusion: String? = null
+    val conclusion: String? = null,
+    val createdAt: String? = null
 )
 
 // --- Supporting Data Classes (These are not tables, they will be converted to JSON) ---

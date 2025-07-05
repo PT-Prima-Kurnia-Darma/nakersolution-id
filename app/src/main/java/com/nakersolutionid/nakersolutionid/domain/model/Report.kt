@@ -216,6 +216,7 @@ data class InspectionAndTestingDomain(
 )
 
 data class Report(
+    val id: String? = null,
     val nameOfInspectionType: String? = null,
     val subNameOfInspectionType: String? = null,
     val typeInspection: String? = null,
@@ -223,5 +224,6 @@ data class Report(
     val generalData: GeneralDataDomain? = null,
     val technicalDocumentInspection: TechnicalDocumentInspectionDomain? = null,
     val inspectionAndTesting: InspectionAndTestingDomain? = null,
-    val conclusion: String? = null
+    val conclusion: String? = null,
+    val createdAt: String? = null
 )

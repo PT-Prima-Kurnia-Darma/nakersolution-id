@@ -55,10 +55,12 @@ import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
 private val menuItems = listOf(
@@ -74,8 +76,11 @@ private val menuItems = listOf(
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
+    viewModel: HistoryViewModel = koinViewModel(),
     onBackClick: () -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val topics = listOf("ALL", "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE")
     var selectedTopic by remember { mutableStateOf(topics.first()) }
     val dummySearchResults = mutableListOf<String>()
@@ -109,15 +114,19 @@ fun HistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(100) { key ->
+                items(
+                    items = uiState.reports,
+                    key = { it.id }
+                ) { report ->
                     HistoryItem(
                         modifier = Modifier
                             .fillMaxWidth(),
                         info = HistoryInfo(
-                            name = key.toString(),
-                            subName = "DD",
-                            typeInspection = "dd",
-                            type = "ddd"
+                            name = report.name,
+                            subName = report.subName,
+                            typeInspection = report.typeInspection,
+                            type = report.type,
+                            createdAt = report.createdAt
                         ),
                         onDeleteClick = {},
                         onDownloadClick = {},
