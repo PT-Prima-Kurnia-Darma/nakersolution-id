@@ -6,6 +6,9 @@ import com.nakersolutionid.nakersolutionid.domain.model.*
 import com.nakersolutionid.nakersolutionid.features.report.elevator.*
 
 object DataMapper {
+
+    // --- UiState to Domain Mappers ---
+
     fun ResultStatusUiState.toDomain(): ResultStatusDomain {
         return ResultStatusDomain(
             result = this.result,
@@ -269,6 +272,8 @@ object DataMapper {
             conclusion = this.conclusion
         )
     }
+
+    // --- Domain to Network Mappers ---
 
     fun ResultStatusDomain.toNetwork(): ResultStatusNetwork {
         return ResultStatusNetwork(
@@ -534,6 +539,8 @@ object DataMapper {
         )
     }
 
+    // --- Domain to Entity Mappers ---
+
     fun Report.toEntity(id: String): ReportEntity {
         return ReportEntity(
             id = id, // The ID must be provided as it's not in the domain model
@@ -547,9 +554,6 @@ object DataMapper {
             conclusion = this.conclusion
         )
     }
-
-
-// --- Component Mappers ---
 
     private fun ResultStatusDomain.toEntity(): ResultStatus {
         return ResultStatus(
@@ -799,6 +803,272 @@ object DataMapper {
         return SeismicSensor(
             availability = this.availability?.toEntity(),
             function = this.function?.toEntity()
+        )
+    }
+
+    // --- Entity to Domain Mappers ---
+
+    fun ReportEntity.toDomain(): Report {
+        return Report(
+            nameOfInspectionType = this.nameOfInspectionType,
+            subNameOfInspectionType = this.subNameOfInspectionType,
+            typeInspection = this.typeInspection,
+            eskOrElevType = this.eskOrElevType,
+            generalData = this.generalData?.toDomain(),
+            technicalDocumentInspection = this.technicalDocumentInspection?.toDomain(),
+            inspectionAndTesting = this.inspectionAndTesting?.toDomain(),
+            conclusion = this.conclusion
+        )
+    }
+
+    private fun ResultStatus.toDomain(): ResultStatusDomain {
+        return ResultStatusDomain(
+            result = this.result,
+            status = this.status
+        )
+    }
+
+    private fun GeneralData.toDomain(): GeneralDataDomain {
+        return GeneralDataDomain(
+            ownerName = this.ownerName,
+            ownerAddress = this.ownerAddress,
+            nameUsageLocation = this.nameUsageLocation,
+            addressUsageLocation = this.addressUsageLocation,
+            manufacturerOrInstaller = this.manufacturerOrInstaller,
+            elevatorType = this.elevatorType,
+            brandOrType = this.brandOrType,
+            countryAndYear = this.countryAndYear,
+            serialNumber = this.serialNumber,
+            capacity = this.capacity,
+            speed = this.speed,
+            floorsServed = this.floorsServed,
+            permitNumber = this.permitNumber,
+            inspectionDate = this.inspectionDate
+        )
+    }
+
+    private fun TechnicalDocumentInspection.toDomain(): TechnicalDocumentInspectionDomain {
+        return TechnicalDocumentInspectionDomain(
+            designDrawing = this.designDrawing,
+            technicalCalculation = this.technicalCalculation,
+            materialCertificate = this.materialCertificate,
+            controlPanelDiagram = this.controlPanelDiagram,
+            asBuiltDrawing = this.asBuiltDrawing,
+            componentCertificates = this.componentCertificates,
+            safeWorkProcedure = this.safeWorkProcedure
+        )
+    }
+
+    private fun InspectionAndTesting.toDomain(): InspectionAndTestingDomain {
+        return InspectionAndTestingDomain(
+            machineRoomAndMachinery = this.machineRoomAndMachinery?.toDomain(),
+            suspensionRopesAndBelts = this.suspensionRopesAndBelts?.toDomain(),
+            drumsAndSheaves = this.drumsAndSheaves?.toDomain(),
+            hoistwayAndPit = this.hoistwayAndPit?.toDomain(),
+            car = this.car?.toDomain(),
+            governorAndSafetyBrake = this.governorAndSafetyBrake?.toDomain(),
+            counterweightGuideRailsAndBuffers = this.counterweightGuideRailsAndBuffers?.toDomain(),
+            electricalInstallation = this.electricalInstallation?.toDomain()
+        )
+    }
+
+    private fun MachineRoomAndMachinery.toDomain(): MachineRoomAndMachineryDomain {
+        return MachineRoomAndMachineryDomain(
+            machineMounting = this.machineMounting?.toDomain(),
+            mechanicalBrake = this.mechanicalBrake?.toDomain(),
+            electricalBrake = this.electricalBrake?.toDomain(),
+            machineRoomConstruction = this.machineRoomConstruction?.toDomain(),
+            machineRoomClearance = this.machineRoomClearance?.toDomain(),
+            machineRoomImplementation = this.machineRoomImplementation?.toDomain(),
+            ventilation = this.ventilation?.toDomain(),
+            machineRoomDoor = this.machineRoomDoor?.toDomain(),
+            mainPowerPanelPosition = this.mainPowerPanelPosition?.toDomain(),
+            rotatingPartsGuard = this.rotatingPartsGuard?.toDomain(),
+            ropeHoleGuard = this.ropeHoleGuard?.toDomain(),
+            machineRoomAccessLadder = this.machineRoomAccessLadder?.toDomain(),
+            floorLevelDifference = this.floorLevelDifference?.toDomain(),
+            fireExtinguisher = this.fireExtinguisher?.toDomain(),
+            machineRoomless = this.machineRoomless?.toDomain(),
+            emergencyStopSwitch = this.emergencyStopSwitch?.toDomain()
+        )
+    }
+
+    private fun MachineRoomless.toDomain(): MachineRoomlessDomain {
+        return MachineRoomlessDomain(
+            panelPlacement = this.panelPlacement?.toDomain(),
+            lightingWorkArea = this.lightingWorkArea?.toDomain(),
+            lightingBetweenWorkArea = this.lightingBetweenWorkArea?.toDomain(),
+            manualBrakeRelease = this.manualBrakeRelease?.toDomain(),
+            fireExtinguisherPlacement = this.fireExtinguisherPlacement?.toDomain()
+        )
+    }
+
+    private fun SuspensionRopesAndBelts.toDomain(): SuspensionRopesAndBeltsDomain {
+        return SuspensionRopesAndBeltsDomain(
+            condition = this.condition?.toDomain(),
+            chainUsage = this.chainUsage?.toDomain(),
+            safetyFactor = this.safetyFactor?.toDomain(),
+            ropeWithCounterweight = this.ropeWithCounterweight?.toDomain(),
+            ropeWithoutCounterweight = this.ropeWithoutCounterweight?.toDomain(),
+            belt = this.belt?.toDomain(),
+            slackRopeDevice = this.slackRopeDevice?.toDomain()
+        )
+    }
+
+    private fun DrumsAndSheaves.toDomain(): DrumsAndSheavesDomain {
+        return DrumsAndSheavesDomain(
+            drumGrooves = this.drumGrooves?.toDomain(),
+            passengerDrumDiameter = this.passengerDrumDiameter?.toDomain(),
+            governorDrumDiameter = this.governorDrumDiameter?.toDomain()
+        )
+    }
+
+    private fun HoistwayAndPit.toDomain(): HoistwayAndPitDomain {
+        return HoistwayAndPitDomain(
+            construction = this.construction?.toDomain(),
+            walls = this.walls?.toDomain(),
+            inclinedElevatorTrackBed = this.inclinedElevatorTrackBed?.toDomain(),
+            cleanliness = this.cleanliness?.toDomain(),
+            lighting = this.lighting?.toDomain(),
+            emergencyDoorNonStop = this.emergencyDoorNonStop?.toDomain(),
+            emergencyDoorSize = this.emergencyDoorSize?.toDomain(),
+            emergencyDoorSafetySwitch = this.emergencyDoorSafetySwitch?.toDomain(),
+            emergencyDoorBridge = this.emergencyDoorBridge?.toDomain(),
+            carTopClearance = this.carTopClearance?.toDomain(),
+            pitClearance = this.pitClearance?.toDomain(),
+            pitLadder = this.pitLadder?.toDomain(),
+            pitBelowWorkingArea = this.pitBelowWorkingArea?.toDomain(),
+            pitAccessSwitch = this.pitAccessSwitch?.toDomain(),
+            pitScreen = this.pitScreen?.toDomain(),
+            hoistwayDoorLeaf = this.hoistwayDoorLeaf?.toDomain(),
+            hoistwayDoorInterlock = this.hoistwayDoorInterlock?.toDomain(),
+            floorLeveling = this.floorLeveling?.toDomain(),
+            hoistwaySeparatorBeam = this.hoistwaySeparatorBeam?.toDomain(),
+            inclinedElevatorStairs = this.inclinedElevatorStairs?.toDomain()
+        )
+    }
+
+    private fun Car.toDomain(): CarDomain {
+        return CarDomain(
+            frame = this.frame?.toDomain(),
+            body = this.body?.toDomain(),
+            wallHeight = this.wallHeight?.toDomain(),
+            floorArea = this.floorArea?.toDomain(),
+            carAreaExpansion = this.carAreaExpansion?.toDomain(),
+            carDoor = this.carDoor?.toDomain(),
+            carDoorSpecs = this.carDoorSpecs?.toDomain(),
+            carToBeamClearance = this.carToBeamClearance?.toDomain(),
+            alarmBell = this.alarmBell?.toDomain(),
+            backupPowerARD = this.backupPowerARD?.toDomain(),
+            intercom = this.intercom?.toDomain(),
+            ventilation = this.ventilation?.toDomain(),
+            emergencyLighting = this.emergencyLighting?.toDomain(),
+            operatingPanel = this.operatingPanel?.toDomain(),
+            carPositionIndicator = this.carPositionIndicator?.toDomain(),
+            carSignage = this.carSignage?.toDomain(),
+            carRoofStrength = this.carRoofStrength?.toDomain(),
+            carTopEmergencyExit = this.carTopEmergencyExit?.toDomain(),
+            carSideEmergencyExit = this.carSideEmergencyExit?.toDomain(),
+            carTopGuardRail = this.carTopGuardRail?.toDomain(),
+            guardRailHeight300to850 = this.guardRailHeight300to850?.toDomain(),
+            guardRailHeightOver850 = this.guardRailHeightOver850?.toDomain(),
+            carTopLighting = this.carTopLighting?.toDomain(),
+            manualOperationButtons = this.manualOperationButtons?.toDomain(),
+            carInterior = this.carInterior?.toDomain()
+        )
+    }
+
+    private fun CarDoorSpecs.toDomain(): CarDoorSpecsDomain {
+        return CarDoorSpecsDomain(
+            size = this.size?.toDomain(),
+            lockAndSwitch = this.lockAndSwitch?.toDomain(),
+            sillClearance = this.sillClearance?.toDomain()
+        )
+    }
+
+    private fun CarSignage.toDomain(): CarSignageDomain {
+        return CarSignageDomain(
+            manufacturerName = this.manufacturerName?.toDomain(),
+            loadCapacity = this.loadCapacity?.toDomain(),
+            noSmokingSign = this.noSmokingSign?.toDomain(),
+            overloadIndicator = this.overloadIndicator?.toDomain(),
+            doorOpenCloseButtons = this.doorOpenCloseButtons?.toDomain(),
+            floorButtons = this.floorButtons?.toDomain(),
+            alarmButton = this.alarmButton?.toDomain(),
+            twoWayIntercom = this.twoWayIntercom?.toDomain()
+        )
+    }
+
+    private fun GovernorAndSafetyBrake.toDomain(): GovernorAndSafetyBrakeDomain {
+        return GovernorAndSafetyBrakeDomain(
+            governorRopeClamp = this.governorRopeClamp?.toDomain(),
+            governorSwitch = this.governorSwitch?.toDomain(),
+            safetyBrakeSpeed = this.safetyBrakeSpeed?.toDomain(),
+            safetyBrakeType = this.safetyBrakeType?.toDomain(),
+            safetyBrakeMechanism = this.safetyBrakeMechanism?.toDomain(),
+            progressiveSafetyBrake = this.progressiveSafetyBrake?.toDomain(),
+            instantaneousSafetyBrake = this.instantaneousSafetyBrake?.toDomain(),
+            safetyBrakeOperation = this.safetyBrakeOperation?.toDomain(),
+            electricalCutoutSwitch = this.electricalCutoutSwitch?.toDomain(),
+            limitSwitch = this.limitSwitch?.toDomain(),
+            overloadDevice = this.overloadDevice?.toDomain()
+        )
+    }
+
+    private fun CounterweightGuideRailsAndBuffers.toDomain(): CounterweightGuideRailsAndBuffersDomain {
+        return CounterweightGuideRailsAndBuffersDomain(
+            counterweightMaterial = this.counterweightMaterial?.toDomain(),
+            counterweightGuardScreen = this.counterweightGuardScreen?.toDomain(),
+            guideRailConstruction = this.guideRailConstruction?.toDomain(),
+            bufferType = this.bufferType?.toDomain(),
+            bufferFunction = this.bufferFunction?.toDomain(),
+            bufferSafetySwitch = this.bufferSafetySwitch?.toDomain()
+        )
+    }
+
+    private fun ElectricalInstallation.toDomain(): ElectricalInstallationDomain {
+        return ElectricalInstallationDomain(
+            installationStandard = this.installationStandard?.toDomain(),
+            electricalPanel = this.electricalPanel?.toDomain(),
+            backupPowerARD = this.backupPowerARD?.toDomain(),
+            groundingCable = this.groundingCable?.toDomain(),
+            fireAlarmConnection = this.fireAlarmConnection?.toDomain(),
+            fireServiceElevator = this.fireServiceElevator?.toDomain(),
+            accessibilityElevator = this.accessibilityElevator?.toDomain(),
+            seismicSensor = this.seismicSensor?.toDomain()
+        )
+    }
+
+    private fun FireServiceElevator.toDomain(): FireServiceElevatorDomain {
+        return FireServiceElevatorDomain(
+            backupPower = this.backupPower?.toDomain(),
+            specialOperation = this.specialOperation?.toDomain(),
+            fireSwitch = this.fireSwitch?.toDomain(),
+            label = this.label?.toDomain(),
+            electricalFireResistance = this.electricalFireResistance?.toDomain(),
+            hoistwayWallFireResistance = this.hoistwayWallFireResistance?.toDomain(),
+            carSize = this.carSize?.toDomain(),
+            doorSize = this.doorSize?.toDomain(),
+            travelTime = this.travelTime?.toDomain(),
+            evacuationFloor = this.evacuationFloor?.toDomain()
+        )
+    }
+
+    private fun AccessibilityElevator.toDomain(): AccessibilityElevatorDomain {
+        return AccessibilityElevatorDomain(
+            operatingPanel = this.operatingPanel?.toDomain(),
+            panelHeight = this.panelHeight?.toDomain(),
+            doorOpenTime = this.doorOpenTime?.toDomain(),
+            doorWidth = this.doorWidth?.toDomain(),
+            audioInformation = this.audioInformation?.toDomain(),
+            label = this.label?.toDomain()
+        )
+    }
+
+    private fun SeismicSensor.toDomain(): SeismicSensorDomain {
+        return SeismicSensorDomain(
+            availability = this.availability?.toDomain(),
+            function = this.function?.toDomain()
         )
     }
 }
