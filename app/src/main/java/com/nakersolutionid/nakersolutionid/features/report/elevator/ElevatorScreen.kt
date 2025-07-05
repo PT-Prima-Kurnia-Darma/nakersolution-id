@@ -23,12 +23,11 @@ import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -239,7 +238,7 @@ fun ExpandableSection(
                 visible = expanded,
             ) {
                 Column(modifier = Modifier.padding(top = 8.dp)) {
-                    Divider()
+                    HorizontalDivider()
                     Spacer(modifier = Modifier.height(16.dp))
                     content()
                 }
@@ -416,31 +415,31 @@ fun InspectionAndTestingItems(
         ExpandableSubSection("Machine Room and Machinery") {
             MachineRoomAndMachinerySection(inspectionAndTesting?.machineRoomAndMachinery, viewModel)
         }
-        Divider()
+        HorizontalDivider()
         ExpandableSubSection("Suspension Ropes and Belts") {
             SuspensionRopesAndBeltsSection(inspectionAndTesting?.suspensionRopesAndBelts, viewModel)
         }
-        Divider()
+        HorizontalDivider()
         ExpandableSubSection("Drums and Sheaves") {
             DrumsAndSheavesSection(inspectionAndTesting?.drumsAndSheaves, viewModel)
         }
-        Divider()
+        HorizontalDivider()
         ExpandableSubSection("Hoistway and Pit") {
             HoistwayAndPitSection(inspectionAndTesting?.hoistwayAndPit, viewModel)
         }
-        Divider()
+        HorizontalDivider()
         ExpandableSubSection("Car") {
             CarSection(inspectionAndTesting?.car, viewModel)
         }
-        Divider()
+        HorizontalDivider()
         ExpandableSubSection("Governor and Safety Brake") {
             GovernorAndSafetyBrakeSection(inspectionAndTesting?.governorAndSafetyBrake, viewModel)
         }
-        Divider()
+        HorizontalDivider()
         ExpandableSubSection("Counterweight, Guide Rails, and Buffers") {
             CounterweightGuideRailsAndBuffersSection(inspectionAndTesting?.counterweightGuideRailsAndBuffers, viewModel)
         }
-        Divider()
+        HorizontalDivider()
         ExpandableSubSection("Electrical Installation") {
             ElectricalInstallationSection(inspectionAndTesting?.electricalInstallation, viewModel)
         }
