@@ -7,6 +7,9 @@ import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionFinding
 import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionTestResult
 import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.local.entity.Manufacturer
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.ReportType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubReportType
 import com.nakersolutionid.nakersolutionid.domain.model.*
 
 // --- PUBLIC MAPPER ---
@@ -20,16 +23,19 @@ import com.nakersolutionid.nakersolutionid.domain.model.*
  * @param inspectionId The ID of the inspection, typically 0 for a new entry to allow auto-generation.
  * @return The mapped [InspectionWithDetails] object, ready to be inserted into the Room database.
  */
-fun Report.toInspectionWithDetails(inspectionId: Long = 0, extraId: String): InspectionWithDetails {
+fun Report.toInspectionWithDetails(
+    inspectionId: Long = 0,
+    extraId: String
+): InspectionWithDetails {
     // 1. Map the main InspectionEntity from the report's general data.
     val inspectionEntity = InspectionEntity(
         id = inspectionId,
         extraId = extraId,
-        reportType = this.nameOfInspectionType ?: "Laporan Inspeksi",
+        documentType = DocumentType.LAPORAN,
+        reportType = ReportType.EE,
+        subReportType = SubReportType.Elevator,
         equipmentType = this.eskOrElevType ?: "Tidak Diketahui",
         inspectionType = this.typeInspection ?: "Tidak Diketahui",
-        documentType = "Laporan",
-        subReportType = "Elevator",
         ownerName = this.generalData?.ownerName,
         ownerAddress = this.generalData?.ownerAddress,
         usageLocation = this.generalData?.nameUsageLocation,

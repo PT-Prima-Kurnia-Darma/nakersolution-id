@@ -6,6 +6,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.ReportType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubReportType
 
 // --- CORE ENTITIES (TABLES) ---
 
@@ -26,13 +29,13 @@ data class InspectionEntity(
     val extraId: String, // Taken from backend
 
     @ColumnInfo(name = "document_type")
-    val documentType: String, // e.g., "Laporan, BAP, Surat Keterangan Sementara, Sertifikat Sementara"
+    val documentType: DocumentType, // e.g., "Laporan, BAP, Surat Keterangan Sementara, Sertifikat Sementara"
 
     @ColumnInfo(name = "report_type")
-    val reportType: String, // e.g., "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE"
+    val reportType: ReportType, // e.g., "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE"
 
     @ColumnInfo(name = "sub_report_type")
-    val subReportType: String, // e.g., "Elevator, Eskalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
+    val subReportType: SubReportType, // e.g., "Elevator, Eskalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
 
     @ColumnInfo(name = "equipment_type")
     val equipmentType: String, // e.g., "Elevator Penumpang, Elevator Barang, Counterbalance Forklift, Order Picker"
