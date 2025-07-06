@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.features.report.elevator
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -162,27 +163,27 @@ fun ElevatorScreen(
                 viewModel.onSubNameOfInspectionTypeChange(options[selectedIndex])
 
                 item {
-                    ExpandableSection(title = "Main Data", initiallyExpanded = true) {
+                    ExpandableSection(title = "Data Utama", initiallyExpanded = true) {
                         MainData(uiState = uiState, viewModel = viewModel)
                     }
                 }
                 item {
-                    ExpandableSection(title = "General Data") {
+                    ExpandableSection(title = "Data Umum") {
                         GeneralDataSection(generalData = uiState.generalData, viewModel = viewModel)
                     }
                 }
                 item {
-                    ExpandableSection(title = "Technical Document InspectionEntity") {
+                    ExpandableSection(title = "Pemeriksaan Dokumen Teknis") {
                         TechnicalDocumentInspectionSection(technicalDocs = uiState.technicalDocumentInspection, viewModel = viewModel)
                     }
                 }
                 item {
-                    ExpandableSection(title = "InspectionEntity and Testing") {
+                    ExpandableSection(title = "Pemeriksaan dan Pengujian") {
                         InspectionAndTestingItems(inspectionAndTesting = uiState.inspectionAndTesting, viewModel = viewModel)
                     }
                 }
                 item {
-                    ExpandableSection(title = "Conclusion") {
+                    ExpandableSection(title = "Kesimpulan") {
                         ConclusionSection(conclusion = uiState.conclusion, viewModel = viewModel)
                     }
                 }
@@ -205,8 +206,12 @@ fun ExpandableSection(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .animateContentSize(animationSpec = tween(150)), // Faster animation
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = LinearOutSlowInEasing
+                )
+            )
     ) {
         Column(
             modifier = Modifier
@@ -235,7 +240,7 @@ fun ExpandableSection(
                 }
             }
             AnimatedVisibility(
-                visible = expanded,
+                visible = expanded
             ) {
                 Column(modifier = Modifier.padding(top = 8.dp)) {
                     HorizontalDivider()
@@ -261,7 +266,10 @@ private fun ExpandableSubSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .animateContentSize(animationSpec = tween(150)) // Faster animation
+            .animateContentSize(animationSpec = tween(
+                durationMillis = 250,
+                easing = LinearOutSlowInEasing
+            )) // Faster animation
     ) {
         Row(
             modifier = Modifier
@@ -298,7 +306,7 @@ fun SectionSubHeader(title: String, style: TextStyle = MaterialTheme.typography.
         text = title,
         style = style,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
     )
 }
 
@@ -324,6 +332,7 @@ fun FormTextField(
 @Composable
 fun ResultStatusInput(
     label: String,
+    provision: String,
     resultStatus: ResultStatusUiState?,
     onValueChange: (String?, Boolean?) -> Unit
 ) {
@@ -337,6 +346,7 @@ fun ResultStatusInput(
             value = resultStatus?.result.orEmpty(),
             onValueChange = { onValueChange(it, resultStatus?.status) },
             label = { Text(label) },
+            supportingText = { Text(text = "Ketentuan: $provision") },
             modifier = Modifier.weight(1f),
             shape = MaterialTheme.shapes.medium,
         )
@@ -360,28 +370,28 @@ fun ResultStatusInput(
 @Composable
 fun MainData(uiState: ElevatorUiState?, viewModel: ReportViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        FormTextField("InspectionEntity Type", uiState?.typeInspection) { viewModel.onTypeInspectionChange(it) }
-        FormTextField("Elevator Type", uiState?.eskOrElevType) { viewModel.onEskOrElevTypeChange(it) }
+        FormTextField("Tipe Inspeksi", uiState?.typeInspection) { viewModel.onTypeInspectionChange(it) }
+        FormTextField("Tipe Elevator atau Eskalator", uiState?.eskOrElevType) { viewModel.onEskOrElevTypeChange(it) }
     }
 }
 
 @Composable
 fun GeneralDataSection(generalData: GeneralDataUiState?, viewModel: ReportViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        FormTextField("Owner Name", generalData?.ownerName) { viewModel.onOwnerNameChange(it) }
-        FormTextField("Owner Address", generalData?.ownerAddress) { viewModel.onOwnerAddressChange(it) }
-        FormTextField("Usage Location", generalData?.nameUsageLocation) { viewModel.onNameUsageLocationChange(it) }
-        FormTextField("Usage Address", generalData?.addressUsageLocation) { viewModel.onAddressUsageLocationChange(it) }
-        FormTextField("Manufacturer/Installer", generalData?.manufacturerOrInstaller) { viewModel.onManufacturerOrInstallerChange(it) }
-        FormTextField("Elevator Type", generalData?.elevatorType) { viewModel.onElevatorTypeChange(it) }
-        FormTextField("Brand/Type", generalData?.brandOrType) { viewModel.onBrandOrTypeChange(it) }
-        FormTextField("Country and Year", generalData?.countryAndYear) { viewModel.onCountryAndYearChange(it) }
-        FormTextField("Serial Number", generalData?.serialNumber) { viewModel.onSerialNumberChange(it) }
-        FormTextField("Capacity", generalData?.capacity, keyboardType = KeyboardType.Number) { viewModel.onCapacityChange(it) }
-        FormTextField("Speed", generalData?.speed, keyboardType = KeyboardType.Number) { viewModel.onSpeedChange(it) }
-        FormTextField("Floors Served", generalData?.floorsServed, keyboardType = KeyboardType.Number) { viewModel.onFloorsServedChange(it) }
-        FormTextField("Permit Number", generalData?.permitNumber) { viewModel.onPermitNumberChange(it) }
-        FormTextField("InspectionEntity Date", generalData?.inspectionDate) { viewModel.onInspectionDateChange(it) }
+        FormTextField("Nama Perusahaan", generalData?.ownerName) { viewModel.onOwnerNameChange(it) }
+        FormTextField("Alamat Perusahaan", generalData?.ownerAddress) { viewModel.onOwnerAddressChange(it) }
+        FormTextField("Lokasi Pemakaian", generalData?.nameUsageLocation) { viewModel.onNameUsageLocationChange(it) }
+        FormTextField("Alamat Pemakaian", generalData?.addressUsageLocation) { viewModel.onAddressUsageLocationChange(it) }
+        FormTextField("Perusahaan Pembuat / Pemasang", generalData?.manufacturerOrInstaller) { viewModel.onManufacturerOrInstallerChange(it) }
+        FormTextField("Jenis Elevator", generalData?.elevatorType) { viewModel.onElevatorTypeChange(it) }
+        FormTextField("Merk / Type", generalData?.brandOrType) { viewModel.onBrandOrTypeChange(it) }
+        FormTextField("Negara / Tahun Pembuatan", generalData?.countryAndYear) { viewModel.onCountryAndYearChange(it) }
+        FormTextField("No. Seri / No. Unit", generalData?.serialNumber) { viewModel.onSerialNumberChange(it) }
+        FormTextField("Kapasitas Angkut (Orang / Kg)", generalData?.capacity, keyboardType = KeyboardType.Number) { viewModel.onCapacityChange(it) }
+        FormTextField("Kecepatan Angkut (m/s)", generalData?.speed, keyboardType = KeyboardType.Number) { viewModel.onSpeedChange(it) }
+        FormTextField("Melayani (Lantai)", generalData?.floorsServed, keyboardType = KeyboardType.Number) { viewModel.onFloorsServedChange(it) }
+        FormTextField("No. Izin Pengesahan", generalData?.permitNumber) { viewModel.onPermitNumberChange(it) }
+        FormTextField("Tanggal Pemeriksaan", generalData?.inspectionDate) { viewModel.onInspectionDateChange(it) }
     }
 }
 
@@ -391,56 +401,52 @@ fun TechnicalDocumentInspectionSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        FormTextField("Design Drawing", technicalDocs?.designDrawing) { viewModel.onDesignDrawingChange(it) }
-        FormTextField("Technical Calculation", technicalDocs?.technicalCalculation) { viewModel.onTechnicalCalculationChange(it) }
-        FormTextField("Material Certificate", technicalDocs?.materialCertificate) { viewModel.onMaterialCertificateChange(it) }
-        FormTextField("Control Panel Diagram", technicalDocs?.controlPanelDiagram) { viewModel.onControlPanelDiagramChange(it) }
-        FormTextField("As-Built Drawing", technicalDocs?.asBuiltDrawing) { viewModel.onAsBuiltDrawingChange(it) }
-        FormTextField("Component Certificates", technicalDocs?.componentCertificates) { viewModel.onComponentCertificatesChange(it) }
-        FormTextField("Safe Work Procedure", technicalDocs?.safeWorkProcedure) { viewModel.onSafeWorkProcedureChange(it) }
+        FormTextField("Gambar Rencana", technicalDocs?.designDrawing) { viewModel.onDesignDrawingChange(it) }
+        FormTextField("Perhitungan Teknis", technicalDocs?.technicalCalculation) { viewModel.onTechnicalCalculationChange(it) }
+        FormTextField("Sertifikat Bahan", technicalDocs?.materialCertificate) { viewModel.onMaterialCertificateChange(it) }
+        FormTextField("Diagram Panel Pengendali", technicalDocs?.controlPanelDiagram) { viewModel.onControlPanelDiagramChange(it) }
+        FormTextField("Dokumen Gambar Terpasang (As Built Drawing)", technicalDocs?.asBuiltDrawing) { viewModel.onAsBuiltDrawingChange(it) }
+        FormTextField("Sertifikat Bagian-Bagian atau Perlengkapan", technicalDocs?.componentCertificates) { viewModel.onComponentCertificatesChange(it) }
+        FormTextField("Prosedur Kerja Aman", technicalDocs?.safeWorkProcedure) { viewModel.onSafeWorkProcedureChange(it) }
     }
 }
 
-/**
- * This composable is now optimized. It renders a list of expandable subsections,
- * ensuring that the content of each subsection is only composed when it's expanded by the user.
- * This prevents UI jank when the main "InspectionEntity and Testing" card is opened.
- */
+
 @Composable
 fun InspectionAndTestingItems(
     inspectionAndTesting: InspectionAndTestingUiState?,
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        ExpandableSubSection("Machine Room and Machinery") {
+        ExpandableSubSection("Mesin") {
             MachineRoomAndMachinerySection(inspectionAndTesting?.machineRoomAndMachinery, viewModel)
         }
         HorizontalDivider()
-        ExpandableSubSection("Suspension Ropes and Belts") {
+        ExpandableSubSection("Tali / Sabuk Penggantung") {
             SuspensionRopesAndBeltsSection(inspectionAndTesting?.suspensionRopesAndBelts, viewModel)
         }
         HorizontalDivider()
-        ExpandableSubSection("Drums and Sheaves") {
+        ExpandableSubSection("Teromol") {
             DrumsAndSheavesSection(inspectionAndTesting?.drumsAndSheaves, viewModel)
         }
         HorizontalDivider()
-        ExpandableSubSection("Hoistway and Pit") {
+        ExpandableSubSection("Bangunan Ruang Luncur, Ruang Atas dan Lekuk Dasar") {
             HoistwayAndPitSection(inspectionAndTesting?.hoistwayAndPit, viewModel)
         }
         HorizontalDivider()
-        ExpandableSubSection("Car") {
+        ExpandableSubSection("Kereta") {
             CarSection(inspectionAndTesting?.car, viewModel)
         }
         HorizontalDivider()
-        ExpandableSubSection("Governor and Safety Brake") {
+        ExpandableSubSection("Governor dan Rem Pengaman Kereta") {
             GovernorAndSafetyBrakeSection(inspectionAndTesting?.governorAndSafetyBrake, viewModel)
         }
         HorizontalDivider()
-        ExpandableSubSection("Counterweight, Guide Rails, and Buffers") {
+        ExpandableSubSection("Bobot Imbang, Rel Pemandu, dan Peredam") {
             CounterweightGuideRailsAndBuffersSection(inspectionAndTesting?.counterweightGuideRailsAndBuffers, viewModel)
         }
         HorizontalDivider()
-        ExpandableSubSection("Electrical Installation") {
+        ExpandableSubSection("Instalasi Listrik") {
             ElectricalInstallationSection(inspectionAndTesting?.electricalInstallation, viewModel)
         }
     }
@@ -452,29 +458,46 @@ fun MachineRoomAndMachinerySection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Machine Mounting", machineRoom?.machineMounting) { r, s -> viewModel.onMachineMountingChange(r, s) }
-        ResultStatusInput("Mechanical Brake", machineRoom?.mechanicalBrake) { r, s -> viewModel.onMechanicalBrakeChange(r, s) }
-        ResultStatusInput("Electrical Brake", machineRoom?.electricalBrake) { r, s -> viewModel.onElectricalBrakeChange(r, s) }
-        ResultStatusInput("Machine Room Construction", machineRoom?.machineRoomConstruction) { r, s -> viewModel.onMachineRoomConstructionChange(r, s) }
-        ResultStatusInput("Machine Room Clearance", machineRoom?.machineRoomClearance) { r, s -> viewModel.onMachineRoomClearanceChange(r, s) }
-        ResultStatusInput("Machine Room Implementation", machineRoom?.machineRoomImplementation) { r, s -> viewModel.onMachineRoomImplementationChange(r, s) }
-        ResultStatusInput("Ventilation", machineRoom?.ventilation) { r, s -> viewModel.onMachineRoomVentilationChange(r, s) }
-        ResultStatusInput("Machine Room Door", machineRoom?.machineRoomDoor) { r, s -> viewModel.onMachineRoomDoorChange(r, s) }
-        ResultStatusInput("Main Power Panel Position", machineRoom?.mainPowerPanelPosition) { r, s -> viewModel.onMainPowerPanelPositionChange(r, s) }
-        ResultStatusInput("Rotating Parts Guard", machineRoom?.rotatingPartsGuard) { r, s -> viewModel.onRotatingPartsGuardChange(r, s) }
-        ResultStatusInput("Rope Hole Guard", machineRoom?.ropeHoleGuard) { r, s -> viewModel.onRopeHoleGuardChange(r, s) }
-        ResultStatusInput("Machine Room Access Ladder", machineRoom?.machineRoomAccessLadder) { r, s -> viewModel.onMachineRoomAccessLadderChange(r, s) }
-        ResultStatusInput("Floor Level Difference", machineRoom?.floorLevelDifference) { r, s -> viewModel.onFloorLevelDifferenceChange(r, s) }
-        ResultStatusInput("Fire Extinguisher", machineRoom?.fireExtinguisher) { r, s -> viewModel.onMachineRoomFireExtinguisherChange(r, s) }
-        ResultStatusInput("Emergency Stop Switch", machineRoom?.emergencyStopSwitch) { r, s -> viewModel.onMachineRoomEmergencyStopSwitchChange(r, s) }
+        ResultStatusInput("Dudukan mesin", "Kuat", machineRoom?.machineMounting) { r, s -> viewModel.onMachineMountingChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Rem mekanik", "Ada, berfungsi, baik", machineRoom?.mechanicalBrake) { r, s -> viewModel.onMechanicalBrakeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Rem elektrik (brake switch)", "Ada, berfungsi, baik", machineRoom?.electricalBrake) { r, s -> viewModel.onElectricalBrakeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Konstruksi kamar mesin", "Bebas air, Kuat, Tahan Api", machineRoom?.machineRoomConstruction) { r, s -> viewModel.onMachineRoomConstructionChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ruang bebas kamar mesin", "Depan pengendali ≥ 700 mm, Depan brg bergerak ≥ 500x600 mm", machineRoom?.machineRoomClearance) { r, s -> viewModel.onMachineRoomClearanceChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Penerapan kamar mesin", "Area kerja ≥ 100 lux, Di antara area kerja ≥ 50 lux", machineRoom?.machineRoomImplementation) { r, s -> viewModel.onMachineRoomImplementationChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ventilasi/pendingin ruangan", "Ada, sesuai spesifikasi", machineRoom?.ventilation) { r, s -> viewModel.onMachineRoomVentilationChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pintu kamar mesin", "Membuka keluar, tahan api, lebar ≥ 75 cm, tinggi 2 Meter", machineRoom?.machineRoomDoor) { r, s -> viewModel.onMachineRoomDoorChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Posisi panel hubung bagi listrik", "Di kamar mesin", machineRoom?.mainPowerPanelPosition) { r, s -> viewModel.onMainPowerPanelPositionChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Alat pelindung benda berputar", "Ada", machineRoom?.rotatingPartsGuard) { r, s -> viewModel.onRotatingPartsGuardChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pelindung lubang tali baja/sabuk penggantung", "Tinggi ≥ 50mm", machineRoom?.ropeHoleGuard) { r, s -> viewModel.onRopeHoleGuardChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tangga menuju kamar mesin", "Permanen, pagar pengaman, tahan api", machineRoom?.machineRoomAccessLadder) { r, s -> viewModel.onMachineRoomAccessLadderChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Perbedaan ketinggian lantai > 500 mm", "Tersedia tangga dan pagar pengaman", machineRoom?.floorLevelDifference) { r, s -> viewModel.onFloorLevelDifferenceChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tersedia alat pemadam api ringan", "Isi ≥ 5kg", machineRoom?.fireExtinguisher) { r, s -> viewModel.onMachineRoomFireExtinguisherChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Terdapat emergency stop switch", "Terpasang di dekat dengan panel kontrol", machineRoom?.emergencyStopSwitch) { r, s -> viewModel.onMachineRoomEmergencyStopSwitchChange(r, s) }
 
-        Spacer(modifier = Modifier.height(12.dp))
-        SectionSubHeader(title = "Machine Roomless", style = MaterialTheme.typography.titleSmall)
-        ResultStatusInput("Panel Placement", machineRoom?.machineRoomless?.panelPlacement) { r, s -> viewModel.onPanelPlacementChange(r, s) }
-        ResultStatusInput("Lighting Work Area", machineRoom?.machineRoomless?.lightingWorkArea) { r, s -> viewModel.onLightingWorkAreaChange(r, s) }
-        ResultStatusInput("Lighting Between Work Area", machineRoom?.machineRoomless?.lightingBetweenWorkArea) { r, s -> viewModel.onLightingBetweenWorkAreaChange(r, s) }
-        ResultStatusInput("Manual Brake Release", machineRoom?.machineRoomless?.manualBrakeRelease) { r, s -> viewModel.onManualBrakeReleaseChange(r, s) }
-        ResultStatusInput("Fire Extinguisher Placement", machineRoom?.machineRoomless?.fireExtinguisherPlacement) { r, s -> viewModel.onFireExtinguisherPlacementChange(r, s) }
+        SectionSubHeader(title = "Elevator Tanpa Kamar Mesin (Roomless)", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Penempatan panel kontrol dan PHB listrik", "Di lantai yang sama, jarak tidak lebih dari 5000 mm", machineRoom?.machineRoomless?.panelPlacement) { r, s -> viewModel.onPanelPlacementChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Intensitas cahaya area kerja", "≥ 100 lux", machineRoom?.machineRoomless?.lightingWorkArea) { r, s -> viewModel.onLightingWorkAreaChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Intensitas cahaya diantara area kerja", "≥ 50 lux", machineRoom?.machineRoomless?.lightingBetweenWorkArea) { r, s -> viewModel.onLightingBetweenWorkAreaChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Alat pembuka rem (manual)", "Ada dan terpasang dengan baik", machineRoom?.machineRoomless?.manualBrakeRelease) { r, s -> viewModel.onManualBrakeReleaseChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Penempatan APAR", "Dekat pintu elevator paling atas", machineRoom?.machineRoomless?.fireExtinguisherPlacement) { r, s -> viewModel.onFireExtinguisherPlacementChange(r, s) }
     }
 }
 
@@ -484,13 +507,19 @@ fun SuspensionRopesAndBeltsSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Condition", suspension?.condition) { r, s -> viewModel.onSuspensionRopeConditionChange(r, s) }
-        ResultStatusInput("Chain Usage", suspension?.chainUsage) { r, s -> viewModel.onChainUsageChange(r, s) }
-        ResultStatusInput("Safety Factor", suspension?.safetyFactor) { r, s -> viewModel.onSafetyFactorChange(r, s) }
-        ResultStatusInput("Rope with Counterweight", suspension?.ropeWithCounterweight) { r, s -> viewModel.onRopeWithCounterweightChange(r, s) }
-        ResultStatusInput("Rope without Counterweight", suspension?.ropeWithoutCounterweight) { r, s -> viewModel.onRopeWithoutCounterweightChange(r, s) }
-        ResultStatusInput("Belt", suspension?.belt) { r, s -> viewModel.onBeltChange(r, s) }
-        ResultStatusInput("Slack Rope Device", suspension?.slackRopeDevice) { r, s -> viewModel.onSlackRopeDeviceChange(r, s) }
+        ResultStatusInput("Kondisi tali/sabuk penggantung", "Tidak memiliki sambungan, kuat, luwes, spesifikasi seragam", suspension?.condition) { r, s -> viewModel.onSuspensionRopeConditionChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Penggunaan Rantai", "Tidak menggunakan rantai", suspension?.chainUsage) { r, s -> viewModel.onChainUsageChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Faktor keamanan tali/sabuk", "Sesuai standar kecepatan (8-12x kapasitas angkut)", suspension?.safetyFactor) { r, s -> viewModel.onSafetyFactorChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tali penggantung (dengan bobot imbang)", "≥ 6mm, ≥ 3 jalur", suspension?.ropeWithCounterweight) { r, s -> viewModel.onRopeWithCounterweightChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tali penggantung (tanpa bobot imbang)", "≥ 6mm, ≥ 2 jalur", suspension?.ropeWithoutCounterweight) { r, s -> viewModel.onRopeWithoutCounterweightChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Sabuk", "≥ 3 x 30 mm, ≥ 2 jalur", suspension?.belt) { r, s -> viewModel.onBeltChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Alat pengaman (tanpa bobot imbang)", "Switch otomatis berfungsi, motor berhenti", suspension?.slackRopeDevice) { r, s -> viewModel.onSlackRopeDeviceChange(r, s) }
     }
 }
 
@@ -500,9 +529,11 @@ fun DrumsAndSheavesSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Drum Grooves", drums?.drumGrooves) { r, s -> viewModel.onDrumGroovesChange(r, s) }
-        ResultStatusInput("Passenger Drum Diameter", drums?.passengerDrumDiameter) { r, s -> viewModel.onPassengerDrumDiameterChange(r, s) }
-        ResultStatusInput("Governor Drum Diameter", drums?.governorDrumDiameter) { r, s -> viewModel.onGovernorDrumDiameterChange(r, s) }
+        ResultStatusInput("Alur teromol", "Ada", drums?.drumGrooves) { r, s -> viewModel.onDrumGroovesChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Diameter teromol penumpang/barang", "40 : 1", drums?.passengerDrumDiameter) { r, s -> viewModel.onPassengerDrumDiameterChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Diameter teromol Governor", "25 : 1", drums?.governorDrumDiameter) { r, s -> viewModel.onGovernorDrumDiameterChange(r, s) }
     }
 }
 
@@ -512,26 +543,45 @@ fun HoistwayAndPitSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Construction", hoistway?.construction) { r, s -> viewModel.onHoistwayConstructionChange(r, s) }
-        ResultStatusInput("Walls", hoistway?.walls) { r, s -> viewModel.onHoistwayWallsChange(r, s) }
-        ResultStatusInput("Inclined Elevator Track Bed", hoistway?.inclinedElevatorTrackBed) { r, s -> viewModel.onInclinedElevatorTrackBedChange(r, s) }
-        ResultStatusInput("Cleanliness", hoistway?.cleanliness) { r, s -> viewModel.onHoistwayCleanlinessChange(r, s) }
-        ResultStatusInput("Lighting", hoistway?.lighting) { r, s -> viewModel.onHoistwayLightingChange(r, s) }
-        ResultStatusInput("Emergency Door (Non-Stop)", hoistway?.emergencyDoorNonStop) { r, s -> viewModel.onEmergencyDoorNonStopChange(r, s) }
-        ResultStatusInput("Emergency Door Size", hoistway?.emergencyDoorSize) { r, s -> viewModel.onEmergencyDoorSizeChange(r, s) }
-        ResultStatusInput("Emergency Door Safety Switch", hoistway?.emergencyDoorSafetySwitch) { r, s -> viewModel.onEmergencyDoorSafetySwitchChange(r, s) }
-        ResultStatusInput("Emergency Door Bridge", hoistway?.emergencyDoorBridge) { r, s -> viewModel.onEmergencyDoorBridgeChange(r, s) }
-        ResultStatusInput("Car Top Clearance", hoistway?.carTopClearance) { r, s -> viewModel.onCarTopClearanceChange(r, s) }
-        ResultStatusInput("Pit Clearance", hoistway?.pitClearance) { r, s -> viewModel.onPitClearanceChange(r, s) }
-        ResultStatusInput("Pit Ladder", hoistway?.pitLadder) { r, s -> viewModel.onPitLadderChange(r, s) }
-        ResultStatusInput("Pit Below Working Area", hoistway?.pitBelowWorkingArea) { r, s -> viewModel.onPitBelowWorkingAreaChange(r, s) }
-        ResultStatusInput("Pit Access Switch", hoistway?.pitAccessSwitch) { r, s -> viewModel.onPitAccessSwitchChange(r, s) }
-        ResultStatusInput("Pit Screen", hoistway?.pitScreen) { r, s -> viewModel.onPitScreenChange(r, s) }
-        ResultStatusInput("Hoistway Door Leaf", hoistway?.hoistwayDoorLeaf) { r, s -> viewModel.onHoistwayDoorLeafChange(r, s) }
-        ResultStatusInput("Hoistway Door Interlock", hoistway?.hoistwayDoorInterlock) { r, s -> viewModel.onHoistwayDoorInterlockChange(r, s) }
-        ResultStatusInput("Floor Leveling", hoistway?.floorLeveling) { r, s -> viewModel.onFloorLevelingChange(r, s) }
-        ResultStatusInput("Hoistway Separator Beam", hoistway?.hoistwaySeparatorBeam) { r, s -> viewModel.onHoistwaySeparatorBeamChange(r, s) }
-        ResultStatusInput("Inclined Elevator Stairs", hoistway?.inclinedElevatorStairs) { r, s -> viewModel.onInclinedElevatorStairsChange(r, s) }
+        ResultStatusInput("Konstruksi", "Kuat, kokoh, tahan api, dan tertutup rapat", hoistway?.construction) { r, s -> viewModel.onHoistwayConstructionChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Dinding", "Dapat dilalui orang dengan tinggi ≥ 2000 mm", hoistway?.walls) { r, s -> viewModel.onHoistwayWallsChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Landasan jalur (elevator miring)", "Kuat dan tahan cuaca", hoistway?.inclinedElevatorTrackBed) { r, s -> viewModel.onInclinedElevatorTrackBedChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Kebersihan", "Bersih, bebas dari instalasi dan peralatan lain", hoistway?.cleanliness) { r, s -> viewModel.onHoistwayCleanlinessChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Penerangan", "≥ 100 lux", hoistway?.lighting) { r, s -> viewModel.onHoistwayLightingChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pintu darurat (non stop)", "Jarak maks 1100 mm, tinggi ambang maks 300 mm", hoistway?.emergencyDoorNonStop) { r, s -> viewModel.onEmergencyDoorNonStopChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ukuran pintu darurat", "Lebar 700 mm, tinggi 1400 mm, membuka keluar", hoistway?.emergencyDoorSize) { r, s -> viewModel.onEmergencyDoorSizeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Saklar pengaman pintu darurat", "Tersedia", hoistway?.emergencyDoorSafetySwitch) { r, s -> viewModel.onEmergencyDoorSafetySwitchChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Jembatan bantu dari pintu darurat", "Tersedia, lebar ≥ 500 mm dan berpagar", hoistway?.emergencyDoorBridge) { r, s -> viewModel.onEmergencyDoorBridgeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ruang bebas diatas sangkar", "≥ 500 mm", hoistway?.carTopClearance) { r, s -> viewModel.onCarTopClearanceChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ruang bebas lekuk dasar (pit)", "≥ 500 mm (rumah tinggal ≥ 300 mm)", hoistway?.pitClearance) { r, s -> viewModel.onPitClearanceChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tangga lekuk dasar", "Tersedia mulai dari kedalaman 1000 mm", hoistway?.pitLadder) { r, s -> viewModel.onPitLadderChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Syarat pit (bukan di atas tanah)", "Kekuatan lantai ≥ 500 N/m², tersedia rem pengaman", hoistway?.pitBelowWorkingArea) { r, s -> viewModel.onPitBelowWorkingAreaChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Akses menuju lekuk dasar", "Tersedia saklar pengaman (tinggi 1500mm, 500mm dari lantai pit)", hoistway?.pitAccessSwitch) { r, s -> viewModel.onPitAccessSwitchChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Lekuk dasar antara 2 elevator", "Tersedia pit screen (tinggi 300mm dari dasar pit s/d 3000mm keatas)", hoistway?.pitScreen) { r, s -> viewModel.onPitScreenChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Daun pintu ruang luncur", "Tahan api ≥ 1 jam, menutup rapat", hoistway?.hoistwayDoorLeaf) { r, s -> viewModel.onHoistwayDoorLeafChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Interlock/kunci kait pintu", "Tersedia, menutup rapat, pintu terbuka hanya di zona henti", hoistway?.hoistwayDoorInterlock) { r, s -> viewModel.onHoistwayDoorInterlockChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Kerataan lantai", "< 10 mm", hoistway?.floorLeveling) { r, s -> viewModel.onFloorLevelingChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Sekat ruang luncur (2 sangkar)", "> 500 mm", hoistway?.hoistwaySeparatorBeam) { r, s -> viewModel.onHoistwaySeparatorBeamChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Elevator miring", "Dipasang tangga sepanjang rel", hoistway?.inclinedElevatorStairs) { r, s -> viewModel.onInclinedElevatorStairsChange(r, s) }
     }
 }
 
@@ -541,46 +591,78 @@ fun CarSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Frame", car?.frame) { r, s -> viewModel.onCarFrameChange(r, s) }
-        ResultStatusInput("Body", car?.body) { r, s -> viewModel.onCarBodyChange(r, s) }
-        ResultStatusInput("Wall Height", car?.wallHeight) { r, s -> viewModel.onCarWallHeightChange(r, s) }
-        ResultStatusInput("Floor Area", car?.floorArea) { r, s -> viewModel.onCarFloorAreaChange(r, s) }
-        ResultStatusInput("Car Area Expansion", car?.carAreaExpansion) { r, s -> viewModel.onCarAreaExpansionChange(r, s) }
-        ResultStatusInput("Car Door", car?.carDoor) { r, s -> viewModel.onCarDoorChange(r, s) }
-        ResultStatusInput("Car to Beam Clearance", car?.carToBeamClearance) { r, s -> viewModel.onCarToBeamClearanceChange(r, s) }
-        ResultStatusInput("Alarm Bell", car?.alarmBell) { r, s -> viewModel.onCarAlarmBellChange(r, s) }
-        ResultStatusInput("Backup Power (ARD)", car?.backupPowerARD) { r, s -> viewModel.onCarBackupPowerARDChange(r, s) }
-        ResultStatusInput("Intercom", car?.intercom) { r, s -> viewModel.onCarIntercomChange(r, s) }
-        ResultStatusInput("Ventilation", car?.ventilation) { r, s -> viewModel.onCarVentilationChange(r, s) }
-        ResultStatusInput("Emergency Lighting", car?.emergencyLighting) { r, s -> viewModel.onCarEmergencyLightingChange(r, s) }
-        ResultStatusInput("Operating Panel", car?.operatingPanel) { r, s -> viewModel.onCarOperatingPanelChange(r, s) }
-        ResultStatusInput("Car Position Indicator", car?.carPositionIndicator) { r, s -> viewModel.onCarPositionIndicatorChange(r, s) }
-        ResultStatusInput("Car Roof Strength", car?.carRoofStrength) { r, s -> viewModel.onCarRoofStrengthChange(r, s) }
-        ResultStatusInput("Car Top Emergency Exit", car?.carTopEmergencyExit) { r, s -> viewModel.onCarTopEmergencyExitChange(r, s) }
-        ResultStatusInput("Car Side Emergency Exit", car?.carSideEmergencyExit) { r, s -> viewModel.onCarSideEmergencyExitChange(r, s) }
-        ResultStatusInput("Car Top Guard Rail", car?.carTopGuardRail) { r, s -> viewModel.onCarTopGuardRailChange(r, s) }
-        ResultStatusInput("Guard Rail Height (300-850mm)", car?.guardRailHeight300to850) { r, s -> viewModel.onGuardRailHeight300to850Change(r, s) }
-        ResultStatusInput("Guard Rail Height (>850mm)", car?.guardRailHeightOver850) { r, s -> viewModel.onGuardRailHeightOver850Change(r, s) }
-        ResultStatusInput("Car Top Lighting", car?.carTopLighting) { r, s -> viewModel.onCarTopLightingChange(r, s) }
-        ResultStatusInput("Manual Operation Buttons", car?.manualOperationButtons) { r, s -> viewModel.onManualOperationButtonsChange(r, s) }
-        ResultStatusInput("Car Interior", car?.carInterior) { r, s -> viewModel.onCarInteriorChange(r, s) }
+        ResultStatusInput("Kerangka", "Dari baja dan kuat", car?.frame) { r, s -> viewModel.onCarFrameChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Badan Kereta", "Tertutup dan ada pintu", car?.body) { r, s -> viewModel.onCarBodyChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tinggi dinding", "≥ 2000 mm", car?.wallHeight) { r, s -> viewModel.onCarWallHeightChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Luas lantai", "Sesuai jumlah penumpang", car?.floorArea) { r, s -> viewModel.onCarFloorAreaChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Perluasan luas kereta", "Pasien max 6%, Barang max 14%", car?.carAreaExpansion) { r, s -> viewModel.onCarAreaExpansionChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pintu kereta", "Kokoh, aman, otomatis", car?.carDoor) { r, s -> viewModel.onCarDoorChange(r, s) }
 
-        Spacer(modifier = Modifier.height(12.dp))
-        SectionSubHeader(title = "Car Door Specs", style = MaterialTheme.typography.titleSmall)
-        ResultStatusInput("Size", car?.carDoorSpecs?.size) { r, s -> viewModel.onCarDoorSizeChange(r, s) }
-        ResultStatusInput("Lock and Switch", car?.carDoorSpecs?.lockAndSwitch) { r, s -> viewModel.onCarDoorLockAndSwitchChange(r, s) }
-        ResultStatusInput("Sill Clearance", car?.carDoorSpecs?.sillClearance) { r, s -> viewModel.onCarDoorSillClearanceChange(r, s) }
+        SectionSubHeader(title = "Syarat Pintu Kereta", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Ukuran", "≥ 700 x 2000 mm", car?.carDoorSpecs?.size) { r, s -> viewModel.onCarDoorSizeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Kunci kait dan saklar pengaman", "Ada", car?.carDoorSpecs?.lockAndSwitch) { r, s -> viewModel.onCarDoorLockAndSwitchChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Celah antar ambang pintu", "28 ≤ celah ≤ 32 mm", car?.carDoorSpecs?.sillClearance) { r, s -> viewModel.onCarDoorSillClearanceChange(r, s) }
 
-        Spacer(modifier = Modifier.height(12.dp))
-        SectionSubHeader(title = "Car Signage", style = MaterialTheme.typography.titleSmall)
-        ResultStatusInput("Manufacturer Name", car?.carSignage?.manufacturerName) { r, s -> viewModel.onCarSignageManufacturerNameChange(r, s) }
-        ResultStatusInput("Load Capacity", car?.carSignage?.loadCapacity) { r, s -> viewModel.onCarSignageLoadCapacityChange(r, s) }
-        ResultStatusInput("No Smoking Sign", car?.carSignage?.noSmokingSign) { r, s -> viewModel.onCarSignageNoSmokingSignChange(r, s) }
-        ResultStatusInput("Overload Indicator", car?.carSignage?.overloadIndicator) { r, s -> viewModel.onCarSignageOverloadIndicatorChange(r, s) }
-        ResultStatusInput("Door Open/Close Buttons", car?.carSignage?.doorOpenCloseButtons) { r, s -> viewModel.onCarSignageDoorOpenCloseButtonsChange(r, s) }
-        ResultStatusInput("Floor Buttons", car?.carSignage?.floorButtons) { r, s -> viewModel.onCarSignageFloorButtonsChange(r, s) }
-        ResultStatusInput("Alarm Button", car?.carSignage?.alarmButton) { r, s -> viewModel.onCarSignageAlarmButtonChange(r, s) }
-        ResultStatusInput("Two-Way Intercom", car?.carSignage?.twoWayIntercom) { r, s -> viewModel.onCarSignageTwoWayIntercomChange(r, s) }
+        SectionSubHeader(title = "Kelengkapan Kereta", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Sisi luar kereta dg balok (2 kereta)", "≥ 250 mm", car?.carToBeamClearance) { r, s -> viewModel.onCarToBeamClearanceChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Alarm Bell", "Tersedia", car?.alarmBell) { r, s -> viewModel.onCarAlarmBellChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Sumber tenaga cadangan (ARD)", "Tersedia", car?.backupPowerARD) { r, s -> viewModel.onCarBackupPowerARDChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Intercom", "Tersedia", car?.intercom) { r, s -> viewModel.onCarIntercomChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ventilasi", "Tersedia", car?.ventilation) { r, s -> viewModel.onCarVentilationChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Penerangan darurat", "Tersedia", car?.emergencyLighting) { r, s -> viewModel.onCarEmergencyLightingChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Panel operasi", "Tersedia", car?.operatingPanel) { r, s -> viewModel.onCarOperatingPanelChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Petunjuk posisi sangkar", "Tersedia", car?.carPositionIndicator) { r, s -> viewModel.onCarPositionIndicatorChange(r, s) }
+
+        SectionSubHeader(title = "Keterangan Dalam Kereta (Signage)", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Nama Pembuat", "Tersedia", car?.carSignage?.manufacturerName) { r, s -> viewModel.onCarSignageManufacturerNameChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Kapasitas Beban", "Tersedia", car?.carSignage?.loadCapacity) { r, s -> viewModel.onCarSignageLoadCapacityChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Rambu dilarang merokok", "Tersedia", car?.carSignage?.noSmokingSign) { r, s -> viewModel.onCarSignageNoSmokingSignChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Indikasi beban lebih", "Tersedia", car?.carSignage?.overloadIndicator) { r, s -> viewModel.onCarSignageOverloadIndicatorChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tombol buka dan tutup", "Tersedia", car?.carSignage?.doorOpenCloseButtons) { r, s -> viewModel.onCarSignageDoorOpenCloseButtonsChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tombol lantai pemberhentian", "Tersedia", car?.carSignage?.floorButtons) { r, s -> viewModel.onCarSignageFloorButtonsChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tombol bell alarm", "Tersedia", car?.carSignage?.alarmButton) { r, s -> viewModel.onCarSignageAlarmButtonChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Intercom dua arah", "Tersedia", car?.carSignage?.twoWayIntercom) { r, s -> viewModel.onCarSignageTwoWayIntercomChange(r, s) }
+
+        SectionSubHeader(title = "Atap Kereta dan Interior", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Kekuatan atap kereta", "≥ 200 kg", car?.carRoofStrength) { r, s -> viewModel.onCarRoofStrengthChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pintu darurat atap kereta", "Berengsel, saklar pengaman, buka dari luar, ukuran ≥ 350x450mm", car?.carTopEmergencyExit) { r, s -> viewModel.onCarTopEmergencyExitChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pintu darurat samping kereta", "Berengsel, buka dari luar, saklar pengaman, ukuran ≥ 350x1800mm", car?.carSideEmergencyExit) { r, s -> viewModel.onCarSideEmergencyExitChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pagar pengaman atap kereta", "Warna kuning, kekuatan ≥ 90 kg", car?.carTopGuardRail) { r, s -> viewModel.onCarTopGuardRailChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ukuran pagar (celah 300-850mm)", "Tinggi ≥ 700 mm", car?.guardRailHeight300to850) { r, s -> viewModel.onGuardRailHeight300to850Change(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ukuran pagar (celah >850mm)", "Tinggi ≥ 1100 mm", car?.guardRailHeightOver850) { r, s -> viewModel.onGuardRailHeightOver850Change(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Penerangan atap kereta", "≥ 100 lux dengan kabel lentur 2 meter", car?.carTopLighting) { r, s -> viewModel.onCarTopLightingChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tombol operasi Manual", "Permanen dengan tombol utama", car?.manualOperationButtons) { r, s -> viewModel.onManualOperationButtonsChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Interior Kereta", "Bahan tidak mudah pecah/membahayakan", car?.carInterior) { r, s -> viewModel.onCarInteriorChange(r, s) }
+
     }
 }
 
@@ -590,17 +672,27 @@ fun GovernorAndSafetyBrakeSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Governor Rope Clamp", gsb?.governorRopeClamp) { r, s -> viewModel.onGovernorRopeClampChange(r, s) }
-        ResultStatusInput("Governor Switch", gsb?.governorSwitch) { r, s -> viewModel.onGovernorSwitchChange(r, s) }
-        ResultStatusInput("Safety Brake Speed", gsb?.safetyBrakeSpeed) { r, s -> viewModel.onSafetyBrakeSpeedChange(r, s) }
-        ResultStatusInput("Safety Brake Type", gsb?.safetyBrakeType) { r, s -> viewModel.onSafetyBrakeTypeChange(r, s) }
-        ResultStatusInput("Safety Brake Mechanism", gsb?.safetyBrakeMechanism) { r, s -> viewModel.onSafetyBrakeMechanismChange(r, s) }
-        ResultStatusInput("Progressive Safety Brake", gsb?.progressiveSafetyBrake) { r, s -> viewModel.onProgressiveSafetyBrakeChange(r, s) }
-        ResultStatusInput("Instantaneous Safety Brake", gsb?.instantaneousSafetyBrake) { r, s -> viewModel.onInstantaneousSafetyBrakeChange(r, s) }
-        ResultStatusInput("Safety Brake Operation", gsb?.safetyBrakeOperation) { r, s -> viewModel.onSafetyBrakeOperationChange(r, s) }
-        ResultStatusInput("Electrical Cutout Switch", gsb?.electricalCutoutSwitch) { r, s -> viewModel.onElectricalCutoutSwitchChange(r, s) }
-        ResultStatusInput("Limit Switch", gsb?.limitSwitch) { r, s -> viewModel.onLimitSwitchChange(r, s) }
-        ResultStatusInput("Overload Device", gsb?.overloadDevice) { r, s -> viewModel.onOverloadDeviceChange(r, s) }
+        ResultStatusInput("Penjepit Tali / Sabuk Governor", "Bekerja", gsb?.governorRopeClamp) { r, s -> viewModel.onGovernorRopeClampChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Saklar Governor", "Berfungsi", gsb?.governorSwitch) { r, s -> viewModel.onGovernorSwitchChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Fungsi Kecepatan Rem Pengaman", "115% - 140%, berhenti bertahap", gsb?.safetyBrakeSpeed) { r, s -> viewModel.onSafetyBrakeSpeedChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Rem Pengaman", "Dipasang pada sangkar, berfungsi bertahap/berangsur/mendadak", gsb?.safetyBrakeType) { r, s -> viewModel.onSafetyBrakeTypeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Bentuk Rem Pengaman", "Tidak boleh sistem elektris, hidrolik, atau pneumatik", gsb?.safetyBrakeMechanism) { r, s -> viewModel.onSafetyBrakeMechanismChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Rem Pengaman Berangsur", "> 60 m/menit", gsb?.progressiveSafetyBrake) { r, s -> viewModel.onProgressiveSafetyBrakeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Rem Pengaman Mendadak", "< 60 m/menit", gsb?.instantaneousSafetyBrake) { r, s -> viewModel.onInstantaneousSafetyBrakeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Syarat Rem Pengaman", "Bekerja ke bawah, bekerja serempak", gsb?.safetyBrakeOperation) { r, s -> viewModel.onSafetyBrakeOperationChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Kecepatan Kereta >= 60m/menit", "Ada pemutus elektrik", gsb?.electricalCutoutSwitch) { r, s -> viewModel.onElectricalCutoutSwitchChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Saklar Pengaman Lintas Batas", "Berfungsi", gsb?.limitSwitch) { r, s -> viewModel.onLimitSwitchChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Alat Pembatas Beban", "Berfungsi", gsb?.overloadDevice) { r, s -> viewModel.onOverloadDeviceChange(r, s) }
     }
 }
 
@@ -610,12 +702,17 @@ fun CounterweightGuideRailsAndBuffersSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Counterweight Material", cgb?.counterweightMaterial) { r, s -> viewModel.onCounterweightMaterialChange(r, s) }
-        ResultStatusInput("Counterweight Guard Screen", cgb?.counterweightGuardScreen) { r, s -> viewModel.onCounterweightGuardScreenChange(r, s) }
-        ResultStatusInput("Guide Rail Construction", cgb?.guideRailConstruction) { r, s -> viewModel.onGuideRailConstructionChange(r, s) }
-        ResultStatusInput("Buffer Type", cgb?.bufferType) { r, s -> viewModel.onBufferTypeChange(r, s) }
-        ResultStatusInput("Buffer Function", cgb?.bufferFunction) { r, s -> viewModel.onBufferFunctionChange(r, s) }
-        ResultStatusInput("Buffer Safety Switch", cgb?.bufferSafetySwitch) { r, s -> viewModel.onBufferSafetySwitchChange(r, s) }
+        ResultStatusInput("Bahan Bobot Imbang", "Beton/steel block", cgb?.counterweightMaterial) { r, s -> viewModel.onCounterweightMaterialChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Sekat Pengaman Bobot Imbang", "Tinggi 2500 mm, > 300mm dari dasar pit", cgb?.counterweightGuardScreen) { r, s -> viewModel.onCounterweightGuardScreenChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Konstruksi Rel Pemandu", "Kuat memandu jalan, menahan tekanan saat rem bekerja", cgb?.guideRailConstruction) { r, s -> viewModel.onGuideRailConstructionChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Jenis Peredam", "Massif kenyal / pegas / hidrolik", cgb?.bufferType) { r, s -> viewModel.onBufferTypeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Fungsi Peredam", "Meredam secara bertahap", cgb?.bufferFunction) { r, s -> viewModel.onBufferFunctionChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Saklar Pengaman (kecepatan >= 90m/menit)", "Tersedia", cgb?.bufferSafetySwitch) { r, s -> viewModel.onBufferSafetySwitchChange(r, s) }
     }
 }
 
@@ -625,45 +722,69 @@ fun ElectricalInstallationSection(
     viewModel: ReportViewModel
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        ResultStatusInput("Installation Standard", electrical?.installationStandard) { r, s -> viewModel.onInstallationStandardChange(r, s) }
-        ResultStatusInput("Electrical Panel", electrical?.electricalPanel) { r, s -> viewModel.onElectricalPanelChange(r, s) }
-        ResultStatusInput("Backup Power (ARD)", electrical?.backupPowerARD) { r, s -> viewModel.onElectricalBackupPowerARDChange(r, s) }
-        ResultStatusInput("Grounding Cable", electrical?.groundingCable) { r, s -> viewModel.onGroundingCableChange(r, s) }
-        ResultStatusInput("Fire Alarm Connection", electrical?.fireAlarmConnection) { r, s -> viewModel.onFireAlarmConnectionChange(r, s) }
+        ResultStatusInput("Standar Rangkaian Instalasi Listrik", "SNI dan standar Internasional", electrical?.installationStandard) { r, s -> viewModel.onInstallationStandardChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Panel Listrik", "Panel khusus untuk elevator", electrical?.electricalPanel) { r, s -> viewModel.onElectricalPanelChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Catu Daya Pengganti (ARD)", "Tersedia", electrical?.backupPowerARD) { r, s -> viewModel.onElectricalBackupPowerARDChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Kabel Grounding", "Penampang ≥ 10 mm², Tahanan ≤ 5 Ω (ohm)", electrical?.groundingCable) { r, s -> viewModel.onGroundingCableChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Alarm Kebakaran", "Terhubung dan beroperasi otomatis", electrical?.fireAlarmConnection) { r, s -> viewModel.onFireAlarmConnectionChange(r, s) }
 
-        Spacer(modifier = Modifier.height(12.dp))
-        SectionSubHeader(title = "Fire Service Elevator", style = MaterialTheme.typography.titleSmall)
-        ResultStatusInput("Backup Power", electrical?.fireServiceElevator?.backupPower) { r, s -> viewModel.onFireServiceBackupPowerChange(r, s) }
-        ResultStatusInput("Special Operation", electrical?.fireServiceElevator?.specialOperation) { r, s -> viewModel.onFireServiceSpecialOperationChange(r, s) }
-        ResultStatusInput("Fire Switch", electrical?.fireServiceElevator?.fireSwitch) { r, s -> viewModel.onFireServiceFireSwitchChange(r, s) }
-        ResultStatusInput("Label", electrical?.fireServiceElevator?.label) { r, s -> viewModel.onFireServiceLabelChange(r, s) }
-        ResultStatusInput("Electrical Fire Resistance", electrical?.fireServiceElevator?.electricalFireResistance) { r, s -> viewModel.onFireServiceElectricalFireResistanceChange(r, s) }
-        ResultStatusInput("Hoistway Wall Fire Resistance", electrical?.fireServiceElevator?.hoistwayWallFireResistance) { r, s -> viewModel.onFireServiceHoistwayWallFireResistanceChange(r, s) }
-        ResultStatusInput("Car Size", electrical?.fireServiceElevator?.carSize) { r, s -> viewModel.onFireServiceCarSizeChange(r, s) }
-        ResultStatusInput("Door Size", electrical?.fireServiceElevator?.doorSize) { r, s -> viewModel.onFireServiceDoorSizeChange(r, s) }
-        ResultStatusInput("Travel Time", electrical?.fireServiceElevator?.travelTime) { r, s -> viewModel.onFireServiceTravelTimeChange(r, s) }
-        ResultStatusInput("Evacuation Floor", electrical?.fireServiceElevator?.evacuationFloor) { r, s -> viewModel.onFireServiceEvacuationFloorChange(r, s) }
+        SectionSubHeader(title = "Elevator Penanggulangan Kebakaran", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Catu Daya Cadangan", "Tersedia", electrical?.fireServiceElevator?.backupPower) { r, s -> viewModel.onFireServiceBackupPowerChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Pengoperasian Khusus", "Manual, dapat berhenti tiap lantai", electrical?.fireServiceElevator?.specialOperation) { r, s -> viewModel.onFireServiceSpecialOperationChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Saklar Kebakaran", "Di lantai evakuasi, dapat dioperasikan manual", electrical?.fireServiceElevator?.fireSwitch) { r, s -> viewModel.onFireServiceFireSwitchChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Label 'Elevator Penanggulangan Kebakaran'", "Tersedia", electrical?.fireServiceElevator?.label) { r, s -> viewModel.onFireServiceLabelChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ketahanan Instalasi Listrik Terhadap Api", "≥ 2 jam", electrical?.fireServiceElevator?.electricalFireResistance) { r, s -> viewModel.onFireServiceElectricalFireResistanceChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Dinding Luncur", "Tertutup rapat, tahan api ≥ 1 jam", electrical?.fireServiceElevator?.hoistwayWallFireResistance) { r, s -> viewModel.onFireServiceHoistwayWallFireResistanceChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ukuran Sangkar", "≥ 1100x1400 mm, kapasitas ≥ 630 kg", electrical?.fireServiceElevator?.carSize) { r, s -> viewModel.onFireServiceCarSizeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Ukuran Pintu Kereta", "≥ 800 x 2100 mm", electrical?.fireServiceElevator?.doorSize) { r, s -> viewModel.onFireServiceDoorSizeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Waktu Tempuh", "≤ 60 detik", electrical?.fireServiceElevator?.travelTime) { r, s -> viewModel.onFireServiceTravelTimeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Lantai Evakuasi", "Tidak boleh ada penghalang", electrical?.fireServiceElevator?.evacuationFloor) { r, s -> viewModel.onFireServiceEvacuationFloorChange(r, s) }
 
-        Spacer(modifier = Modifier.height(12.dp))
-        SectionSubHeader(title = "Accessibility Elevator", style = MaterialTheme.typography.titleSmall)
-        ResultStatusInput("Operating Panel", electrical?.accessibilityElevator?.operatingPanel) { r, s -> viewModel.onAccessibilityOperatingPanelChange(r, s) }
-        ResultStatusInput("Panel Height", electrical?.accessibilityElevator?.panelHeight) { r, s -> viewModel.onAccessibilityPanelHeightChange(r, s) }
-        ResultStatusInput("Door Open Time", electrical?.accessibilityElevator?.doorOpenTime) { r, s -> viewModel.onAccessibilityDoorOpenTimeChange(r, s) }
-        ResultStatusInput("Door Width", electrical?.accessibilityElevator?.doorWidth) { r, s -> viewModel.onAccessibilityDoorWidthChange(r, s) }
-        ResultStatusInput("Audio Information", electrical?.accessibilityElevator?.audioInformation) { r, s -> viewModel.onAccessibilityAudioInformationChange(r, s) }
-        ResultStatusInput("Label", electrical?.accessibilityElevator?.label) { r, s -> viewModel.onAccessibilityLabelChange(r, s) }
+        SectionSubHeader(title = "Elevator Untuk Disabilitas", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Panel Operasi", "Huruf braille", electrical?.accessibilityElevator?.operatingPanel) { r, s -> viewModel.onAccessibilityOperatingPanelChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Tinggi Panel Operasi", "900 mm ≤ tinggi ≤ 1100 mm", electrical?.accessibilityElevator?.panelHeight) { r, s -> viewModel.onAccessibilityPanelHeightChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Waktu Bukaan Pintu", "≥ 2 menit", electrical?.accessibilityElevator?.doorOpenTime) { r, s -> viewModel.onAccessibilityDoorOpenTimeChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Lebar Bukaan Pintu", "≥ 1000 mm", electrical?.accessibilityElevator?.doorWidth) { r, s -> viewModel.onAccessibilityDoorWidthChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Informasi Operasi", "Bersuara", electrical?.accessibilityElevator?.audioInformation) { r, s -> viewModel.onAccessibilityAudioInformationChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Label 'Elevator Disabilitas'", "Tersedia", electrical?.accessibilityElevator?.label) { r, s -> viewModel.onAccessibilityLabelChange(r, s) }
 
-        Spacer(modifier = Modifier.height(12.dp))
-        SectionSubHeader(title = "Seismic Sensor", style = MaterialTheme.typography.titleSmall)
-        ResultStatusInput("Availability", electrical?.seismicSensor?.availability) { r, s -> viewModel.onSeismicSensorAvailabilityChange(r, s) }
-        ResultStatusInput("Function", electrical?.seismicSensor?.function) { r, s -> viewModel.onSeismicSensorFunctionChange(r, s) }
+        SectionSubHeader(title = "Sensor Gempa", style = MaterialTheme.typography.titleSmall)
+        ResultStatusInput("Ketersediaan (> 10 Lt / 40 m)", "Tersedia sensor gempa", electrical?.seismicSensor?.availability) { r, s -> viewModel.onSeismicSensorAvailabilityChange(r, s) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ResultStatusInput("Fungsi Input Sinyal Sensor Gempa", "Berhenti lantai terdekat, pintu terbuka, tidak dapat dioperasikan", electrical?.seismicSensor?.function) { r, s -> viewModel.onSeismicSensorFunctionChange(r, s) }
     }
 }
 
 @Composable
 fun ConclusionSection(conclusion: String?, viewModel: ReportViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        FormTextField("Conclusion", conclusion) { viewModel.onConclusionChange(it) }
+        OutlinedTextField(
+            value = conclusion.orEmpty(),
+            onValueChange = { viewModel.onConclusionChange(it) },
+            label = { Text("Kesimpulan Hasil Pemeriksaan & Pengujian") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp),
+            shape = MaterialTheme.shapes.medium,
+        )
     }
 }
 
