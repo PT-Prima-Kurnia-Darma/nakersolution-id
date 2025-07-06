@@ -18,26 +18,13 @@ class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            reportUseCase.getAllReports() // This returns Flow<List<Report>>
-                .map { domainReportList ->
-                    domainReportList.map {
-                        ReportData(
-                            id = it.id.orEmpty(),
-                            name = it.typeInspection.orEmpty(),
-                            subName = it.subNameOfInspectionType.orEmpty(),
-                            typeInspection = it.typeInspection.orEmpty(),
-                            type = it.eskOrElevType.orEmpty(),
-                            createdAt = Utils.formatIsoDate(it.createdAt.orEmpty())
-                        )
-                    }
-                }
+            reportUseCase.getAllReports() // This returns Flow<List<History>>
                 .catch { e ->
                     _uiState.update { it.copy(error = "Failed to load reports") }
                 }
-                .collect { uiReports ->
-                    // Update the state with the final, mapped list
+                .collect { uiHistories ->
                     _uiState.update {
-                        it.copy(isLoading = false, reports = uiReports)
+                        it.copy(isLoading = false, histories = uiHistories)
                     }
                 }
         }

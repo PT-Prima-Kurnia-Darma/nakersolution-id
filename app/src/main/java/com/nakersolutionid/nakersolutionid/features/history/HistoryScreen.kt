@@ -102,19 +102,11 @@ fun HistoryScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
             ) {
                 items(
-                    items = uiState.reports,
+                    items = uiState.histories,
                     key = { it.id }
-                ) { report ->
+                ) { history ->
                     HistoryItem(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        info = HistoryInfo(
-                            name = report.name,
-                            subName = report.subName,
-                            typeInspection = report.typeInspection,
-                            type = report.type,
-                            createdAt = report.createdAt
-                        ),
+                        history = history,
                         onDeleteClick = {},
                         onDownloadClick = {},
                         onEditClick = {},

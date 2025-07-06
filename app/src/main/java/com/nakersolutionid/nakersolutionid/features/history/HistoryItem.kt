@@ -24,23 +24,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.ReportType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubReportType
+import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
-
-// Data class to represent the information on the card
-data class HistoryInfo(
-    val name: String,
-    val subName: String,
-    val typeInspection: String,
-    val type: String,
-    val createdAt: String
-)
+import com.nakersolutionid.nakersolutionid.utils.Utils
+import java.util.Locale
 
 @Composable
 fun HistoryItem(
-    info: HistoryInfo,
+    history: History,
     onDeleteClick: () -> Unit,
     onDownloadClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -48,65 +44,59 @@ fun HistoryItem(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            // Main title of the inspectionEntity
+            // Section 1: Header - Identitas Utama Laporan
             Text(
-                text = info.name,
+                text = history.ownerName ?: "Nama Pemilik Tidak Tersedia",
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                fontWeight = FontWeight.Bold
             )
-
-            // Sub-name or category
-            Text(
-                text = info.subName,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
             Spacer(modifier = Modifier.height(4.dp))
-
-            // Detailed information section
             Text(
-                text = info.typeInspection,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = info.typeInspection,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = info.type,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = history.equipmentType,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.secondary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Divider to separate info from actions
+            // Section 2: Details - Informasi Spesifik Laporan
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                InfoRow(label = "Jenis Pemeriksaan", value = history.inspectionType)
+                InfoRow(
+                    label = "Tipe Laporan",
+                    value = "${history.reportType.name} - ${formatEnumName(history.subReportType)}"
+                )
+                InfoRow(label = "Jenis Dokumen", value = formatEnumName(history.documentType))
+                InfoRow(label = "Tanggal Laporan", value = history.reportDate ?: "-")
+            }
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Section 3: Footer - Metadata dan Tombol Aksi
             HorizontalDivider()
             Spacer(modifier = Modifier.height(8.dp))
-            // Action buttons row
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Info tanggal pembuatan laporan
                 Text(
-                    info.createdAt,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = "Dibuat: ${Utils.formatIsoDate(history.createdAt.orEmpty())}",
                     style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Left,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f)
                 )
+
+                // Tombol Aksi
                 ActionButton(icon = Icons.Default.Delete, description = "Delete", onClick = onDeleteClick)
                 ActionButton(icon = Icons.Default.Download, description = "Download", onClick = onDownloadClick)
                 ActionButton(icon = Icons.Default.Edit, description = "Edit", onClick = onEditClick)
@@ -116,23 +106,27 @@ fun HistoryItem(
     }
 }
 
+/**
+ * Composable untuk menampilkan baris informasi dengan format "Label: Nilai".
+ */
 @Composable
 private fun InfoRow(label: String, value: String) {
-    Row {
+    Row(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "$label: ",
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = value,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
 
+/**
+ * Composable untuk tombol aksi di dalam card.
+ */
 @Composable
 private fun ActionButton(
     icon: ImageVector,
@@ -148,14 +142,37 @@ private fun ActionButton(
     }
 }
 
-@Preview
+/**
+ * Helper function untuk mengubah nama enum menjadi format yang lebih mudah dibaca.
+ * Contoh: `SURAT_KETERANGAN_SEMENTARA` menjadi "Surat Keterangan Sementara".
+ */
+private fun formatEnumName(enum: Enum<*>): String {
+    return enum.name.replace('_', ' ').lowercase(Locale.getDefault())
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+}
+
+
+@Preview(showBackground = true)
 @Composable
 private fun HistoryItemPreview() {
+    val sampleHistory = History(
+        id = 1L,
+        extraId = "ext-001",
+        documentType = DocumentType.LAPORAN,
+        reportType = ReportType.EE,
+        subReportType = SubReportType.Elevator,
+        equipmentType = "Elevator Penumpang",
+        inspectionType = "Pemeriksaan dan Pengujian Berkala",
+        ownerName = "PT Gedung Sejahtera",
+        createdAt = "2025-07-06T15:22:10.123Z",
+        reportDate = "25 Oktober 2024"
+    )
+
     NakersolutionidTheme {
         HistoryItem(
-            info = HistoryInfo("Elevator dan Eskalator", "Elevator", "Pemeriksaan dan Pengujian Berkala", "Elevator Penumpang", "2024-07-26T10:00:00Z"),
+            history = sampleHistory,
             onDeleteClick = {},
-            onDownloadClick = {  },
+            onDownloadClick = {},
             onEditClick = {},
             onPreviewClick = {}
         )

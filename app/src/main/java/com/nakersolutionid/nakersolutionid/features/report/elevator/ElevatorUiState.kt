@@ -5,7 +5,7 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 
 data class ResultStatusUiState(
     val result: String? = null,
-    val status: Boolean? = null
+    val status: Boolean = false
 )
 
 data class GeneralDataUiState(

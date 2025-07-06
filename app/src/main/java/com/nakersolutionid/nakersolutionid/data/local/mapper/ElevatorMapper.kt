@@ -25,7 +25,8 @@ import com.nakersolutionid.nakersolutionid.domain.model.*
  */
 fun Report.toInspectionWithDetails(
     inspectionId: Long = 0,
-    extraId: String
+    extraId: String,
+    createdAt: String
 ): InspectionWithDetails {
     // 1. Map the main InspectionEntity from the report's general data.
     val inspectionEntity = InspectionEntity(
@@ -51,7 +52,7 @@ fun Report.toInspectionWithDetails(
             brandOrType = this.generalData?.brandOrType,
             year = this.generalData?.countryAndYear?.split("/")?.getOrNull(1)?.trim()
         ),
-        createdAt = this.createdAt,
+        createdAt = createdAt,
         reportDate = this.generalData?.inspectionDate,
         // These fields are not in the domain model, so they are set to null.
         nextInspectionDate = null,
@@ -385,4 +386,305 @@ private fun mapElectricalInstallation(domain: ElectricalInstallationDomain, insp
         items.addCheckItem(inspectionId, subCategory, "Function", it.function)
     }
     return items
+}
+
+// --- PUBLIC MAPPER ---
+
+/**
+ * Maps an [InspectionWithDetails] object from the data layer (Room) back to a [Report] object for the domain layer.
+ * This is the main entry point for the reverse mapping process.
+ *
+ * @return The mapped [Report] object, ready for use in the UI or business logic.
+ */
+fun InspectionWithDetails.toDomain(): Report {
+    // 1. Map the flat list of check items into the structured domain models.
+    val technicalDocs = buildTechnicalDocumentInspection(this.checkItems)
+    val inspectionAndTesting = buildInspectionAndTesting(this.checkItems)
+
+    // 2. Map the core inspection data into the GeneralData domain model.
+    val generalData = GeneralDataDomain(
+        ownerName = this.inspectionEntity.ownerName,
+        ownerAddress = this.inspectionEntity.ownerAddress,
+        nameUsageLocation = this.inspectionEntity.usageLocation,
+        addressUsageLocation = this.inspectionEntity.addressUsageLocation,
+        manufacturerOrInstaller = this.inspectionEntity.manufacturer?.name,
+        elevatorType = this.inspectionEntity.driveType,
+        brandOrType = this.inspectionEntity.manufacturer?.brandOrType,
+        countryAndYear = this.inspectionEntity.manufacturer?.year?.let { " / $it" },
+        serialNumber = this.inspectionEntity.serialNumber,
+        capacity = this.inspectionEntity.capacity,
+        speed = this.inspectionEntity.speed,
+        floorsServed = this.inspectionEntity.floorServed,
+        permitNumber = this.inspectionEntity.permitNumber,
+        inspectionDate = this.inspectionEntity.reportDate
+    )
+
+    // 3. Construct the final Report object.
+    return Report(
+        id = this.inspectionEntity.extraId,
+        nameOfInspectionType = this.inspectionEntity.reportType.name,
+        subNameOfInspectionType = this.inspectionEntity.subReportType.name,
+        typeInspection = this.inspectionEntity.inspectionType,
+        eskOrElevType = this.inspectionEntity.equipmentType,
+        generalData = generalData,
+        technicalDocumentInspection = technicalDocs,
+        inspectionAndTesting = inspectionAndTesting,
+        conclusion = this.inspectionEntity.status,
+        createdAt = this.inspectionEntity.createdAt
+    )
+}
+
+
+// --- PRIVATE HELPER FUNCTIONS ---
+
+/**
+ * A helper extension function to find a specific check item from the list by its category and name,
+ * and convert it into a [ResultStatusDomain] object.
+ *
+ * @param category The category to search for (e.g., "Car", "Car - Car Signage").
+ * @param itemName The name of the item to find (e.g., "Frame", "Manufacturer Name").
+ * @return A [ResultStatusDomain] object if the item is found, otherwise null.
+ */
+private fun List<InspectionCheckItem>.findItem(category: String, itemName: String): ResultStatusDomain? {
+    return this.firstOrNull { it.category == category && it.itemName == itemName }
+        ?.let { ResultStatusDomain(result = it.result, status = it.status) }
+}
+
+// --- BUILDER FUNCTIONS FOR EACH DOMAIN SECTION ---
+
+private fun buildTechnicalDocumentInspection(items: List<InspectionCheckItem>): TechnicalDocumentInspectionDomain {
+    val category = "Technical Document Inspection"
+    return TechnicalDocumentInspectionDomain(
+        designDrawing = items.findItem(category, "Design Drawing")?.result,
+        technicalCalculation = items.findItem(category, "Technical Calculation")?.result,
+        materialCertificate = items.findItem(category, "Material Certificate")?.result,
+        controlPanelDiagram = items.findItem(category, "Control Panel Diagram")?.result,
+        asBuiltDrawing = items.findItem(category, "As Built Drawing")?.result,
+        componentCertificates = items.findItem(category, "Component Certificates")?.result,
+        safeWorkProcedure = items.findItem(category, "Safe Work Procedure")?.result
+    )
+}
+
+private fun buildInspectionAndTesting(items: List<InspectionCheckItem>): InspectionAndTestingDomain {
+    return InspectionAndTestingDomain(
+        machineRoomAndMachinery = buildMachineRoomAndMachinery(items),
+        suspensionRopesAndBelts = buildSuspensionRopesAndBelts(items),
+        drumsAndSheaves = buildDrumsAndSheaves(items),
+        hoistwayAndPit = buildHoistwayAndPit(items),
+        car = buildCar(items),
+        governorAndSafetyBrake = buildGovernorAndSafetyBrake(items),
+        counterweightGuideRailsAndBuffers = buildCounterweightGuideRailsAndBuffers(items),
+        electricalInstallation = buildElectricalInstallation(items)
+    )
+}
+
+private fun buildMachineRoomAndMachinery(items: List<InspectionCheckItem>): MachineRoomAndMachineryDomain {
+    val category = "Machine Room And Machinery"
+    val subCategory = "$category - Machine Roomless"
+    return MachineRoomAndMachineryDomain(
+        machineMounting = items.findItem(category, "Machine Mounting"),
+        mechanicalBrake = items.findItem(category, "Mechanical Brake"),
+        electricalBrake = items.findItem(category, "Electrical Brake"),
+        machineRoomConstruction = items.findItem(category, "Machine Room Construction"),
+        machineRoomClearance = items.findItem(category, "Machine Room Clearance"),
+        machineRoomImplementation = items.findItem(category, "Machine Room Implementation"),
+        ventilation = items.findItem(category, "Ventilation"),
+        machineRoomDoor = items.findItem(category, "Machine Room Door"),
+        mainPowerPanelPosition = items.findItem(category, "Main Power Panel Position"),
+        rotatingPartsGuard = items.findItem(category, "Rotating Parts Guard"),
+        ropeHoleGuard = items.findItem(category, "Rope Hole Guard"),
+        machineRoomAccessLadder = items.findItem(category, "Machine Room Access Ladder"),
+        floorLevelDifference = items.findItem(category, "Floor Level Difference"),
+        fireExtinguisher = items.findItem(category, "Fire Extinguisher"),
+        emergencyStopSwitch = items.findItem(category, "Emergency Stop Switch"),
+        machineRoomless = MachineRoomlessDomain(
+            panelPlacement = items.findItem(subCategory, "Panel Placement"),
+            lightingWorkArea = items.findItem(subCategory, "Lighting Work Area"),
+            lightingBetweenWorkArea = items.findItem(subCategory, "Lighting Between Work Area"),
+            manualBrakeRelease = items.findItem(subCategory, "Manual Brake Release"),
+            fireExtinguisherPlacement = items.findItem(subCategory, "Fire Extinguisher Placement")
+        )
+    )
+}
+
+private fun buildSuspensionRopesAndBelts(items: List<InspectionCheckItem>): SuspensionRopesAndBeltsDomain {
+    val category = "Suspension Ropes And Belts"
+    return SuspensionRopesAndBeltsDomain(
+        condition = items.findItem(category, "Condition"),
+        chainUsage = items.findItem(category, "Chain Usage"),
+        safetyFactor = items.findItem(category, "Safety Factor"),
+        ropeWithCounterweight = items.findItem(category, "Rope With Counterweight"),
+        ropeWithoutCounterweight = items.findItem(category, "Rope Without Counterweight"),
+        belt = items.findItem(category, "Belt"),
+        slackRopeDevice = items.findItem(category, "Slack Rope Device")
+    )
+}
+
+private fun buildDrumsAndSheaves(items: List<InspectionCheckItem>): DrumsAndSheavesDomain {
+    val category = "Drums And Sheaves"
+    return DrumsAndSheavesDomain(
+        drumGrooves = items.findItem(category, "Drum Grooves"),
+        passengerDrumDiameter = items.findItem(category, "Passenger Drum Diameter"),
+        governorDrumDiameter = items.findItem(category, "Governor Drum Diameter")
+    )
+}
+
+private fun buildHoistwayAndPit(items: List<InspectionCheckItem>): HoistwayAndPitDomain {
+    val category = "Hoistway And Pit"
+    return HoistwayAndPitDomain(
+        construction = items.findItem(category, "Construction"),
+        walls = items.findItem(category, "Walls"),
+        inclinedElevatorTrackBed = items.findItem(category, "Inclined Elevator Track Bed"),
+        cleanliness = items.findItem(category, "Cleanliness"),
+        lighting = items.findItem(category, "Lighting"),
+        emergencyDoorNonStop = items.findItem(category, "Emergency Door Non Stop"),
+        emergencyDoorSize = items.findItem(category, "Emergency Door Size"),
+        emergencyDoorSafetySwitch = items.findItem(category, "Emergency Door Safety Switch"),
+        emergencyDoorBridge = items.findItem(category, "Emergency Door Bridge"),
+        carTopClearance = items.findItem(category, "Car Top Clearance"),
+        pitClearance = items.findItem(category, "Pit Clearance"),
+        pitLadder = items.findItem(category, "Pit Ladder"),
+        pitBelowWorkingArea = items.findItem(category, "Pit Below Working Area"),
+        pitAccessSwitch = items.findItem(category, "Pit Access Switch"),
+        pitScreen = items.findItem(category, "Pit Screen"),
+        hoistwayDoorLeaf = items.findItem(category, "Hoistway Door Leaf"),
+        hoistwayDoorInterlock = items.findItem(category, "Hoistway Door Interlock"),
+        floorLeveling = items.findItem(category, "Floor Leveling"),
+        hoistwaySeparatorBeam = items.findItem(category, "Hoistway Separator Beam"),
+        inclinedElevatorStairs = items.findItem(category, "Inclined Elevator Stairs")
+    )
+}
+
+private fun buildCar(items: List<InspectionCheckItem>): CarDomain {
+    val category = "Car"
+    val doorSpecsSubCategory = "$category - Car Door Specs"
+    val signageSubCategory = "$category - Car Signage"
+    return CarDomain(
+        frame = items.findItem(category, "Frame"),
+        body = items.findItem(category, "Body"),
+        wallHeight = items.findItem(category, "Wall Height"),
+        floorArea = items.findItem(category, "Floor Area"),
+        carAreaExpansion = items.findItem(category, "Car Area Expansion"),
+        carDoor = items.findItem(category, "Car Door"),
+        carToBeamClearance = items.findItem(category, "Car To Beam Clearance"),
+        alarmBell = items.findItem(category, "Alarm Bell"),
+        backupPowerARD = items.findItem(category, "Backup Power ARD"),
+        intercom = items.findItem(category, "Intercom"),
+        ventilation = items.findItem(category, "Ventilation"),
+        emergencyLighting = items.findItem(category, "Emergency Lighting"),
+        operatingPanel = items.findItem(category, "Operating Panel"),
+        carPositionIndicator = items.findItem(category, "Car Position Indicator"),
+        carRoofStrength = items.findItem(category, "Car Roof Strength"),
+        carTopEmergencyExit = items.findItem(category, "Car Top Emergency Exit"),
+        carSideEmergencyExit = items.findItem(category, "Car Side Emergency Exit"),
+        carTopGuardRail = items.findItem(category, "Car Top Guard Rail"),
+        guardRailHeight300to850 = items.findItem(category, "Guard Rail Height 300 to 850"),
+        guardRailHeightOver850 = items.findItem(category, "Guard Rail Height Over 850"),
+        carTopLighting = items.findItem(category, "Car Top Lighting"),
+        manualOperationButtons = items.findItem(category, "Manual Operation Buttons"),
+        carInterior = items.findItem(category, "Car Interior"),
+        carDoorSpecs = CarDoorSpecsDomain(
+            size = items.findItem(doorSpecsSubCategory, "Size"),
+            lockAndSwitch = items.findItem(doorSpecsSubCategory, "Lock And Switch"),
+            sillClearance = items.findItem(doorSpecsSubCategory, "Sill Clearance")
+        ),
+        carSignage = CarSignageDomain(
+            manufacturerName = items.findItem(signageSubCategory, "Manufacturer Name"),
+            loadCapacity = items.findItem(signageSubCategory, "Load Capacity"),
+            noSmokingSign = items.findItem(signageSubCategory, "No Smoking Sign"),
+            overloadIndicator = items.findItem(signageSubCategory, "Overload Indicator"),
+            doorOpenCloseButtons = items.findItem(signageSubCategory, "Door Open Close Buttons"),
+            floorButtons = items.findItem(signageSubCategory, "Floor Buttons"),
+            alarmButton = items.findItem(signageSubCategory, "Alarm Button"),
+            twoWayIntercom = items.findItem(signageSubCategory, "Two Way Intercom")
+        )
+    )
+}
+
+private fun buildGovernorAndSafetyBrake(items: List<InspectionCheckItem>): GovernorAndSafetyBrakeDomain {
+    val category = "Governor And Safety Brake"
+    return GovernorAndSafetyBrakeDomain(
+        governorRopeClamp = items.findItem(category, "Governor Rope Clamp"),
+        governorSwitch = items.findItem(category, "Governor Switch"),
+        safetyBrakeSpeed = items.findItem(category, "Safety Brake Speed"),
+        safetyBrakeType = items.findItem(category, "Safety Brake Type"),
+        safetyBrakeMechanism = items.findItem(category, "Safety Brake Mechanism"),
+        progressiveSafetyBrake = items.findItem(category, "Progressive Safety Brake"),
+        instantaneousSafetyBrake = items.findItem(category, "Instantaneous Safety Brake"),
+        safetyBrakeOperation = items.findItem(category, "Safety Brake Operation"),
+        electricalCutoutSwitch = items.findItem(category, "Electrical Cutout Switch"),
+        limitSwitch = items.findItem(category, "Limit Switch"),
+        overloadDevice = items.findItem(category, "Overload Device")
+    )
+}
+
+private fun buildCounterweightGuideRailsAndBuffers(items: List<InspectionCheckItem>): CounterweightGuideRailsAndBuffersDomain {
+    val category = "Counterweight, Guide Rails And Buffers"
+    return CounterweightGuideRailsAndBuffersDomain(
+        counterweightMaterial = items.findItem(category, "Counterweight Material"),
+        counterweightGuardScreen = items.findItem(category, "Counterweight Guard Screen"),
+        guideRailConstruction = items.findItem(category, "Guide Rail Construction"),
+        bufferType = items.findItem(category, "Buffer Type"),
+        bufferFunction = items.findItem(category, "Buffer Function"),
+        bufferSafetySwitch = items.findItem(category, "Buffer Safety Switch")
+    )
+}
+
+private fun buildElectricalInstallation(items: List<InspectionCheckItem>): ElectricalInstallationDomain {
+    val category = "Electrical Installation"
+    val fireServiceSubCategory = "$category - Fire Service Elevator"
+    val accessibilitySubCategory = "$category - Accessibility Elevator"
+    val seismicSubCategory = "$category - Seismic Sensor"
+    return ElectricalInstallationDomain(
+        installationStandard = items.findItem(category, "Installation Standard"),
+        electricalPanel = items.findItem(category, "Electrical Panel"),
+        backupPowerARD = items.findItem(category, "Backup Power ARD"),
+        groundingCable = items.findItem(category, "Grounding Cable"),
+        fireAlarmConnection = items.findItem(category, "Fire Alarm Connection"),
+        fireServiceElevator = FireServiceElevatorDomain(
+            backupPower = items.findItem(fireServiceSubCategory, "Backup Power"),
+            specialOperation = items.findItem(fireServiceSubCategory, "Special Operation"),
+            fireSwitch = items.findItem(fireServiceSubCategory, "Fire Switch"),
+            label = items.findItem(fireServiceSubCategory, "Label"),
+            electricalFireResistance = items.findItem(fireServiceSubCategory, "Electrical Fire Resistance"),
+            hoistwayWallFireResistance = items.findItem(fireServiceSubCategory, "Hoistway Wall Fire Resistance"),
+            carSize = items.findItem(fireServiceSubCategory, "Car Size"),
+            doorSize = items.findItem(fireServiceSubCategory, "Door Size"),
+            travelTime = items.findItem(fireServiceSubCategory, "Travel Time"),
+            evacuationFloor = items.findItem(fireServiceSubCategory, "Evacuation Floor")
+        ),
+        accessibilityElevator = AccessibilityElevatorDomain(
+            operatingPanel = items.findItem(accessibilitySubCategory, "Operating Panel"),
+            panelHeight = items.findItem(accessibilitySubCategory, "Panel Height"),
+            doorOpenTime = items.findItem(accessibilitySubCategory, "Door Open Time"),
+            doorWidth = items.findItem(accessibilitySubCategory, "Door Width"),
+            audioInformation = items.findItem(accessibilitySubCategory, "Audio Information"),
+            label = items.findItem(accessibilitySubCategory, "Label")
+        ),
+        seismicSensor = SeismicSensorDomain(
+            availability = items.findItem(seismicSubCategory, "Availability"),
+            function = items.findItem(seismicSubCategory, "Function")
+        )
+    )
+}
+
+/**
+ * Maps an [InspectionEntity] from the data layer (Room) to a [History] object for the domain layer.
+ * This is used for populating list views or summaries where full details are not needed.
+ *
+ * @return The mapped [History] object.
+ */
+fun InspectionEntity.toHistory(): History {
+    return History(
+        id = this.id,
+        extraId = this.extraId,
+        documentType = this.documentType,
+        reportType = this.reportType,
+        subReportType = this.subReportType,
+        equipmentType = this.equipmentType,
+        inspectionType = this.inspectionType,
+        ownerName = this.ownerName,
+        createdAt = this.createdAt,
+        reportDate = this.reportDate
+    )
 }
