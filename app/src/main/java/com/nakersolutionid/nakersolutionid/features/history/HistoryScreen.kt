@@ -1,6 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,38 +10,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Bolt
-import androidx.compose.material.icons.outlined.Construction
-import androidx.compose.material.icons.outlined.DoorSliding
-import androidx.compose.material.icons.outlined.Factory
-import androidx.compose.material.icons.outlined.FireTruck
-import androidx.compose.material.icons.outlined.LocalFireDepartment
-import androidx.compose.material3.ExpandedFullScreenSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -50,13 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.di.previewModule
-import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
@@ -64,15 +48,14 @@ fun HistoryScreen(
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     val topics = listOf("Semua", "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE")
     val subTopics = listOf("Semua", "Laporan", "BAP", "Sertifikat Sementara", "Surat Keterangan")
     var selectedTopic by remember { mutableStateOf(topics.first()) }
     var selectedSubTopics by remember { mutableStateOf(subTopics.first()) }
-    val dummySearchResults = mutableListOf<String>()
 
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -90,22 +73,26 @@ fun HistoryScreen(
                 .padding(paddingValues)
         ) {
             HistorySearchBar(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                dummySearchResults
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                query = searchQuery,
+                onQueryChange = viewModel::onSearchQueryChange,
+                onClear = { viewModel.onSearchQueryChange("") }
             )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(
                     items = uiState.histories,
-                    key = { it.id }
+                    key = { it.id } // Kunci ini penting untuk performa animasi
                 ) { history ->
                     HistoryItem(
+                        // Menambahkan modifier ini akan menganimasikan perubahan item
+                        modifier = Modifier.animateItem(),
                         history = history,
                         onDeleteClick = {},
                         onDownloadClick = {},
@@ -136,6 +123,34 @@ fun HistoryScreen(
         }
     }
 }
+
+@Composable
+fun HistorySearchBar(
+    modifier: Modifier = Modifier,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onClear: () -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier,
+        placeholder = { Text("Cari riwayat...") },
+        leadingIcon = {
+            Icon(Icons.Default.Search, contentDescription = "Search Icon")
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClear) {
+                    Icon(Icons.Default.Clear, contentDescription = "Clear search")
+                }
+            }
+        },
+        singleLine = true,
+        shape = MaterialTheme.shapes.extraLarge,
+    )
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -194,75 +209,6 @@ fun FilterSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun HistorySearchBar(modifier: Modifier = Modifier, searchResult: MutableList<String>) {
-    val searchBarState = rememberSearchBarState()
-    val textFieldState = rememberTextFieldState()
-    val scope = rememberCoroutineScope()
-
-
-    val inputField =
-        @Composable {
-            SearchBarDefaults.InputField(
-                modifier = Modifier,
-                searchBarState = searchBarState,
-                textFieldState = textFieldState,
-                onSearch = {
-                    searchResult.add(it)
-                    scope.launch { searchBarState.animateToCollapsed() }
-                },
-                placeholder = { Text("Search...") },
-                leadingIcon = {
-                    if (searchBarState.currentValue == SearchBarValue.Expanded) {
-                        IconButton(
-                            onClick = { scope.launch { searchBarState.animateToCollapsed() } }
-                        ) {
-                            Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
-                        }
-                    } else {
-                        Icon(Icons.Default.Search, contentDescription = null)
-                    }
-                },
-            )
-        }
-
-    SearchBar(
-        modifier = modifier,
-        state = searchBarState,
-        inputField = inputField
-    )
-    ExpandedFullScreenSearchBar(state = searchBarState, inputField = inputField) {
-        SearchResults(
-            onResultClick = { result ->
-                textFieldState.setTextAndPlaceCursorAtEnd(result)
-                scope.launch { searchBarState.animateToCollapsed() }
-            },
-            searchResult = searchResult
-        )
-    }
-}
-
-@Composable
-private fun SearchResults(
-    onResultClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    searchResult: List<String>
-) {
-    LazyColumn {
-        items(searchResult.reversed()) { result ->
-            val resultText = result
-            Text(
-                resultText,
-                modifier = Modifier
-                    .clickable { onResultClick(resultText) }
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterChipRow(
@@ -271,12 +217,10 @@ fun FilterChipRow(
     onFilterSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Use LazyRow for a horizontally scrollable row, which is efficient for
-    // a potentially long list of filters.
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp), // Spacing between chips
-        contentPadding = PaddingValues(horizontal = 16.dp) // Padding at the start and end of the row
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
         items(filters) { filter ->
             FilterChip(
