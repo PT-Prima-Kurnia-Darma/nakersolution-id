@@ -3,7 +3,7 @@ package com.nakersolutionid.nakersolutionid.di
 import androidx.room.Room
 import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
-import com.nakersolutionid.nakersolutionid.data.local.database.ReportDatabase
+import com.nakersolutionid.nakersolutionid.data.local.database.AppDatabase
 import com.nakersolutionid.nakersolutionid.data.preference.SettingsPreference
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
@@ -38,11 +38,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val databaseModule = module {
-    factory { get<ReportDatabase>().reportDao() }
+    factory { get<AppDatabase>().inspectionDao() }
     single {
         Room.databaseBuilder(
             androidContext(),
-            ReportDatabase::class.java, "Manga.db"
+            AppDatabase::class.java, "Manga.db"
         ).fallbackToDestructiveMigration(false)
             .build()
     }
