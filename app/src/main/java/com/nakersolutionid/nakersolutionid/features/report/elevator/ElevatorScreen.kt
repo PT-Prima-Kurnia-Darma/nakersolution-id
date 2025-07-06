@@ -172,12 +172,12 @@ fun ElevatorScreen(
                     }
                 }
                 item {
-                    ExpandableSection(title = "Technical Document Inspection") {
+                    ExpandableSection(title = "Technical Document InspectionEntity") {
                         TechnicalDocumentInspectionSection(technicalDocs = uiState.technicalDocumentInspection, viewModel = viewModel)
                     }
                 }
                 item {
-                    ExpandableSection(title = "Inspection and Testing") {
+                    ExpandableSection(title = "InspectionEntity and Testing") {
                         InspectionAndTestingItems(inspectionAndTesting = uiState.inspectionAndTesting, viewModel = viewModel)
                     }
                 }
@@ -250,7 +250,7 @@ fun ExpandableSection(
 /**
  * An expandable subsection for use within another card. It's lightweight and
  * doesn't use a Card for its background to prevent nested elevation issues.
- * This is key to making the "Inspection and Testing" section performant.
+ * This is key to making the "InspectionEntity and Testing" section performant.
  */
 @Composable
 private fun ExpandableSubSection(
@@ -360,7 +360,7 @@ fun ResultStatusInput(
 @Composable
 fun MainData(uiState: ElevatorUiState?, viewModel: ReportViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        FormTextField("Inspection Type", uiState?.typeInspection) { viewModel.onTypeInspectionChange(it) }
+        FormTextField("InspectionEntity Type", uiState?.typeInspection) { viewModel.onTypeInspectionChange(it) }
         FormTextField("Elevator Type", uiState?.eskOrElevType) { viewModel.onEskOrElevTypeChange(it) }
     }
 }
@@ -381,7 +381,7 @@ fun GeneralDataSection(generalData: GeneralDataUiState?, viewModel: ReportViewMo
         FormTextField("Speed", generalData?.speed, keyboardType = KeyboardType.Number) { viewModel.onSpeedChange(it) }
         FormTextField("Floors Served", generalData?.floorsServed, keyboardType = KeyboardType.Number) { viewModel.onFloorsServedChange(it) }
         FormTextField("Permit Number", generalData?.permitNumber) { viewModel.onPermitNumberChange(it) }
-        FormTextField("Inspection Date", generalData?.inspectionDate) { viewModel.onInspectionDateChange(it) }
+        FormTextField("InspectionEntity Date", generalData?.inspectionDate) { viewModel.onInspectionDateChange(it) }
     }
 }
 
@@ -404,7 +404,7 @@ fun TechnicalDocumentInspectionSection(
 /**
  * This composable is now optimized. It renders a list of expandable subsections,
  * ensuring that the content of each subsection is only composed when it's expanded by the user.
- * This prevents UI jank when the main "Inspection and Testing" card is opened.
+ * This prevents UI jank when the main "InspectionEntity and Testing" card is opened.
  */
 @Composable
 fun InspectionAndTestingItems(

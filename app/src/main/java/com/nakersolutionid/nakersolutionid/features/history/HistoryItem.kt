@@ -55,7 +55,7 @@ fun HistoryItem(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            // Main title of the inspection
+            // Main title of the inspectionEntity
             Text(
                 text = info.name,
                 style = MaterialTheme.typography.headlineSmall,

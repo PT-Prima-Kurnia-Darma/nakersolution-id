@@ -1,14 +1,25 @@
 package com.nakersolutionid.nakersolutionid.data.local
 
-import com.nakersolutionid.nakersolutionid.data.local.dao.ReportDao
-import com.nakersolutionid.nakersolutionid.data.local.entity.ReportEntity
+import com.nakersolutionid.nakersolutionid.data.local.dao.InspectionDao
+import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionCheckItem
+import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionEntity
+import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionFinding
+import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionTestResult
+import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionWithDetails
 import kotlinx.coroutines.flow.Flow
 
-class LocalDataSource(private val reportDao: ReportDao) {
-    suspend fun insertReport(report: ReportEntity) = reportDao.insertReport(report)
-    suspend fun insertAllReports(reports: List<ReportEntity>) = reportDao.insertAllReports(reports)
-    suspend fun getReportById(id: String): ReportEntity? = reportDao.getReportById(id)
-    fun getAllReports(): Flow<List<ReportEntity>> = reportDao.getAllReports()
-    suspend fun deleteReportById(id: String): Int = reportDao.deleteReportById(id)
-    suspend fun deleteAllReports() = reportDao.deleteAllReports()
+class LocalDataSource(private val inspectionDao: InspectionDao) {
+    suspend fun insertInspection(
+        inspectionEntity: InspectionEntity,
+        checkItems: List<InspectionCheckItem>,
+        findings: List<InspectionFinding>,
+        testResults: List<InspectionTestResult>
+    ) = inspectionDao.insertInspectionWithDetails(
+        inspectionEntity,
+        checkItems,
+        findings,
+        testResults
+    )
+
+    fun getAllInspectionsWithDetails(): Flow<List<InspectionWithDetails>> = inspectionDao.getAllInspectionsWithDetails()
 }

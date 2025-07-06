@@ -337,7 +337,7 @@ class ReportViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     }
     // endregion
 
-    // region Technical Document Inspection Updaters
+    // region Technical Document InspectionEntity Updaters
     private fun updateTechnicalDocs(
         transform: (TechnicalDocumentInspectionUiState) -> TechnicalDocumentInspectionUiState
     ) {
@@ -380,7 +380,7 @@ class ReportViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     }
     // endregion
 
-    // region Inspection and Testing Updaters
+    // region InspectionEntity and Testing Updaters
     private fun updateInspectionAndTesting(
         transform: (InspectionAndTestingUiState) -> InspectionAndTestingUiState
     ) {
