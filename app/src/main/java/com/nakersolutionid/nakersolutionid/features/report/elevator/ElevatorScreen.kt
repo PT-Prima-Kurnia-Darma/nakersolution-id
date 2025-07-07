@@ -389,9 +389,9 @@ fun GeneralDataSection(generalData: GeneralDataUiState?, viewModel: ReportViewMo
         FormTextField("Merk / Type", generalData?.brandOrType) { viewModel.onBrandOrTypeChange(it) }
         FormTextField("Negara / Tahun Pembuatan", generalData?.countryAndYear) { viewModel.onCountryAndYearChange(it) }
         FormTextField("No. Seri / No. Unit", generalData?.serialNumber) { viewModel.onSerialNumberChange(it) }
-        FormTextField("Kapasitas Angkut (Orang / Kg)", generalData?.capacity, keyboardType = KeyboardType.Number) { viewModel.onCapacityChange(it) }
-        FormTextField("Kecepatan Angkut (m/s)", generalData?.speed, keyboardType = KeyboardType.Number) { viewModel.onSpeedChange(it) }
-        FormTextField("Melayani (Lantai)", generalData?.floorsServed, keyboardType = KeyboardType.Number) { viewModel.onFloorsServedChange(it) }
+        FormTextField("Kapasitas Angkut (Orang / Kg)", generalData?.capacity) { viewModel.onCapacityChange(it) }
+        FormTextField("Kecepatan Angkut (m/s)", generalData?.speed) { viewModel.onSpeedChange(it) }
+        FormTextField("Melayani (Lantai)", generalData?.floorsServed) { viewModel.onFloorsServedChange(it) }
         FormTextField("No. Izin Pengesahan", generalData?.permitNumber) { viewModel.onPermitNumberChange(it) }
         FormTextField("Tanggal Pemeriksaan", generalData?.inspectionDate) { viewModel.onInspectionDateChange(it) }
     }
