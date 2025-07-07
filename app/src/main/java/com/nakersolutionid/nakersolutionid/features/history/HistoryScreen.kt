@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState // Import ini
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -85,6 +86,10 @@ fun HistoryScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
 
+    // Dapatkan LazyListState dan CoroutineScope
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             HistoryAppBar(
@@ -104,14 +109,27 @@ fun HistoryScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 query = searchQuery,
-                onQueryChange = viewModel::onSearchQueryChange,
-                onClear = { viewModel.onSearchQueryChange("") }
+                onQueryChange = { newQuery ->
+                    viewModel.onSearchQueryChange(newQuery)
+                    // Gulir ke atas ketika kueri dihapus atau diubah
+                    coroutineScope.launch {
+                        lazyListState.animateScrollToItem(0)
+                    }
+                },
+                onClear = {
+                    viewModel.onSearchQueryChange("")
+                    // Gulir ke atas ketika tombol clear ditekan
+                    coroutineScope.launch {
+                        lazyListState.animateScrollToItem(0)
+                    }
+                }
             )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                state = lazyListState // Tetapkan LazyListState ke LazyColumn
             ) {
                 items(
                     items = uiState.histories,
@@ -135,7 +153,10 @@ fun HistoryScreen(
                 onDismissRequest = { showBottomSheet = false },
                 onApplyFilters = { newFilters ->
                     activeFilters = newFilters
-                    // Di sini Anda akan memanggil fungsi ViewModel untuk filter, jika sudah ada
+                    // Anda mungkin juga ingin menggulir ke atas saat filter diterapkan
+                    coroutineScope.launch {
+                        lazyListState.animateScrollToItem(0)
+                    }
                     showBottomSheet = false
                 },
                 sheetState = sheetState
