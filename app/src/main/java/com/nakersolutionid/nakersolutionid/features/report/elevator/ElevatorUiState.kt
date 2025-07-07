@@ -2,6 +2,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.elevator
 
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 
 data class ResultStatusUiState(
     val result: String? = null,
@@ -219,9 +222,10 @@ data class InspectionAndTestingUiState(
 )
 
 data class ElevatorUiState(
-    val id: String? = null,
-    val nameOfInspectionType: String? = null,
-    val subNameOfInspectionType: String? = null,
+    val id: Long = 0,
+    val documentType: DocumentType = DocumentType.LAPORAN,
+    val nameOfInspectionType: InspectionType = InspectionType.EE,
+    val subNameOfInspectionType: SubInspectionType = SubInspectionType.Elevator,
     val typeInspection: String? = null,
     val eskOrElevType: String? = null,
     val generalData: GeneralDataUiState? = null,

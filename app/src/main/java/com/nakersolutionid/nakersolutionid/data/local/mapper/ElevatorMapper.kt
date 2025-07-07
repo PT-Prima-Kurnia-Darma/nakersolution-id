@@ -7,9 +7,6 @@ import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionFinding
 import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionTestResult
 import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.local.entity.Manufacturer
-import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.ReportType
-import com.nakersolutionid.nakersolutionid.data.local.utils.SubReportType
 import com.nakersolutionid.nakersolutionid.domain.model.*
 
 // --- PUBLIC MAPPER ---
@@ -32,11 +29,11 @@ fun Report.toInspectionWithDetails(
     val inspectionEntity = InspectionEntity(
         id = inspectionId,
         extraId = extraId,
-        documentType = DocumentType.LAPORAN,
-        reportType = ReportType.EE,
-        subReportType = SubReportType.Elevator,
-        equipmentType = this.eskOrElevType ?: "Tidak Diketahui",
-        inspectionType = this.typeInspection ?: "Tidak Diketahui",
+        documentType = documentType,
+        inspectionType = nameOfInspectionType,
+        subInspectionType = subNameOfInspectionType,
+        equipmentType = this.equipmentType ?: "Tidak Diketahui",
+        examinationType = this.examinationType ?: "Tidak Diketahui",
         ownerName = this.generalData?.ownerName,
         ownerAddress = this.generalData?.ownerAddress,
         usageLocation = this.generalData?.nameUsageLocation,
@@ -50,7 +47,7 @@ fun Report.toInspectionWithDetails(
         manufacturer = Manufacturer(
             name = this.generalData?.manufacturerOrInstaller,
             brandOrType = this.generalData?.brandOrType,
-            year = this.generalData?.countryAndYear?.split("/")?.getOrNull(1)?.trim()
+            year = this.generalData?.countryAndYear
         ),
         createdAt = createdAt,
         reportDate = this.generalData?.inspectionDate,
@@ -410,7 +407,7 @@ fun InspectionWithDetails.toDomain(): Report {
         manufacturerOrInstaller = this.inspectionEntity.manufacturer?.name,
         elevatorType = this.inspectionEntity.driveType,
         brandOrType = this.inspectionEntity.manufacturer?.brandOrType,
-        countryAndYear = this.inspectionEntity.manufacturer?.year?.let { " / $it" },
+        countryAndYear = this.inspectionEntity.manufacturer?.year,
         serialNumber = this.inspectionEntity.serialNumber,
         capacity = this.inspectionEntity.capacity,
         speed = this.inspectionEntity.speed,
@@ -421,11 +418,12 @@ fun InspectionWithDetails.toDomain(): Report {
 
     // 3. Construct the final Report object.
     return Report(
-        id = this.inspectionEntity.extraId,
-        nameOfInspectionType = this.inspectionEntity.reportType.name,
-        subNameOfInspectionType = this.inspectionEntity.subReportType.name,
-        typeInspection = this.inspectionEntity.inspectionType,
-        eskOrElevType = this.inspectionEntity.equipmentType,
+        id = this.inspectionEntity.id,
+        documentType = this.inspectionEntity.documentType,
+        nameOfInspectionType = this.inspectionEntity.inspectionType,
+        subNameOfInspectionType = this.inspectionEntity.subInspectionType,
+        examinationType = this.inspectionEntity.examinationType,
+        equipmentType = this.inspectionEntity.equipmentType,
         generalData = generalData,
         technicalDocumentInspection = technicalDocs,
         inspectionAndTesting = inspectionAndTesting,
@@ -679,10 +677,10 @@ fun InspectionEntity.toHistory(): History {
         id = this.id,
         extraId = this.extraId,
         documentType = this.documentType,
-        reportType = this.reportType,
-        subReportType = this.subReportType,
-        equipmentType = this.equipmentType,
         inspectionType = this.inspectionType,
+        subInspectionType = this.subInspectionType,
+        equipmentType = this.equipmentType,
+        examinationType = this.examinationType,
         ownerName = this.ownerName,
         createdAt = this.createdAt,
         reportDate = this.reportDate

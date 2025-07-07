@@ -12,6 +12,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.response.sendreport.SendR
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.validatetoken.ValidateTokenResponse
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -48,4 +49,11 @@ interface ApiServices {
         @Header("Authorization") token: String,
         @Body request: SendReportRequest
     ) : SendReportResponse
+
+    @GET("elevatorEskalator/elevator/laporan")
+    suspend fun getReports(
+        @Header("Authorization") token: String
+    ) : SendReportResponse
+
+
 }

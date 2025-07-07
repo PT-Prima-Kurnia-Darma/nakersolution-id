@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.utils
 
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.data.remote.request.*
 import com.nakersolutionid.nakersolutionid.domain.model.*
 import com.nakersolutionid.nakersolutionid.features.report.elevator.*
@@ -259,10 +260,11 @@ fun InspectionAndTestingUiState.toDomain(): InspectionAndTestingDomain {
 fun ElevatorUiState.toDomain(): Report {
     return Report(
         id = this.id,
+        documentType = this.documentType,
         nameOfInspectionType = this.nameOfInspectionType,
         subNameOfInspectionType = this.subNameOfInspectionType,
-        typeInspection = this.typeInspection,
-        eskOrElevType = this.eskOrElevType,
+        examinationType = this.typeInspection,
+        equipmentType = this.eskOrElevType,
         generalData = this.generalData?.toDomain(),
         technicalDocumentInspection = this.technicalDocumentInspection?.toDomain(),
         inspectionAndTesting = this.inspectionAndTesting?.toDomain(),
@@ -525,10 +527,10 @@ fun InspectionAndTestingDomain.toNetwork(): InspectionAndTestingNetwork {
 
 fun Report.toNetwork(): SendReportRequest {
     return SendReportRequest(
-        nameOfInspectionType = this.nameOfInspectionType,
-        subNameOfInspectionType = this.subNameOfInspectionType,
-        typeInspection = this.typeInspection,
-        EskOrElevType = this.eskOrElevType,
+        nameOfInspectionType = this.nameOfInspectionType.toDisplayString(),
+        subNameOfInspectionType = this.subNameOfInspectionType.toDisplayString(),
+        typeInspection = this.examinationType,
+        EskOrElevType = this.equipmentType,
         generalData = this.generalData?.toNetwork(),
         technicalDocumentInspection = this.technicalDocumentInspection?.toNetwork(),
         inspectionAndTesting = this.inspectionAndTesting?.toNetwork(),

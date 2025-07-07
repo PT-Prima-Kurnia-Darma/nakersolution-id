@@ -27,8 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.ReportType
-import com.nakersolutionid.nakersolutionid.data.local.utils.SubReportType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.Utils
@@ -68,10 +68,10 @@ fun HistoryItem(
 
             // Section 2: Details - Informasi Spesifik Laporan
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                InfoRow(label = "Jenis Pemeriksaan", value = history.inspectionType)
+                InfoRow(label = "Jenis Pemeriksaan", value = history.examinationType)
                 InfoRow(
                     label = "Tipe Laporan",
-                    value = "${history.reportType.name} - ${formatEnumName(history.subReportType)}"
+                    value = "${history.inspectionType.name} - ${formatEnumName(history.subInspectionType)}"
                 )
                 InfoRow(label = "Jenis Dokumen", value = formatEnumName(history.documentType))
                 InfoRow(label = "Tanggal Laporan", value = history.reportDate ?: "-")
@@ -159,10 +159,10 @@ private fun HistoryItemPreview() {
         id = 1L,
         extraId = "ext-001",
         documentType = DocumentType.LAPORAN,
-        reportType = ReportType.EE,
-        subReportType = SubReportType.Elevator,
+        inspectionType = InspectionType.EE,
+        subInspectionType = SubInspectionType.Elevator,
         equipmentType = "Elevator Penumpang",
-        inspectionType = "Pemeriksaan dan Pengujian Berkala",
+        examinationType = "Pemeriksaan dan Pengujian Berkala",
         ownerName = "PT Gedung Sejahtera",
         createdAt = "2025-07-06T15:22:10.123Z",
         reportDate = "25 Oktober 2024"

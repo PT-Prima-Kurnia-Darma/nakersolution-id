@@ -53,8 +53,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.ReportType
-import com.nakersolutionid.nakersolutionid.data.local.utils.SubReportType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
@@ -64,16 +65,10 @@ import java.util.Locale
 
 // Data class untuk menampung status filter yang dipilih
 data class FilterState(
-    val reportType: ReportType? = null,
+    val inspectionType: InspectionType? = null,
     val documentType: DocumentType? = null,
-    val subReportType: SubReportType? = null
+    val subInspectionType: SubInspectionType? = null
 )
-
-// Helper function untuk memformat nama enum menjadi teks yang mudah dibaca
-private fun formatEnumName(enum: Enum<*>): String {
-    return enum.name.replace('_', ' ').lowercase(Locale.getDefault())
-        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -223,23 +218,6 @@ fun FilterSheet(
 
             // == KONTEN FILTER (BISA DI-SCROLL) ==
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                // -- Filter Jenis Laporan (ReportType) --
-                FilterSection(title = "Jenis Laporan") {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        ReportType.entries.forEach { type ->
-                            FilterChip(
-                                selected = tempFilters.reportType == type,
-                                onClick = { tempFilters = tempFilters.copy(reportType = if (tempFilters.reportType == type) null else type) },
-                                label = { Text(type.name) },
-                                colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                                )
-                            )
-                        }
-                    }
-                }
-
                 // -- Filter Jenis Dokumen (DocumentType) --
                 FilterSection(title = "Jenis Dokumen") {
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -247,7 +225,7 @@ fun FilterSheet(
                             FilterChip(
                                 selected = tempFilters.documentType == type,
                                 onClick = { tempFilters = tempFilters.copy(documentType = if (tempFilters.documentType == type) null else type) },
-                                label = { Text(formatEnumName(type)) },
+                                label = { Text(type.toDisplayString()) },
                                 colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = MaterialTheme.colorScheme.primary,
                                     selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -257,8 +235,25 @@ fun FilterSheet(
                     }
                 }
 
-                // -- Filter Detail Jenis Laporan (SubReportType) dengan Dropdown --
-                FilterSection(title = "Detail Jenis Laporan") {
+                // -- Filter Jenis Laporan (InspectionType) --
+                FilterSection(title = "Jenis Bidang") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        InspectionType.entries.forEach { type ->
+                            FilterChip(
+                                selected = tempFilters.inspectionType == type,
+                                onClick = { tempFilters = tempFilters.copy(inspectionType = if (tempFilters.inspectionType == type) null else type) },
+                                label = { Text(type.toDisplayString()) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            )
+                        }
+                    }
+                }
+
+                // -- Filter Detail Jenis Laporan (SubInspectionType) dengan Dropdown --
+                FilterSection(title = "Sub Bidang") {
                     var isDropdownExpanded by remember { mutableStateOf(false) }
 
                     ExposedDropdownMenuBox(
@@ -266,7 +261,7 @@ fun FilterSheet(
                         onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
                     ) {
                         TextField(
-                            value = tempFilters.subReportType?.let { formatEnumName(it) } ?: "Pilih Opsi...",
+                            value = tempFilters.subInspectionType?.toDisplayString() ?: "Pilih Opsi...",
                             onValueChange = {},
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
@@ -278,11 +273,11 @@ fun FilterSheet(
                             expanded = isDropdownExpanded,
                             onDismissRequest = { isDropdownExpanded = false }
                         ) {
-                            SubReportType.entries.forEach { type ->
+                            SubInspectionType.entries.forEach { type ->
                                 DropdownMenuItem(
-                                    text = { Text(formatEnumName(type)) },
+                                    text = { Text(type.toDisplayString()) },
                                     onClick = {
-                                        tempFilters = tempFilters.copy(subReportType = type)
+                                        tempFilters = tempFilters.copy(subInspectionType = type)
                                         isDropdownExpanded = false
                                     }
                                 )

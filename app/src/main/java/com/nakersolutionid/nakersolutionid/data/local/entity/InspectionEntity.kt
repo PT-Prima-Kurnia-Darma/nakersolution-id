@@ -7,8 +7,8 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.ReportType
-import com.nakersolutionid.nakersolutionid.data.local.utils.SubReportType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 
 // --- CORE ENTITIES (TABLES) ---
 
@@ -28,20 +28,35 @@ data class InspectionEntity(
     @ColumnInfo(name= "extra_id")
     val extraId: String, // Taken from backend
 
+    /**
+     * e.g., "Laporan, BAP, Surat Keterangan Sementara, Sertifikat Sementara"
+     */
     @ColumnInfo(name = "document_type")
-    val documentType: DocumentType, // e.g., "Laporan, BAP, Surat Keterangan Sementara, Sertifikat Sementara"
+    val documentType: DocumentType,
 
+    /**
+     * e.g., "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE"
+     */
     @ColumnInfo(name = "report_type")
-    val reportType: ReportType, // e.g., "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE"
+    val inspectionType: InspectionType,
 
+    /**
+     * e.g., "Elevator, Eskalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
+     */
     @ColumnInfo(name = "sub_report_type")
-    val subReportType: SubReportType, // e.g., "Elevator, Eskalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
+    val subInspectionType: SubInspectionType,
 
+    /**
+     * e.g., "Elevator Penumpang, Elevator Barang, Counterbalance Forklift, Order Picker"
+     */
     @ColumnInfo(name = "equipment_type")
-    val equipmentType: String, // e.g., "Elevator Penumpang, Elevator Barang, Counterbalance Forklift, Order Picker"
+    val equipmentType: String,
 
+    /**
+     * e.g., "Pemeriksaan Berkala, Pemeriksaan Pertama, Pemeriksaan Khusus, Pemeriksaan Ulang"
+     */
     @ColumnInfo(name = "inspection_type")
-    val inspectionType: String, // e.g., "Pemeriksaan dan Pengujian Berkala, Pemeriksaan Rutin, Pemeriksaan Selamanya"
+    val examinationType: String,
 
     // --- Owner & Location Data ---
     @ColumnInfo(name = "owner_name")

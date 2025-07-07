@@ -61,6 +61,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
 import com.nakersolutionid.nakersolutionid.ui.components.ElevatorTopAppBar
@@ -80,13 +82,13 @@ fun ElevatorScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val options = listOf("Elevator", "Eskalator")
+    val options = listOf(SubInspectionType.Elevator, SubInspectionType.Eskalator)
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    viewModel.onNameOfInspectionTypeChange(menuTitle)
+    viewModel.onNameOfInspectionTypeChange(InspectionType.EE)
 
     LaunchedEffect(uiState.sendReportResult) {
         when (val result = uiState.sendReportResult) {
@@ -137,7 +139,7 @@ fun ElevatorScreen(
                                 else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                             },
                         ) {
-                            Text(label)
+                            Text(label.name)
                         }
                     }
                 }

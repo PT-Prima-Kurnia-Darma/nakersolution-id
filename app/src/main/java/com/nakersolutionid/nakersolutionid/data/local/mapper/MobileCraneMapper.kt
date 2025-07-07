@@ -134,11 +134,11 @@ class InspectionRepository(private val inspectionDao: InspectionDao) {
     suspend fun saveMobileCraneInspection(data: MobileCraneData) {
         // 1. Map to the main 'Inspection' entity
         val mainInspection = InspectionEntity(
-            reportType = data.paaType,
+            inspectionType = data.paaType,
             equipmentType = data.generalData.equipmentType,
             inspectionType = data.typeInspection,
             documentType = TODO(),
-            subReportType = TODO(),
+            subInspectionType = TODO(),
             ownerName = data.generalData.owner.name,
             ownerAddress = data.generalData.owner.address,
             usageLocation = data.generalData.unitLocation,

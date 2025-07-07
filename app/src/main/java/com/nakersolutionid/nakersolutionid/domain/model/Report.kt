@@ -1,5 +1,9 @@
 package com.nakersolutionid.nakersolutionid.domain.model
 
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+
 data class ResultStatusDomain(
     val result: String? = null,
     val status: Boolean? = null
@@ -216,11 +220,12 @@ data class InspectionAndTestingDomain(
 )
 
 data class Report(
-    val id: String? = null,
-    val nameOfInspectionType: String? = null,
-    val subNameOfInspectionType: String? = null,
-    val typeInspection: String? = null,
-    val eskOrElevType: String? = null,
+    val id: Long,
+    val documentType: DocumentType,
+    val nameOfInspectionType: InspectionType,
+    val subNameOfInspectionType: SubInspectionType,
+    val examinationType: String? = null,
+    val equipmentType: String? = null,
     val generalData: GeneralDataDomain? = null,
     val technicalDocumentInspection: TechnicalDocumentInspectionDomain? = null,
     val inspectionAndTesting: InspectionAndTestingDomain? = null,

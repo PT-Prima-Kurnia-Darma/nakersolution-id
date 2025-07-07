@@ -27,10 +27,10 @@ private fun formatEnumName(enum: Enum<*>): String {
 private fun History.matchesQuery(query: String): Boolean {
     val searchableFields = listOfNotNull(
         formatEnumName(documentType),
-        reportType.name,
-        formatEnumName(subReportType),
+        inspectionType.name,
+        formatEnumName(subInspectionType),
         equipmentType,
-        inspectionType,
+        examinationType,
         ownerName,
         reportDate,
         createdAt?.let { Utils.formatIsoDate(it) } // Search on formatted date
