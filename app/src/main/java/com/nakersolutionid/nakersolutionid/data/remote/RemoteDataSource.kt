@@ -6,12 +6,12 @@ import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
-import com.nakersolutionid.nakersolutionid.data.remote.request.SendReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.request.SendElevatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
+import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.ElevatorReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
-import com.nakersolutionid.nakersolutionid.data.remote.response.sendreport.SendReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -144,7 +144,7 @@ class RemoteDataSource(private val apiServices: ApiServices) {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun sendReport(token: String, request: SendReportRequest): Flow<ApiResponse<SendReportResponse>> {
+    fun sendReport(token: String, request: SendElevatorReportRequest): Flow<ApiResponse<ElevatorReportResponse>> {
         return flow {
             try {
                 val response = apiServices.sendReport("Bearer $token", request)
@@ -153,7 +153,7 @@ class RemoteDataSource(private val apiServices: ApiServices) {
                 val errorBody = e.response()?.errorBody()?.string()
                 errorBody?.let {
                     try {
-                        val parsedError = Gson().fromJson(errorBody, SendReportResponse::class.java)
+                        val parsedError = Gson().fromJson(errorBody, ElevatorReportResponse::class.java)
                         if (parsedError != null) {
                             emit(ApiResponse.Error(parsedError.message))
                         } else {
