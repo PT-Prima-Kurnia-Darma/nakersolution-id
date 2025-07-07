@@ -37,13 +37,13 @@ data class InspectionEntity(
     /**
      * e.g., "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE"
      */
-    @ColumnInfo(name = "report_type")
+    @ColumnInfo(name = "inspection_type")
     val inspectionType: InspectionType,
 
     /**
      * e.g., "Elevator, Eskalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
      */
-    @ColumnInfo(name = "sub_report_type")
+    @ColumnInfo(name = "sub_inspection_type")
     val subInspectionType: SubInspectionType,
 
     /**
@@ -55,7 +55,7 @@ data class InspectionEntity(
     /**
      * e.g., "Pemeriksaan Berkala, Pemeriksaan Pertama, Pemeriksaan Khusus, Pemeriksaan Ulang"
      */
-    @ColumnInfo(name = "inspection_type")
+    @ColumnInfo(name = "examination_type")
     val examinationType: String,
 
     // --- Owner & Location Data ---
