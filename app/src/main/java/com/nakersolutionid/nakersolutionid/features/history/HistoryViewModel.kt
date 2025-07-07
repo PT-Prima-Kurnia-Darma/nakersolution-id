@@ -56,9 +56,9 @@ class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     _uiState.update { it.copy(error = "Gagal memuat riwayat", isLoading = false) }
                 }
                 .collect { histories ->
-                    allHistories.value = histories
+                    allHistories.value = histories.asReversed()
                     _uiState.update {
-                        it.copy(isLoading = false, histories = histories)
+                        it.copy(isLoading = false, histories = histories.asReversed())
                     }
                 }
         }
