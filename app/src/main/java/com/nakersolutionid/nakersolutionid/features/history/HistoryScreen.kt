@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState // Import ini
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -41,11 +42,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +63,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
@@ -79,16 +84,21 @@ fun HistoryScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
-
-    // State untuk filter yang aktif
-    var activeFilters by remember { mutableStateOf(FilterState()) }
+    val activeFilters by viewModel.filterState.collectAsStateWithLifecycle() // Ambil filter aktif dari ViewModel
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    // Dapatkan LazyListState dan CoroutineScope
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+    // ✨ PERBAIKAN: Gunakan LaunchedEffect untuk memantau perubahan pada daftar item
+    // Ini memastikan scroll hanya terjadi setelah daftar diperbarui.
+    LaunchedEffect(uiState.histories) {
+        if (searchQuery.isNotEmpty() || activeFilters != FilterState()) {
+            lazyListState.animateScrollToItem(0)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -109,19 +119,12 @@ fun HistoryScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 query = searchQuery,
+                // ✨ PERBAIKAN: Hapus pemanggilan animateScrollToItem dari sini
                 onQueryChange = { newQuery ->
                     viewModel.onSearchQueryChange(newQuery)
-                    // Gulir ke atas ketika kueri dihapus atau diubah
-                    coroutineScope.launch {
-                        lazyListState.animateScrollToItem(0)
-                    }
                 },
                 onClear = {
                     viewModel.onSearchQueryChange("")
-                    // Gulir ke atas ketika tombol clear ditekan
-                    coroutineScope.launch {
-                        lazyListState.animateScrollToItem(0)
-                    }
                 }
             )
             LazyColumn(
@@ -129,7 +132,7 @@ fun HistoryScreen(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp),
-                state = lazyListState // Tetapkan LazyListState ke LazyColumn
+                state = lazyListState
             ) {
                 items(
                     items = uiState.histories,
@@ -149,15 +152,16 @@ fun HistoryScreen(
 
         if (showBottomSheet) {
             FilterSheet(
-                initialState = activeFilters,
+                initialState = activeFilters, // Gunakan activeFilters dari ViewModel
                 onDismissRequest = { showBottomSheet = false },
                 onApplyFilters = { newFilters ->
-                    activeFilters = newFilters
-                    // Anda mungkin juga ingin menggulir ke atas saat filter diterapkan
-                    coroutineScope.launch {
-                        lazyListState.animateScrollToItem(0)
-                    }
+                    viewModel.applyFilters(newFilters) // Panggil fungsi applyFilters di ViewModel
+                    // ✨ PERBAIKAN: Hapus pemanggilan animateScrollToItem dari sini
                     showBottomSheet = false
+                },
+                onResetFilters = {
+                    viewModel.clearFilters() // Panggil fungsi clearFilters di ViewModel
+                    // ✨ PERBAIKAN: Hapus pemanggilan animateScrollToItem dari sini
                 },
                 sheetState = sheetState
             )
@@ -197,6 +201,7 @@ fun FilterSheet(
     initialState: FilterState,
     onDismissRequest: () -> Unit,
     onApplyFilters: (FilterState) -> Unit,
+    onResetFilters: () -> Unit, // Tambahkan callback untuk reset
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
@@ -329,8 +334,9 @@ fun FilterSheet(
             ) {
                 OutlinedButton(
                     onClick = {
-                        tempFilters = FilterState()
-                    }, // Reset state sementara
+                        tempFilters = FilterState() // Reset state sementara
+                        onResetFilters() // Panggil callback reset
+                    },
                     modifier = Modifier.weight(1f)
                 ) { Text("Reset") }
                 Button(

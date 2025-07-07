@@ -2,6 +2,9 @@ package com.nakersolutionid.nakersolutionid.features.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
@@ -28,13 +31,27 @@ private fun History.matchesQuery(query: String): Boolean {
         examinationType,
         ownerName,
         reportDate,
-        createdAt?.let { "Dibuat: ${Utils.formatIsoDate(it)}" } ?: run { "Tanggal Tidak Tersedia" } // Search on formatted date
+        createdAt?.let { "Dibuat: ${Utils.formatIsoDate(it)}" }
+            ?: run { "Tanggal Tidak Tersedia" } // Search on formatted date
     )
 
     // Returns true if any of the fields contain the query (case-insensitive)
     return searchableFields.any { it.contains(query, ignoreCase = true) }
 }
 
+// Extension function to check if a History object matches the given filters.
+private fun History.matchesFilters(filters: FilterState): Boolean {
+    if (filters.documentType != null && this.documentType != filters.documentType) {
+        return false
+    }
+    if (filters.inspectionType != null && this.inspectionType != filters.inspectionType) {
+        return false
+    }
+    if (filters.subInspectionType != null && this.subInspectionType != filters.subInspectionType) {
+        return false
+    }
+    return true
+}
 
 @OptIn(FlowPreview::class)
 class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
@@ -43,6 +60,10 @@ class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    // State untuk filter yang aktif
+    private val _filterState = MutableStateFlow(FilterState())
+    val filterState: StateFlow<FilterState> = _filterState.asStateFlow() // Expose filterState
 
     // Holds the original, unfiltered list of histories from the source.
     private val allHistories = MutableStateFlow<List<History>>(emptyList())
@@ -56,31 +77,35 @@ class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     _uiState.update { it.copy(error = "Gagal memuat riwayat", isLoading = false) }
                 }
                 .collect { histories ->
-                    allHistories.value = histories.asReversed()
-                    _uiState.update {
-                        it.copy(isLoading = false, histories = histories.asReversed())
-                    }
+                    allHistories.value = histories.reversed() // Membalik urutan di sini
+                    // Jangan update uiState.histories langsung di sini, biarkan combine yang melakukannya
+                    _uiState.update { it.copy(isLoading = false) } // Hanya update isLoading
                 }
         }
 
-        // Coroutine to handle the search logic reactively.
+        // Coroutine to handle the search and filter logic reactively.
         viewModelScope.launch {
-            searchQuery
-                .debounce(50L) // Wait for 300ms of no new input before searching
-                .combine(allHistories) { query, histories ->
-                    if (query.isBlank()) {
-                        histories // If query is empty, return the full list
-                    } else {
-                        // Filter the list based on the query using our extension function
-                        histories.filter { it.matchesQuery(query) }
-                    }
+            combine(
+                searchQuery,
+                filterState, // Amati perubahan filter
+                allHistories // Amati perubahan daftar asli
+            ) { query, filters, histories ->
+                // Terapkan filter terlebih dahulu
+                val filteredByCategories = histories.filter { it.matchesFilters(filters) }
+
+                // Kemudian terapkan pencarian pada hasil yang sudah difilter
+                if (query.isBlank()) {
+                    filteredByCategories // Jika kueri kosong, kembalikan hasil filter saja
+                } else {
+                    filteredByCategories.filter { it.matchesQuery(query) }
                 }
+            }
                 .catch {
-                    _uiState.update { it.copy(error = "Terjadi kesalahan saat mencari") }
+                    _uiState.update { it.copy(error = "Terjadi kesalahan saat mencari atau memfilter") }
                 }
-                .collect { filteredHistories ->
-                    // Update the UI state with the filtered list.
-                    _uiState.update { it.copy(histories = filteredHistories) }
+                .collect { combinedFilteredHistories ->
+                    // Update the UI state with the combined filtered list and active filters.
+                    _uiState.update { it.copy(histories = combinedFilteredHistories) }
                 }
         }
     }
@@ -90,5 +115,21 @@ class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
      */
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
+    }
+
+    /**
+     * Called by the UI to apply new filters.
+     */
+    fun applyFilters(newFilters: FilterState) {
+        _filterState.value = newFilters
+        _uiState.update { it.copy(activeFilters = newFilters) } // Perbarui activeFilters di UiState
+    }
+
+    /**
+     * Called by the UI to clear all filters.
+     */
+    fun clearFilters() {
+        _filterState.value = FilterState() // Reset filter ke kondisi awal
+        _uiState.update { it.copy(activeFilters = FilterState()) } // Perbarui activeFilters di UiState
     }
 }

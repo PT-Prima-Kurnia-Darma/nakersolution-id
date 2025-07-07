@@ -373,7 +373,7 @@ fun ResultStatusInput(
 fun MainData(uiState: ElevatorUiState?, viewModel: ReportViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         FormTextField("Tipe Inspeksi", uiState?.typeInspection) { viewModel.onTypeInspectionChange(it) }
-        FormTextField("Tipe Elevator atau Eskalator", uiState?.eskOrElevType) { viewModel.onEskOrElevTypeChange(it) }
+        FormTextField("Tipe Elevator", uiState?.eskOrElevType) { viewModel.onEskOrElevTypeChange(it) }
     }
 }
 
