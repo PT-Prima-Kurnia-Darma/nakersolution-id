@@ -168,6 +168,33 @@ private fun MutableList<InspectionCheckItem>.addCheckItem(
     }
 }
 
+/**
+ * A helper extension function to reduce boilerplate when creating and adding an [InspectionCheckItem]
+ * from a simple [String] result.
+ * It handles null or blank data gracefully by doing nothing.
+ *
+ * @param inspectionId The foreign key for the item.
+ * @param category The category name for the check item.
+ * @param itemName The specific name of the check item.
+ * @param status The boolean status of the check item, if the status is null it will automatically set to 'false'.
+ */
+private fun MutableList<InspectionCheckItem>.addCheckItem(
+    inspectionId: Long,
+    category: String,
+    itemName: String,
+    status: Boolean?
+) {
+    this.add(
+        InspectionCheckItem(
+            inspectionId = inspectionId,
+            category = category,
+            itemName = itemName,
+            status = status == true,
+            result = "Reserved"
+        )
+    )
+}
+
 // --- EXPLICIT MAPPERS FOR EACH DOMAIN SECTION ---
 
 private fun mapTechnicalDocumentInspection(domain: TechnicalDocumentInspectionDomain, inspectionId: Long): List<InspectionCheckItem> {
@@ -453,13 +480,13 @@ private fun List<InspectionCheckItem>.findItem(category: String, itemName: Strin
 private fun buildTechnicalDocumentInspection(items: List<InspectionCheckItem>): TechnicalDocumentInspectionDomain {
     val category = "Technical Document Inspection"
     return TechnicalDocumentInspectionDomain(
-        designDrawing = items.findItem(category, "Design Drawing")?.result,
-        technicalCalculation = items.findItem(category, "Technical Calculation")?.result,
-        materialCertificate = items.findItem(category, "Material Certificate")?.result,
-        controlPanelDiagram = items.findItem(category, "Control Panel Diagram")?.result,
-        asBuiltDrawing = items.findItem(category, "As Built Drawing")?.result,
-        componentCertificates = items.findItem(category, "Component Certificates")?.result,
-        safeWorkProcedure = items.findItem(category, "Safe Work Procedure")?.result
+        designDrawing = items.findItem(category, "Design Drawing")?.status,
+        technicalCalculation = items.findItem(category, "Technical Calculation")?.status,
+        materialCertificate = items.findItem(category, "Material Certificate")?.status,
+        controlPanelDiagram = items.findItem(category, "Control Panel Diagram")?.status,
+        asBuiltDrawing = items.findItem(category, "As Built Drawing")?.status,
+        componentCertificates = items.findItem(category, "Component Certificates")?.status,
+        safeWorkProcedure = items.findItem(category, "Safe Work Procedure")?.status
     )
 }
 

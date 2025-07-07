@@ -1,10 +1,18 @@
 package com.nakersolutionid.nakersolutionid.data.remote.request
 
-data class ResultStatusNetwork(
-    val result: String? = null,
-    val status: Boolean? = null
+// Root Data Class
+data class SendElevatorReportRequest(
+    val inspectionType: String? = null,
+    val subInspectionType: String? = null,
+    val examinationType: String? = null,
+    val equipmentType: String? = null,
+    val generalData: GeneralDataNetwork? = null,
+    val technicalDocumentInspection: TechnicalDocumentInspectionNetwork? = null,
+    val inspectionAndTesting: InspectionAndTestingNetwork? = null,
+    val conclusion: String? = null
 )
 
+// GeneralData
 data class GeneralDataNetwork(
     val ownerName: String? = null,
     val ownerAddress: String? = null,
@@ -22,24 +30,30 @@ data class GeneralDataNetwork(
     val inspectionDate: String? = null
 )
 
+// TechnicalDocumentInspection
 data class TechnicalDocumentInspectionNetwork(
-    val designDrawing: String? = null,
-    val technicalCalculation: String? = null,
-    val materialCertificate: String? = null,
-    val controlPanelDiagram: String? = null,
-    val asBuiltDrawing: String? = null,
-    val componentCertificates: String? = null,
-    val safeWorkProcedure: String? = null
+    val designDrawing: Boolean? = null,
+    val technicalCalculation: Boolean? = null,
+    val materialCertificate: Boolean? = null,
+    val controlPanelDiagram: Boolean? = null,
+    val asBuiltDrawing: Boolean? = null,
+    val componentCertificates: Boolean? = null,
+    val safeWorkProcedure: Boolean? = null
 )
 
-data class MachineRoomlessNetwork(
-    val panelPlacement: ResultStatusNetwork? = null,
-    val lightingWorkArea: ResultStatusNetwork? = null,
-    val lightingBetweenWorkArea: ResultStatusNetwork? = null,
-    val manualBrakeRelease: ResultStatusNetwork? = null,
-    val fireExtinguisherPlacement: ResultStatusNetwork? = null
+// InspectionAndTesting
+data class InspectionAndTestingNetwork(
+    val machineRoomAndMachinery: MachineRoomAndMachineryNetwork? = null,
+    val suspensionRopesAndBelts: SuspensionRopesAndBeltsNetwork? = null,
+    val drumsAndSheaves: DrumsAndSheavesNetwork? = null,
+    val hoistwayAndPit: HoistwayAndPitNetwork? = null,
+    val car: CarNetwork? = null,
+    val governorAndSafetyBrake: GovernorAndSafetyBrakeNetwork? = null,
+    val counterweightGuideRailsAndBuffers: CounterweightGuideRailsAndBuffersNetwork? = null,
+    val electricalInstallation: ElectricalInstallationNetwork? = null
 )
 
+// MachineRoomAndMachinery
 data class MachineRoomAndMachineryNetwork(
     val machineMounting: ResultStatusNetwork? = null,
     val mechanicalBrake: ResultStatusNetwork? = null,
@@ -59,6 +73,22 @@ data class MachineRoomAndMachineryNetwork(
     val emergencyStopSwitch: ResultStatusNetwork? = null
 )
 
+// ResultStatus (Generic class for result and status)
+data class ResultStatusNetwork(
+    val result: String? = null,
+    val status: Boolean? = null
+)
+
+// MachineRoomless
+data class MachineRoomlessNetwork(
+    val panelPlacement: ResultStatusNetwork? = null,
+    val lightingWorkArea: ResultStatusNetwork? = null,
+    val lightingBetweenWorkArea: ResultStatusNetwork? = null,
+    val manualBrakeRelease: ResultStatusNetwork? = null,
+    val fireExtinguisherPlacement: ResultStatusNetwork? = null
+)
+
+// SuspensionRopesAndBelts
 data class SuspensionRopesAndBeltsNetwork(
     val condition: ResultStatusNetwork? = null,
     val chainUsage: ResultStatusNetwork? = null,
@@ -69,12 +99,14 @@ data class SuspensionRopesAndBeltsNetwork(
     val slackRopeDevice: ResultStatusNetwork? = null
 )
 
+// DrumsAndSheaves
 data class DrumsAndSheavesNetwork(
     val drumGrooves: ResultStatusNetwork? = null,
     val passengerDrumDiameter: ResultStatusNetwork? = null,
     val governorDrumDiameter: ResultStatusNetwork? = null
 )
 
+// HoistwayAndPit
 data class HoistwayAndPitNetwork(
     val construction: ResultStatusNetwork? = null,
     val walls: ResultStatusNetwork? = null,
@@ -98,23 +130,7 @@ data class HoistwayAndPitNetwork(
     val inclinedElevatorStairs: ResultStatusNetwork? = null
 )
 
-data class CarDoorSpecsNetwork(
-    val size: ResultStatusNetwork? = null,
-    val lockAndSwitch: ResultStatusNetwork? = null,
-    val sillClearance: ResultStatusNetwork? = null
-)
-
-data class CarSignageNetwork(
-    val manufacturerName: ResultStatusNetwork? = null,
-    val loadCapacity: ResultStatusNetwork? = null,
-    val noSmokingSign: ResultStatusNetwork? = null,
-    val overloadIndicator: ResultStatusNetwork? = null,
-    val doorOpenCloseButtons: ResultStatusNetwork? = null,
-    val floorButtons: ResultStatusNetwork? = null,
-    val alarmButton: ResultStatusNetwork? = null,
-    val twoWayIntercom: ResultStatusNetwork? = null
-)
-
+// Car
 data class CarNetwork(
     val frame: ResultStatusNetwork? = null,
     val body: ResultStatusNetwork? = null,
@@ -143,6 +159,26 @@ data class CarNetwork(
     val carInterior: ResultStatusNetwork? = null
 )
 
+// CarDoorSpecs
+data class CarDoorSpecsNetwork(
+    val size: ResultStatusNetwork? = null,
+    val lockAndSwitch: ResultStatusNetwork? = null,
+    val sillClearance: ResultStatusNetwork? = null
+)
+
+// CarSignage
+data class CarSignageNetwork(
+    val manufacturerName: ResultStatusNetwork? = null,
+    val loadCapacity: ResultStatusNetwork? = null,
+    val noSmokingSign: ResultStatusNetwork? = null,
+    val overloadIndicator: ResultStatusNetwork? = null,
+    val doorOpenCloseButtons: ResultStatusNetwork? = null,
+    val floorButtons: ResultStatusNetwork? = null,
+    val alarmButton: ResultStatusNetwork? = null,
+    val twoWayIntercom: ResultStatusNetwork? = null
+)
+
+// GovernorAndSafetyBrake
 data class GovernorAndSafetyBrakeNetwork(
     val governorRopeClamp: ResultStatusNetwork? = null,
     val governorSwitch: ResultStatusNetwork? = null,
@@ -157,6 +193,7 @@ data class GovernorAndSafetyBrakeNetwork(
     val overloadDevice: ResultStatusNetwork? = null
 )
 
+// CounterweightGuideRailsAndBuffers
 data class CounterweightGuideRailsAndBuffersNetwork(
     val counterweightMaterial: ResultStatusNetwork? = null,
     val counterweightGuardScreen: ResultStatusNetwork? = null,
@@ -166,6 +203,19 @@ data class CounterweightGuideRailsAndBuffersNetwork(
     val bufferSafetySwitch: ResultStatusNetwork? = null
 )
 
+// ElectricalInstallation
+data class ElectricalInstallationNetwork(
+    val installationStandard: ResultStatusNetwork? = null,
+    val electricalPanel: ResultStatusNetwork? = null,
+    val backupPowerARD: ResultStatusNetwork? = null,
+    val groundingCable: ResultStatusNetwork? = null,
+    val fireAlarmConnection: ResultStatusNetwork? = null,
+    val fireServiceElevator: FireServiceElevatorNetwork? = null,
+    val accessibilityElevator: AccessibilityElevatorNetwork? = null,
+    val seismicSensor: SeismicSensorNetwork? = null
+)
+
+// FireServiceElevator
 data class FireServiceElevatorNetwork(
     val backupPower: ResultStatusNetwork? = null,
     val specialOperation: ResultStatusNetwork? = null,
@@ -179,6 +229,7 @@ data class FireServiceElevatorNetwork(
     val evacuationFloor: ResultStatusNetwork? = null
 )
 
+// AccessibilityElevator
 data class AccessibilityElevatorNetwork(
     val operatingPanel: ResultStatusNetwork? = null,
     val panelHeight: ResultStatusNetwork? = null,
@@ -188,40 +239,8 @@ data class AccessibilityElevatorNetwork(
     val label: ResultStatusNetwork? = null
 )
 
+// SeismicSensor
 data class SeismicSensorNetwork(
     val availability: ResultStatusNetwork? = null,
     val function: ResultStatusNetwork? = null
-)
-
-data class ElectricalInstallationNetwork(
-    val installationStandard: ResultStatusNetwork? = null,
-    val electricalPanel: ResultStatusNetwork? = null,
-    val backupPowerARD: ResultStatusNetwork? = null,
-    val groundingCable: ResultStatusNetwork? = null,
-    val fireAlarmConnection: ResultStatusNetwork? = null,
-    val fireServiceElevator: FireServiceElevatorNetwork? = null,
-    val accessibilityElevator: AccessibilityElevatorNetwork? = null,
-    val seismicSensor: SeismicSensorNetwork? = null
-)
-
-data class InspectionAndTestingNetwork(
-    val machineRoomAndMachinery: MachineRoomAndMachineryNetwork? = null,
-    val suspensionRopesAndBelts: SuspensionRopesAndBeltsNetwork? = null,
-    val drumsAndSheaves: DrumsAndSheavesNetwork? = null,
-    val hoistwayAndPit: HoistwayAndPitNetwork? = null,
-    val car: CarNetwork? = null,
-    val governorAndSafetyBrake: GovernorAndSafetyBrakeNetwork? = null,
-    val counterweightGuideRailsAndBuffers: CounterweightGuideRailsAndBuffersNetwork? = null,
-    val electricalInstallation: ElectricalInstallationNetwork? = null
-)
-
-data class SendReportRequest(
-    val nameOfInspectionType: String? = null,
-    val subNameOfInspectionType: String? = null,
-    val typeInspection: String? = null,
-    val EskOrElevType: String? = null,
-    val generalData: GeneralDataNetwork? = null,
-    val technicalDocumentInspection: TechnicalDocumentInspectionNetwork? = null,
-    val inspectionAndTesting: InspectionAndTestingNetwork? = null,
-    val conclusion: String? = null
 )

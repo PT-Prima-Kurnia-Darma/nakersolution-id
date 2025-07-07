@@ -55,13 +55,13 @@ class ReportViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 inspectionDate = "2025-07-03"
             ),
             technicalDocumentInspection = TechnicalDocumentInspectionUiState(
-                designDrawing = "Tersedia dan sesuai",
-                technicalCalculation = "Tersedia dan sesuai",
-                materialCertificate = "Lengkap",
-                controlPanelDiagram = "Tersedia pada panel",
-                asBuiltDrawing = "Tersedia",
-                componentCertificates = "Lengkap",
-                safeWorkProcedure = "Tersedia dan dipahami oleh teknisi"
+                designDrawing = true,
+                technicalCalculation = true,
+                materialCertificate = true,
+                controlPanelDiagram = true,
+                asBuiltDrawing = true,
+                componentCertificates = false,
+                safeWorkProcedure = false
             ),
             inspectionAndTesting = InspectionAndTestingUiState(
                 machineRoomAndMachinery = MachineRoomAndMachineryUiState(
@@ -352,31 +352,31 @@ class ReportViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         }
     }
 
-    fun onDesignDrawingChange(value: String) {
+    fun onDesignDrawingChange(value: Boolean) {
         updateTechnicalDocs { it.copy(designDrawing = value) }
     }
 
-    fun onTechnicalCalculationChange(value: String) {
+    fun onTechnicalCalculationChange(value: Boolean) {
         updateTechnicalDocs { it.copy(technicalCalculation = value) }
     }
 
-    fun onMaterialCertificateChange(value: String) {
+    fun onMaterialCertificateChange(value: Boolean) {
         updateTechnicalDocs { it.copy(materialCertificate = value) }
     }
 
-    fun onControlPanelDiagramChange(value: String) {
+    fun onControlPanelDiagramChange(value: Boolean) {
         updateTechnicalDocs { it.copy(controlPanelDiagram = value) }
     }
 
-    fun onAsBuiltDrawingChange(value: String) {
+    fun onAsBuiltDrawingChange(value: Boolean) {
         updateTechnicalDocs { it.copy(asBuiltDrawing = value) }
     }
 
-    fun onComponentCertificatesChange(value: String) {
+    fun onComponentCertificatesChange(value: Boolean) {
         updateTechnicalDocs { it.copy(componentCertificates = value) }
     }
 
-    fun onSafeWorkProcedureChange(value: String) {
+    fun onSafeWorkProcedureChange(value: Boolean) {
         updateTechnicalDocs { it.copy(safeWorkProcedure = value) }
     }
     // endregion

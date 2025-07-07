@@ -28,8 +28,8 @@ class ReportRepository(
         val token = userPreference.getUserToken() ?: ""
         when (val apiResponse = remoteDataSource.sendReport(token, request.toNetwork()).first()) {
             is ApiResponse.Success -> {
-                val extraId = apiResponse.data.data.laporan.id
-                val createdAt = apiResponse.data.data.laporan.createdAt
+                val extraId = apiResponse.data.data?.laporan?.id ?: "NONE"
+                val createdAt = apiResponse.data.data?.laporan?.createdAt ?: "NONE"
                 val inspectionWithDetails = request.toInspectionWithDetails(extraId = extraId, createdAt = createdAt)
                 localDataSource.insertInspection(
                     inspectionEntity = inspectionWithDetails.inspectionEntity,

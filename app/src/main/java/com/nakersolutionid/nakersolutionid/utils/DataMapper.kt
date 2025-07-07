@@ -525,12 +525,12 @@ fun InspectionAndTestingDomain.toNetwork(): InspectionAndTestingNetwork {
     )
 }
 
-fun Report.toNetwork(): SendReportRequest {
-    return SendReportRequest(
-        nameOfInspectionType = this.nameOfInspectionType.toDisplayString(),
-        subNameOfInspectionType = this.subNameOfInspectionType.toDisplayString(),
-        typeInspection = this.examinationType,
-        EskOrElevType = this.equipmentType,
+fun Report.toNetwork(): SendElevatorReportRequest {
+    return SendElevatorReportRequest(
+        inspectionType = this.nameOfInspectionType.toDisplayString(),
+        subInspectionType = this.subNameOfInspectionType.toDisplayString(),
+        examinationType = this.examinationType,
+        equipmentType = this.equipmentType,
         generalData = this.generalData?.toNetwork(),
         technicalDocumentInspection = this.technicalDocumentInspection?.toNetwork(),
         inspectionAndTesting = this.inspectionAndTesting?.toNetwork(),

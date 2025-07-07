@@ -27,13 +27,13 @@ data class GeneralDataDomain(
 )
 
 data class TechnicalDocumentInspectionDomain(
-    val designDrawing: String? = null,
-    val technicalCalculation: String? = null,
-    val materialCertificate: String? = null,
-    val controlPanelDiagram: String? = null,
-    val asBuiltDrawing: String? = null,
-    val componentCertificates: String? = null,
-    val safeWorkProcedure: String? = null
+    val designDrawing: Boolean? = null,
+    val technicalCalculation: Boolean? = null,
+    val materialCertificate: Boolean? = null,
+    val controlPanelDiagram: Boolean? = null,
+    val asBuiltDrawing: Boolean? = null,
+    val componentCertificates: Boolean? = null,
+    val safeWorkProcedure: Boolean? = null
 )
 
 data class MachineRoomlessDomain(
