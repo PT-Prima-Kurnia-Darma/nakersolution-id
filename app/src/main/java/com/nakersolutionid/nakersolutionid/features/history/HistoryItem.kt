@@ -90,7 +90,7 @@ fun HistoryItem(
             ) {
                 // Info tanggal pembuatan laporan
                 Text(
-                    text = "Dibuat: ${Utils.formatIsoDate(history.createdAt.orEmpty())}",
+                    text = history.createdAt?.let { "Dibuat: ${Utils.formatIsoDate(it)}" } ?: run { "Tanggal Tidak Tersedia" },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f)

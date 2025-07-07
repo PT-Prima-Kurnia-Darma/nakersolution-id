@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.features.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.utils.Utils
@@ -16,24 +17,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-// Helper function to format enum names for searching and displaying
-private fun formatEnumName(enum: Enum<*>): String {
-    return enum.name.replace('_', ' ').lowercase(Locale.getDefault())
-        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-}
-
 // Extension function to check if a History object matches the search query.
 // This encapsulates the search logic for better readability and maintenance.
 private fun History.matchesQuery(query: String): Boolean {
     val searchableFields = listOfNotNull(
-        formatEnumName(documentType),
-        inspectionType.name,
-        formatEnumName(subInspectionType),
+        documentType.toDisplayString(),
+        inspectionType.toDisplayString(),
+        subInspectionType.toDisplayString(),
         equipmentType,
         examinationType,
         ownerName,
         reportDate,
-        createdAt?.let { Utils.formatIsoDate(it) } // Search on formatted date
+        createdAt?.let { "Dibuat: ${Utils.formatIsoDate(it)}" } ?: run { "Tanggal Tidak Tersedia" } // Search on formatted date
     )
 
     // Returns true if any of the fields contain the query (case-insensitive)
