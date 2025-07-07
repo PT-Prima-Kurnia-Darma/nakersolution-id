@@ -3,6 +3,9 @@ package com.nakersolutionid.nakersolutionid.features.report
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.elevator.AccessibilityElevatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.elevator.CarDoorSpecsUiState
@@ -32,8 +35,6 @@ import kotlinx.coroutines.launch
 class ReportViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(
         ElevatorUiState(
-            nameOfInspectionType = "Pemeriksaan dan Pengujian K3",
-            subNameOfInspectionType = "Elevator",
             typeInspection = "Pemeriksaan Berkala",
             eskOrElevType = "Elevator Penumpang",
             conclusion = "Elevator dinyatakan LAIK K3 dengan beberapa catatan perbaikan minor yang harus ditindaklanjuti.",
@@ -242,12 +243,12 @@ class ReportViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     }
 
     // region Top-Level Updaters
-    fun onNameOfInspectionTypeChange(name: String) {
-        _uiState.update { it.copy(nameOfInspectionType = name) }
+    fun onNameOfInspectionTypeChange(inspectionType: InspectionType) {
+        _uiState.update { it.copy(nameOfInspectionType = inspectionType) }
     }
 
-    fun onSubNameOfInspectionTypeChange(subName: String) {
-        _uiState.update { it.copy(subNameOfInspectionType = subName) }
+    fun onSubNameOfInspectionTypeChange(subInspectionType: SubInspectionType) {
+        _uiState.update { it.copy(subNameOfInspectionType = subInspectionType) }
     }
 
     fun onTypeInspectionChange(type: String) {
