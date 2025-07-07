@@ -61,7 +61,6 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
-import java.util.Locale
 
 // Data class untuk menampung status filter yang dipilih
 data class FilterState(
@@ -200,7 +199,12 @@ fun FilterSheet(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Filter Riwayat", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                Text(
+                    "Filter Riwayat",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
                 IconButton(onClick = {
                     // ✅ Jalankan animasi lalu panggil onDismissRequest
                     scope.launch {
@@ -224,7 +228,10 @@ fun FilterSheet(
                         DocumentType.entries.forEach { type ->
                             FilterChip(
                                 selected = tempFilters.documentType == type,
-                                onClick = { tempFilters = tempFilters.copy(documentType = if (tempFilters.documentType == type) null else type) },
+                                onClick = {
+                                    tempFilters =
+                                        tempFilters.copy(documentType = if (tempFilters.documentType == type) null else type)
+                                },
                                 label = { Text(type.toDisplayString()) },
                                 colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = MaterialTheme.colorScheme.primary,
@@ -241,7 +248,10 @@ fun FilterSheet(
                         InspectionType.entries.forEach { type ->
                             FilterChip(
                                 selected = tempFilters.inspectionType == type,
-                                onClick = { tempFilters = tempFilters.copy(inspectionType = if (tempFilters.inspectionType == type) null else type) },
+                                onClick = {
+                                    tempFilters =
+                                        tempFilters.copy(inspectionType = if (tempFilters.inspectionType == type) null else type)
+                                },
                                 label = { Text(type.toDisplayString()) },
                                 colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = MaterialTheme.colorScheme.primary,
@@ -261,7 +271,8 @@ fun FilterSheet(
                         onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
                     ) {
                         TextField(
-                            value = tempFilters.subInspectionType?.toDisplayString() ?: "Pilih Opsi...",
+                            value = tempFilters.subInspectionType?.toDisplayString()
+                                ?: "Pilih Opsi...",
                             onValueChange = {},
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
@@ -296,7 +307,9 @@ fun FilterSheet(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 OutlinedButton(
-                    onClick = { tempFilters = FilterState() }, // Reset state sementara
+                    onClick = {
+                        tempFilters = FilterState()
+                    }, // Reset state sementara
                     modifier = Modifier.weight(1f)
                 ) { Text("Reset") }
                 Button(
@@ -320,7 +333,11 @@ fun FilterSheet(
 @Composable
 private fun FilterSection(title: String, content: @Composable () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
         content()
         Spacer(modifier = Modifier.height(16.dp))
     }
