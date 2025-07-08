@@ -1,16 +1,18 @@
 // ElevatorUiState.kt
-package com.nakersolutionid.nakersolutionid.features.report.elevator
+package com.nakersolutionid.nakersolutionid.features.report.ee.elevator
 
-import com.nakersolutionid.nakersolutionid.data.Resource
+import androidx.compose.runtime.Immutable
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 
+@Immutable
 data class ResultStatusUiState(
     val result: String = "",
     val status: Boolean = false
 )
 
+@Immutable
 data class GeneralDataUiState(
     val ownerName: String = "",
     val ownerAddress: String = "",
@@ -28,6 +30,7 @@ data class GeneralDataUiState(
     val inspectionDate: String = ""
 )
 
+@Immutable
 data class TechnicalDocumentInspectionUiState(
     val designDrawing: Boolean = false,
     val technicalCalculation: Boolean = false,
@@ -38,6 +41,7 @@ data class TechnicalDocumentInspectionUiState(
     val safeWorkProcedure: Boolean = false
 )
 
+@Immutable
 data class MachineRoomlessUiState(
     val panelPlacement: ResultStatusUiState = ResultStatusUiState(),
     val lightingWorkArea: ResultStatusUiState = ResultStatusUiState(),
@@ -46,6 +50,7 @@ data class MachineRoomlessUiState(
     val fireExtinguisherPlacement: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class MachineRoomAndMachineryUiState(
     val machineMounting: ResultStatusUiState = ResultStatusUiState(),
     val mechanicalBrake: ResultStatusUiState = ResultStatusUiState(),
@@ -65,6 +70,7 @@ data class MachineRoomAndMachineryUiState(
     val emergencyStopSwitch: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class SuspensionRopesAndBeltsUiState(
     val condition: ResultStatusUiState = ResultStatusUiState(),
     val chainUsage: ResultStatusUiState = ResultStatusUiState(),
@@ -75,12 +81,14 @@ data class SuspensionRopesAndBeltsUiState(
     val slackRopeDevice: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class DrumsAndSheavesUiState(
     val drumGrooves: ResultStatusUiState = ResultStatusUiState(),
     val passengerDrumDiameter: ResultStatusUiState = ResultStatusUiState(),
     val governorDrumDiameter: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class HoistwayAndPitUiState(
     val construction: ResultStatusUiState = ResultStatusUiState(),
     val walls: ResultStatusUiState = ResultStatusUiState(),
@@ -104,12 +112,14 @@ data class HoistwayAndPitUiState(
     val inclinedElevatorStairs: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class CarDoorSpecsUiState(
     val size: ResultStatusUiState = ResultStatusUiState(),
     val lockAndSwitch: ResultStatusUiState = ResultStatusUiState(),
     val sillClearance: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class CarSignageUiState(
     val manufacturerName: ResultStatusUiState = ResultStatusUiState(),
     val loadCapacity: ResultStatusUiState = ResultStatusUiState(),
@@ -121,6 +131,7 @@ data class CarSignageUiState(
     val twoWayIntercom: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class CarUiState(
     val frame: ResultStatusUiState = ResultStatusUiState(),
     val body: ResultStatusUiState = ResultStatusUiState(),
@@ -149,6 +160,7 @@ data class CarUiState(
     val carInterior: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class GovernorAndSafetyBrakeUiState(
     val governorRopeClamp: ResultStatusUiState = ResultStatusUiState(),
     val governorSwitch: ResultStatusUiState = ResultStatusUiState(),
@@ -163,6 +175,7 @@ data class GovernorAndSafetyBrakeUiState(
     val overloadDevice: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class CounterweightGuideRailsAndBuffersUiState(
     val counterweightMaterial: ResultStatusUiState = ResultStatusUiState(),
     val counterweightGuardScreen: ResultStatusUiState = ResultStatusUiState(),
@@ -172,6 +185,7 @@ data class CounterweightGuideRailsAndBuffersUiState(
     val bufferSafetySwitch: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class FireServiceElevatorUiState(
     val backupPower: ResultStatusUiState = ResultStatusUiState(),
     val specialOperation: ResultStatusUiState = ResultStatusUiState(),
@@ -185,6 +199,7 @@ data class FireServiceElevatorUiState(
     val evacuationFloor: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class AccessibilityElevatorUiState(
     val operatingPanel: ResultStatusUiState = ResultStatusUiState(),
     val panelHeight: ResultStatusUiState = ResultStatusUiState(),
@@ -194,11 +209,13 @@ data class AccessibilityElevatorUiState(
     val label: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class SeismicSensorUiState(
     val availability: ResultStatusUiState = ResultStatusUiState(),
     val function: ResultStatusUiState = ResultStatusUiState()
 )
 
+@Immutable
 data class ElectricalInstallationUiState(
     val installationStandard: ResultStatusUiState = ResultStatusUiState(),
     val electricalPanel: ResultStatusUiState = ResultStatusUiState(),
@@ -210,6 +227,7 @@ data class ElectricalInstallationUiState(
     val seismicSensor: SeismicSensorUiState = SeismicSensorUiState()
 )
 
+@Immutable
 data class InspectionAndTestingUiState(
     val machineRoomAndMachinery: MachineRoomAndMachineryUiState = MachineRoomAndMachineryUiState(),
     val suspensionRopesAndBelts: SuspensionRopesAndBeltsUiState = SuspensionRopesAndBeltsUiState(),
@@ -221,6 +239,7 @@ data class InspectionAndTestingUiState(
     val electricalInstallation: ElectricalInstallationUiState = ElectricalInstallationUiState()
 )
 
+@Immutable
 data class ElevatorUiState(
     val id: Long = 0,
     val documentType: DocumentType = DocumentType.LAPORAN,
@@ -232,8 +251,6 @@ data class ElevatorUiState(
     val technicalDocumentInspection: TechnicalDocumentInspectionUiState = TechnicalDocumentInspectionUiState(),
     val inspectionAndTesting: InspectionAndTestingUiState = InspectionAndTestingUiState(),
     val conclusion: String = "",
-    val elevatorResult: Resource<String>? = null,
-    val eskalatorResult: Resource<String>? = null,
     val createdAt: String = "",
     val isLoading: Boolean = false
 )

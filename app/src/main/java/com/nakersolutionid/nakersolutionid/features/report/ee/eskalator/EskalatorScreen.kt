@@ -1,4 +1,4 @@
-package com.nakersolutionid.nakersolutionid.features.report.eskalator
+package com.nakersolutionid.nakersolutionid.features.report.ee.eskalator
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.features.report.ee.EEViewModel
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
@@ -60,17 +61,17 @@ fun EskalatorScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     verticalArrangement: Arrangement.Vertical,
-    viewModel: EskalatorViewModel = koinViewModel(),
-    onDataChange: (EskalatorGeneralData) -> Unit = viewModel::onDataChange,
+    viewModel: EEViewModel = koinViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.eskalatorUiState.collectAsStateWithLifecycle()
     val data = uiState.eskalatorData
+
+    val onDataChange: (EskalatorGeneralData) -> Unit = viewModel::onDataChange
 
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
         verticalArrangement = verticalArrangement
-
     ) {
         // General Section
         item {
@@ -486,7 +487,8 @@ private fun EskalatorScreenPreview() {
                         .padding(paddingValues)
                         .imePadding(),
                     contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp))
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                )
             }
         }
     }

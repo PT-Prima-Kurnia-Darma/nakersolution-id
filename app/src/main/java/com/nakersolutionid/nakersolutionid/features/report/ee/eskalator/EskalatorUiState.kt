@@ -1,16 +1,17 @@
-package com.nakersolutionid.nakersolutionid.features.report.eskalator
+package com.nakersolutionid.nakersolutionid.features.report.ee.eskalator
 
-import com.nakersolutionid.nakersolutionid.data.Resource
+import androidx.compose.runtime.Immutable
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 
+@Immutable
 data class EskalatorUiState(
     val isLoading: Boolean = false,
-    val networkResult: Resource<String>? = null,
     val eskalatorData: EskalatorGeneralData = EskalatorGeneralData()
 )
 
+@Immutable
 data class EskalatorGeneralData(
     val documentType: DocumentType = DocumentType.LAPORAN,
     val inspectionType: InspectionType = InspectionType.EE,
@@ -24,6 +25,7 @@ data class EskalatorGeneralData(
     val testingSummary: EskalatorTestingSummary = EskalatorTestingSummary()
 )
 
+@Immutable
 data class EskalatorCompanyData(
     val companyOrBuildingName: String = "",
     val usageAddress: String = "",
@@ -33,6 +35,7 @@ data class EskalatorCompanyData(
     val inspectionDate: String = ""
 )
 
+@Immutable
 data class EskalatorTechnicalData(
     val manufacturer: String = "",
     val brand: String = "",
@@ -48,6 +51,7 @@ data class EskalatorTechnicalData(
     val safetyDevices: String = ""
 )
 
+@Immutable
 data class EskalatorInspectionAndTesting(
     val frameAndMachineRoom: FrameAndMachineRoom = FrameAndMachineRoom(),
     val driveEquipment: DriveEquipment = DriveEquipment(),
@@ -65,6 +69,7 @@ data class EskalatorInspectionAndTesting(
 /**
  * Data class for inspection items related to the frame and machine room.
  */
+@Immutable
 data class FrameAndMachineRoom(
     val frame: EskalatorResultStatus = EskalatorResultStatus(),
     val supportBeams: EskalatorResultStatus = EskalatorResultStatus(),
@@ -80,6 +85,7 @@ data class FrameAndMachineRoom(
 /**
  * Data class for inspection items related to drive equipment.
  */
+@Immutable
 data class DriveEquipment(
     val driveMachine: EskalatorResultStatus = EskalatorResultStatus(),
     val speedUnder30Degrees: EskalatorResultStatus = EskalatorResultStatus(),
@@ -95,6 +101,7 @@ data class DriveEquipment(
 /**
  * Data class for inspection items related to steps or pallets.
  */
+@Immutable
 data class StepsOrPallets(
     val stepMaterial: EskalatorResultStatus = EskalatorResultStatus(),
     val stepDimensions: EskalatorResultStatus = EskalatorResultStatus(),
@@ -108,6 +115,7 @@ data class StepsOrPallets(
 /**
  * Data class for inspection items related to the landing area.
  */
+@Immutable
 data class LandingArea(
     val landingPlates: EskalatorResultStatus = EskalatorResultStatus(),
     val combTeeth: EskalatorResultStatus = EskalatorResultStatus(),
@@ -119,6 +127,7 @@ data class LandingArea(
 /**
  * Data class for inspection items related to the balustrade.
  */
+@Immutable
 data class Balustrade(
     val balustradePanel: BalustradePanel = BalustradePanel(),
     val skirtPanel: EskalatorResultStatus = EskalatorResultStatus(),
@@ -139,6 +148,7 @@ data class BalustradePanel(
 /**
  * Data class for inspection items related to the handrail.
  */
+@Immutable
 data class Handrail(
     val handrailCondition: EskalatorResultStatus = EskalatorResultStatus(),
     val handrailSpeedSynchronization: EskalatorResultStatus = EskalatorResultStatus(),
@@ -148,6 +158,7 @@ data class Handrail(
 /**
  * Data class for inspection items related to the runway.
  */
+@Immutable
 data class Runway(
     val beamStrengthAndPosition: EskalatorResultStatus = EskalatorResultStatus(),
     val pitWallCondition: EskalatorResultStatus = EskalatorResultStatus(),
@@ -163,6 +174,7 @@ data class Runway(
 /**
  * Data class for inspection items related to safety equipment.
  */
+@Immutable
 data class SafetyEquipment(
     val operationControlKey: EskalatorResultStatus = EskalatorResultStatus(),
     val emergencyStopSwitch: EskalatorResultStatus = EskalatorResultStatus(),
@@ -180,6 +192,7 @@ data class SafetyEquipment(
 /**
  * Data class for inspection items related to electrical installation.
  */
+@Immutable
 data class ElectricalInstallation(
     val installationStandard: EskalatorResultStatus = EskalatorResultStatus(),
     val electricalPanel: EskalatorResultStatus = EskalatorResultStatus(),
@@ -190,6 +203,7 @@ data class ElectricalInstallation(
 /**
  * Data class for inspection items specific to outdoor installations.
  */
+@Immutable
 data class OutdoorSpecifics(
     val pitWaterPump: EskalatorResultStatus = EskalatorResultStatus(),
     val weatherproofComponents: EskalatorResultStatus = EskalatorResultStatus()
@@ -198,6 +212,7 @@ data class OutdoorSpecifics(
 /**
  * Data class for user safety signage inspection items.
  */
+@Immutable
 data class UserSafetySignage(
     val noBulkyItems: EskalatorResultStatus = EskalatorResultStatus(),
     val noJumping: EskalatorResultStatus = EskalatorResultStatus(),
@@ -210,12 +225,14 @@ data class UserSafetySignage(
     val holdHandrail: EskalatorResultStatus = EskalatorResultStatus()
 )
 
+@Immutable
 data class EskalatorTestingSummary(
     val safetyDevices: String = "",
     val noLoadTest: String = "",
     val brakeTest: String = ""
 )
 
+@Immutable
 data class EskalatorResultStatus(
     val result: String = "",
     val status: Boolean = false

@@ -1,9 +1,63 @@
 package com.nakersolutionid.nakersolutionid.utils
 
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
-import com.nakersolutionid.nakersolutionid.data.remote.request.*
-import com.nakersolutionid.nakersolutionid.domain.model.*
-import com.nakersolutionid.nakersolutionid.features.report.elevator.*
+import com.nakersolutionid.nakersolutionid.data.remote.request.AccessibilityElevatorNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.CarDoorSpecsNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.CarNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.CarSignageNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.CounterweightGuideRailsAndBuffersNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.DrumsAndSheavesNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.ElectricalInstallationNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.FireServiceElevatorNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.GeneralDataNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.GovernorAndSafetyBrakeNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.HoistwayAndPitNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.InspectionAndTestingNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.MachineRoomAndMachineryNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.MachineRoomlessNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.ResultStatusNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.SeismicSensorNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.SendElevatorReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.request.SuspensionRopesAndBeltsNetwork
+import com.nakersolutionid.nakersolutionid.data.remote.request.TechnicalDocumentInspectionNetwork
+import com.nakersolutionid.nakersolutionid.domain.model.AccessibilityElevatorDomain
+import com.nakersolutionid.nakersolutionid.domain.model.CarDomain
+import com.nakersolutionid.nakersolutionid.domain.model.CarDoorSpecsDomain
+import com.nakersolutionid.nakersolutionid.domain.model.CarSignageDomain
+import com.nakersolutionid.nakersolutionid.domain.model.CounterweightGuideRailsAndBuffersDomain
+import com.nakersolutionid.nakersolutionid.domain.model.DrumsAndSheavesDomain
+import com.nakersolutionid.nakersolutionid.domain.model.ElectricalInstallationDomain
+import com.nakersolutionid.nakersolutionid.domain.model.FireServiceElevatorDomain
+import com.nakersolutionid.nakersolutionid.domain.model.GeneralDataDomain
+import com.nakersolutionid.nakersolutionid.domain.model.GovernorAndSafetyBrakeDomain
+import com.nakersolutionid.nakersolutionid.domain.model.HoistwayAndPitDomain
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionAndTestingDomain
+import com.nakersolutionid.nakersolutionid.domain.model.MachineRoomAndMachineryDomain
+import com.nakersolutionid.nakersolutionid.domain.model.MachineRoomlessDomain
+import com.nakersolutionid.nakersolutionid.domain.model.Report
+import com.nakersolutionid.nakersolutionid.domain.model.ResultStatusDomain
+import com.nakersolutionid.nakersolutionid.domain.model.SeismicSensorDomain
+import com.nakersolutionid.nakersolutionid.domain.model.SuspensionRopesAndBeltsDomain
+import com.nakersolutionid.nakersolutionid.domain.model.TechnicalDocumentInspectionDomain
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.AccessibilityElevatorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.CarDoorSpecsUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.CarSignageUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.CarUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.CounterweightGuideRailsAndBuffersUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.DrumsAndSheavesUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElectricalInstallationUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.FireServiceElevatorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.GeneralDataUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.GovernorAndSafetyBrakeUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.HoistwayAndPitUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.InspectionAndTestingUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.MachineRoomAndMachineryUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.MachineRoomlessUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ResultStatusUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.SeismicSensorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.SuspensionRopesAndBeltsUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.TechnicalDocumentInspectionUiState
 
 
 fun ResultStatusUiState.toDomain(): ResultStatusDomain {
@@ -46,9 +100,9 @@ fun TechnicalDocumentInspectionUiState.toDomain(): TechnicalDocumentInspectionDo
 
 fun MachineRoomlessUiState.toDomain(): MachineRoomlessDomain {
     return MachineRoomlessDomain(
-        panelPlacement = this.panelPlacement?.toDomain(),
+        panelPlacement = this.panelPlacement.toDomain(),
         lightingWorkArea = this.lightingWorkArea?.toDomain(),
-        lightingBetweenWorkArea = this.lightingBetweenWorkArea?.toDomain(),
+        lightingBetweenWorkArea = this.lightingBetweenWorkArea.toDomain(),
         manualBrakeRelease = this.manualBrakeRelease?.toDomain(),
         fireExtinguisherPlacement = this.fireExtinguisherPlacement?.toDomain()
     )
@@ -130,9 +184,9 @@ fun CarDoorSpecsUiState.toDomain(): CarDoorSpecsDomain {
 
 fun CarSignageUiState.toDomain(): CarSignageDomain {
     return CarSignageDomain(
-        manufacturerName = this.manufacturerName?.toDomain(),
-        loadCapacity = this.loadCapacity?.toDomain(),
-        noSmokingSign = this.noSmokingSign?.toDomain(),
+        manufacturerName = this.manufacturerName.toDomain(),
+        loadCapacity = this.loadCapacity.toDomain(),
+        noSmokingSign = this.noSmokingSign.toDomain(),
         overloadIndicator = this.overloadIndicator?.toDomain(),
         doorOpenCloseButtons = this.doorOpenCloseButtons?.toDomain(),
         floorButtons = this.floorButtons?.toDomain(),

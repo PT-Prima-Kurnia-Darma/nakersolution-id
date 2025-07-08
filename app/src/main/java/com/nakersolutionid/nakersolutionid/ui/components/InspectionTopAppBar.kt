@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.ui.components
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -12,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,11 +34,12 @@ fun InspectionTopAppBar(
     onSaveClick: () -> Unit
 ) {
     MediumTopAppBar(
+        expandedHeight = TopAppBarDefaults.MediumAppBarCollapsedHeight,
         modifier = modifier,
         title = { Text(name, fontWeight = FontWeight.Bold)},
         navigationIcon = {
             IconButton(
-                onClick = { onBackClick() }
+                onClick = onBackClick
             ) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back") }
         },
         actions = {

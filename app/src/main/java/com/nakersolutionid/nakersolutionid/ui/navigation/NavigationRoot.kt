@@ -23,7 +23,8 @@ import com.nakersolutionid.nakersolutionid.features.history.HistoryScreen
 import com.nakersolutionid.nakersolutionid.features.home.HomeScreen
 import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
 import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
-import com.nakersolutionid.nakersolutionid.features.report.elevator.ElevatorScreen
+import com.nakersolutionid.nakersolutionid.features.report.ee.EEScreen
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
 import kotlinx.serialization.Serializable
@@ -34,7 +35,8 @@ import kotlinx.serialization.Serializable
 @Serializable data object Report : NavKey
 @Serializable data object History : NavKey
 @Serializable data object Settings : NavKey
-@Serializable data class Elevator(val menuTitle: String) : NavKey
+
+@Serializable data object EE : NavKey
 
 @Composable
 fun NavigationRoot(
@@ -99,7 +101,7 @@ fun NavigationRoot(
                     onBackClick = { backStack.removeLastOrNull() },
                     onMenuTypeClick = { menu ->
                         when (menu.id) {
-                            6 -> backStack.add(Elevator(menu.title))
+                            6 -> backStack.add(EE)
                             else -> {}
                         }
                     }
@@ -117,12 +119,11 @@ fun NavigationRoot(
                     }
                 )
             }
-            entry<Elevator> { navKey ->
-                val title = navKey.menuTitle
-                ElevatorScreen(menuTitle = title, onBackClick = { backStack.removeLastOrNull() })
-            }
             entry<History> {
                 HistoryScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<EE> {
+                EEScreen(onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {
