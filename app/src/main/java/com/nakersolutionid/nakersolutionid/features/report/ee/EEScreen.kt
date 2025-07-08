@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorScreen
@@ -120,7 +121,7 @@ fun EEScreen(
             ) {
                 listMenu.forEach { filterType ->
                     val isSelected = selectedFilter == filterType
-                    val filterName = filterType.name.replace('_', ' ')
+                    val filterName = filterType.toDisplayString()
 
                     FilterChip(
                         modifier = Modifier.weight(1f),
