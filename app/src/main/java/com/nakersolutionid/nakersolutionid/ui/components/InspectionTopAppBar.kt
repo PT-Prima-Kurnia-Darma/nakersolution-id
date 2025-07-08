@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.ui.components
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -12,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +25,7 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElevatorTopAppBar(
+fun InspectionTopAppBar(
     modifier: Modifier = Modifier,
     name: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
@@ -32,11 +34,12 @@ fun ElevatorTopAppBar(
     onSaveClick: () -> Unit
 ) {
     MediumTopAppBar(
+        expandedHeight = TopAppBarDefaults.MediumAppBarCollapsedHeight,
         modifier = modifier,
         title = { Text(name, fontWeight = FontWeight.Bold)},
         navigationIcon = {
             IconButton(
-                onClick = { onBackClick() }
+                onClick = onBackClick
             ) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back") }
         },
         actions = {
@@ -72,6 +75,6 @@ fun ElevatorTopAppBar(
 @Composable
 fun ElevatorTopAppBarPreview() {
     NakersolutionidTheme {
-        ElevatorTopAppBar(onBackClick = {}, name = "Instalasi Listrik dan Penyalur Petir", onSaveClick = {}, actionEnable = true)
+        InspectionTopAppBar(onBackClick = {}, name = "Instalasi Listrik dan Penyalur Petir", onSaveClick = {}, actionEnable = true)
     }
 }

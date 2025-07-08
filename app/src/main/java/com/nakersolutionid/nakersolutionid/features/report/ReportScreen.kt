@@ -50,7 +50,6 @@ private val menuItems = listOf(
 @Composable
 fun ReportScreen(
     modifier: Modifier = Modifier,
-    viewModel: ReportViewModel = koinViewModel(),
     onMenuTypeClick: (MenuItem) -> Unit,
     onBackClick: () -> Unit
 ) {
