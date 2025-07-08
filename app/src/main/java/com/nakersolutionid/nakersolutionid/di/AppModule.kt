@@ -3,7 +3,7 @@ package com.nakersolutionid.nakersolutionid.di
 import androidx.room.Room
 import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
-import com.nakersolutionid.nakersolutionid.data.local.database.ReportDatabase
+import com.nakersolutionid.nakersolutionid.data.local.database.AppDatabase
 import com.nakersolutionid.nakersolutionid.data.preference.SettingsPreference
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
@@ -23,7 +23,7 @@ import com.nakersolutionid.nakersolutionid.domain.usecase.UserUseCase
 import com.nakersolutionid.nakersolutionid.features.history.HistoryViewModel
 import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
 import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
-import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
+import com.nakersolutionid.nakersolutionid.features.report.ee.EEViewModel
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
@@ -38,11 +38,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val databaseModule = module {
-    factory { get<ReportDatabase>().reportDao() }
+    factory { get<AppDatabase>().inspectionDao() }
     single {
         Room.databaseBuilder(
             androidContext(),
-            ReportDatabase::class.java, "Manga.db"
+            AppDatabase::class.java, "app.db"
         ).fallbackToDestructiveMigration(false)
             .build()
     }
@@ -109,6 +109,6 @@ val viewModelModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { SettingsViewModel(get(), get()) }
-    viewModel { ReportViewModel(get()) }
     viewModel { HistoryViewModel(get()) }
+    viewModel { EEViewModel(get()) }
 }

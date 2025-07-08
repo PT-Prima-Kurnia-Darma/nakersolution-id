@@ -1,62 +1,81 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
-import androidx.compose.foundation.clickable
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Bolt
-import androidx.compose.material.icons.outlined.Construction
-import androidx.compose.material.icons.outlined.DoorSliding
-import androidx.compose.material.icons.outlined.Factory
-import androidx.compose.material.icons.outlined.FireTruck
-import androidx.compose.material.icons.outlined.LocalFireDepartment
-import androidx.compose.material3.ExpandedFullScreenSearchBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
-import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+// Data class untuk menampung status filter yang dipilih
+data class FilterState(
+    val inspectionType: InspectionType? = null,
+    val documentType: DocumentType? = null,
+    val subInspectionType: SubInspectionType? = null
+)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
@@ -64,16 +83,22 @@ fun HistoryScreen(
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val activeFilters by viewModel.filterState.collectAsStateWithLifecycle() // Ambil filter aktif dari ViewModel
 
-    val topics = listOf("Semua", "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE")
-    val subTopics = listOf("Semua", "Laporan", "BAP", "Sertifikat Sementara", "Surat Keterangan")
-    var selectedTopic by remember { mutableStateOf(topics.first()) }
-    var selectedSubTopics by remember { mutableStateOf(subTopics.first()) }
-    val dummySearchResults = mutableListOf<String>()
-
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
+
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    // ✨ PERBAIKAN: Gunakan LaunchedEffect untuk memantau perubahan pada daftar item
+    // Ini memastikan scroll hanya terjadi setelah daftar diperbarui.
+    LaunchedEffect(uiState.histories) {
+        if (searchQuery.isNotEmpty() || activeFilters != FilterState()) {
+            lazyListState.animateScrollToItem(0)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -90,31 +115,32 @@ fun HistoryScreen(
                 .padding(paddingValues)
         ) {
             HistorySearchBar(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                dummySearchResults
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                query = searchQuery,
+                // ✨ PERBAIKAN: Hapus pemanggilan animateScrollToItem dari sini
+                onQueryChange = { newQuery ->
+                    viewModel.onSearchQueryChange(newQuery)
+                },
+                onClear = {
+                    viewModel.onSearchQueryChange("")
+                }
             )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                state = lazyListState
             ) {
                 items(
-                    items = uiState.reports,
+                    items = uiState.histories,
                     key = { it.id }
-                ) { report ->
+                ) { history ->
                     HistoryItem(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        info = HistoryInfo(
-                            name = report.name,
-                            subName = report.subName,
-                            typeInspection = report.typeInspection,
-                            type = report.type,
-                            createdAt = report.createdAt
-                        ),
+                        modifier = Modifier.animateItem(),
+                        history = history,
                         onDeleteClick = {},
                         onDownloadClick = {},
                         onEditClick = {},
@@ -126,173 +152,221 @@ fun HistoryScreen(
 
         if (showBottomSheet) {
             FilterSheet(
-                onDismissRequest = {
+                initialState = activeFilters, // Gunakan activeFilters dari ViewModel
+                onDismissRequest = { showBottomSheet = false },
+                onApplyFilters = { newFilters ->
+                    viewModel.applyFilters(newFilters) // Panggil fungsi applyFilters di ViewModel
+                    // ✨ PERBAIKAN: Hapus pemanggilan animateScrollToItem dari sini
                     showBottomSheet = false
                 },
-                sheetState = sheetState,
-                topics = topics,
-                subTopics = subTopics,
-                selectedTopic = selectedTopic,
-                selectedSubTopics = selectedSubTopics,
-                onFilterSelected = {
-                    selectedTopic = it
+                onResetFilters = {
+                    viewModel.clearFilters() // Panggil fungsi clearFilters di ViewModel
+                    // ✨ PERBAIKAN: Hapus pemanggilan animateScrollToItem dari sini
                 },
-                onSubFilterSelected = {
-                    selectedSubTopics = it
-                }
+                sheetState = sheetState
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistorySearchBar(
+    modifier: Modifier = Modifier,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onClear: () -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier,
+        placeholder = { Text("Cari riwayat...") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClear) {
+                    Icon(Icons.Default.Clear, contentDescription = "Clear search")
+                }
+            }
+        },
+        singleLine = true,
+        shape = MaterialTheme.shapes.extraLarge,
+    )
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterSheet(
-    modifier: Modifier = Modifier,
+    initialState: FilterState,
     onDismissRequest: () -> Unit,
-    sheetState: SheetState,
-    topics: List<String>,
-    subTopics: List<String>,
-    selectedTopic: String,
-    selectedSubTopics: String,
-    onFilterSelected: (String) -> Unit,
-    onSubFilterSelected: (String) -> Unit
+    onApplyFilters: (FilterState) -> Unit,
+    onResetFilters: () -> Unit, // Tambahkan callback untuk reset
+    modifier: Modifier = Modifier,
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
+    // State sementara untuk menampung perubahan sebelum diterapkan
+    var tempFilters by remember { mutableStateOf(initialState) }
+    // ✅ Ambil coroutine scope untuk menjalankan animasi
+    val scope = rememberCoroutineScope()
+
     ModalBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
         sheetState = sheetState
     ) {
-        Text(
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            text = "Jenis Inspeksi",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
-        )
-        FilterChipRow(
-            filters = topics,
-            selectedFilter = selectedTopic,
-            onFilterSelected = onFilterSelected
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth(),
-            text = "Jenis Alat",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
-        )
-        FilterChipRow(
-            filters = topics,
-            selectedFilter = selectedTopic,
-            onFilterSelected = onFilterSelected
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth(),
-            text = "Jenis Dokumen",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
-        )
-        FilterChipRow(
-            filters = subTopics,
-            selectedFilter = selectedSubTopics,
-            onFilterSelected = onSubFilterSelected
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun HistorySearchBar(modifier: Modifier = Modifier, searchResult: MutableList<String>) {
-    val searchBarState = rememberSearchBarState()
-    val textFieldState = rememberTextFieldState()
-    val scope = rememberCoroutineScope()
-
-
-    val inputField =
-        @Composable {
-            SearchBarDefaults.InputField(
-                modifier = Modifier,
-                searchBarState = searchBarState,
-                textFieldState = textFieldState,
-                onSearch = {
-                    searchResult.add(it)
-                    scope.launch { searchBarState.animateToCollapsed() }
-                },
-                placeholder = { Text("Search...") },
-                leadingIcon = {
-                    if (searchBarState.currentValue == SearchBarValue.Expanded) {
-                        IconButton(
-                            onClick = { scope.launch { searchBarState.animateToCollapsed() } }
-                        ) {
-                            Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            // == HEADER ==
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Filter Riwayat",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = {
+                    // ✅ Jalankan animasi lalu panggil onDismissRequest
+                    scope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            onDismissRequest()
                         }
-                    } else {
-                        Icon(Icons.Default.Search, contentDescription = null)
                     }
-                },
-            )
-        }
+                }) {
+                    Icon(Icons.Default.Close, contentDescription = "Tutup Filter")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
 
-    SearchBar(
-        modifier = modifier,
-        state = searchBarState,
-        inputField = inputField
-    )
-    ExpandedFullScreenSearchBar(state = searchBarState, inputField = inputField) {
-        SearchResults(
-            onResultClick = { result ->
-                textFieldState.setTextAndPlaceCursorAtEnd(result)
-                scope.launch { searchBarState.animateToCollapsed() }
-            },
-            searchResult = searchResult
-        )
-    }
-}
+            // == KONTEN FILTER (BISA DI-SCROLL) ==
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                // -- Filter Jenis Dokumen (DocumentType) --
+                FilterSection(title = "Jenis Dokumen") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        DocumentType.entries.forEach { type ->
+                            FilterChip(
+                                selected = tempFilters.documentType == type,
+                                onClick = {
+                                    tempFilters =
+                                        tempFilters.copy(documentType = if (tempFilters.documentType == type) null else type)
+                                },
+                                label = { Text(type.toDisplayString()) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            )
+                        }
+                    }
+                }
 
-@Composable
-private fun SearchResults(
-    onResultClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    searchResult: List<String>
-) {
-    LazyColumn {
-        items(searchResult.reversed()) { result ->
-            val resultText = result
-            Text(
-                resultText,
+                // -- Filter Jenis Laporan (InspectionType) --
+                FilterSection(title = "Jenis Bidang") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        InspectionType.entries.forEach { type ->
+                            FilterChip(
+                                selected = tempFilters.inspectionType == type,
+                                onClick = {
+                                    tempFilters =
+                                        tempFilters.copy(inspectionType = if (tempFilters.inspectionType == type) null else type)
+                                },
+                                label = { Text(type.toDisplayString()) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            )
+                        }
+                    }
+                }
+
+                // -- Filter Detail Jenis Laporan (SubInspectionType) dengan Dropdown --
+                FilterSection(title = "Sub Bidang") {
+                    var isDropdownExpanded by remember { mutableStateOf(false) }
+
+                    ExposedDropdownMenuBox(
+                        expanded = isDropdownExpanded,
+                        onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
+                    ) {
+                        TextField(
+                            value = tempFilters.subInspectionType?.toDisplayString()
+                                ?: "Pilih Opsi...",
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
+                            modifier = Modifier
+                                .menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                                .fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = isDropdownExpanded,
+                            onDismissRequest = { isDropdownExpanded = false }
+                        ) {
+                            SubInspectionType.entries.forEach { type ->
+                                DropdownMenuItem(
+                                    text = { Text(type.toDisplayString()) },
+                                    onClick = {
+                                        tempFilters = tempFilters.copy(subInspectionType = type)
+                                        isDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(24.dp))
+            }
+
+            // == TOMBOL AKSI ==
+            Row(
                 modifier = Modifier
-                    .clickable { onResultClick(resultText) }
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-            )
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        tempFilters = FilterState() // Reset state sementara
+                        onResetFilters() // Panggil callback reset
+                    },
+                    modifier = Modifier.weight(1f)
+                ) { Text("Reset") }
+                Button(
+                    onClick = {
+                        // ✅ Jalankan animasi lalu panggil onApplyFilters
+                        scope.launch {
+                            sheetState.hide()
+                        }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                onApplyFilters(tempFilters)
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                ) { Text("Terapkan") }
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterChipRow(
-    filters: List<String>,
-    selectedFilter: String,
-    onFilterSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    // Use LazyRow for a horizontally scrollable row, which is efficient for
-    // a potentially long list of filters.
-    LazyRow(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp), // Spacing between chips
-        contentPadding = PaddingValues(horizontal = 16.dp) // Padding at the start and end of the row
-    ) {
-        items(filters) { filter ->
-            FilterChip(
-                selected = (filter == selectedFilter),
-                onClick = { onFilterSelected(filter) },
-                label = { Text(filter) }
-            )
-        }
+private fun FilterSection(title: String, content: @Composable () -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        content()
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
