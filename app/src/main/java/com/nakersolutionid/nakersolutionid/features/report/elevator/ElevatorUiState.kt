@@ -7,218 +7,218 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 
 data class ResultStatusUiState(
-    val result: String? = null,
+    val result: String = "",
     val status: Boolean = false
 )
 
 data class GeneralDataUiState(
-    val ownerName: String? = null,
-    val ownerAddress: String? = null,
-    val nameUsageLocation: String? = null,
-    val addressUsageLocation: String? = null,
-    val manufacturerOrInstaller: String? = null,
-    val elevatorType: String? = null,
-    val brandOrType: String? = null,
-    val countryAndYear: String? = null,
-    val serialNumber: String? = null,
-    val capacity: String? = null,
-    val speed: String? = null,
-    val floorsServed: String? = null,
-    val permitNumber: String? = null,
-    val inspectionDate: String? = null
+    val ownerName: String = "",
+    val ownerAddress: String = "",
+    val nameUsageLocation: String = "",
+    val addressUsageLocation: String = "",
+    val manufacturerOrInstaller: String = "",
+    val elevatorType: String = "",
+    val brandOrType: String = "",
+    val countryAndYear: String = "",
+    val serialNumber: String = "",
+    val capacity: String = "",
+    val speed: String = "",
+    val floorsServed: String = "",
+    val permitNumber: String = "",
+    val inspectionDate: String = ""
 )
 
 data class TechnicalDocumentInspectionUiState(
-    val designDrawing: Boolean? = null,
-    val technicalCalculation: Boolean? = null,
-    val materialCertificate: Boolean? = null,
-    val controlPanelDiagram: Boolean? = null,
-    val asBuiltDrawing: Boolean? = null,
-    val componentCertificates: Boolean? = null,
-    val safeWorkProcedure: Boolean? = null
+    val designDrawing: Boolean = false,
+    val technicalCalculation: Boolean = false,
+    val materialCertificate: Boolean = false,
+    val controlPanelDiagram: Boolean = false,
+    val asBuiltDrawing: Boolean = false,
+    val componentCertificates: Boolean = false,
+    val safeWorkProcedure: Boolean = false
 )
 
 data class MachineRoomlessUiState(
-    val panelPlacement: ResultStatusUiState? = null,
-    val lightingWorkArea: ResultStatusUiState? = null,
-    val lightingBetweenWorkArea: ResultStatusUiState? = null,
-    val manualBrakeRelease: ResultStatusUiState? = null,
-    val fireExtinguisherPlacement: ResultStatusUiState? = null
+    val panelPlacement: ResultStatusUiState = ResultStatusUiState(),
+    val lightingWorkArea: ResultStatusUiState = ResultStatusUiState(),
+    val lightingBetweenWorkArea: ResultStatusUiState = ResultStatusUiState(),
+    val manualBrakeRelease: ResultStatusUiState = ResultStatusUiState(),
+    val fireExtinguisherPlacement: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class MachineRoomAndMachineryUiState(
-    val machineMounting: ResultStatusUiState? = null,
-    val mechanicalBrake: ResultStatusUiState? = null,
-    val electricalBrake: ResultStatusUiState? = null,
-    val machineRoomConstruction: ResultStatusUiState? = null,
-    val machineRoomClearance: ResultStatusUiState? = null,
-    val machineRoomImplementation: ResultStatusUiState? = null,
-    val ventilation: ResultStatusUiState? = null,
-    val machineRoomDoor: ResultStatusUiState? = null,
-    val mainPowerPanelPosition: ResultStatusUiState? = null,
-    val rotatingPartsGuard: ResultStatusUiState? = null,
-    val ropeHoleGuard: ResultStatusUiState? = null,
-    val machineRoomAccessLadder: ResultStatusUiState? = null,
-    val floorLevelDifference: ResultStatusUiState? = null,
-    val fireExtinguisher: ResultStatusUiState? = null,
-    val machineRoomless: MachineRoomlessUiState? = null,
-    val emergencyStopSwitch: ResultStatusUiState? = null
+    val machineMounting: ResultStatusUiState = ResultStatusUiState(),
+    val mechanicalBrake: ResultStatusUiState = ResultStatusUiState(),
+    val electricalBrake: ResultStatusUiState = ResultStatusUiState(),
+    val machineRoomConstruction: ResultStatusUiState = ResultStatusUiState(),
+    val machineRoomClearance: ResultStatusUiState = ResultStatusUiState(),
+    val machineRoomImplementation: ResultStatusUiState = ResultStatusUiState(),
+    val ventilation: ResultStatusUiState = ResultStatusUiState(),
+    val machineRoomDoor: ResultStatusUiState = ResultStatusUiState(),
+    val mainPowerPanelPosition: ResultStatusUiState = ResultStatusUiState(),
+    val rotatingPartsGuard: ResultStatusUiState = ResultStatusUiState(),
+    val ropeHoleGuard: ResultStatusUiState = ResultStatusUiState(),
+    val machineRoomAccessLadder: ResultStatusUiState = ResultStatusUiState(),
+    val floorLevelDifference: ResultStatusUiState = ResultStatusUiState(),
+    val fireExtinguisher: ResultStatusUiState = ResultStatusUiState(),
+    val machineRoomless: MachineRoomlessUiState = MachineRoomlessUiState(),
+    val emergencyStopSwitch: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class SuspensionRopesAndBeltsUiState(
-    val condition: ResultStatusUiState? = null,
-    val chainUsage: ResultStatusUiState? = null,
-    val safetyFactor: ResultStatusUiState? = null,
-    val ropeWithCounterweight: ResultStatusUiState? = null,
-    val ropeWithoutCounterweight: ResultStatusUiState? = null,
-    val belt: ResultStatusUiState? = null,
-    val slackRopeDevice: ResultStatusUiState? = null
+    val condition: ResultStatusUiState = ResultStatusUiState(),
+    val chainUsage: ResultStatusUiState = ResultStatusUiState(),
+    val safetyFactor: ResultStatusUiState = ResultStatusUiState(),
+    val ropeWithCounterweight: ResultStatusUiState = ResultStatusUiState(),
+    val ropeWithoutCounterweight: ResultStatusUiState = ResultStatusUiState(),
+    val belt: ResultStatusUiState = ResultStatusUiState(),
+    val slackRopeDevice: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class DrumsAndSheavesUiState(
-    val drumGrooves: ResultStatusUiState? = null,
-    val passengerDrumDiameter: ResultStatusUiState? = null,
-    val governorDrumDiameter: ResultStatusUiState? = null
+    val drumGrooves: ResultStatusUiState = ResultStatusUiState(),
+    val passengerDrumDiameter: ResultStatusUiState = ResultStatusUiState(),
+    val governorDrumDiameter: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class HoistwayAndPitUiState(
-    val construction: ResultStatusUiState? = null,
-    val walls: ResultStatusUiState? = null,
-    val inclinedElevatorTrackBed: ResultStatusUiState? = null,
-    val cleanliness: ResultStatusUiState? = null,
-    val lighting: ResultStatusUiState? = null,
-    val emergencyDoorNonStop: ResultStatusUiState? = null,
-    val emergencyDoorSize: ResultStatusUiState? = null,
-    val emergencyDoorSafetySwitch: ResultStatusUiState? = null,
-    val emergencyDoorBridge: ResultStatusUiState? = null,
-    val carTopClearance: ResultStatusUiState? = null,
-    val pitClearance: ResultStatusUiState? = null,
-    val pitLadder: ResultStatusUiState? = null,
-    val pitBelowWorkingArea: ResultStatusUiState? = null,
-    val pitAccessSwitch: ResultStatusUiState? = null,
-    val pitScreen: ResultStatusUiState? = null,
-    val hoistwayDoorLeaf: ResultStatusUiState? = null,
-    val hoistwayDoorInterlock: ResultStatusUiState? = null,
-    val floorLeveling: ResultStatusUiState? = null,
-    val hoistwaySeparatorBeam: ResultStatusUiState? = null,
-    val inclinedElevatorStairs: ResultStatusUiState? = null
+    val construction: ResultStatusUiState = ResultStatusUiState(),
+    val walls: ResultStatusUiState = ResultStatusUiState(),
+    val inclinedElevatorTrackBed: ResultStatusUiState = ResultStatusUiState(),
+    val cleanliness: ResultStatusUiState = ResultStatusUiState(),
+    val lighting: ResultStatusUiState = ResultStatusUiState(),
+    val emergencyDoorNonStop: ResultStatusUiState = ResultStatusUiState(),
+    val emergencyDoorSize: ResultStatusUiState = ResultStatusUiState(),
+    val emergencyDoorSafetySwitch: ResultStatusUiState = ResultStatusUiState(),
+    val emergencyDoorBridge: ResultStatusUiState = ResultStatusUiState(),
+    val carTopClearance: ResultStatusUiState = ResultStatusUiState(),
+    val pitClearance: ResultStatusUiState = ResultStatusUiState(),
+    val pitLadder: ResultStatusUiState = ResultStatusUiState(),
+    val pitBelowWorkingArea: ResultStatusUiState = ResultStatusUiState(),
+    val pitAccessSwitch: ResultStatusUiState = ResultStatusUiState(),
+    val pitScreen: ResultStatusUiState = ResultStatusUiState(),
+    val hoistwayDoorLeaf: ResultStatusUiState = ResultStatusUiState(),
+    val hoistwayDoorInterlock: ResultStatusUiState = ResultStatusUiState(),
+    val floorLeveling: ResultStatusUiState = ResultStatusUiState(),
+    val hoistwaySeparatorBeam: ResultStatusUiState = ResultStatusUiState(),
+    val inclinedElevatorStairs: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class CarDoorSpecsUiState(
-    val size: ResultStatusUiState? = null,
-    val lockAndSwitch: ResultStatusUiState? = null,
-    val sillClearance: ResultStatusUiState? = null
+    val size: ResultStatusUiState = ResultStatusUiState(),
+    val lockAndSwitch: ResultStatusUiState = ResultStatusUiState(),
+    val sillClearance: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class CarSignageUiState(
-    val manufacturerName: ResultStatusUiState? = null,
-    val loadCapacity: ResultStatusUiState? = null,
-    val noSmokingSign: ResultStatusUiState? = null,
-    val overloadIndicator: ResultStatusUiState? = null,
-    val doorOpenCloseButtons: ResultStatusUiState? = null,
-    val floorButtons: ResultStatusUiState? = null,
-    val alarmButton: ResultStatusUiState? = null,
-    val twoWayIntercom: ResultStatusUiState? = null
+    val manufacturerName: ResultStatusUiState = ResultStatusUiState(),
+    val loadCapacity: ResultStatusUiState = ResultStatusUiState(),
+    val noSmokingSign: ResultStatusUiState = ResultStatusUiState(),
+    val overloadIndicator: ResultStatusUiState = ResultStatusUiState(),
+    val doorOpenCloseButtons: ResultStatusUiState = ResultStatusUiState(),
+    val floorButtons: ResultStatusUiState = ResultStatusUiState(),
+    val alarmButton: ResultStatusUiState = ResultStatusUiState(),
+    val twoWayIntercom: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class CarUiState(
-    val frame: ResultStatusUiState? = null,
-    val body: ResultStatusUiState? = null,
-    val wallHeight: ResultStatusUiState? = null,
-    val floorArea: ResultStatusUiState? = null,
-    val carAreaExpansion: ResultStatusUiState? = null,
-    val carDoor: ResultStatusUiState? = null,
-    val carDoorSpecs: CarDoorSpecsUiState? = null,
-    val carToBeamClearance: ResultStatusUiState? = null,
-    val alarmBell: ResultStatusUiState? = null,
-    val backupPowerARD: ResultStatusUiState? = null,
-    val intercom: ResultStatusUiState? = null,
-    val ventilation: ResultStatusUiState? = null,
-    val emergencyLighting: ResultStatusUiState? = null,
-    val operatingPanel: ResultStatusUiState? = null,
-    val carPositionIndicator: ResultStatusUiState? = null,
-    val carSignage: CarSignageUiState? = null,
-    val carRoofStrength: ResultStatusUiState? = null,
-    val carTopEmergencyExit: ResultStatusUiState? = null,
-    val carSideEmergencyExit: ResultStatusUiState? = null,
-    val carTopGuardRail: ResultStatusUiState? = null,
-    val guardRailHeight300to850: ResultStatusUiState? = null,
-    val guardRailHeightOver850: ResultStatusUiState? = null,
-    val carTopLighting: ResultStatusUiState? = null,
-    val manualOperationButtons: ResultStatusUiState? = null,
-    val carInterior: ResultStatusUiState? = null
+    val frame: ResultStatusUiState = ResultStatusUiState(),
+    val body: ResultStatusUiState = ResultStatusUiState(),
+    val wallHeight: ResultStatusUiState = ResultStatusUiState(),
+    val floorArea: ResultStatusUiState = ResultStatusUiState(),
+    val carAreaExpansion: ResultStatusUiState = ResultStatusUiState(),
+    val carDoor: ResultStatusUiState = ResultStatusUiState(),
+    val carDoorSpecs: CarDoorSpecsUiState = CarDoorSpecsUiState(),
+    val carToBeamClearance: ResultStatusUiState = ResultStatusUiState(),
+    val alarmBell: ResultStatusUiState = ResultStatusUiState(),
+    val backupPowerARD: ResultStatusUiState = ResultStatusUiState(),
+    val intercom: ResultStatusUiState = ResultStatusUiState(),
+    val ventilation: ResultStatusUiState = ResultStatusUiState(),
+    val emergencyLighting: ResultStatusUiState = ResultStatusUiState(),
+    val operatingPanel: ResultStatusUiState = ResultStatusUiState(),
+    val carPositionIndicator: ResultStatusUiState = ResultStatusUiState(),
+    val carSignage: CarSignageUiState = CarSignageUiState(),
+    val carRoofStrength: ResultStatusUiState = ResultStatusUiState(),
+    val carTopEmergencyExit: ResultStatusUiState = ResultStatusUiState(),
+    val carSideEmergencyExit: ResultStatusUiState = ResultStatusUiState(),
+    val carTopGuardRail: ResultStatusUiState = ResultStatusUiState(),
+    val guardRailHeight300to850: ResultStatusUiState = ResultStatusUiState(),
+    val guardRailHeightOver850: ResultStatusUiState = ResultStatusUiState(),
+    val carTopLighting: ResultStatusUiState = ResultStatusUiState(),
+    val manualOperationButtons: ResultStatusUiState = ResultStatusUiState(),
+    val carInterior: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class GovernorAndSafetyBrakeUiState(
-    val governorRopeClamp: ResultStatusUiState? = null,
-    val governorSwitch: ResultStatusUiState? = null,
-    val safetyBrakeSpeed: ResultStatusUiState? = null,
-    val safetyBrakeType: ResultStatusUiState? = null,
-    val safetyBrakeMechanism: ResultStatusUiState? = null,
-    val progressiveSafetyBrake: ResultStatusUiState? = null,
-    val instantaneousSafetyBrake: ResultStatusUiState? = null,
-    val safetyBrakeOperation: ResultStatusUiState? = null,
-    val electricalCutoutSwitch: ResultStatusUiState? = null,
-    val limitSwitch: ResultStatusUiState? = null,
-    val overloadDevice: ResultStatusUiState? = null
+    val governorRopeClamp: ResultStatusUiState = ResultStatusUiState(),
+    val governorSwitch: ResultStatusUiState = ResultStatusUiState(),
+    val safetyBrakeSpeed: ResultStatusUiState = ResultStatusUiState(),
+    val safetyBrakeType: ResultStatusUiState = ResultStatusUiState(),
+    val safetyBrakeMechanism: ResultStatusUiState = ResultStatusUiState(),
+    val progressiveSafetyBrake: ResultStatusUiState = ResultStatusUiState(),
+    val instantaneousSafetyBrake: ResultStatusUiState = ResultStatusUiState(),
+    val safetyBrakeOperation: ResultStatusUiState = ResultStatusUiState(),
+    val electricalCutoutSwitch: ResultStatusUiState = ResultStatusUiState(),
+    val limitSwitch: ResultStatusUiState = ResultStatusUiState(),
+    val overloadDevice: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class CounterweightGuideRailsAndBuffersUiState(
-    val counterweightMaterial: ResultStatusUiState? = null,
-    val counterweightGuardScreen: ResultStatusUiState? = null,
-    val guideRailConstruction: ResultStatusUiState? = null,
-    val bufferType: ResultStatusUiState? = null,
-    val bufferFunction: ResultStatusUiState? = null,
-    val bufferSafetySwitch: ResultStatusUiState? = null
+    val counterweightMaterial: ResultStatusUiState = ResultStatusUiState(),
+    val counterweightGuardScreen: ResultStatusUiState = ResultStatusUiState(),
+    val guideRailConstruction: ResultStatusUiState = ResultStatusUiState(),
+    val bufferType: ResultStatusUiState = ResultStatusUiState(),
+    val bufferFunction: ResultStatusUiState = ResultStatusUiState(),
+    val bufferSafetySwitch: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class FireServiceElevatorUiState(
-    val backupPower: ResultStatusUiState? = null,
-    val specialOperation: ResultStatusUiState? = null,
-    val fireSwitch: ResultStatusUiState? = null,
-    val label: ResultStatusUiState? = null,
-    val electricalFireResistance: ResultStatusUiState? = null,
-    val hoistwayWallFireResistance: ResultStatusUiState? = null,
-    val carSize: ResultStatusUiState? = null,
-    val doorSize: ResultStatusUiState? = null,
-    val travelTime: ResultStatusUiState? = null,
-    val evacuationFloor: ResultStatusUiState? = null
+    val backupPower: ResultStatusUiState = ResultStatusUiState(),
+    val specialOperation: ResultStatusUiState = ResultStatusUiState(),
+    val fireSwitch: ResultStatusUiState = ResultStatusUiState(),
+    val label: ResultStatusUiState = ResultStatusUiState(),
+    val electricalFireResistance: ResultStatusUiState = ResultStatusUiState(),
+    val hoistwayWallFireResistance: ResultStatusUiState = ResultStatusUiState(),
+    val carSize: ResultStatusUiState = ResultStatusUiState(),
+    val doorSize: ResultStatusUiState = ResultStatusUiState(),
+    val travelTime: ResultStatusUiState = ResultStatusUiState(),
+    val evacuationFloor: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class AccessibilityElevatorUiState(
-    val operatingPanel: ResultStatusUiState? = null,
-    val panelHeight: ResultStatusUiState? = null,
-    val doorOpenTime: ResultStatusUiState? = null,
-    val doorWidth: ResultStatusUiState? = null,
-    val audioInformation: ResultStatusUiState? = null,
-    val label: ResultStatusUiState? = null
+    val operatingPanel: ResultStatusUiState = ResultStatusUiState(),
+    val panelHeight: ResultStatusUiState = ResultStatusUiState(),
+    val doorOpenTime: ResultStatusUiState = ResultStatusUiState(),
+    val doorWidth: ResultStatusUiState = ResultStatusUiState(),
+    val audioInformation: ResultStatusUiState = ResultStatusUiState(),
+    val label: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class SeismicSensorUiState(
-    val availability: ResultStatusUiState? = null,
-    val function: ResultStatusUiState? = null
+    val availability: ResultStatusUiState = ResultStatusUiState(),
+    val function: ResultStatusUiState = ResultStatusUiState()
 )
 
 data class ElectricalInstallationUiState(
-    val installationStandard: ResultStatusUiState? = null,
-    val electricalPanel: ResultStatusUiState? = null,
-    val backupPowerARD: ResultStatusUiState? = null,
-    val groundingCable: ResultStatusUiState? = null,
-    val fireAlarmConnection: ResultStatusUiState? = null,
-    val fireServiceElevator: FireServiceElevatorUiState? = null,
-    val accessibilityElevator: AccessibilityElevatorUiState? = null,
-    val seismicSensor: SeismicSensorUiState? = null
+    val installationStandard: ResultStatusUiState = ResultStatusUiState(),
+    val electricalPanel: ResultStatusUiState = ResultStatusUiState(),
+    val backupPowerARD: ResultStatusUiState = ResultStatusUiState(),
+    val groundingCable: ResultStatusUiState = ResultStatusUiState(),
+    val fireAlarmConnection: ResultStatusUiState = ResultStatusUiState(),
+    val fireServiceElevator: FireServiceElevatorUiState = FireServiceElevatorUiState(),
+    val accessibilityElevator: AccessibilityElevatorUiState = AccessibilityElevatorUiState(),
+    val seismicSensor: SeismicSensorUiState = SeismicSensorUiState()
 )
 
 data class InspectionAndTestingUiState(
-    val machineRoomAndMachinery: MachineRoomAndMachineryUiState? = null,
-    val suspensionRopesAndBelts: SuspensionRopesAndBeltsUiState? = null,
-    val drumsAndSheaves: DrumsAndSheavesUiState? = null,
-    val hoistwayAndPit: HoistwayAndPitUiState? = null,
-    val car: CarUiState? = null,
-    val governorAndSafetyBrake: GovernorAndSafetyBrakeUiState? = null,
-    val counterweightGuideRailsAndBuffers: CounterweightGuideRailsAndBuffersUiState? = null,
-    val electricalInstallation: ElectricalInstallationUiState? = null
+    val machineRoomAndMachinery: MachineRoomAndMachineryUiState = MachineRoomAndMachineryUiState(),
+    val suspensionRopesAndBelts: SuspensionRopesAndBeltsUiState = SuspensionRopesAndBeltsUiState(),
+    val drumsAndSheaves: DrumsAndSheavesUiState = DrumsAndSheavesUiState(),
+    val hoistwayAndPit: HoistwayAndPitUiState = HoistwayAndPitUiState(),
+    val car: CarUiState = CarUiState(),
+    val governorAndSafetyBrake: GovernorAndSafetyBrakeUiState = GovernorAndSafetyBrakeUiState(),
+    val counterweightGuideRailsAndBuffers: CounterweightGuideRailsAndBuffersUiState = CounterweightGuideRailsAndBuffersUiState(),
+    val electricalInstallation: ElectricalInstallationUiState = ElectricalInstallationUiState()
 )
 
 data class ElevatorUiState(
@@ -226,13 +226,14 @@ data class ElevatorUiState(
     val documentType: DocumentType = DocumentType.LAPORAN,
     val nameOfInspectionType: InspectionType = InspectionType.EE,
     val subNameOfInspectionType: SubInspectionType = SubInspectionType.Elevator,
-    val typeInspection: String? = null,
-    val eskOrElevType: String? = null,
-    val generalData: GeneralDataUiState? = null,
-    val technicalDocumentInspection: TechnicalDocumentInspectionUiState? = null,
-    val inspectionAndTesting: InspectionAndTestingUiState? = null,
-    val conclusion: String? = null,
-    val sendReportResult: Resource<String>? = null,
-    val createdAt: String? = null,
+    val typeInspection: String = "",
+    val eskOrElevType: String = "",
+    val generalData: GeneralDataUiState = GeneralDataUiState(),
+    val technicalDocumentInspection: TechnicalDocumentInspectionUiState = TechnicalDocumentInspectionUiState(),
+    val inspectionAndTesting: InspectionAndTestingUiState = InspectionAndTestingUiState(),
+    val conclusion: String = "",
+    val elevatorResult: Resource<String>? = null,
+    val eskalatorResult: Resource<String>? = null,
+    val createdAt: String = "",
     val isLoading: Boolean = false
 )
