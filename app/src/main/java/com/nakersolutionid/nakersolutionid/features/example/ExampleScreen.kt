@@ -1,96 +1,130 @@
 package com.nakersolutionid.nakersolutionid.features.example
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExampleScreen(modifier: Modifier = Modifier) {
-    var presses by rememberSaveable { mutableIntStateOf(0) }
+fun MyUpdatedSearchScreen() {
+    var searchText by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) } // Mengganti 'active' menjadi 'expanded'
+    val searchHistory = remember { mutableStateListOf<String>() }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text("Top app bar")
-                }
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .safeDrawingPadding()
             ) {
-                Text(
-                    modifier = modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "Bottom app bar",
-                )
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { presses++ }) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+                DockedSearchBar(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    inputField = {
+                        // Di sinilah kita menyediakan TextField kustom kita
+                        TextField(
+                            value = searchText,
+                            onValueChange = { searchText = it },
+                            placeholder = { Text("Cari sesuatu...") },
+                            leadingIcon = {
+                                IconButton(onClick = {
+                                    expanded = if (expanded) {
+                                        false // Tutup search bar
+                                    } else {
+                                        // Aksi lain jika tidak expanded (misal, buka drawer)
+                                        true // Atau langsung buka search
+                                    }
+                                }) {
+                                    Icon(Icons.Default.Search, contentDescription = "Cari")
+                                }
+                            },
+                            trailingIcon = {
+                                if (searchText.isNotEmpty()) {
+                                    IconButton(onClick = {
+                                        searchText = ""
+                                    }) {
+                                        Icon(Icons.Default.Close, contentDescription = "Clear search")
+                                    }
+                                }
+                            },
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent,
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                ) {
+                    // Konten saat search bar expanded
+                    LazyColumn {
+                        if (searchHistory.isNotEmpty()) {
+                            item { Text("Riwayat Pencarian:", modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 4.dp)) }
+                        }
+                        items(searchHistory) { historyItem ->
+                            ListItem(
+                                headlineContent = { Text(historyItem) },
+                                leadingContent = { Icon(Icons.Default.History, contentDescription = null) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .clickable {
+                                        searchText = historyItem
+                                        expanded = false
+                                        println("Mencari dari histori: $historyItem")
+                                    }
+                            )
+                        }
+                    }
+                }
             }
         }
-    ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+    ) { paddingValues ->
+        // Konten utama layar Anda
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
-            Text(
-                modifier = modifier.padding(8.dp),
-                text =
-                    """
-                    This is an example of a scaffold. It uses the Scaffold composable's parameters to create a screen with a simple top app bar, bottom app bar, and floating action button.
-
-                    It also contains some basic inner content, such as this text.
-
-                    You have pressed the floating action button $presses times.
-                """.trimIndent(),
-            )
-            val a = ""
-            OutlinedTextField(value = a, onValueChange = {})
-            OutlinedTextField(value = a, onValueChange = {})
+            Text("Konten Utama Aplikasi Anda")
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ExampleScreenPreview() {
-    NakersolutionidTheme {
-        ExampleScreen()
-    }
+fun PreviewMyUpdatedSearchScreen() {
+    MyUpdatedSearchScreen()
 }

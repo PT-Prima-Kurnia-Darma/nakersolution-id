@@ -39,7 +39,7 @@ object Utils {
 
         } catch (e: DateTimeParseException) {
             // Handle cases where the input string is not a valid date format.
-            "Invalid date format: ${e.message}"
+            "Format tanggal tidak valid."
         }
     }
 }

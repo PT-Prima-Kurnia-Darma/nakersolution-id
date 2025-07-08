@@ -2,19 +2,23 @@ package com.nakersolutionid.nakersolutionid.data.remote.network
 
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
-import com.nakersolutionid.nakersolutionid.data.remote.request.SendReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.request.SendElevatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.ValidateTokenRequest
+import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.ElevatorReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.ElevatorReportsResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
-import com.nakersolutionid.nakersolutionid.data.remote.response.sendreport.SendReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.validatetoken.ValidateTokenResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface ApiServices {
     @POST("auth/register")
@@ -46,6 +50,38 @@ interface ApiServices {
     @POST("elevatorEskalator/elevator/laporan")
     suspend fun sendReport(
         @Header("Authorization") token: String,
-        @Body request: SendReportRequest
-    ) : SendReportResponse
+        @Body request: SendElevatorReportRequest
+    ) : ElevatorReportResponse
+
+    @GET("elevatorEskalator/elevator/laporan")
+    suspend fun getReports(
+        @Header("Authorization") token: String
+    ) : ElevatorReportsResponse
+
+    @GET("elevatorEskalator/elevator/laporan/{id}")
+    suspend fun getReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
+    @PUT("elevatorEskalator/elevator/laporan/{id}")
+    suspend fun updateReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
+    @DELETE("elevatorEskalator/elevator/laporan/{id}")
+    suspend fun deleteReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
+    @POST("elevatorEskalator/elevator/laporan/{id}/download")
+    suspend fun downloadReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    )
+
+    @GET("elevatorEskalator/elevator/bap/prefill")
+    suspend fun prefillBap(@Header("Authorization") token: String)
 }
