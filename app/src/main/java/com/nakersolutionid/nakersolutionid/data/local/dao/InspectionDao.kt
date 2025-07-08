@@ -65,6 +65,6 @@ interface InspectionDao {
      * Fetches all inspectionEntity reports, including all their details.
      */
     @Transaction
-    @Query("SELECT * FROM inspections ORDER BY report_date DESC")
+    @Query("SELECT * FROM inspections ORDER BY created_at ASC")
     fun getAllInspectionsWithDetails(): Flow<List<InspectionWithDetails>>
 }
