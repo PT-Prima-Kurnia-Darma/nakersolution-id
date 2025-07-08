@@ -23,7 +23,7 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElevatorTopAppBar(
+fun InspectionTopAppBar(
     modifier: Modifier = Modifier,
     name: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
@@ -72,6 +72,6 @@ fun ElevatorTopAppBar(
 @Composable
 fun ElevatorTopAppBarPreview() {
     NakersolutionidTheme {
-        ElevatorTopAppBar(onBackClick = {}, name = "Instalasi Listrik dan Penyalur Petir", onSaveClick = {}, actionEnable = true)
+        InspectionTopAppBar(onBackClick = {}, name = "Instalasi Listrik dan Penyalur Petir", onSaveClick = {}, actionEnable = true)
     }
 }

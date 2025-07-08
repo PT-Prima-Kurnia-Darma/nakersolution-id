@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -57,7 +56,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -67,7 +65,8 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.report.ReportViewModel
-import com.nakersolutionid.nakersolutionid.ui.components.ElevatorTopAppBar
+import com.nakersolutionid.nakersolutionid.features.report.eskalator.EskalatorScreen
+import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -118,7 +117,7 @@ fun ElevatorScreen(
     Scaffold(
         topBar = {
             Column {
-                ElevatorTopAppBar(
+                InspectionTopAppBar(
                     name = menuTitle,
                     scrollBehavior = scrollBehavior,
                     onBackClick = { onBackClick() },
@@ -158,17 +157,17 @@ fun ElevatorScreen(
         },
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .imePadding(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            if (selectedIndex == 0) {
-                viewModel.onSubNameOfInspectionTypeChange(options[selectedIndex])
+        viewModel.onSubNameOfInspectionTypeChange(options[selectedIndex])
 
+        if (selectedIndex == 0) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .imePadding(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 item {
                     ExpandableSection(title = "Data Utama", initiallyExpanded = true) {
                         MainData(uiState = uiState, viewModel = viewModel)
@@ -201,7 +200,18 @@ fun ElevatorScreen(
                     }
                 }
             }
-            // Add content for "Eskalator" (selectedIndex == 1) here if needed
+
+        }
+
+        if (selectedIndex == 1) {
+            EskalatorScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .imePadding(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            )
         }
     }
 }
