@@ -90,12 +90,13 @@ fun ElevatorScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     viewModel.onNameOfInspectionTypeChange(InspectionType.EE)
+    viewModel.onSubNameOfInspectionTypeChange(options[selectedIndex])
 
-    LaunchedEffect(uiState.sendReportResult) {
-        when (val result = uiState.sendReportResult) {
+    LaunchedEffect(uiState.elevatorResult) {
+        when (val result = uiState.elevatorResult) {
             is Resource.Success -> {
                 viewModel.toggleLoading(false)
-                viewModel.onStateHandledSuccess()
+                viewModel.onElevatorStateHandledSuccess()
                 onBackClick()
             }
 
@@ -105,7 +106,30 @@ fun ElevatorScreen(
                     snackbarHostState.showSnackbar(errorMessage)
                 }
                 viewModel.toggleLoading(false)
-                viewModel.onStateHandledFailed()
+                viewModel.onElevatorStateHandledFailed()
+            }
+
+            is Resource.Loading -> viewModel.toggleLoading(true)
+            else -> { /* Do nothing for Initial state */
+            }
+        }
+    }
+
+    LaunchedEffect(uiState.eskalatorResult) {
+        when (val result = uiState.eskalatorResult) {
+            is Resource.Success -> {
+                viewModel.toggleLoading(false)
+                viewModel.onEskalatorStateHandledSuccess()
+                onBackClick()
+            }
+
+            is Resource.Error -> {
+                val errorMessage = result.message ?: "An unknown error occurred"
+                scope.launch {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+                viewModel.toggleLoading(false)
+                viewModel.onEskalatorStateHandledFailed()
             }
 
             is Resource.Loading -> viewModel.toggleLoading(true)
@@ -122,7 +146,9 @@ fun ElevatorScreen(
                     scrollBehavior = scrollBehavior,
                     onBackClick = { onBackClick() },
                     actionEnable = !uiState.isLoading,
-                    onSaveClick = { viewModel.onSaveClick() }
+                    onSaveClick = {
+                        viewModel.onSaveClick(selectedIndex)
+                    }
                 )
                 Row(
                     Modifier
@@ -157,7 +183,7 @@ fun ElevatorScreen(
         },
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
-        viewModel.onSubNameOfInspectionTypeChange(options[selectedIndex])
+
 
         if (selectedIndex == 0) {
             LazyColumn(
@@ -400,15 +426,15 @@ fun ResultStatusInput(
 @Composable
 fun MainData(uiState: ElevatorUiState?, viewModel: ReportViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        FormTextField("Tipe Inspeksi", uiState?.typeInspection) {
+        FormTextField(
+            "Jenis Elevator",
+            uiState?.eskOrElevType
+        ) { viewModel.onEskOrElevTypeChange(it) }
+        FormTextField("Jenis Pemeriksaan", uiState?.typeInspection) {
             viewModel.onTypeInspectionChange(
                 it
             )
         }
-        FormTextField(
-            "Tipe Elevator",
-            uiState?.eskOrElevType
-        ) { viewModel.onEskOrElevTypeChange(it) }
     }
 }
 
