@@ -50,7 +50,7 @@ private val menuItems = listOf(
 @Composable
 fun ReportScreen(
     modifier: Modifier = Modifier,
-    onMenuTypeClick: (MenuItem) -> Unit,
+    onMenuTypeClick: (Int) -> Unit,
     onBackClick: () -> Unit
 ) {
     Scaffold(
@@ -105,8 +105,7 @@ fun ReportScreen(
                     MenuItemButton(
                         menuItem = item,
                         onClick = {
-
-                            onMenuTypeClick(item)
+                            onMenuTypeClick(item.id)
                         }
                     )
                 }
