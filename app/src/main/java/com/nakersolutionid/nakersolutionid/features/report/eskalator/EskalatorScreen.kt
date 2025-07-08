@@ -150,7 +150,7 @@ fun EskalatorScreen(
             ExpandableSection(title = "Pemeriksaan dan Pengujian") {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     // Frame and Machine Room
-                    ExpandableSubSection(title = "A. Kerangka, Ruang Mesin & Pit") {
+                    ExpandableSubSection(title = "Kerangka, Ruang Mesin & Pit") {
                         val d = inspection.frameAndMachineRoom
                         ResultStatusInput(label = "Kerangka", provision = "≥ 30 N/cm 2 , ditopang oleh ≥ 2 balok pendukung, defleksi < 0,1%, penyambung tipe pasak mempunyai kekuatan torsi antara 2 s.d. 88 kg/meter, faktor keamanan ≥ 2,5", value = d.frame, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(frameAndMachineRoom = d.copy(frame = it)))) })
                         ResultStatusInput(label = "Balok Penyangga", provision = "Dilapisi karet peredam", value = d.supportBeams, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(frameAndMachineRoom = d.copy(supportBeams = it)))) })
@@ -164,7 +164,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Drive Equipment
-                    ExpandableSubSection(title = "B. Peralatan Penggerak") {
+                    ExpandableSubSection(title = "Peralatan Penggerak") {
                         val d = inspection.driveEquipment
                         ResultStatusInput(label = "Mesin Penggerak", provision = "Hanya menggerakkan 1 eskalator dilengkapi elektromekanis yang otomatis", value = d.driveMachine, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(driveEquipment = d.copy(driveMachine = it)))) })
                         ResultStatusInput(label = "Kecepatan (≤ 30°)", provision = "Kecepatan maksimal 0,75 meter/detik", value = d.speedUnder30Degrees, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(driveEquipment = d.copy(speedUnder30Degrees = it)))) })
@@ -178,7 +178,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Steps or Pallets
-                    ExpandableSubSection(title = "C. Anak Tangga / Pallet") {
+                    ExpandableSubSection(title = "Anak Tangga / Pallet") {
                         val d = inspection.stepsOrPallets
                         ResultStatusInput(label = "Bahan Step", provision = "Palet baja, baja tuang yang dianeling atau alumunium", value = d.stepMaterial, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(stepsOrPallets = d.copy(stepMaterial = it)))) })
                         ResultStatusInput(label = "Dimensi Step", provision = "Lebar (depth) ≥ 400mm, Panjang (width) ≥ 560mm, Tinggi < 240mm", value = d.stepDimensions, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(stepsOrPallets = d.copy(stepDimensions = it)))) })
@@ -190,7 +190,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Landing Area
-                    ExpandableSubSection(title = "D. Bidang Landas") {
+                    ExpandableSubSection(title = "Bidang Landas") {
                         val d = inspection.landingArea
                         ResultStatusInput(label = "Plat Pendaratan", provision = "Terpasang berderet dan Dikencangkan dengan sekrup", value = d.landingPlates, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(landingArea = d.copy(landingPlates = it)))) })
                         ResultStatusInput(label = "Gigi Sisir", provision = "Terbuat dari bahan yang mudah patah, dan dapat masuk ke dalam alur anak tangga/palet", value = d.combTeeth, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(landingArea = d.copy(combTeeth = it)))) })
@@ -200,7 +200,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Balustrade
-                    ExpandableSubSection(title = "E. Pagar Pelindung") {
+                    ExpandableSubSection(title = "Pagar Pelindung") {
                         val d = inspection.balustrade
                         val p = d.balustradePanel
                         ExpandableSubSection(title = "Panel Balustrade") {
@@ -216,7 +216,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Handrail
-                    ExpandableSubSection(title = "F. Ban Pegangan") {
+                    ExpandableSubSection(title = "Ban Pegangan") {
                         val d = inspection.handrail
                         ResultStatusInput(label = "Kondisi Handrail", provision = "Kuat, tidak cacat, terbuat dari karet Vulkanisir", value = d.handrailCondition, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(handrail = d.copy(handrailCondition = it)))) })
                         ResultStatusInput(label = "Sinkronisasi Kecepatan Handrail", provision = "Harus sama dan searah atau < 2% Terhadap anak tangga", value = d.handrailSpeedSynchronization, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(handrail = d.copy(handrailSpeedSynchronization = it)))) })
@@ -224,7 +224,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Runway
-                    ExpandableSubSection(title = "G. Lintasan Luncur (Void)") {
+                    ExpandableSubSection(title = "Lintasan Luncur (Void)") {
                         val d = inspection.runway
                         ResultStatusInput(label = "Kekuatan & Posisi Balok", provision = "Disesuaikan dengan spesifikasi", value = d.beamStrengthAndPosition, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(beamStrengthAndPosition = it)))) })
                         ResultStatusInput(label = "Kondisi Dinding Pit", provision = "Kedap air", value = d.pitWallCondition, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(pitWallCondition = it)))) })
@@ -238,7 +238,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Safety Equipment
-                    ExpandableSubSection(title = "H. Peralatan Pengaman") {
+                    ExpandableSubSection(title = "Peralatan Pengaman") {
                         val d = inspection.safetyEquipment
                         ResultStatusInput(label = "Kunci Kontrol Operasi", provision = "Tersedia", value = d.operationControlKey, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(safetyEquipment = d.copy(operationControlKey = it)))) })
                         ResultStatusInput(label = "Saklar Stop Darurat", provision = "Tersedia", value = d.emergencyStopSwitch, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(safetyEquipment = d.copy(emergencyStopSwitch = it)))) })
@@ -254,7 +254,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Electrical Installation
-                    ExpandableSubSection(title = "I. Instalasi Listrik") {
+                    ExpandableSubSection(title = "Instalasi Listrik") {
                         val d = inspection.electricalInstallation
                         ResultStatusInput(label = "Standar Instalasi", provision = "SNI dan standar internasional", value = d.installationStandard, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(electricalInstallation = d.copy(installationStandard = it)))) })
                         ResultStatusInput(label = "Panel Listrik", provision = "Panel khusus untuk eskalator", value = d.electricalPanel, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(electricalInstallation = d.copy(electricalPanel = it)))) })
@@ -263,14 +263,14 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Outdoor Specifics
-                    ExpandableSubSection(title = "J. Khusus Eskalator Outdoor") {
+                    ExpandableSubSection(title = "Khusus Eskalator Outdoor") {
                         val d = inspection.outdoorSpecifics
                         ResultStatusInput(label = "Pompa Air Pit", provision = "Tersedia", value = d.pitWaterPump, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(outdoorSpecifics = d.copy(pitWaterPump = it)))) })
                         ResultStatusInput(label = "Komponen Tahan Cuaca", provision = "Tahan air, suhu/cuaca", value = d.weatherproofComponents, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(outdoorSpecifics = d.copy(weatherproofComponents = it)))) })
                     }
                     HorizontalDivider()
                     // User Safety Signage
-                    ExpandableSubSection(title = "K. Keselamatan Pengguna") {
+                    ExpandableSubSection(title = "Keselamatan Pengguna") {
                         val d = inspection.userSafetySignage
                         ResultStatusInput(label = "Dilarang Membawa Barang Besar", provision = "Tersedia", value = d.noBulkyItems, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(userSafetySignage = d.copy(noBulkyItems = it)))) })
                         ResultStatusInput(label = "Dilarang Melompat", provision = "Tersedia", value = d.noJumping, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(userSafetySignage = d.copy(noJumping = it)))) })
