@@ -48,7 +48,7 @@ fun EEScreen(
     menuTitle: String = "Elevator dan Eskalator",
     onBackClick: () -> Unit
 ) {
-    val uiState by viewModel.eeUiState.collectAsStateWithLifecycle()
+    val eeUiState by viewModel.eeUiState.collectAsStateWithLifecycle()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val snackbarHostState = remember { SnackbarHostState() }
@@ -57,8 +57,8 @@ fun EEScreen(
     var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Elevator) }
     val listMenu = listOf(SubInspectionType.Elevator, SubInspectionType.Eskalator)
 
-    LaunchedEffect(uiState.elevatorResult) {
-        when (val result = uiState.elevatorResult) {
+    LaunchedEffect(eeUiState.elevatorResult) {
+        when (val result = eeUiState.elevatorResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
                 viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
@@ -74,8 +74,8 @@ fun EEScreen(
         }
     }
 
-    LaunchedEffect(uiState.eskalatorResult) {
-        when (val result = uiState.eskalatorResult) {
+    LaunchedEffect(eeUiState.eskalatorResult) {
+        when (val result = eeUiState.eskalatorResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
                 viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
@@ -98,7 +98,7 @@ fun EEScreen(
                 name = menuTitle,
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
-                actionEnable = !uiState.isLoading,
+                actionEnable = !eeUiState.isLoading,
                 onSaveClick = { viewModel.onSaveClick(selectedFilter) }
             )
         },
@@ -164,7 +164,7 @@ private fun EEScreenPreview() {
         modules(previewModule)
     }) {
         NakersolutionidTheme {
-            EEScreen(menuTitle = "Elevator dan Eskalator", onBackClick = {})
+            EEScreen(onBackClick = {})
         }
     }
 }
