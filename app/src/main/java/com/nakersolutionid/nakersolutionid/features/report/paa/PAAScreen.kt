@@ -3,6 +3,7 @@ package com.nakersolutionid.nakersolutionid.features.report.paa
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftScreen
 import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import org.koin.androidx.compose.koinViewModel
@@ -153,7 +155,14 @@ fun PAAScreen(
 
             when (selectedFilter) {
                 SubInspectionType.Forklift -> {
-
+                    ForkliftScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 8.dp)
+                            .imePadding(),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    )
                 }
                 SubInspectionType.Mobil_Crane -> {}
                 SubInspectionType.Overhead_Crane -> {}
