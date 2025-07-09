@@ -10,7 +10,6 @@ import kotlinx.collections.immutable.persistentListOf
  */
 @Immutable
 data class OverheadCraneUiState(
-    val isLoading: Boolean = false,
     val overheadCraneInspectionReport: OverheadCraneInspectionReport = OverheadCraneInspectionReport()
 )
 

@@ -10,7 +10,6 @@ import kotlinx.collections.immutable.persistentListOf
  */
 @Immutable
 data class MobileCraneUiState(
-    val isLoading: Boolean = false,
     val mobileCraneInspectionReport: MobileCraneInspectionReport = MobileCraneInspectionReport()
 )
 

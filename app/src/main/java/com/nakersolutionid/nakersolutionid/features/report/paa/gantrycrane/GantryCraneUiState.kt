@@ -10,7 +10,6 @@ import kotlinx.collections.immutable.persistentListOf
  */
 @Immutable
 data class GantryCraneUiState(
-    val isLoading: Boolean = false,
     val gantryCraneInspectionReport: GantryCraneInspectionReport = GantryCraneInspectionReport()
 )
 

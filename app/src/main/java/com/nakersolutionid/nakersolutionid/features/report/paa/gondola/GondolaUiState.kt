@@ -10,7 +10,6 @@ import kotlinx.collections.immutable.persistentListOf
  */
 @Immutable
 data class GondolaUiState(
-    val isLoading: Boolean = false,
     val gondolaInspectionReport: GondolaInspectionReport = GondolaInspectionReport()
 )
 

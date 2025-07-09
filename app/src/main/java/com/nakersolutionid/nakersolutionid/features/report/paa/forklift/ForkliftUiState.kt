@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa.forklift
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -10,12 +13,16 @@ import kotlinx.collections.immutable.persistentListOf
  */
 @Immutable
 data class ForkliftUiState(
-    val isLoading: Boolean = false,
     val forkliftInspectionReport: ForkliftInspectionReport = ForkliftInspectionReport()
 )
 
 @Immutable
 data class ForkliftInspectionReport(
+    val documentType: DocumentType = DocumentType.LAPORAN,
+    val inspectionType: InspectionType = InspectionType.PAA,
+    val subInspectionType: SubInspectionType = SubInspectionType.Forklift,
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: ForkliftGeneralData = ForkliftGeneralData(),
     val technicalData: ForkliftTechnicalData = ForkliftTechnicalData(),
     val visualInspection: ForkliftVisualInspection = ForkliftVisualInspection(),
