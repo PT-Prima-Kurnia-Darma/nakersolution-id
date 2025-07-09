@@ -110,4 +110,7 @@ dependencies {
 
     // Kotlinx Serialization-Json
     implementation(libs.kotlinx.serialization.json)
+
+    // Kotlinx Collections Immutable
+    implementation(libs.kotlinx.collections.immutable)
 }
