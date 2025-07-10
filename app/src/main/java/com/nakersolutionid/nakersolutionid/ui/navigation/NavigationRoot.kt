@@ -25,6 +25,7 @@ import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
 import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.EEScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorScreen
+import com.nakersolutionid.nakersolutionid.features.report.paa.PAAScreen
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
 import kotlinx.serialization.Serializable
@@ -37,6 +38,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object Settings : NavKey
 
 @Serializable data object EE : NavKey
+@Serializable data object PAA : NavKey
 
 @Composable
 fun NavigationRoot(
@@ -100,7 +102,12 @@ fun NavigationRoot(
                 ReportScreen(
                     onBackClick = { backStack.removeLastOrNull() },
                     onMenuTypeClick = { menu ->
-                        when (menu.id) {
+                        when (menu) {
+                            1 -> {}
+                            2 -> {}
+                            3 -> backStack.add(PAA)
+                            4 -> {}
+                            5 -> {}
                             6 -> backStack.add(EE)
                             else -> {}
                         }
@@ -124,6 +131,9 @@ fun NavigationRoot(
             }
             entry<EE> {
                 EEScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<PAA> {
+                PAAScreen(onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {

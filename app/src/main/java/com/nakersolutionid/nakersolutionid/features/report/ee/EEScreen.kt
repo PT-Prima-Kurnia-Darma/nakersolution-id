@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorScreen
@@ -48,7 +49,7 @@ fun EEScreen(
     menuTitle: String = "Elevator dan Eskalator",
     onBackClick: () -> Unit
 ) {
-    val uiState by viewModel.eeUiState.collectAsStateWithLifecycle()
+    val eeUiState by viewModel.eeUiState.collectAsStateWithLifecycle()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val snackbarHostState = remember { SnackbarHostState() }
@@ -57,8 +58,8 @@ fun EEScreen(
     var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Elevator) }
     val listMenu = listOf(SubInspectionType.Elevator, SubInspectionType.Eskalator)
 
-    LaunchedEffect(uiState.elevatorResult) {
-        when (val result = uiState.elevatorResult) {
+    LaunchedEffect(eeUiState.elevatorResult) {
+        when (val result = eeUiState.elevatorResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
                 viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
@@ -74,8 +75,8 @@ fun EEScreen(
         }
     }
 
-    LaunchedEffect(uiState.eskalatorResult) {
-        when (val result = uiState.eskalatorResult) {
+    LaunchedEffect(eeUiState.eskalatorResult) {
+        when (val result = eeUiState.eskalatorResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
                 viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
@@ -98,7 +99,7 @@ fun EEScreen(
                 name = menuTitle,
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
-                actionEnable = !uiState.isLoading,
+                actionEnable = !eeUiState.isLoading,
                 onSaveClick = { viewModel.onSaveClick(selectedFilter) }
             )
         },
@@ -120,7 +121,7 @@ fun EEScreen(
             ) {
                 listMenu.forEach { filterType ->
                     val isSelected = selectedFilter == filterType
-                    val filterName = filterType.name.replace('_', ' ')
+                    val filterName = filterType.toDisplayString()
 
                     FilterChip(
                         modifier = Modifier.weight(1f),
@@ -164,7 +165,7 @@ private fun EEScreenPreview() {
         modules(previewModule)
     }) {
         NakersolutionidTheme {
-            EEScreen(menuTitle = "Elevator dan Eskalator", onBackClick = {})
+            EEScreen(onBackClick = {})
         }
     }
 }

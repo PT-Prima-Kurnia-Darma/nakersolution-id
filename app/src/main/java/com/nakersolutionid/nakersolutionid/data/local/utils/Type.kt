@@ -27,9 +27,14 @@ enum class SubInspectionType {
     Wheel_Loader,
     Farm_Tractor,
     Motor_Grader,
-    Mobil_Crane_Truck_Crane,
-    Hoist_Crane_Overhead_Crane_Gantry_Crane_Gondola_Jib_Crane,
+    Mobil_Crane,
+    Hoist_Crane,
     Tower_Crane,
+    Truck_Crane,
+    Overhead_Crane,
+    Gantry_Crane,
+    Gondola,
+    Jib_Crane,
 
     Instalasi_Petir,
     Instalasi_Penyalur_Petir,
@@ -65,9 +70,14 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Wheel_Loader -> "Wheel Loader"
         SubInspectionType.Farm_Tractor -> "Farm Tractor"
         SubInspectionType.Motor_Grader -> "Motor Grader"
-        SubInspectionType.Mobil_Crane_Truck_Crane -> "Mobil Crane / Truck Crane"
-        SubInspectionType.Hoist_Crane_Overhead_Crane_Gantry_Crane_Gondola_Jib_Crane -> "Hoist Crane / Overhead Crane / Gantry Crane / Gondola / Jib Crane"
+        SubInspectionType.Mobil_Crane -> "Mobil Crane"
+        SubInspectionType.Hoist_Crane -> "Hoist Crane"
         SubInspectionType.Tower_Crane -> "Tower Crane"
+        SubInspectionType.Truck_Crane -> "Truck Crane"
+        SubInspectionType.Overhead_Crane -> "Overhead Crane"
+        SubInspectionType.Gantry_Crane -> "Gantry Crane"
+        SubInspectionType.Gondola -> "Gondola"
+        SubInspectionType.Jib_Crane -> "Jib Crane"
 
         SubInspectionType.Instalasi_Petir -> "Instalasi Petir"
         SubInspectionType.Instalasi_Penyalur_Petir -> "Instalasi Penyalur Petir"
@@ -148,9 +158,14 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Wheel Loader" -> SubInspectionType.Wheel_Loader
         "Farm Tractor" -> SubInspectionType.Farm_Tractor
         "Motor Grader" -> SubInspectionType.Motor_Grader
-        "Mobil Crane / Truck Crane" -> SubInspectionType.Mobil_Crane_Truck_Crane
-        "Hoist Crane / Overhead Crane / Gantry Crane / Gondola / Jib Crane" -> SubInspectionType.Hoist_Crane_Overhead_Crane_Gantry_Crane_Gondola_Jib_Crane
+        "Mobil Crane" -> SubInspectionType.Mobil_Crane
+        "Hoist Crane" -> SubInspectionType.Hoist_Crane
         "Tower Crane" -> SubInspectionType.Tower_Crane
+        "Truck Crane" -> SubInspectionType.Truck_Crane
+        "Overhead Crane" -> SubInspectionType.Overhead_Crane
+        "Gantry Crane" -> SubInspectionType.Gantry_Crane
+        "Gondola" -> SubInspectionType.Gondola
+        "Jib Crane" -> SubInspectionType.Jib_Crane
 
         "Instalasi Petir" -> SubInspectionType.Instalasi_Petir
         "Instalasi Penyalur Petir" -> SubInspectionType.Instalasi_Penyalur_Petir
