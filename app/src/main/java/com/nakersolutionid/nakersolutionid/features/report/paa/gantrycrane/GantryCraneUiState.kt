@@ -46,6 +46,7 @@ data class GantryCraneGeneralData(
 data class GantryCraneTechnicalData(
     val specifications: GantryCraneTechSpecs = GantryCraneTechSpecs(),
     val driveMotor: GantryCraneDriveMotor = GantryCraneDriveMotor(),
+    val startingResistor: GantryCraneStartingResistor = GantryCraneStartingResistor(), // ADDED
     val brake: GantryCraneBrake = GantryCraneBrake(),
     val controllerBrake: GantryCraneControllerBrake = GantryCraneControllerBrake(),
     val hook: GantryCraneHook = GantryCraneHook(),
@@ -78,16 +79,24 @@ data class GantryCraneDriveMotor(
     val frequencyHz: GantryCraneMovementData = GantryCraneMovementData()
 )
 
+// ADDED a new data class for Starting Resistor
+@Immutable
+data class GantryCraneStartingResistor(
+    val type: GantryCraneMovementData = GantryCraneMovementData(),
+    val voltageV: GantryCraneMovementData = GantryCraneMovementData(),
+    val currentA: GantryCraneMovementData = GantryCraneMovementData()
+)
+
 @Immutable
 data class GantryCraneBrake(
-    val type: GantryCraneMovementData = GantryCraneMovementData(),
-    val model: GantryCraneMovementData = GantryCraneMovementData()
+    val type: GantryCraneMovementData = GantryCraneMovementData(), // This is 'Jenis' in the report
+    val model: GantryCraneMovementData = GantryCraneMovementData() // This is 'Type' in the report
 )
 
 @Immutable
 data class GantryCraneControllerBrake(
-    val type: GantryCraneMovementData = GantryCraneMovementData(),
-    val model: GantryCraneMovementData = GantryCraneMovementData()
+    val type: GantryCraneMovementData = GantryCraneMovementData(), // This is 'Jenis' in the report
+    val model: GantryCraneMovementData = GantryCraneMovementData() // This is 'Type' in the report
 )
 
 @Immutable
@@ -121,6 +130,7 @@ data class GantryCraneInspectionResult(
 
 @Immutable
 data class GantryCraneVisualInspection(
+    // Pondasi & Rangka
     val foundationAnchorBoltCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val foundationAnchorBoltCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val foundationAnchorBoltDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -131,6 +141,7 @@ data class GantryCraneVisualInspection(
     val columnFrameFastening: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val columnFrameCrossBracing: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val columnFrameDiagonalBracing: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Akses
     val ladderCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val ladderCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val ladderDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -139,6 +150,7 @@ data class GantryCraneVisualInspection(
     val workPlatformCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val workPlatformDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val workPlatformFastening: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Rel Travelling
     val railMountingBeamCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val railMountingBeamCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val railMountingBeamDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -152,6 +164,7 @@ data class GantryCraneVisualInspection(
     val travelingRailGapBetweenRailJoints: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val travelingRailFastener: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val travelingRailStopper: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Rel Traversing
     val traversingRailCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingRailCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingRailJoint: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -161,44 +174,53 @@ data class GantryCraneVisualInspection(
     val traversingRailGapBetweenRailJoints: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingRailFastener: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingRailStopper: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Girder
     val girderCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val girderCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val girderCamber: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val girderJoint: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val girderEndJoint: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val girderTruckMountOnGirder: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Travelling Gearbox
     val travelingGearboxGirderCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val travelingGearboxGirderCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val travelingGearboxGirderLubricatingOil: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val travelingGearboxGirderOilSeal: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Roda Penggerak
     val driveWheelWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelFlangeCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelChainCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Roda Idle
     val idleWheelSecurity: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelFlangeCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Penghubung Roda
     val wheelConnectorBogieAxleStraightness: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val wheelConnectorBogieAxleCrossJoint: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val wheelConnectorBogieAxleLubrication: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val stopperBumperOnGirderCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val stopperBumperOnGirderReinforcement: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Traversing Gearbox
     val traversingGearboxTrolleyCarrierFastening: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingGearboxTrolleyCarrierCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingGearboxTrolleyCarrierCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingGearboxTrolleyCarrierLubricatingOil: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val traversingGearboxTrolleyCarrierOilSeal: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Roda Penggerak Trolley
     val driveWheelOnTrolleyWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelOnTrolleyCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelOnTrolleyDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelOnTrolleyFlangeCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val driveWheelOnTrolleyChainCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Roda Idle Trolley
     val idleWheelOnTrolleyWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelOnTrolleyCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelOnTrolleyDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelOnTrolleyFlangeCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Hoist
     val windingDrumGroove: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val windingDrumGrooveFlange: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val windingDrumFlanges: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -206,12 +228,14 @@ data class GantryCraneVisualInspection(
     val brakeAdjustment: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val hoistGearboxLubrication: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val hoistGearboxOilSeal: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Pully
     val pulleyDiscChainSprocketPulleyGroove: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val pulleyDiscChainSprocketPulleyFlange: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val pulleyDiscChainSprocketPulleyPin: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val pulleyDiscChainSprocketBearing: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val pulleyDiscChainSprocketPulleyGuard: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val pulleyDiscChainSprocketWireRopeChainGuard: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Kait
     val mainHookWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val mainHookThroatOpening: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val mainHookSwivelNutAndBearing: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -220,6 +244,7 @@ data class GantryCraneVisualInspection(
     val auxiliaryHookThroatOpening: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val auxiliaryHookSwivelNutAndBearing: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val auxiliaryHookTrunnion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Tali Baja
     val mainWireRopeCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val mainWireRopeWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val mainWireRopeBroken: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -228,6 +253,7 @@ data class GantryCraneVisualInspection(
     val auxiliaryWireRopeWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val auxiliaryWireRopeBroken: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val auxiliaryWireRopeDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Rantai
     val mainChainCorrosion: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val mainChainWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val mainChainCrackedBroken: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -236,9 +262,11 @@ data class GantryCraneVisualInspection(
     val auxiliaryChainWear: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val auxiliaryChainCrackedBroken: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val auxiliaryChainDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Limit Switch
     val limitSwitchLsLongTraveling: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val limitSwitchLsCrossTraveling: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val limitSwitchLsHoisting: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Kabin
     val operatorCabinSafetyLadder: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val operatorCabinDoor: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val operatorCabinWindow: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -252,6 +280,7 @@ data class GantryCraneVisualInspection(
     val operatorCabinFireExtinguisher: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val operatorCabinOperatingSigns: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val operatorCabinIgnitionKeyMasterSwitch: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Kelistrikan
     val electricalComponentsPanelConductorConnector: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val electricalComponentsConductorProtection: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val electricalComponentsMotorInstallationSafetySystem: GantryCraneInspectionResult = GantryCraneInspectionResult(),
@@ -278,9 +307,9 @@ data class GantryCraneNdeWireRopeItem(
     val specDiameter: String = "",
     val actualDiameter: String = "",
     val construction: String = "",
-    val type: String = "",
+    val type: String = "", // 'Jenis' in report
     val length: String = "",
-    val age: String = "",
+    val age: String = "", // ADDED
     val finding: GantryCraneInspectionResult = GantryCraneInspectionResult()
 )
 
@@ -344,9 +373,9 @@ data class GantryCraneDynamicTestItem(
 @Immutable
 data class GantryCraneDynamicWithLoad(
     val noLoad: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
-    val swl25: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
-    val swl50: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
-    val swl75: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
+    val swl25: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),    // ADDED
+    val swl50: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),    // ADDED
+    val swl75: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),    // ADDED
     val swl100: GantryCraneLoadTestResult = GantryCraneLoadTestResult()
 )
 

@@ -9,6 +9,11 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.Forklift
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeForkItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneDeflectionItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeGirderItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeWireRopeItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneUiState
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,8 +28,8 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
      private val _forkliftUiState = MutableStateFlow(ForkliftUiState())
      val forkliftUiState: StateFlow<ForkliftUiState> = _forkliftUiState.asStateFlow()
 
-    // private val _gantryCraneUiState = MutableStateFlow()
-    // val gantryCraneUiState: StateFlow<PAAUiState> = _gantryCraneUiState.asStateFlow()
+    private val _gantryCraneUiState = MutableStateFlow(GantryCraneUiState())
+    val gantryCraneUiState: StateFlow<GantryCraneUiState> = _gantryCraneUiState.asStateFlow()
 
     // private val _gondolaUiState = MutableStateFlow()
     // val gondolaUiState: StateFlow<PAAUiState> = _gondolaUiState.asStateFlow()
@@ -38,20 +43,15 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             when (selectedIndex) {
-                SubInspectionType.Forklift -> {}
-                SubInspectionType.Bulldozer -> {}
-                SubInspectionType.Excavator -> {}
-                SubInspectionType.Wheel_Loader -> {}
-                SubInspectionType.Farm_Tractor -> {}
-                SubInspectionType.Motor_Grader -> {}
+                SubInspectionType.Forklift -> {
+                    // TODO: Implement save logic for Forklift report
+                }
                 SubInspectionType.Mobil_Crane -> {}
-                SubInspectionType.Hoist_Crane -> {}
-                SubInspectionType.Tower_Crane -> {}
-                SubInspectionType.Truck_Crane -> {}
                 SubInspectionType.Overhead_Crane -> {}
-                SubInspectionType.Gantry_Crane -> {}
+                SubInspectionType.Gantry_Crane -> {
+                    // TODO: Implement save logic for Gantry Crane report
+                }
                 SubInspectionType.Gondola -> {}
-                SubInspectionType.Jib_Crane -> {}
                 else -> null
             }
         }
@@ -61,11 +61,11 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         _paaUiState.update(updater)
     }
 
-    fun onReportDataChange(newReportData: ForkliftInspectionReport) {
+    //region Forklift Logic (Existing)
+    fun onForkliftReportDataChange(newReportData: ForkliftInspectionReport) {
         _forkliftUiState.update { it.copy(forkliftInspectionReport = newReportData) }
     }
 
-    // Handlers for NDE Chain Inspection List
     fun addNdeChainItem(item: ForkliftNdeChainItem) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentNde = currentReport.nonDestructiveExamination
@@ -74,7 +74,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val updatedNde = currentNde.copy(
             liftingChainInspection = currentChainInspection.copy(items = newItems)
         )
-        onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
+        onForkliftReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
     }
 
     fun deleteNdeChainItem(index: Int) = viewModelScope.launch {
@@ -85,11 +85,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val updatedNde = currentNde.copy(
             liftingChainInspection = currentChainInspection.copy(items = newItems)
         )
-        onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
+        onForkliftReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
     }
 
-
-    // Handlers for NDE Fork List
     fun addNdeForkItem(item: ForkliftNdeForkItem) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentNde = currentReport.nonDestructiveExamination
@@ -98,7 +96,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val updatedNde = currentNde.copy(
             forkNDT = currentForkNdt.copy(items = newItems)
         )
-        onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
+        onForkliftReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
     }
 
     fun deleteNdeForkItem(index: Int) = viewModelScope.launch {
@@ -109,7 +107,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val updatedNde = currentNde.copy(
             forkNDT = currentForkNdt.copy(items = newItems)
         )
-        onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
+        onForkliftReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
     }
 
     fun updateNdtType(ndtType: String) = viewModelScope.launch {
@@ -117,10 +115,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val currentNde = currentReport.nonDestructiveExamination
         val updatedForkNdt = currentNde.forkNDT.copy(ndtType = ndtType)
         val updatedNde = currentNde.copy(forkNDT = updatedForkNdt)
-        onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
+        onForkliftReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
     }
 
-    // Handlers for Load Test List
     fun addLoadTestItem(item: ForkliftLoadTestItem) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentTesting = currentReport.testing
@@ -129,7 +126,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val updatedTesting = currentTesting.copy(
             loadTest = currentLoadTest.copy(items = newItems)
         )
-        onReportDataChange(currentReport.copy(testing = updatedTesting))
+        onForkliftReportDataChange(currentReport.copy(testing = updatedTesting))
     }
 
     fun deleteLoadTestItem(index: Int) = viewModelScope.launch {
@@ -140,36 +137,117 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val updatedTesting = currentTesting.copy(
             loadTest = currentLoadTest.copy(items = newItems)
         )
-        onReportDataChange(currentReport.copy(testing = updatedTesting))
+        onForkliftReportDataChange(currentReport.copy(testing = updatedTesting))
     }
 
-    // Handlers for Conclusion Summary List
     fun addConclusionSummaryItem(item: String) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentConclusion = currentReport.conclusion
         val newItems = (currentConclusion.summary + item).toImmutableList()
-        onReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(summary = newItems)))
+        onForkliftReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(summary = newItems)))
     }
 
     fun removeConclusionSummaryItem(index: Int) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentConclusion = currentReport.conclusion
         val newItems = currentConclusion.summary.toMutableList().apply { removeAt(index) }.toImmutableList()
-        onReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(summary = newItems)))
+        onForkliftReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(summary = newItems)))
     }
 
-    // Handlers for Conclusion Recommendations List
     fun addConclusionRecommendationItem(item: String) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentConclusion = currentReport.conclusion
         val newItems = (currentConclusion.recommendations + item).toImmutableList()
-        onReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(recommendations = newItems)))
+        onForkliftReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(recommendations = newItems)))
     }
 
     fun removeConclusionRecommendationItem(index: Int) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentConclusion = currentReport.conclusion
         val newItems = currentConclusion.recommendations.toMutableList().apply { removeAt(index) }.toImmutableList()
-        onReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(recommendations = newItems)))
+        onForkliftReportDataChange(currentReport.copy(conclusion = currentConclusion.copy(recommendations = newItems)))
     }
+    //endregion
+
+    //region Gantry Crane Logic (New)
+    fun onGantryCraneReportDataChange(newReportData: GantryCraneInspectionReport) {
+        _gantryCraneUiState.update { it.copy(gantryCraneInspectionReport = newReportData) }
+    }
+
+    fun addGantryNdeWireRopeItem(item: GantryCraneNdeWireRopeItem) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val wireRope = nde.wireRope
+        val newItems = (wireRope.items + item).toImmutableList()
+        onGantryCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(wireRope = wireRope.copy(items = newItems))))
+    }
+
+    fun deleteGantryNdeWireRopeItem(index: Int) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val wireRope = nde.wireRope
+        val newItems = wireRope.items.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onGantryCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(wireRope = wireRope.copy(items = newItems))))
+    }
+
+    fun addGantryNdeGirderItem(item: GantryCraneNdeGirderItem) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val girder = nde.girder
+        val newItems = (girder.items + item).toImmutableList()
+        onGantryCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(girder = girder.copy(items = newItems))))
+    }
+
+    fun deleteGantryNdeGirderItem(index: Int) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val girder = nde.girder
+        val newItems = girder.items.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onGantryCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(girder = girder.copy(items = newItems))))
+    }
+
+    fun addGantryDeflectionItem(item: GantryCraneDeflectionItem) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val testing = report.testing
+        val staticTest = testing.staticTest
+        val newItems = (staticTest.deflectionMeasurement + item).toImmutableList()
+        onGantryCraneReportDataChange(report.copy(testing = testing.copy(staticTest = staticTest.copy(deflectionMeasurement = newItems))))
+    }
+
+    fun deleteGantryDeflectionItem(index: Int) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val testing = report.testing
+        val staticTest = testing.staticTest
+        val newItems = staticTest.deflectionMeasurement.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onGantryCraneReportDataChange(report.copy(testing = testing.copy(staticTest = staticTest.copy(deflectionMeasurement = newItems))))
+    }
+
+    fun addGantryConclusionSummaryItem(item: String) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = (conclusion.summary + item).toImmutableList()
+        onGantryCraneReportDataChange(report.copy(conclusion = conclusion.copy(summary = newItems)))
+    }
+
+    fun removeGantryConclusionSummaryItem(index: Int) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = conclusion.summary.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onGantryCraneReportDataChange(report.copy(conclusion = conclusion.copy(summary = newItems)))
+    }
+
+    fun addGantryConclusionRecommendationItem(item: String) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = (conclusion.recommendations + item).toImmutableList()
+        onGantryCraneReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+
+    fun removeGantryConclusionRecommendationItem(index: Int) = viewModelScope.launch {
+        val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = conclusion.recommendations.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onGantryCraneReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+    //endregion
 }
