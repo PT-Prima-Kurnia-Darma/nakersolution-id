@@ -77,12 +77,35 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
     }
 
+    fun deleteNdeChainItem(index: Int) = viewModelScope.launch {
+        val currentReport = _forkliftUiState.value.forkliftInspectionReport
+        val currentNde = currentReport.nonDestructiveExamination
+        val currentChainInspection = currentNde.liftingChainInspection
+        val newItems = currentChainInspection.items.toMutableList().apply { removeAt(index) }.toImmutableList()
+        val updatedNde = currentNde.copy(
+            liftingChainInspection = currentChainInspection.copy(items = newItems)
+        )
+        onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
+    }
+
+
     // Handlers for NDE Fork List
     fun addNdeForkItem(item: ForkliftNdeForkItem) = viewModelScope.launch {
         val currentReport = _forkliftUiState.value.forkliftInspectionReport
         val currentNde = currentReport.nonDestructiveExamination
         val currentForkNdt = currentNde.forkNDT
         val newItems = (currentForkNdt.items + item).toImmutableList()
+        val updatedNde = currentNde.copy(
+            forkNDT = currentForkNdt.copy(items = newItems)
+        )
+        onReportDataChange(currentReport.copy(nonDestructiveExamination = updatedNde))
+    }
+
+    fun deleteNdeForkItem(index: Int) = viewModelScope.launch {
+        val currentReport = _forkliftUiState.value.forkliftInspectionReport
+        val currentNde = currentReport.nonDestructiveExamination
+        val currentForkNdt = currentNde.forkNDT
+        val newItems = currentForkNdt.items.toMutableList().apply { removeAt(index) }.toImmutableList()
         val updatedNde = currentNde.copy(
             forkNDT = currentForkNdt.copy(items = newItems)
         )
@@ -103,6 +126,17 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val currentTesting = currentReport.testing
         val currentLoadTest = currentTesting.loadTest
         val newItems = (currentLoadTest.items + item).toImmutableList()
+        val updatedTesting = currentTesting.copy(
+            loadTest = currentLoadTest.copy(items = newItems)
+        )
+        onReportDataChange(currentReport.copy(testing = updatedTesting))
+    }
+
+    fun deleteLoadTestItem(index: Int) = viewModelScope.launch {
+        val currentReport = _forkliftUiState.value.forkliftInspectionReport
+        val currentTesting = currentReport.testing
+        val currentLoadTest = currentTesting.loadTest
+        val newItems = currentLoadTest.items.toMutableList().apply { removeAt(index) }.toImmutableList()
         val updatedTesting = currentTesting.copy(
             loadTest = currentLoadTest.copy(items = newItems)
         )

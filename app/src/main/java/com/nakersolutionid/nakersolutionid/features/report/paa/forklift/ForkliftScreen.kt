@@ -319,6 +319,42 @@ fun ForkliftScreen(
             }
         }
 
+        // Engine On Inspection
+        item {
+            val data = report.testing.engineOnInspection
+            ExpandableSection(title = "PEMERIKSAAN DENGAN MESIN HIDUP") {
+                ForkliftResultStatusInput(label = "Dinamo starter", value = data.dynamoStarter, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(dynamoStarter = it)))) })
+                ForkliftResultStatusInput(label = "Kerja instrumen/indikator", value = data.instrumentIndicatorFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(instrumentIndicatorFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja perlengkapan listrik", value = data.electricalEquipmentFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(electricalEquipmentFunction = it)))) })
+                Text("Kebocoran-kebocoran:", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top=8.dp))
+                ForkliftResultStatusInput(label = "Oli mesin", value = data.engineOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(engineOilLeakage = it)))) })
+                ForkliftResultStatusInput(label = "Bahan bakar", value = data.fuelLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(fuelLeakage = it)))) })
+                ForkliftResultStatusInput(label = "Air pendingin", value = data.coolantLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(coolantLeakage = it)))) })
+                ForkliftResultStatusInput(label = "Oli hidraulik", value = data.hydraulicOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hydraulicOilLeakage = it)))) })
+                ForkliftResultStatusInput(label = "Oli transmisi", value = data.transmissionOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(transmissionOilLeakage = it)))) })
+                ForkliftResultStatusInput(label = "Oli final drive", value = data.finalDriveOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(finalDriveOilLeakage = it)))) })
+                ForkliftResultStatusInput(label = "Minyak rem", value = data.brakeFluidLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(brakeFluidLeakage = it)))) })
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                ForkliftResultStatusInput(label = "Kerja kopling", value = data.clutchFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(clutchFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja persneling (maju mundur)", value = data.transmissionFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(transmissionFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja rem tangan dan kaki", value = data.brakeFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(brakeFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja klakson signal alarm", value = data.hornAlarmFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hornAlarmFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja lampu-lampu", value = data.lightsFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(lightsFunction = it)))) })
+                ForkliftResultStatusInput(label = "Motor Hidraulik/sistem Hidraulik", value = data.hydraulicSystemFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hydraulicSystemFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja silinder stir/power stering", value = data.powerSteeringFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(powerSteeringFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja silinder pengangkat", value = data.liftCylinderFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(liftCylinderFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kerja silinder ungkit", value = data.tiltCylinderFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(tiltCylinderFunction = it)))) })
+                ForkliftResultStatusInput(label = "Kondisi gas buang", value = data.exhaustGasCondition, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(exhaustGasCondition = it)))) })
+                ForkliftResultStatusInput(label = "Kerja semua tuas-tuas kontrol", value = data.controlLeversFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(controlLeversFunction = it)))) })
+                Text("Suara berisik dari:", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top=8.dp))
+                ForkliftResultStatusInput(label = "Mesin", value = data.engineNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(engineNoise = it)))) })
+                ForkliftResultStatusInput(label = "Turbocharger", value = data.turbochargerNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(turbochargerNoise = it)))) })
+                ForkliftResultStatusInput(label = "Transmisi", value = data.transmissionNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(transmissionNoise = it)))) })
+                ForkliftResultStatusInput(label = "Pompa Hidraulik", value = data.hydraulicPumpNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hydraulicPumpNoise = it)))) })
+                ForkliftResultStatusInput(label = "Tutup pelindung", value = data.guardNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(guardNoise = it)))) })
+            }
+        }
+
         // Lifting Chain Inspection
         item {
             val data = report.nonDestructiveExamination.liftingChainInspection
@@ -330,12 +366,21 @@ fun ForkliftScreen(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 data.items.forEachIndexed { index, item ->
-                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                        Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text("Rantai: ${item.chain}", fontWeight = FontWeight.SemiBold)
-                            Text("Pitch: ${item.measuredPitchMm}mm (Std: ${item.standardPitchMm}mm)")
-                            Text("Pin: ${item.measuredPinMm}mm (Std: ${item.standardPinMm}mm)")
-                            Text("Ket: ${item.remarks}")
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Card(modifier = Modifier.weight(1f)) {
+                            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text("Rantai: ${item.chain}", fontWeight = FontWeight.SemiBold)
+                                Text("Jenis & Konstruksi: ${item.typeAndConstruction}")
+                                Text("Pitch: ${item.measuredPitchMm}mm (Std: ${item.standardPitchMm}mm)")
+                                Text("Pin: ${item.measuredPinMm}mm (Std: ${item.standardPinMm}mm)")
+                                Text("Ket: ${item.remarks}")
+                            }
+                        }
+                        IconButton(onClick = { viewModel.deleteNdeChainItem(index) }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Hapus Item Rantai")
                         }
                     }
                 }
@@ -358,50 +403,22 @@ fun ForkliftScreen(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 data.items.forEachIndexed { index, item ->
-                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                        Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text("Bagian: ${item.partInspected} (${item.location})", fontWeight = FontWeight.SemiBold)
-                            Text("Ada Cacat: ${if(item.finding.status) "Ya" else "Tidak"}")
-                            Text("Ket: ${item.finding.result}")
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Card(modifier = Modifier.weight(1f)) {
+                            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text("Bagian: ${item.partInspected} (${item.location})", fontWeight = FontWeight.SemiBold)
+                                Text("Ada Cacat: ${if(item.finding.status) "Ya" else "Tidak"}")
+                                Text("Ket: ${item.finding.result}")
+                            }
+                        }
+                        IconButton(onClick = { viewModel.deleteNdeForkItem(index) }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Hapus Item NDT")
                         }
                     }
                 }
-            }
-        }
-
-        // Engine On Inspection
-        item {
-            val data = report.testing.engineOnInspection
-            ExpandableSection(title = "PEMERIKSAAN DENGAN MESIN HIDUP") {
-                ForkliftResultStatusInput(label = "Dinamo starter", value = data.dynamoStarter, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(dynamoStarter = it)))) })
-                ForkliftResultStatusInput(label = "Kerja instrumen/indikator", value = data.instrumentIndicatorFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(instrumentIndicatorFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja perlengkapan listrik", value = data.electricalEquipmentFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(electricalEquipmentFunction = it)))) })
-                Text("Kebocoran-kebocoran:", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top=8.dp))
-                ForkliftResultStatusInput(label = "Oli mesin", value = data.engineOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(engineOilLeakage = it)))) })
-                ForkliftResultStatusInput(label = "Bahan bakar", value = data.fuelLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(fuelLeakage = it)))) })
-                ForkliftResultStatusInput(label = "Air pendingin", value = data.coolantLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(coolantLeakage = it)))) })
-                ForkliftResultStatusInput(label = "Oli hidraulik", value = data.hydraulicOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hydraulicOilLeakage = it)))) })
-                ForkliftResultStatusInput(label = "Oli transmisi", value = data.transmissionOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(transmissionOilLeakage = it)))) })
-                ForkliftResultStatusInput(label = "Oli final drive", value = data.finalDriveOilLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(finalDriveOilLeakage = it)))) })
-                ForkliftResultStatusInput(label = "Minyak rem", value = data.brakeFluidLeakage, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(brakeFluidLeakage = it)))) })
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
-                ForkliftResultStatusInput(label = "Kerja kopling", value = data.clutchFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(clutchFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja persneling (maju mundur)", value = data.transmissionFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(transmissionFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja rem tangan dan kaki", value = data.brakeFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(brakeFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja klakson signal alarm", value = data.hornAlarmFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hornAlarmFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja lampu-lampu", value = data.lightsFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(lightsFunction = it)))) })
-                ForkliftResultStatusInput(label = "Motor Hidraulik/sistem Hidraulik", value = data.hydraulicSystemFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hydraulicSystemFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja silinder stir/power stering", value = data.powerSteeringFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(powerSteeringFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja silinder pengangkat", value = data.liftCylinderFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(liftCylinderFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kerja silinder ungkit", value = data.tiltCylinderFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(tiltCylinderFunction = it)))) })
-                ForkliftResultStatusInput(label = "Kondisi gas buang", value = data.exhaustGasCondition, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(exhaustGasCondition = it)))) })
-                ForkliftResultStatusInput(label = "Kerja semua tuas-tuas kontrol", value = data.controlLeversFunction, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(controlLeversFunction = it)))) })
-                Text("Suara berisik dari:", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top=8.dp))
-                ForkliftResultStatusInput(label = "Mesin", value = data.engineNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(engineNoise = it)))) })
-                ForkliftResultStatusInput(label = "Turbocharger", value = data.turbochargerNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(turbochargerNoise = it)))) })
-                ForkliftResultStatusInput(label = "Transmisi", value = data.transmissionNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(transmissionNoise = it)))) })
-                ForkliftResultStatusInput(label = "Pompa Hidraulik", value = data.hydraulicPumpNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(hydraulicPumpNoise = it)))) })
-                ForkliftResultStatusInput(label = "Tutup pelindung", value = data.guardNoise, onValueChange = { onDataChange(report.copy(testing = report.testing.copy(engineOnInspection = data.copy(guardNoise = it)))) })
             }
         }
 
@@ -416,11 +433,21 @@ fun ForkliftScreen(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 data.items.forEachIndexed { index, item ->
-                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                        Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text("Beban: ${item.testLoad} @ ${item.forkLiftingHeight}", fontWeight = FontWeight.SemiBold)
-                            Text("Hasil: ${item.result}")
-                            Text("Ket: ${item.remarks}")
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Card(modifier = Modifier.weight(1f)) {
+                            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text("Beban: ${item.testLoad} @ ${item.forkLiftingHeight}", fontWeight = FontWeight.SemiBold)
+                                Text("Kecepatan: ${item.travelingSpeed}")
+                                Text("Gerakan: ${item.movement}")
+                                Text("Hasil: ${item.result}")
+                                Text("Ket: ${item.remarks}")
+                            }
+                        }
+                        IconButton(onClick = { viewModel.deleteLoadTestItem(index) }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Hapus Item Uji Beban")
                         }
                     }
                 }
