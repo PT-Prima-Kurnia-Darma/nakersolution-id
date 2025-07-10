@@ -431,7 +431,6 @@ fun OverheadCraneScreen(
         }
 
         // NDE Section
-        // NDE Section
         item {
             val nde = report.nonDestructiveExamination
             ExpandableSection(title = "PEMERIKSAAN TIDAK MERUSAK") {
