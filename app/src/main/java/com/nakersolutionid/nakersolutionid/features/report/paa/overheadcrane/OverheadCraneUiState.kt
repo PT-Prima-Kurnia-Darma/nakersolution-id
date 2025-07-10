@@ -286,8 +286,8 @@ data class OverheadCraneNdeChainItem(
     val measurementMm: String = "",
     val lengthIncrease: String = "",
     val wear: String = "",
-    val status: Boolean = false,
-    val remarks: String = ""
+    val safetyFactor: String = "",
+    val finding: OverheadCraneInspectionResult = OverheadCraneInspectionResult() // MODIFIED
 )
 
 @Immutable

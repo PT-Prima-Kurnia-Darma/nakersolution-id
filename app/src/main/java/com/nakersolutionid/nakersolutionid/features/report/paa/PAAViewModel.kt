@@ -26,6 +26,9 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.Mobil
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,8 +52,8 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _mobileCraneUiState = MutableStateFlow(MobileCraneUiState())
     val mobileCraneUiState: StateFlow<MobileCraneUiState> = _mobileCraneUiState.asStateFlow()
 
-    // private val _overheadCraneUiState = MutableStateFlow()
-    // val overheadCraneUiState: StateFlow<PAAUiState> = _overheadCraneUiState.asStateFlow()
+    private val _overheadCraneUiState = MutableStateFlow(OverheadCraneUiState())
+    val overheadCraneUiState: StateFlow<OverheadCraneUiState> = _overheadCraneUiState.asStateFlow()
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
@@ -62,7 +65,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 SubInspectionType.Mobil_Crane -> {
                     // TODO: Implement save logic for Mobile Crane report
                 }
-                SubInspectionType.Overhead_Crane -> {}
+                SubInspectionType.Overhead_Crane -> {
+                    // TODO: Implement save logic for Overhead Crane report
+                }
                 SubInspectionType.Gantry_Crane -> {
                     // TODO: Implement save logic for Gantry Crane report
                 }
@@ -79,7 +84,57 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         _paaUiState.update(updater)
     }
 
-    //region Mobile Crane Logic (New)
+    //region Overhead Crane Logic
+    fun onOverheadCraneReportDataChange(newReportData: OverheadCraneInspectionReport) {
+        _overheadCraneUiState.update { it.copy(overheadCraneInspectionReport = newReportData) }
+    }
+
+    fun addOverheadCraneNdeChainItem(item: OverheadCraneNdeChainItem) = viewModelScope.launch {
+        val report = _overheadCraneUiState.value.overheadCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val chain = nde.chain
+        val newItems = (chain.items + item).toImmutableList()
+        onOverheadCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(chain = chain.copy(items = newItems))))
+    }
+
+    fun deleteOverheadCraneNdeChainItem(index: Int) = viewModelScope.launch {
+        val report = _overheadCraneUiState.value.overheadCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val chain = nde.chain
+        val newItems = chain.items.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onOverheadCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(chain = chain.copy(items = newItems))))
+    }
+
+    fun addOverheadCraneConclusionSummaryItem(item: String) = viewModelScope.launch {
+        val report = _overheadCraneUiState.value.overheadCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = (conclusion.summary + item).toImmutableList()
+        onOverheadCraneReportDataChange(report.copy(conclusion = conclusion.copy(summary = newItems)))
+    }
+
+    fun removeOverheadCraneConclusionSummaryItem(index: Int) = viewModelScope.launch {
+        val report = _overheadCraneUiState.value.overheadCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = conclusion.summary.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onOverheadCraneReportDataChange(report.copy(conclusion = conclusion.copy(summary = newItems)))
+    }
+
+    fun addOverheadCraneConclusionRecommendationItem(item: String) = viewModelScope.launch {
+        val report = _overheadCraneUiState.value.overheadCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = (conclusion.recommendations + item).toImmutableList()
+        onOverheadCraneReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+
+    fun removeOverheadCraneConclusionRecommendationItem(index: Int) = viewModelScope.launch {
+        val report = _overheadCraneUiState.value.overheadCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = conclusion.recommendations.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onOverheadCraneReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+    //endregion
+
+    //region Mobile Crane Logic
     fun onMobileCraneReportDataChange(newReportData: MobileCraneInspectionReport) {
         _mobileCraneUiState.update { it.copy(mobileCraneInspectionReport = newReportData) }
     }
@@ -217,7 +272,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     }
     //endregion
 
-    //region Forklift Logic (Existing)
+    //region Forklift Logic
     fun onForkliftReportDataChange(newReportData: ForkliftInspectionReport) {
         _forkliftUiState.update { it.copy(forkliftInspectionReport = newReportData) }
     }
@@ -342,7 +397,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     }
     //endregion
 
-    //region Gantry Crane Logic (Existing)
+    //region Gantry Crane Logic
     fun onGantryCraneReportDataChange(newReportData: GantryCraneInspectionReport) {
         _gantryCraneUiState.update { it.copy(gantryCraneInspectionReport = newReportData) }
     }
@@ -475,7 +530,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     }
     //endregion
 
-    //region Gondola Logic (Existing)
+    //region Gondola Logic
     fun onGondolaReportDataChange(newReportData: GondolaInspectionReport) {
         _gondolaUiState.update { it.copy(gondolaInspectionReport = newReportData) }
     }

@@ -36,6 +36,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.Forklift
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneScreen
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaScreen
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneScreen
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneScreen
 import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import org.koin.androidx.compose.koinViewModel
@@ -176,7 +177,16 @@ fun PAAScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
                 }
-                SubInspectionType.Overhead_Crane -> {}
+                SubInspectionType.Overhead_Crane -> {
+                    OverheadCraneScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 8.dp)
+                            .imePadding(),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    )
+                }
                 SubInspectionType.Gantry_Crane -> {
                     GantryCraneScreen(
                         modifier = Modifier
