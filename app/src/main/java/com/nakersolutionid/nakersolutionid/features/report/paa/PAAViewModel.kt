@@ -60,7 +60,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     // TODO: Implement save logic for Gantry Crane report
                 }
 
-                SubInspectionType.Gondola -> {}
+                SubInspectionType.Gondola -> {
+                    // TODO: Implement save logic for Gondola report
+                }
                 else -> null
             }
         }
