@@ -21,6 +21,11 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaLo
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSteelWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSuspensionStructureItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTestItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneUiState
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,11 +43,11 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _gantryCraneUiState = MutableStateFlow(GantryCraneUiState())
     val gantryCraneUiState: StateFlow<GantryCraneUiState> = _gantryCraneUiState.asStateFlow()
 
-     private val _gondolaUiState = MutableStateFlow(GondolaUiState())
-     val gondolaUiState: StateFlow<GondolaUiState> = _gondolaUiState.asStateFlow()
+    private val _gondolaUiState = MutableStateFlow(GondolaUiState())
+    val gondolaUiState: StateFlow<GondolaUiState> = _gondolaUiState.asStateFlow()
 
-    // private val _mobileCraneUiState = MutableStateFlow()
-    // val mobileCraneUiState: StateFlow<PAAUiState> = _mobileCraneUiState.asStateFlow()
+    private val _mobileCraneUiState = MutableStateFlow(MobileCraneUiState())
+    val mobileCraneUiState: StateFlow<MobileCraneUiState> = _mobileCraneUiState.asStateFlow()
 
     // private val _overheadCraneUiState = MutableStateFlow()
     // val overheadCraneUiState: StateFlow<PAAUiState> = _overheadCraneUiState.asStateFlow()
@@ -54,7 +59,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     // TODO: Implement save logic for Forklift report
                 }
 
-                SubInspectionType.Mobil_Crane -> {}
+                SubInspectionType.Mobil_Crane -> {
+                    // TODO: Implement save logic for Mobile Crane report
+                }
                 SubInspectionType.Overhead_Crane -> {}
                 SubInspectionType.Gantry_Crane -> {
                     // TODO: Implement save logic for Gantry Crane report
@@ -63,7 +70,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 SubInspectionType.Gondola -> {
                     // TODO: Implement save logic for Gondola report
                 }
-                else -> null
+                else -> {}
             }
         }
     }
@@ -71,6 +78,144 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     fun onUpdatePAAState(updater: (PAAUiState) -> PAAUiState) {
         _paaUiState.update(updater)
     }
+
+    //region Mobile Crane Logic (New)
+    fun onMobileCraneReportDataChange(newReportData: MobileCraneInspectionReport) {
+        _mobileCraneUiState.update { it.copy(mobileCraneInspectionReport = newReportData) }
+    }
+
+    fun addMobileCraneNdeWireRopeItem(item: MobileCraneNdeWireRopeItem) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val wireRope = nde.wireRope
+        val newItems = (wireRope.items + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(wireRope = wireRope.copy(items = newItems))))
+    }
+
+    fun deleteMobileCraneNdeWireRopeItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val wireRope = nde.wireRope
+        val newItems = wireRope.items.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(wireRope = wireRope.copy(items = newItems))))
+    }
+
+    fun addMobileCraneNdeBoomItem(item: MobileCraneNdeBoomItem) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val boom = nde.boom
+        val newItems = (boom.items + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(boom = boom.copy(items = newItems))))
+    }
+
+    fun deleteMobileCraneNdeBoomItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val nde = report.nonDestructiveExamination
+        val boom = nde.boom
+        val newItems = boom.items.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(nonDestructiveExamination = nde.copy(boom = boom.copy(items = newItems))))
+    }
+
+    fun addMobileCraneDynamicMainHookLoadTestItem(item: MobileCraneLoadTestItem) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val dynamic = loadTest.dynamic
+        val newItems = (dynamic.mainHook + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(dynamic = dynamic.copy(mainHook = newItems)))))
+    }
+
+    fun deleteMobileCraneDynamicMainHookLoadTestItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val dynamic = loadTest.dynamic
+        val newItems = dynamic.mainHook.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(dynamic = dynamic.copy(mainHook = newItems)))))
+    }
+
+    fun addMobileCraneDynamicAuxHookLoadTestItem(item: MobileCraneLoadTestItem) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val dynamic = loadTest.dynamic
+        val newItems = (dynamic.auxiliaryHook + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(dynamic = dynamic.copy(auxiliaryHook = newItems)))))
+    }
+
+    fun deleteMobileCraneDynamicAuxHookLoadTestItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val dynamic = loadTest.dynamic
+        val newItems = dynamic.auxiliaryHook.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(dynamic = dynamic.copy(auxiliaryHook = newItems)))))
+    }
+
+    fun addMobileCraneStaticMainHookLoadTestItem(item: MobileCraneLoadTestItem) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val static = loadTest.static
+        val newItems = (static.mainHook + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(static = static.copy(mainHook = newItems)))))
+    }
+
+    fun deleteMobileCraneStaticMainHookLoadTestItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val static = loadTest.static
+        val newItems = static.mainHook.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(static = static.copy(mainHook = newItems)))))
+    }
+
+    fun addMobileCraneStaticAuxHookLoadTestItem(item: MobileCraneLoadTestItem) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val static = loadTest.static
+        val newItems = (static.auxiliaryHook + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(static = static.copy(auxiliaryHook = newItems)))))
+    }
+
+    fun deleteMobileCraneStaticAuxHookLoadTestItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val testing = report.testing
+        val loadTest = testing.loadTest
+        val static = loadTest.static
+        val newItems = static.auxiliaryHook.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(testing = testing.copy(loadTest = loadTest.copy(static = static.copy(auxiliaryHook = newItems)))))
+    }
+
+    fun addMobileCraneConclusionSummaryItem(item: String) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = (conclusion.summary + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(conclusion = conclusion.copy(summary = newItems)))
+    }
+
+    fun removeMobileCraneConclusionSummaryItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = conclusion.summary.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(conclusion = conclusion.copy(summary = newItems)))
+    }
+
+    fun addMobileCraneConclusionRecommendationItem(item: String) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = (conclusion.recommendations + item).toImmutableList()
+        onMobileCraneReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+
+    fun removeMobileCraneConclusionRecommendationItem(index: Int) = viewModelScope.launch {
+        val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+        val conclusion = report.conclusion
+        val newItems = conclusion.recommendations.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onMobileCraneReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+    //endregion
 
     //region Forklift Logic (Existing)
     fun onForkliftReportDataChange(newReportData: ForkliftInspectionReport) {
