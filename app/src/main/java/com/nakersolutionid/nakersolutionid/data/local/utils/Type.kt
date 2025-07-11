@@ -36,7 +36,7 @@ enum class SubInspectionType {
     Gondola,
     Jib_Crane,
 
-    Instalasi_Petir,
+    Instalasi_Listrik,
     Instalasi_Penyalur_Petir,
 
     Ketel_Uap,
@@ -79,7 +79,7 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Gondola -> "Gondola"
         SubInspectionType.Jib_Crane -> "Jib Crane"
 
-        SubInspectionType.Instalasi_Petir -> "Instalasi Petir"
+        SubInspectionType.Instalasi_Listrik -> "Instalasi Petir"
         SubInspectionType.Instalasi_Penyalur_Petir -> "Instalasi Penyalur Petir"
 
         SubInspectionType.Ketel_Uap -> "Ketel Uap"
@@ -167,7 +167,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Gondola" -> SubInspectionType.Gondola
         "Jib Crane" -> SubInspectionType.Jib_Crane
 
-        "Instalasi Petir" -> SubInspectionType.Instalasi_Petir
+        "Instalasi Petir" -> SubInspectionType.Instalasi_Listrik
         "Instalasi Penyalur Petir" -> SubInspectionType.Instalasi_Penyalur_Petir
 
         "Ketel Uap" -> SubInspectionType.Ketel_Uap
