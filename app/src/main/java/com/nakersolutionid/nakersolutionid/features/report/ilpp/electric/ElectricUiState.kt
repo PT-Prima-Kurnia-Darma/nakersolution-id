@@ -41,7 +41,7 @@ data class ElectricalGeneralData(
 data class ElectricalTechnicalData(
     val powerSource: ElectricalPowerSource = ElectricalPowerSource(),
     val loadSystem: ElectricalLoadSystem = ElectricalLoadSystem(),
-    val currentVoltageType: String = "3 Phase 50 Hz-220/380 Volt"
+    val currentVoltageType: String = ""
 )
 
 @Immutable

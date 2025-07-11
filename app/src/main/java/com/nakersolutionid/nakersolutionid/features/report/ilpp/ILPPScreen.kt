@@ -3,6 +3,7 @@ package com.nakersolutionid.nakersolutionid.features.report.ilpp
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricScreen
 import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import org.koin.androidx.compose.koinViewModel
@@ -51,7 +53,7 @@ fun ILPPScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Instalasi_Penyalur_Petir) }
+    var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Instalasi_Listrik) }
     val listMenu = listOf(
         SubInspectionType.Instalasi_Listrik,
         SubInspectionType.Instalasi_Penyalur_Petir
@@ -145,7 +147,14 @@ fun ILPPScreen(
 
             when (selectedFilter) {
                 SubInspectionType.Instalasi_Listrik -> {
-
+                    ElectricScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 8.dp)
+                            .imePadding(),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    )
                 }
                 SubInspectionType.Instalasi_Penyalur_Petir -> {
 
