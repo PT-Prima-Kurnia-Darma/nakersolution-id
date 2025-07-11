@@ -54,7 +54,8 @@ enum class SubInspectionType {
     Turbin,
     Perkakas,
     Produksi,
-    Tanur
+    Tanur,
+    Machine
 }
 
 // Extension function untuk mengonversi SubInspectionType ke string yang lebih mudah dibaca
@@ -98,6 +99,7 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Perkakas -> "Perkakas"
         SubInspectionType.Produksi -> "Produksi"
         SubInspectionType.Tanur -> "Tanur"
+        SubInspectionType.Machine -> "Mesin"
     }
 }
 
@@ -186,6 +188,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Perkakas" -> SubInspectionType.Perkakas
         "Produksi" -> SubInspectionType.Produksi
         "Tanur" -> SubInspectionType.Tanur
+        "Mesin" -> SubInspectionType.Machine
         else -> null
     }
 }
