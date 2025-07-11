@@ -44,7 +44,7 @@ private val menuItems = listOf(
     MenuItem(3, "Pesawat Angkat dan Angkut", Icons.Outlined.FireTruck),
     MenuItem(4, "Pesawat Uap dan Bejana Tekan", Icons.Outlined.Factory),
     MenuItem(5, "Pesawat Tenaga dan Produksi", Icons.Outlined.Construction),
-    MenuItem(6, "Elevator dan Eskalator", Icons.Outlined.DoorSliding)
+    MenuItem(6, "Elevator dan Escalator", Icons.Outlined.DoorSliding)
 )
 
 @Composable

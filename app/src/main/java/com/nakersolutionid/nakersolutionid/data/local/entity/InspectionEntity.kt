@@ -41,7 +41,7 @@ data class InspectionEntity(
     val inspectionType: InspectionType,
 
     /**
-     * e.g., "Elevator, Eskalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
+     * e.g., "Elevator, Escalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
      */
     @ColumnInfo(name = "sub_inspection_type")
     val subInspectionType: SubInspectionType,
