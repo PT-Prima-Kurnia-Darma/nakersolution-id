@@ -79,7 +79,7 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Gondola -> "Gondola"
         SubInspectionType.Jib_Crane -> "Jib Crane"
 
-        SubInspectionType.Instalasi_Listrik -> "Instalasi Petir"
+        SubInspectionType.Instalasi_Listrik -> "Instalasi Listrik"
         SubInspectionType.Instalasi_Penyalur_Petir -> "Instalasi Penyalur Petir"
 
         SubInspectionType.Ketel_Uap -> "Ketel Uap"
