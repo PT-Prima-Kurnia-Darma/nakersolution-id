@@ -62,7 +62,7 @@ fun PAAScreen(
     val listMenu = listOf(
         SubInspectionType.Forklift,
         SubInspectionType.Gondola,
-        SubInspectionType.Mobil_Crane,
+        SubInspectionType.Mobile_Crane,
         SubInspectionType.Gantry_Crane,
         SubInspectionType.Overhead_Crane
     )
@@ -167,7 +167,7 @@ fun PAAScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
                 }
-                SubInspectionType.Mobil_Crane -> {
+                SubInspectionType.Mobile_Crane -> {
                     MobileCraneScreen(
                         modifier = Modifier
                             .fillMaxSize()

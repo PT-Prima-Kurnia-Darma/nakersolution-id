@@ -33,7 +33,7 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                         _eeUiState.update { it.copy(elevatorResult = result) }
                     }
                 }
-                SubInspectionType.Eskalator -> {
+                SubInspectionType.Escalator -> {
                     _eeUiState.update { it.copy(eskalatorResult = Resource.Error("Not Implemented Yet")) }
                 }
                 else -> null
@@ -42,7 +42,7 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     }
 
     /**
-     * A generic handler to update the entire Eskalator data state.
+     * A generic handler to update the entire Escalator data state.
      * The UI layer creates a new copy of the data with the modified field,
      * and this function updates the StateFlow to trigger a UI recomposition.
      *

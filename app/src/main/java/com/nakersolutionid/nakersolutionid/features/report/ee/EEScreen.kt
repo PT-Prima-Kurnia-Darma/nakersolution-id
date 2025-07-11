@@ -46,7 +46,7 @@ import org.koin.compose.KoinApplicationPreview
 fun EEScreen(
     modifier: Modifier = Modifier,
     viewModel: EEViewModel = koinViewModel(),
-    menuTitle: String = "Elevator dan Eskalator",
+    menuTitle: String = "Elevator dan Escalator",
     onBackClick: () -> Unit
 ) {
     val eeUiState by viewModel.eeUiState.collectAsStateWithLifecycle()
@@ -56,7 +56,7 @@ fun EEScreen(
     val scope = rememberCoroutineScope()
 
     var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Elevator) }
-    val listMenu = listOf(SubInspectionType.Elevator, SubInspectionType.Eskalator)
+    val listMenu = listOf(SubInspectionType.Elevator, SubInspectionType.Escalator)
 
     LaunchedEffect(eeUiState.elevatorResult) {
         when (val result = eeUiState.elevatorResult) {
@@ -143,7 +143,7 @@ fun EEScreen(
                 )
             }
 
-            if (selectedFilter == SubInspectionType.Eskalator) {
+            if (selectedFilter == SubInspectionType.Escalator) {
                 EskalatorScreen(
                     modifier = Modifier
                         .fillMaxSize()

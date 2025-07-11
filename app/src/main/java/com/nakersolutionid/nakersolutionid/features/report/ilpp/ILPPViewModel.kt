@@ -31,11 +31,11 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             when (selectedIndex) {
-                SubInspectionType.Instalasi_Listrik -> {
+                SubInspectionType.Electrical -> {
                     // TODO: Implement save logic for Electrical Installation report using _electricalUiState.value
                 }
 
-                SubInspectionType.Instalasi_Penyalur_Petir -> {
+                SubInspectionType.Lightning_Conductor -> {
                     // TODO: Implement save logic for Lightning Protection report using _lightningUiState.value
                 }
                 else -> {}

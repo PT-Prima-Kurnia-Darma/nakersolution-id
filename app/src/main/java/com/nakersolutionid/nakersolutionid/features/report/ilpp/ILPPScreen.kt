@@ -54,10 +54,10 @@ fun ILPPScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Instalasi_Listrik) }
+    var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Electrical) }
     val listMenu = listOf(
-        SubInspectionType.Instalasi_Listrik,
-        SubInspectionType.Instalasi_Penyalur_Petir
+        SubInspectionType.Electrical,
+        SubInspectionType.Lightning_Conductor
     )
 
     /*LaunchedEffect(uiState.elevatorResult) {
@@ -147,7 +147,7 @@ fun ILPPScreen(
             }
 
             when (selectedFilter) {
-                SubInspectionType.Instalasi_Listrik -> {
+                SubInspectionType.Electrical -> {
                     ElectricScreen(
                         modifier = Modifier
                             .fillMaxSize()
@@ -157,7 +157,7 @@ fun ILPPScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
                 }
-                SubInspectionType.Instalasi_Penyalur_Petir -> {
+                SubInspectionType.Lightning_Conductor -> {
                     LightningScreen(
                         modifier = Modifier
                             .fillMaxSize()

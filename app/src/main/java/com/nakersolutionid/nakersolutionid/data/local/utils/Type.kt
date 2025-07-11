@@ -18,7 +18,7 @@ enum class InspectionType {
 
 enum class SubInspectionType {
     Elevator,
-    Eskalator,
+    Escalator,
     Travelator,
 
     Forklift,
@@ -27,7 +27,7 @@ enum class SubInspectionType {
     Wheel_Loader,
     Farm_Tractor,
     Motor_Grader,
-    Mobil_Crane,
+    Mobile_Crane,
     Hoist_Crane,
     Tower_Crane,
     Truck_Crane,
@@ -36,19 +36,19 @@ enum class SubInspectionType {
     Gondola,
     Jib_Crane,
 
-    Instalasi_Listrik,
-    Instalasi_Penyalur_Petir,
+    Electrical,
+    Lightning_Conductor,
 
-    Ketel_Uap,
-    Bejana_Uap,
+    Boiler,
+    Steam_Vessel,
     BPV,
-    Tangki_Timbun,
+    Storage_Tank,
     Compressor_BT,
-    Pipa_Bertenaga_Bertekanan,
+    Pressure_Powered_Pipe,
 
-    Alarm_Kebakaran_Otomatis,
-    Instalasi_Hydrant_dan_Sprinkler,
-    Instalasi_Flooding_System,
+    Automatic_Fire_Alarm,
+    Hydrant_And_Sprinkler,
+    Flooding_System,
 
     Motor_Diesel,
     Turbin,
@@ -61,7 +61,7 @@ enum class SubInspectionType {
 fun SubInspectionType.toDisplayString(): String {
     return when (this) {
         SubInspectionType.Elevator -> "Elevator"
-        SubInspectionType.Eskalator -> "Eskalator"
+        SubInspectionType.Escalator -> "Escalator"
         SubInspectionType.Travelator -> "Travelator"
 
         SubInspectionType.Forklift -> "Forklift"
@@ -70,7 +70,7 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Wheel_Loader -> "Wheel Loader"
         SubInspectionType.Farm_Tractor -> "Farm Tractor"
         SubInspectionType.Motor_Grader -> "Motor Grader"
-        SubInspectionType.Mobil_Crane -> "Mobil Crane"
+        SubInspectionType.Mobile_Crane -> "Mobile Crane"
         SubInspectionType.Hoist_Crane -> "Hoist Crane"
         SubInspectionType.Tower_Crane -> "Tower Crane"
         SubInspectionType.Truck_Crane -> "Truck Crane"
@@ -79,19 +79,19 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Gondola -> "Gondola"
         SubInspectionType.Jib_Crane -> "Jib Crane"
 
-        SubInspectionType.Instalasi_Listrik -> "Instalasi Listrik"
-        SubInspectionType.Instalasi_Penyalur_Petir -> "Instalasi Penyalur Petir"
+        SubInspectionType.Electrical -> "Instalasi Listrik"
+        SubInspectionType.Lightning_Conductor -> "Instalasi Penyalur Petir"
 
-        SubInspectionType.Ketel_Uap -> "Ketel Uap"
-        SubInspectionType.Bejana_Uap -> "Bejana Uap"
+        SubInspectionType.Boiler -> "Ketel Uap"
+        SubInspectionType.Steam_Vessel -> "Bejana Uap"
         SubInspectionType.BPV -> "BPV"
-        SubInspectionType.Tangki_Timbun -> "Tangki Timbun"
+        SubInspectionType.Storage_Tank -> "Tangki Timbun"
         SubInspectionType.Compressor_BT -> "Compressor BT"
-        SubInspectionType.Pipa_Bertenaga_Bertekanan -> "Pipa Bertenaga/Bertekanan"
+        SubInspectionType.Pressure_Powered_Pipe -> "Pipa Bertenaga/Bertekanan"
 
-        SubInspectionType.Alarm_Kebakaran_Otomatis -> "Alarm Kebakaran Otomatis"
-        SubInspectionType.Instalasi_Hydrant_dan_Sprinkler -> "Instalasi Hydrant dan Sprinkler"
-        SubInspectionType.Instalasi_Flooding_System -> "Instalasi Flooding System"
+        SubInspectionType.Automatic_Fire_Alarm -> "Alarm Kebakaran Otomatis"
+        SubInspectionType.Hydrant_And_Sprinkler -> "Instalasi Hydrant dan Sprinkler"
+        SubInspectionType.Flooding_System -> "Instalasi Flooding System"
 
         SubInspectionType.Motor_Diesel -> "Motor Diesel"
         SubInspectionType.Turbin -> "Turbin"
@@ -108,7 +108,7 @@ fun InspectionType.toDisplayString(): String {
         InspectionType.PAA -> "Pesawat Angkat dan Angkut"
         InspectionType.PUBT -> "Pesawat Uap dan Bejana Tekan"
         InspectionType.PTP -> "Pesawat Tenaga dan Produksi"
-        InspectionType.EE -> "Elevator dan Eskalator"
+        InspectionType.EE -> "Elevator dan Escalator"
     }
 }
 
@@ -140,7 +140,7 @@ fun String.toInspectionType(): InspectionType? {
         "Pesawat Angkat dan Angkut" -> InspectionType.PAA
         "Pesawat Uap dan Bejana Tekan" -> InspectionType.PUBT
         "Pesawat Tenaga dan Produksi" -> InspectionType.PTP
-        "Elevator dan Eskalator" -> InspectionType.EE
+        "Elevator dan Escalator" -> InspectionType.EE
         else -> null
     }
 }
@@ -149,7 +149,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
     // Membandingkan langsung dengan string display yang tepat, peka huruf besar/kecil
     return when (this) {
         "Elevator" -> SubInspectionType.Elevator
-        "Eskalator" -> SubInspectionType.Eskalator
+        "Escalator" -> SubInspectionType.Escalator
         "Travelator" -> SubInspectionType.Travelator
 
         "Forklift" -> SubInspectionType.Forklift
@@ -158,7 +158,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Wheel Loader" -> SubInspectionType.Wheel_Loader
         "Farm Tractor" -> SubInspectionType.Farm_Tractor
         "Motor Grader" -> SubInspectionType.Motor_Grader
-        "Mobil Crane" -> SubInspectionType.Mobil_Crane
+        "Mobil Crane" -> SubInspectionType.Mobile_Crane
         "Hoist Crane" -> SubInspectionType.Hoist_Crane
         "Tower Crane" -> SubInspectionType.Tower_Crane
         "Truck Crane" -> SubInspectionType.Truck_Crane
@@ -167,19 +167,19 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Gondola" -> SubInspectionType.Gondola
         "Jib Crane" -> SubInspectionType.Jib_Crane
 
-        "Instalasi Petir" -> SubInspectionType.Instalasi_Listrik
-        "Instalasi Penyalur Petir" -> SubInspectionType.Instalasi_Penyalur_Petir
+        "Instalasi Petir" -> SubInspectionType.Electrical
+        "Instalasi Penyalur Petir" -> SubInspectionType.Lightning_Conductor
 
-        "Ketel Uap" -> SubInspectionType.Ketel_Uap
-        "Bejana Uap" -> SubInspectionType.Bejana_Uap
+        "Ketel Uap" -> SubInspectionType.Boiler
+        "Bejana Uap" -> SubInspectionType.Steam_Vessel
         "BPV" -> SubInspectionType.BPV
-        "Tangki Timbun" -> SubInspectionType.Tangki_Timbun
+        "Tangki Timbun" -> SubInspectionType.Storage_Tank
         "Compressor BT" -> SubInspectionType.Compressor_BT
-        "Pipa Bertenaga/Bertekanan" -> SubInspectionType.Pipa_Bertenaga_Bertekanan
+        "Pipa Bertenaga/Bertekanan" -> SubInspectionType.Pressure_Powered_Pipe
 
-        "Alarm Kebakaran Otomatis" -> SubInspectionType.Alarm_Kebakaran_Otomatis
-        "Instalasi Hydrant dan Sprinkler" -> SubInspectionType.Instalasi_Hydrant_dan_Sprinkler
-        "Instalasi Flooding System" -> SubInspectionType.Instalasi_Flooding_System
+        "Alarm Kebakaran Otomatis" -> SubInspectionType.Automatic_Fire_Alarm
+        "Instalasi Hydrant dan Sprinkler" -> SubInspectionType.Hydrant_And_Sprinkler
+        "Instalasi Flooding System" -> SubInspectionType.Flooding_System
 
         "Motor Diesel" -> SubInspectionType.Motor_Diesel
         "Turbin" -> SubInspectionType.Turbin

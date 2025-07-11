@@ -62,7 +62,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     // TODO: Implement save logic for Forklift report
                 }
 
-                SubInspectionType.Mobil_Crane -> {
+                SubInspectionType.Mobile_Crane -> {
                     // TODO: Implement save logic for Mobile Crane report
                 }
                 SubInspectionType.Overhead_Crane -> {

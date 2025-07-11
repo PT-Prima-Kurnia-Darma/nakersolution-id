@@ -15,7 +15,7 @@ data class EskalatorUiState(
 data class EskalatorGeneralData(
     val documentType: DocumentType = DocumentType.LAPORAN,
     val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Eskalator,
+    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
     val equipmentType: String = "",
     val examinationType: String = "",
     val conclusion: String = "",
