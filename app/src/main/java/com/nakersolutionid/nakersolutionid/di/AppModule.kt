@@ -24,6 +24,7 @@ import com.nakersolutionid.nakersolutionid.features.history.HistoryViewModel
 import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
 import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ee.EEViewModel
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.ILPPViewModel
 import com.nakersolutionid.nakersolutionid.features.report.paa.PAAViewModel
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
@@ -113,4 +114,5 @@ val viewModelModule = module {
     viewModel { HistoryViewModel(get()) }
     viewModel { EEViewModel(get()) }
     viewModel { PAAViewModel(get()) }
+    viewModel { ILPPViewModel(get()) }
 }
