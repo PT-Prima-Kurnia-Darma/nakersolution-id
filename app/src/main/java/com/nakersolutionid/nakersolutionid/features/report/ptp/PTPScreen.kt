@@ -33,6 +33,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningScreen
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.MachineScreen
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.MotorDieselScreen
 import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import org.koin.androidx.compose.koinViewModel
@@ -158,7 +159,14 @@ fun PTPScreen(
                     )
                 }
                 SubInspectionType.Motor_Diesel -> {
-
+                    MotorDieselScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 8.dp)
+                            .imePadding(),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    )
                 }
                 else -> null
             }
