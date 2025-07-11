@@ -7,6 +7,10 @@ import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalUiState
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingMeasurementItem
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingTestItem
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionUiState
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +25,9 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _electricalUiState = MutableStateFlow(ElectricalUiState())
     val electricalUiState: StateFlow<ElectricalUiState> = _electricalUiState.asStateFlow()
 
+    private val _lightningUiState = MutableStateFlow(LightningProtectionUiState())
+    val lightningUiState: StateFlow<LightningProtectionUiState> = _lightningUiState.asStateFlow()
+
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             when (selectedIndex) {
@@ -29,7 +36,7 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
 
                 SubInspectionType.Instalasi_Penyalur_Petir -> {
-                    // TODO: Implement save logic for Lightning Protection report
+                    // TODO: Implement save logic for Lightning Protection report using _lightningUiState.value
                 }
                 else -> {}
             }
@@ -101,6 +108,58 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val conclusion = report.conclusion
         val newItems = conclusion.recommendations.toMutableList().apply { removeAt(index) }.toImmutableList()
         onElectricalReportChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+    //endregion
+
+    //region Lightning Protection Logic
+    fun onLightningReportChange(newReport: LightningProtectionInspectionReport) {
+        _lightningUiState.update { it.copy(inspectionReport = newReport) }
+    }
+
+    fun addGroundingMeasurementItem(item: LightningProtectionGroundingMeasurementItem) = viewModelScope.launch {
+        val report = _lightningUiState.value.inspectionReport
+        val testingResults = report.testingResults
+        val newItems = (testingResults.groundingResistanceMeasurement + item).toImmutableList()
+        val updatedResults = testingResults.copy(groundingResistanceMeasurement = newItems)
+        onLightningReportChange(report.copy(testingResults = updatedResults))
+    }
+
+    fun deleteGroundingMeasurementItem(index: Int) = viewModelScope.launch {
+        val report = _lightningUiState.value.inspectionReport
+        val testingResults = report.testingResults
+        val newItems = testingResults.groundingResistanceMeasurement.toMutableList().apply { removeAt(index) }.toImmutableList()
+        val updatedResults = testingResults.copy(groundingResistanceMeasurement = newItems)
+        onLightningReportChange(report.copy(testingResults = updatedResults))
+    }
+
+    fun addGroundingTestItem(item: LightningProtectionGroundingTestItem) = viewModelScope.launch {
+        val report = _lightningUiState.value.inspectionReport
+        val testingResults = report.testingResults
+        val newItems = (testingResults.groundingResistanceTest + item).toImmutableList()
+        val updatedResults = testingResults.copy(groundingResistanceTest = newItems)
+        onLightningReportChange(report.copy(testingResults = updatedResults))
+    }
+
+    fun deleteGroundingTestItem(index: Int) = viewModelScope.launch {
+        val report = _lightningUiState.value.inspectionReport
+        val testingResults = report.testingResults
+        val newItems = testingResults.groundingResistanceTest.toMutableList().apply { removeAt(index) }.toImmutableList()
+        val updatedResults = testingResults.copy(groundingResistanceTest = newItems)
+        onLightningReportChange(report.copy(testingResults = updatedResults))
+    }
+
+    fun addLightningRecommendation(item: String) = viewModelScope.launch {
+        val report = _lightningUiState.value.inspectionReport
+        val conclusion = report.conclusion
+        val newItems = (conclusion.recommendations + item).toImmutableList()
+        onLightningReportChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
+    }
+
+    fun removeLightningRecommendation(index: Int) = viewModelScope.launch {
+        val report = _lightningUiState.value.inspectionReport
+        val conclusion = report.conclusion
+        val newItems = conclusion.recommendations.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onLightningReportChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
     }
     //endregion
 }

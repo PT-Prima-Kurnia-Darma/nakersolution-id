@@ -28,12 +28,12 @@ data class LightningProtectionInspectionReport(
 
 @Immutable
 data class LightningProtectionServiceProviderData(
-    val companyName: String = "PT. PRIMA KURNIA DARMA",
-    val companyAddress: String = "Gloria Suites Hotel, Jl. Kyai Tapa No.215 Lantai 2, RT.5/RW.9, Tomang, Kec. Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11450",
+    val companyName: String = "",
+    val companyAddress: String = "",
     val companyPermitNo: String = "",
     val expertPermitNo: String = "",
     val expertName: String = "",
-    val testEquipmentUsed: String = "Tool Set Standard; Digital Earth Tester (Kyoritsu 4105A) Earth Ground Clamp (Fluke), Laser Distance Meter."
+    val testEquipmentUsed: String = ""
 )
 
 @Immutable
@@ -119,15 +119,15 @@ data class LightningProtectionTestingResults(
 
 @Immutable
 data class LightningProtectionGroundingMeasurementItem(
-    val ecDistance: String = "20 Meter",
-    val epDistance: String = "10 Meter",
+    val ecDistance: String = "",
+    val epDistance: String = "",
     val rValueOhm: String = "",
-    val remarks: String = "Baik"
+    val remarks: String = ""
 )
 
 @Immutable
 data class LightningProtectionGroundingTestItem(
-    val itemChecked: String = "Pengujian Tahanan Pembumian",
+    val itemChecked: String = "",
     val result: Boolean = false,
     val measuredValue: String = "",
     val remarks: String = ""
