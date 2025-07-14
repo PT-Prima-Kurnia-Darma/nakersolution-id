@@ -26,6 +26,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.EEScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.ILPPScreen
+import com.nakersolutionid.nakersolutionid.features.report.ipk.IPKScreen
 import com.nakersolutionid.nakersolutionid.features.report.paa.PAAScreen
 import com.nakersolutionid.nakersolutionid.features.report.ptp.PTPScreen
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
@@ -43,6 +44,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object PAA : NavKey
 @Serializable data object ILPP : NavKey
 @Serializable data object PTP : NavKey
+@Serializable data object IPK : NavKey
 
 @Composable
 fun NavigationRoot(
@@ -108,7 +110,7 @@ fun NavigationRoot(
                     onMenuTypeClick = { menu ->
                         when (menu) {
                             1 -> backStack.add(ILPP)
-                            2 -> {}
+                            2 -> backStack.add(IPK)
                             3 -> backStack.add(PAA)
                             4 -> {}
                             5 -> backStack.add(PTP)
@@ -144,6 +146,9 @@ fun NavigationRoot(
             }
             entry<PTP> {
                 PTPScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<IPK> {
+                IPKScreen(onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {
