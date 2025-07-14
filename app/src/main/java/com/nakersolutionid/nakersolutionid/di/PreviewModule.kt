@@ -14,6 +14,7 @@ import com.nakersolutionid.nakersolutionid.features.home.HomeViewModel
 import com.nakersolutionid.nakersolutionid.features.login.LoginViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ee.EEViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.ILPPViewModel
+import com.nakersolutionid.nakersolutionid.features.report.ipk.IPKViewModel
 import com.nakersolutionid.nakersolutionid.features.report.paa.PAAViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ptp.PTPViewModel
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
@@ -37,4 +38,5 @@ val previewModule = module {
     viewModel { PAAViewModel(get()) }
     viewModel { ILPPViewModel(get()) }
     viewModel { PTPViewModel(get()) }
+    viewModel { IPKViewModel(get()) }
 }
