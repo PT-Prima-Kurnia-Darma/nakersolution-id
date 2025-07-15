@@ -1,5 +1,7 @@
 package com.nakersolutionid.nakersolutionid.domain.model
 
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -9,6 +11,8 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
  * object and is independent of the data layer (Room database entities).
  */
 data class InspectionDomain(
+    val id: Long,
+    val extraId: String,
     val documentType: DocumentType,
     val inspectionType: InspectionType,
     val subInspectionType: SubInspectionType,
@@ -29,7 +33,8 @@ data class InspectionDomain(
     val reportDate: String? = null,
     val nextInspectionDate: String? = null,
     val inspectorName: String? = null,
-    val status: String? = null
+    val status: String? = null,
+    val isSynced: Boolean = false
 )
 
 /**

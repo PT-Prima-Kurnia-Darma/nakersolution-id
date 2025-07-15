@@ -14,5 +14,6 @@ data class History(
     val examinationType: String,
     val ownerName: String?,
     val createdAt: String?,
-    val reportDate: String?
+    val reportDate: String?,
+    val isSynced: Boolean
 )
