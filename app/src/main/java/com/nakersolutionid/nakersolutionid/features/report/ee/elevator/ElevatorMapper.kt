@@ -1,5 +1,8 @@
 package com.nakersolutionid.nakersolutionid.features.report.ee.elevator
 // Imports from Domain Layer
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.FindingType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
@@ -38,14 +41,14 @@ private object ElevatorCategory {
  * Mengubah [ElevatorUiState] (dari UI) menjadi [InspectionWithDetailsDomain] (untuk data layer).
  */
 fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId = this.id
+    val inspectionId: Long = 0
 
     val inspectionDomain = InspectionDomain(
-        id = 0,
+        id = inspectionId,
         extraId = "",
-        documentType = this.documentType,
-        inspectionType = this.nameOfInspectionType,
-        subInspectionType = this.subNameOfInspectionType,
+        documentType = DocumentType.LAPORAN,
+        inspectionType = InspectionType.EE,
+        subInspectionType = SubInspectionType.Elevator,
         equipmentType = this.eskOrElevType,
         examinationType = this.typeInspection,
         ownerName = this.generalData.ownerName,
@@ -494,10 +497,6 @@ fun InspectionWithDetailsDomain.toElevatorUiState(): ElevatorUiState {
     )
 
     return ElevatorUiState(
-        id = this.checkItems.firstOrNull()?.inspectionId ?: 0L,
-        documentType = this.inspection.documentType,
-        nameOfInspectionType = this.inspection.inspectionType,
-        subNameOfInspectionType = this.inspection.subInspectionType,
         typeInspection = this.inspection.examinationType,
         eskOrElevType = this.inspection.equipmentType,
         generalData = generalData,

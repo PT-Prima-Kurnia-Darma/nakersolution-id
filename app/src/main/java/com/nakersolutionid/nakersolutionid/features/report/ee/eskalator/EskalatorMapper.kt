@@ -15,17 +15,17 @@ import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
  * Menyimpan semua nama kategori sebagai konstanta untuk mencegah kesalahan ketik dan memastikan konsistensi.
  */
 private object EskalatorCategory {
-    const val FRAME_MACHINE_ROOM = "Frame & Machine Room"
-    const val DRIVE_EQUIPMENT = "Drive Equipment"
-    const val STEPS_PALLETS = "Steps or Pallets"
-    const val LANDING_AREA = "Landing Area"
-    const val BALUSTRADE = "Balustrade"
-    const val HANDRAIL = "Handrail"
-    const val RUNWAY = "Runway"
-    const val SAFETY_EQUIPMENT = "Safety Equipment"
-    const val ELECTRICAL_INSTALLATION = "Electrical Installation"
-    const val OUTDOOR_SPECIFICS = "Outdoor Specifics"
-    const val USER_SAFETY_SIGNAGE = "User Safety Signage"
+    const val FRAME_MACHINE_ROOM = "Kerangka, Ruang Mesin & Pit"
+    const val DRIVE_EQUIPMENT = "Peralatan Penggerak"
+    const val STEPS_PALLETS = "Anak Tangga / Pallet"
+    const val LANDING_AREA = "Bidang Landas"
+    const val BALUSTRADE = "Pagar Pelindung"
+    const val HANDRAIL = "Ban Pegangan"
+    const val RUNWAY = "Lintasan Luncur (Void)"
+    const val SAFETY_EQUIPMENT = "Peralatan Pengaman"
+    const val ELECTRICAL_INSTALLATION = "Instalasi Listrik"
+    const val OUTDOOR_SPECIFICS = "Khusus Eskalator Outdoor"
+    const val USER_SAFETY_SIGNAGE = "Keselamatan Pengguna"
 }
 
 // =================================================================================================
@@ -33,11 +33,14 @@ private object EskalatorCategory {
 // =================================================================================================
 
 /**
- * Mengubah EskalatorUiState menjadi model domain InspectionWithDetailsDomain.
+ * Mengubah [EskalatorUiState] (dari UI) menjadi [InspectionWithDetailsDomain] (untuk data layer).
+ *
+ * @param currentTime Waktu saat ini dalam format String untuk kolom `createdAt`.
+ * @return Objek [InspectionWithDetailsDomain] yang siap untuk disimpan.
  */
 fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
     val uiData = this.eskalatorData
-    val inspectionId = uiData.id
+    val inspectionId: Long = 0
 
     val manufacturerDomain = ManufacturerDomain(
         name = uiData.technicalData.manufacturer,
@@ -46,8 +49,8 @@ fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String): Inspect
     )
 
     val inspectionDomain = InspectionDomain(
-        id = 0,
-        extraId = "",
+        id = inspectionId,
+        extraId = "", // Dibiarkan kosong sesuai masukan, akan diisi dari backend.
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.EE,
         subInspectionType = SubInspectionType.Escalator,
@@ -55,7 +58,7 @@ fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String): Inspect
         examinationType = uiData.examinationType,
         ownerName = uiData.companyData.companyOrBuildingName,
         ownerAddress = uiData.companyData.usageAddress,
-        usageLocation = uiData.companyData.companyOrBuildingName,
+        usageLocation = uiData.companyData.companyOrBuildingName, // Lokasi pemakaian adalah nama gedung/perusahaan itu sendiri.
         addressUsageLocation = uiData.companyData.usageAddress,
         driveType = uiData.technicalData.driveType,
         serialNumber = uiData.technicalData.serialNumber,
@@ -69,7 +72,7 @@ fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String): Inspect
         isSynced = false
     )
 
-    val checkItems = createCheckItemsFromUiState(uiData, inspectionId)
+    val checkItems = mapInspectionAndTestingToDomain(uiData.inspectionAndTesting, inspectionId)
 
     val findings = if (uiData.conclusion.isNotBlank()) {
         listOf(InspectionFindingDomain(inspectionId = inspectionId, description = uiData.conclusion, type = FindingType.RECOMMENDATION))
@@ -79,298 +82,317 @@ fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String): Inspect
 
     val testResults = mutableListOf<InspectionTestResultDomain>()
     uiData.testingSummary.let {
-        if (it.safetyDevices.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Safety Devices Test", it.safetyDevices, null))
-        if (it.noLoadTest.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "No-Load Test", it.noLoadTest, null))
-        if (it.brakeTest.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Brake Test", it.brakeTest, null))
+        if (it.safetyDevices.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Alat Pengaman", it.safetyDevices, null))
+        if (it.noLoadTest.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Uji Tanpa Beban", it.noLoadTest, null))
+        if (it.brakeTest.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Uji Rem", it.brakeTest, null))
     }
 
-    return InspectionWithDetailsDomain(inspectionDomain, checkItems, findings, testResults)
+    // Menyimpan data yang tidak punya kolom langsung di `InspectionTestResultDomain`
+    uiData.companyData.let {
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Jenis Objek K3/No.", it.safetyObjectTypeAndNumber, null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Digunakan Untuk", it.intendedUse, null))
+    }
+    uiData.technicalData.let {
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Technical - Alat Angkut", it.transports, null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Technical - Arus Motor", it.motorCurrent, null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Technical - Daya Motor", it.motorPower, null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Technical - Alat Pengaman (Umum)", it.safetyDevices, null))
+    }
+
+    return InspectionWithDetailsDomain(
+        inspection = inspectionDomain,
+        checkItems = checkItems,
+        findings = findings,
+        testResults = testResults
+    )
 }
 
-private fun createCheckItemsFromUiState(uiData: EskalatorGeneralData, inspectionId: Long): List<InspectionCheckItemDomain> {
-    val checkItems = mutableListOf<InspectionCheckItemDomain>()
-    val inspectionTestingData = uiData.inspectionAndTesting
+private fun MutableList<InspectionCheckItemDomain>.addCheckItem(
+    inspectionId: Long, category: String, itemName: String, data: EskalatorResultStatus
+) {
+    this.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = category,
+            itemName = itemName,
+            status = data.status,
+            result = data.result
+        )
+    )
+}
 
-    inspectionTestingData.frameAndMachineRoom.let { data ->
+private fun mapInspectionAndTestingToDomain(uiState: EskalatorInspectionAndTesting, inspectionId: Long): List<InspectionCheckItemDomain> {
+    val items = mutableListOf<InspectionCheckItemDomain>()
+    // Pemetaan di sini tetap sama seperti sebelumnya
+    uiState.frameAndMachineRoom.let { data ->
         val cat = EskalatorCategory.FRAME_MACHINE_ROOM
-        checkItems.add(data.frame.toCheckItem(inspectionId, cat, "Frame"))
-        checkItems.add(data.supportBeams.toCheckItem(inspectionId, cat, "Support Beams"))
-        checkItems.add(data.machineRoomCondition.toCheckItem(inspectionId, cat, "Machine Room Condition"))
-        checkItems.add(data.machineRoomClearance.toCheckItem(inspectionId, cat, "Machine Room Clearance"))
-        checkItems.add(data.machineRoomLighting.toCheckItem(inspectionId, cat, "Machine Room Lighting"))
-        checkItems.add(data.machineCoverPlate.toCheckItem(inspectionId, cat, "Machine Cover Plate"))
-        checkItems.add(data.pitCondition.toCheckItem(inspectionId, cat, "Pit Condition"))
-        checkItems.add(data.pitClearance.toCheckItem(inspectionId, cat, "Pit Clearance"))
-        checkItems.add(data.pitStepCoverPlate.toCheckItem(inspectionId, cat, "Pit Step Cover Plate"))
+        items.addCheckItem(inspectionId, cat, "Kerangka", data.frame)
+        items.addCheckItem(inspectionId, cat, "Balok Penyangga", data.supportBeams)
+        items.addCheckItem(inspectionId, cat, "Kondisi Ruang Mesin", data.machineRoomCondition)
+        items.addCheckItem(inspectionId, cat, "Jarak Bebas Ruang Mesin", data.machineRoomClearance)
+        items.addCheckItem(inspectionId, cat, "Penerangan Ruang Mesin", data.machineRoomLighting)
+        items.addCheckItem(inspectionId, cat, "Plat Penutup Mesin", data.machineCoverPlate)
+        items.addCheckItem(inspectionId, cat, "Kondisi Pit", data.pitCondition)
+        items.addCheckItem(inspectionId, cat, "Jarak Bebas Pit", data.pitClearance)
+        items.addCheckItem(inspectionId, cat, "Plat Penutup Step di Pit", data.pitStepCoverPlate)
     }
-
-    inspectionTestingData.driveEquipment.let { data ->
+    uiState.driveEquipment.let { data ->
         val cat = EskalatorCategory.DRIVE_EQUIPMENT
-        checkItems.add(data.driveMachine.toCheckItem(inspectionId, cat, "Drive Machine"))
-        checkItems.add(data.speedUnder30Degrees.toCheckItem(inspectionId, cat, "Speed (Inclination < 30°)"))
-        checkItems.add(data.speed30to35Degrees.toCheckItem(inspectionId, cat, "Speed (Inclination 30°-35°)"))
-        checkItems.add(data.travelatorSpeed.toCheckItem(inspectionId, cat, "Travelator Speed"))
-        checkItems.add(data.stoppingDistance0_5.toCheckItem(inspectionId, cat, "Stopping Distance (0.5 m/s)"))
-        checkItems.add(data.stoppingDistance0_75.toCheckItem(inspectionId, cat, "Stopping Distance (0.75 m/s)"))
-        checkItems.add(data.stoppingDistance0_90.toCheckItem(inspectionId, cat, "Stopping Distance (0.90 m/s)"))
-        checkItems.add(data.driveChain.toCheckItem(inspectionId, cat, "Drive Chain"))
-        checkItems.add(data.chainBreakingStrength.toCheckItem(inspectionId, cat, "Chain Breaking Strength"))
+        items.addCheckItem(inspectionId, cat, "Mesin Penggerak", data.driveMachine)
+        items.addCheckItem(inspectionId, cat, "Kecepatan (≤ 30°)", data.speedUnder30Degrees)
+        items.addCheckItem(inspectionId, cat, "Kecepatan (30°-35°)", data.speed30to35Degrees)
+        items.addCheckItem(inspectionId, cat, "Kecepatan Travelator", data.travelatorSpeed)
+        items.addCheckItem(inspectionId, cat, "Jarak Berhenti (0.5 m/s)", data.stoppingDistance0_5)
+        items.addCheckItem(inspectionId, cat, "Jarak Berhenti (0.75 m/s)", data.stoppingDistance0_75)
+        items.addCheckItem(inspectionId, cat, "Jarak Berhenti (0.90 m/s)", data.stoppingDistance0_90)
+        items.addCheckItem(inspectionId, cat, "Rantai Penggerak", data.driveChain)
+        items.addCheckItem(inspectionId, cat, "Kekuatan Putus Rantai", data.chainBreakingStrength)
     }
-
-    inspectionTestingData.stepsOrPallets.let { data ->
+    uiState.stepsOrPallets.let { data ->
         val cat = EskalatorCategory.STEPS_PALLETS
-        checkItems.add(data.stepMaterial.toCheckItem(inspectionId, cat, "Step Material"))
-        checkItems.add(data.stepDimensions.toCheckItem(inspectionId, cat, "Step Dimensions"))
-        checkItems.add(data.palletDimensions.toCheckItem(inspectionId, cat, "Pallet Dimensions"))
-        checkItems.add(data.stepSurface.toCheckItem(inspectionId, cat, "Step Surface"))
-        checkItems.add(data.stepLevelness.toCheckItem(inspectionId, cat, "Step Levelness"))
-        checkItems.add(data.skirtBrush.toCheckItem(inspectionId, cat, "Skirt Brush"))
-        checkItems.add(data.stepWheels.toCheckItem(inspectionId, cat, "Step Wheels"))
+        items.addCheckItem(inspectionId, cat, "Bahan Step", data.stepMaterial)
+        items.addCheckItem(inspectionId, cat, "Dimensi Step", data.stepDimensions)
+        items.addCheckItem(inspectionId, cat, "Dimensi Pallet", data.palletDimensions)
+        items.addCheckItem(inspectionId, cat, "Permukaan Step", data.stepSurface)
+        items.addCheckItem(inspectionId, cat, "Kerataan Step", data.stepLevelness)
+        items.addCheckItem(inspectionId, cat, "Sikat Skirt", data.skirtBrush)
+        items.addCheckItem(inspectionId, cat, "Roda Step", data.stepWheels)
     }
-
-    inspectionTestingData.landingArea.let { data ->
+    uiState.landingArea.let { data ->
         val cat = EskalatorCategory.LANDING_AREA
-        checkItems.add(data.landingPlates.toCheckItem(inspectionId, cat, "Landing Plates"))
-        checkItems.add(data.combTeeth.toCheckItem(inspectionId, cat, "Comb Teeth"))
-        checkItems.add(data.combCondition.toCheckItem(inspectionId, cat, "Comb Condition"))
-        checkItems.add(data.landingCover.toCheckItem(inspectionId, cat, "Landing Cover"))
-        checkItems.add(data.landingAccessArea.toCheckItem(inspectionId, cat, "Landing Access Area"))
+        items.addCheckItem(inspectionId, cat, "Plat Pendaratan", data.landingPlates)
+        items.addCheckItem(inspectionId, cat, "Gigi Sisir", data.combTeeth)
+        items.addCheckItem(inspectionId, cat, "Kondisi Sisir", data.combCondition)
+        items.addCheckItem(inspectionId, cat, "Penutup Pendaratan", data.landingCover)
+        items.addCheckItem(inspectionId, cat, "Area Akses Pendaratan", data.landingAccessArea)
     }
-
-    inspectionTestingData.balustrade.let { data ->
+    uiState.balustrade.let { data ->
         val cat = EskalatorCategory.BALUSTRADE
-        checkItems.add(data.balustradePanel.material.toCheckItem(inspectionId, cat, "Balustrade Panel Material"))
-        checkItems.add(data.balustradePanel.height.toCheckItem(inspectionId, cat, "Balustrade Panel Height"))
-        checkItems.add(data.balustradePanel.sidePressure.toCheckItem(inspectionId, cat, "Balustrade Panel Side Pressure"))
-        checkItems.add(data.balustradePanel.verticalPressure.toCheckItem(inspectionId, cat, "Balustrade Panel Vertical Pressure"))
-        checkItems.add(data.skirtPanel.toCheckItem(inspectionId, cat, "Skirt Panel"))
-        checkItems.add(data.skirtPanelFlexibility.toCheckItem(inspectionId, cat, "Skirt Panel Flexibility"))
-        checkItems.add(data.stepToSkirtClearance.toCheckItem(inspectionId, cat, "Step to Skirt Clearance"))
+        data.balustradePanel.let { panelData ->
+            items.addCheckItem(inspectionId, cat, "Material Panel Balustrade", panelData.material)
+            items.addCheckItem(inspectionId, cat, "Tinggi Panel Balustrade", panelData.height)
+            items.addCheckItem(inspectionId, cat, "Tekanan Samping Panel Balustrade", panelData.sidePressure)
+            items.addCheckItem(inspectionId, cat, "Tekanan Vertikal Panel Balustrade", panelData.verticalPressure)
+        }
+        items.addCheckItem(inspectionId, cat, "Panel Skirt", data.skirtPanel)
+        items.addCheckItem(inspectionId, cat, "Fleksibilitas Panel Skirt", data.skirtPanelFlexibility)
+        items.addCheckItem(inspectionId, cat, "Jarak Bebas Step ke Skirt", data.stepToSkirtClearance)
     }
-
-    // Melanjutkan untuk kategori lainnya...
-    inspectionTestingData.handrail.let { data ->
+    uiState.handrail.let { data ->
         val cat = EskalatorCategory.HANDRAIL
-        checkItems.add(data.handrailCondition.toCheckItem(inspectionId, cat, "Handrail Condition"))
-        checkItems.add(data.handrailSpeedSynchronization.toCheckItem(inspectionId, cat, "Handrail Speed Synchronization"))
-        checkItems.add(data.handrailWidth.toCheckItem(inspectionId, cat, "Handrail Width"))
+        items.addCheckItem(inspectionId, cat, "Kondisi Handrail", data.handrailCondition)
+        items.addCheckItem(inspectionId, cat, "Sinkronisasi Kecepatan Handrail", data.handrailSpeedSynchronization)
+        items.addCheckItem(inspectionId, cat, "Lebar Handrail", data.handrailWidth)
     }
-
-    inspectionTestingData.runway.let { data ->
+    uiState.runway.let { data ->
         val cat = EskalatorCategory.RUNWAY
-        checkItems.add(data.beamStrengthAndPosition.toCheckItem(inspectionId, cat, "Beam Strength & Position"))
-        checkItems.add(data.pitWallCondition.toCheckItem(inspectionId, cat, "Pit Wall Condition"))
-        checkItems.add(data.escalatorFrameEnclosure.toCheckItem(inspectionId, cat, "Escalator Frame Enclosure"))
-        checkItems.add(data.lighting.toCheckItem(inspectionId, cat, "Lighting"))
-        checkItems.add(data.headroomClearance.toCheckItem(inspectionId, cat, "Headroom Clearance"))
-        checkItems.add(data.balustradeToObjectClearance.toCheckItem(inspectionId, cat, "Balustrade to Object Clearance"))
-        checkItems.add(data.antiClimbDeviceHeight.toCheckItem(inspectionId, cat, "Anti-Climb Device Height"))
-        checkItems.add(data.ornamentPlacement.toCheckItem(inspectionId, cat, "Ornament Placement"))
-        checkItems.add(data.outdoorClearance.toCheckItem(inspectionId, cat, "Outdoor Clearance"))
+        items.addCheckItem(inspectionId, cat, "Kekuatan & Posisi Balok", data.beamStrengthAndPosition)
+        items.addCheckItem(inspectionId, cat, "Kondisi Dinding Pit", data.pitWallCondition)
+        items.addCheckItem(inspectionId, cat, "Penutup Rangka Eskalator", data.escalatorFrameEnclosure)
+        items.addCheckItem(inspectionId, cat, "Penerangan", data.lighting)
+        items.addCheckItem(inspectionId, cat, "Jarak Bebas Headroom", data.headroomClearance)
+        items.addCheckItem(inspectionId, cat, "Jarak Balustrade ke Objek", data.balustradeToObjectClearance)
+        items.addCheckItem(inspectionId, cat, "Tinggi Alat Anti-Panjat", data.antiClimbDeviceHeight)
+        items.addCheckItem(inspectionId, cat, "Penempatan Ornamen", data.ornamentPlacement)
+        items.addCheckItem(inspectionId, cat, "Jarak Bebas Outdoor", data.outdoorClearance)
     }
-
-    inspectionTestingData.safetyEquipment.let { data ->
+    uiState.safetyEquipment.let { data ->
         val cat = EskalatorCategory.SAFETY_EQUIPMENT
-        checkItems.add(data.operationControlKey.toCheckItem(inspectionId, cat, "Operation Control Key"))
-        checkItems.add(data.emergencyStopSwitch.toCheckItem(inspectionId, cat, "Emergency Stop Switch"))
-        checkItems.add(data.stepChainSafetyDevice.toCheckItem(inspectionId, cat, "Step Chain Safety Device"))
-        checkItems.add(data.driveChainSafetyDevice.toCheckItem(inspectionId, cat, "Drive Chain Safety Device"))
-        checkItems.add(data.stepSafetyDevice.toCheckItem(inspectionId, cat, "Step Safety Device"))
-        checkItems.add(data.handrailSafetyDevice.toCheckItem(inspectionId, cat, "Handrail Safety Device"))
-        checkItems.add(data.reversalStopDevice.toCheckItem(inspectionId, cat, "Reversal Stop Device"))
-        checkItems.add(data.handrailEntryGuard.toCheckItem(inspectionId, cat, "Handrail Entry Guard"))
-        checkItems.add(data.combPlateSafetyDevice.toCheckItem(inspectionId, cat, "Comb Plate Safety Device"))
-        checkItems.add(data.innerDeckingBrush.toCheckItem(inspectionId, cat, "Inner Decking Brush"))
-        checkItems.add(data.stopButtons.toCheckItem(inspectionId, cat, "Stop Buttons"))
+        items.addCheckItem(inspectionId, cat, "Kunci Kontrol Operasi", data.operationControlKey)
+        items.addCheckItem(inspectionId, cat, "Saklar Stop Darurat", data.emergencyStopSwitch)
+        items.addCheckItem(inspectionId, cat, "Pengaman Rantai Step", data.stepChainSafetyDevice)
+        items.addCheckItem(inspectionId, cat, "Pengaman Rantai Penggerak", data.driveChainSafetyDevice)
+        items.addCheckItem(inspectionId, cat, "Pengaman Step", data.stepSafetyDevice)
+        items.addCheckItem(inspectionId, cat, "Pengaman Handrail", data.handrailSafetyDevice)
+        items.addCheckItem(inspectionId, cat, "Pengaman Pembalikan Arah", data.reversalStopDevice)
+        items.addCheckItem(inspectionId, cat, "Pelindung Masuk Handrail", data.handrailEntryGuard)
+        items.addCheckItem(inspectionId, cat, "Pengaman Plat Sisir", data.combPlateSafetyDevice)
+        items.addCheckItem(inspectionId, cat, "Sikat Inner Decking", data.innerDeckingBrush)
+        items.addCheckItem(inspectionId, cat, "Tombol Stop", data.stopButtons)
     }
-
-    inspectionTestingData.electricalInstallation.let { data ->
+    uiState.electricalInstallation.let { data ->
         val cat = EskalatorCategory.ELECTRICAL_INSTALLATION
-        checkItems.add(data.installationStandard.toCheckItem(inspectionId, cat, "Installation Standard"))
-        checkItems.add(data.electricalPanel.toCheckItem(inspectionId, cat, "Electrical Panel"))
-        checkItems.add(data.groundingCable.toCheckItem(inspectionId, cat, "Grounding Cable"))
-        checkItems.add(data.fireAlarmConnection.toCheckItem(inspectionId, cat, "Fire Alarm Connection"))
+        items.addCheckItem(inspectionId, cat, "Standar Instalasi", data.installationStandard)
+        items.addCheckItem(inspectionId, cat, "Panel Listrik", data.electricalPanel)
+        items.addCheckItem(inspectionId, cat, "Kabel Grounding", data.groundingCable)
+        items.addCheckItem(inspectionId, cat, "Koneksi Alarm Kebakaran", data.fireAlarmConnection)
     }
-
-    inspectionTestingData.outdoorSpecifics.let { data ->
+    uiState.outdoorSpecifics.let { data ->
         val cat = EskalatorCategory.OUTDOOR_SPECIFICS
-        checkItems.add(data.pitWaterPump.toCheckItem(inspectionId, cat, "Pit Water Pump"))
-        checkItems.add(data.weatherproofComponents.toCheckItem(inspectionId, cat, "Weatherproof Components"))
+        items.addCheckItem(inspectionId, cat, "Pompa Air Pit", data.pitWaterPump)
+        items.addCheckItem(inspectionId, cat, "Komponen Tahan Cuaca", data.weatherproofComponents)
     }
-
-    inspectionTestingData.userSafetySignage.let { data ->
+    uiState.userSafetySignage.let { data ->
         val cat = EskalatorCategory.USER_SAFETY_SIGNAGE
-        checkItems.add(data.noBulkyItems.toCheckItem(inspectionId, cat, "No Bulky Items Sign"))
-        checkItems.add(data.noJumping.toCheckItem(inspectionId, cat, "No Jumping Sign"))
-        checkItems.add(data.unattendedChildren.toCheckItem(inspectionId, cat, "Unattended Children Sign"))
-        checkItems.add(data.noTrolleysOrStrollers.toCheckItem(inspectionId, cat, "No Trolleys or Strollers Sign"))
-        checkItems.add(data.noLeaning.toCheckItem(inspectionId, cat, "No Leaning Sign"))
-        checkItems.add(data.noSteppingOnSkirt.toCheckItem(inspectionId, cat, "No Stepping on Skirt Sign"))
-        checkItems.add(data.softSoleFootwearWarning.toCheckItem(inspectionId, cat, "Soft Sole Footwear Warning"))
-        checkItems.add(data.noSittingOnSteps.toCheckItem(inspectionId, cat, "No Sitting on Steps Sign"))
-        checkItems.add(data.holdHandrail.toCheckItem(inspectionId, cat, "Hold Handrail Sign"))
+        items.addCheckItem(inspectionId, cat, "Dilarang Membawa Barang Besar", data.noBulkyItems)
+        items.addCheckItem(inspectionId, cat, "Dilarang Melompat", data.noJumping)
+        items.addCheckItem(inspectionId, cat, "Anak-anak Harus Diawasi", data.unattendedChildren)
+        items.addCheckItem(inspectionId, cat, "Dilarang Membawa Troli/Stroller", data.noTrolleysOrStrollers)
+        items.addCheckItem(inspectionId, cat, "Dilarang Bersandar", data.noLeaning)
+        items.addCheckItem(inspectionId, cat, "Dilarang Menginjak Skirt", data.noSteppingOnSkirt)
+        items.addCheckItem(inspectionId, cat, "Peringatan Alas Kaki Lunak", data.softSoleFootwearWarning)
+        items.addCheckItem(inspectionId, cat, "Dilarang Duduk di Tangga", data.noSittingOnSteps)
+        items.addCheckItem(inspectionId, cat, "Pegang Handrail", data.holdHandrail)
     }
 
-    return checkItems
+    return items
 }
 
-private fun EskalatorResultStatus.toCheckItem(inspectionId: Long, category: String, itemName: String): InspectionCheckItemDomain {
-    return InspectionCheckItemDomain(0, inspectionId, category, itemName, this.status, this.result)
-}
 
 // =================================================================================================
 //                                  Domain Model -> UI State
 // =================================================================================================
 
 /**
- * Mengubah model domain InspectionWithDetailsDomain kembali menjadi EskalatorUiState.
+ * Mengubah [InspectionWithDetailsDomain] (dari data layer) menjadi [EskalatorUiState] (untuk UI).
  */
 fun InspectionWithDetailsDomain.toEskalatorUiState(): EskalatorUiState {
-    val domainData = this
 
     fun findCheckItem(category: String, itemName: String): EskalatorResultStatus {
-        val item = domainData.checkItems.find { it.category == category && it.itemName.equals(itemName, true) }
-        return item?.let { EskalatorResultStatus(it.result ?: "", it.status) } ?: EskalatorResultStatus()
+        val item = this.checkItems.find { it.category == category && it.itemName.equals(itemName, true) }
+        return item?.let { EskalatorResultStatus(result = it.result ?: "", status = it.status) } ?: EskalatorResultStatus()
     }
 
     fun findTestResult(testName: String): String {
-        return domainData.testResults.find { it.testName.equals(testName, true) }?.result ?: ""
+        return this.testResults.find { it.testName.equals(testName, true) }?.result ?: ""
     }
 
     val companyData = EskalatorCompanyData(
-        companyOrBuildingName = domainData.inspection.ownerName ?: "",
-        usageAddress = domainData.inspection.addressUsageLocation ?: "",
-        usagePermit = domainData.inspection.permitNumber ?: "",
-        inspectionDate = domainData.inspection.reportDate ?: ""
+        companyOrBuildingName = this.inspection.ownerName ?: "",
+        usageAddress = this.inspection.addressUsageLocation ?: "",
+        safetyObjectTypeAndNumber = findTestResult("Jenis Objek K3/No."),
+        intendedUse = findTestResult("Digunakan Untuk"),
+        usagePermit = this.inspection.permitNumber ?: "",
+        inspectionDate = this.inspection.reportDate ?: ""
     )
 
     val technicalData = EskalatorTechnicalData(
-        manufacturer = domainData.inspection.manufacturer?.name ?: "",
-        brand = domainData.inspection.manufacturer?.brandOrType ?: "",
-        countryAndYear = domainData.inspection.manufacturer?.year?.let { " / $it" }?.trim() ?: "",
-        serialNumber = domainData.inspection.serialNumber ?: "",
-        capacity = domainData.inspection.capacity ?: "",
-        liftHeight = domainData.inspection.floorServed ?: "",
-        speed = domainData.inspection.speed ?: "",
-        driveType = domainData.inspection.driveType ?: ""
+        manufacturer = this.inspection.manufacturer?.name ?: "",
+        brand = this.inspection.manufacturer?.brandOrType ?: "",
+        countryAndYear = this.inspection.manufacturer?.year ?: "",
+        serialNumber = this.inspection.serialNumber ?: "",
+        capacity = this.inspection.capacity ?: "",
+        liftHeight = this.inspection.floorServed ?: "",
+        speed = this.inspection.speed ?: "",
+        driveType = this.inspection.driveType ?: "",
+        transports = findTestResult("Technical - Alat Angkut"),
+        motorCurrent = findTestResult("Technical - Arus Motor"),
+        motorPower = findTestResult("Technical - Daya Motor"),
+        safetyDevices = findTestResult("Technical - Alat Pengaman (Umum)")
     )
 
     val inspectionAndTesting = EskalatorInspectionAndTesting(
         frameAndMachineRoom = FrameAndMachineRoom(
-            frame = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Frame"),
-            supportBeams = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Support Beams"),
-            machineRoomCondition = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Machine Room Condition"),
-            machineRoomClearance = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Machine Room Clearance"),
-            machineRoomLighting = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Machine Room Lighting"),
-            machineCoverPlate = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Machine Cover Plate"),
-            pitCondition = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Pit Condition"),
-            pitClearance = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Pit Clearance"),
-            pitStepCoverPlate = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Pit Step Cover Plate")
+            frame = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Kerangka"),
+            supportBeams = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Balok Penyangga"),
+            machineRoomCondition = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Kondisi Ruang Mesin"),
+            machineRoomClearance = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Jarak Bebas Ruang Mesin"),
+            machineRoomLighting = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Penerangan Ruang Mesin"),
+            machineCoverPlate = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Plat Penutup Mesin"),
+            pitCondition = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Kondisi Pit"),
+            pitClearance = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Jarak Bebas Pit"),
+            pitStepCoverPlate = findCheckItem(EskalatorCategory.FRAME_MACHINE_ROOM, "Plat Penutup Step di Pit")
         ),
         driveEquipment = DriveEquipment(
-            driveMachine = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Drive Machine"),
-            speedUnder30Degrees = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Speed (Inclination < 30°)"),
-            speed30to35Degrees = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Speed (Inclination 30°-35°)"),
-            travelatorSpeed = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Travelator Speed"),
-            stoppingDistance0_5 = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Stopping Distance (0.5 m/s)"),
-            stoppingDistance0_75 = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Stopping Distance (0.75 m/s)"),
-            stoppingDistance0_90 = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Stopping Distance (0.90 m/s)"),
-            driveChain = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Drive Chain"),
-            chainBreakingStrength = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Chain Breaking Strength")
+            driveMachine = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Mesin Penggerak"),
+            speedUnder30Degrees = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Kecepatan (≤ 30°)"),
+            speed30to35Degrees = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Kecepatan (30°-35°)"),
+            travelatorSpeed = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Kecepatan Travelator"),
+            stoppingDistance0_5 = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Jarak Berhenti (0.5 m/s)"),
+            stoppingDistance0_75 = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Jarak Berhenti (0.75 m/s)"),
+            stoppingDistance0_90 = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Jarak Berhenti (0.90 m/s)"),
+            driveChain = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Rantai Penggerak"),
+            chainBreakingStrength = findCheckItem(EskalatorCategory.DRIVE_EQUIPMENT, "Kekuatan Putus Rantai")
         ),
         stepsOrPallets = StepsOrPallets(
-            stepMaterial = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Step Material"),
-            stepDimensions = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Step Dimensions"),
-            palletDimensions = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Pallet Dimensions"),
-            stepSurface = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Step Surface"),
-            stepLevelness = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Step Levelness"),
-            skirtBrush = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Skirt Brush"),
-            stepWheels = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Step Wheels")
+            stepMaterial = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Bahan Step"),
+            stepDimensions = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Dimensi Step"),
+            palletDimensions = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Dimensi Pallet"),
+            stepSurface = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Permukaan Step"),
+            stepLevelness = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Kerataan Step"),
+            skirtBrush = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Sikat Skirt"),
+            stepWheels = findCheckItem(EskalatorCategory.STEPS_PALLETS, "Roda Step")
         ),
         landingArea = LandingArea(
-            landingPlates = findCheckItem(EskalatorCategory.LANDING_AREA, "Landing Plates"),
-            combTeeth = findCheckItem(EskalatorCategory.LANDING_AREA, "Comb Teeth"),
-            combCondition = findCheckItem(EskalatorCategory.LANDING_AREA, "Comb Condition"),
-            landingCover = findCheckItem(EskalatorCategory.LANDING_AREA, "Landing Cover"),
-            landingAccessArea = findCheckItem(EskalatorCategory.LANDING_AREA, "Landing Access Area")
+            landingPlates = findCheckItem(EskalatorCategory.LANDING_AREA, "Plat Pendaratan"),
+            combTeeth = findCheckItem(EskalatorCategory.LANDING_AREA, "Gigi Sisir"),
+            combCondition = findCheckItem(EskalatorCategory.LANDING_AREA, "Kondisi Sisir"),
+            landingCover = findCheckItem(EskalatorCategory.LANDING_AREA, "Penutup Pendaratan"),
+            landingAccessArea = findCheckItem(EskalatorCategory.LANDING_AREA, "Area Akses Pendaratan")
         ),
         balustrade = Balustrade(
             balustradePanel = BalustradePanel(
-                material = findCheckItem(EskalatorCategory.BALUSTRADE, "Balustrade Panel Material"),
-                height = findCheckItem(EskalatorCategory.BALUSTRADE, "Balustrade Panel Height"),
-                sidePressure = findCheckItem(EskalatorCategory.BALUSTRADE, "Balustrade Panel Side Pressure"),
-                verticalPressure = findCheckItem(EskalatorCategory.BALUSTRADE, "Balustrade Panel Vertical Pressure")
+                material = findCheckItem(EskalatorCategory.BALUSTRADE, "Material Panel Balustrade"),
+                height = findCheckItem(EskalatorCategory.BALUSTRADE, "Tinggi Panel Balustrade"),
+                sidePressure = findCheckItem(EskalatorCategory.BALUSTRADE, "Tekanan Samping Panel Balustrade"),
+                verticalPressure = findCheckItem(EskalatorCategory.BALUSTRADE, "Tekanan Vertikal Panel Balustrade")
             ),
-            skirtPanel = findCheckItem(EskalatorCategory.BALUSTRADE, "Skirt Panel"),
-            skirtPanelFlexibility = findCheckItem(EskalatorCategory.BALUSTRADE, "Skirt Panel Flexibility"),
-            stepToSkirtClearance = findCheckItem(EskalatorCategory.BALUSTRADE, "Step to Skirt Clearance")
+            skirtPanel = findCheckItem(EskalatorCategory.BALUSTRADE, "Panel Skirt"),
+            skirtPanelFlexibility = findCheckItem(EskalatorCategory.BALUSTRADE, "Fleksibilitas Panel Skirt"),
+            stepToSkirtClearance = findCheckItem(EskalatorCategory.BALUSTRADE, "Jarak Bebas Step ke Skirt")
         ),
         handrail = Handrail(
-            handrailCondition = findCheckItem(EskalatorCategory.HANDRAIL, "Handrail Condition"),
-            handrailSpeedSynchronization = findCheckItem(EskalatorCategory.HANDRAIL, "Handrail Speed Synchronization"),
-            handrailWidth = findCheckItem(EskalatorCategory.HANDRAIL, "Handrail Width")
+            handrailCondition = findCheckItem(EskalatorCategory.HANDRAIL, "Kondisi Handrail"),
+            handrailSpeedSynchronization = findCheckItem(EskalatorCategory.HANDRAIL, "Sinkronisasi Kecepatan Handrail"),
+            handrailWidth = findCheckItem(EskalatorCategory.HANDRAIL, "Lebar Handrail")
         ),
         runway = Runway(
-            beamStrengthAndPosition = findCheckItem(EskalatorCategory.RUNWAY, "Beam Strength & Position"),
-            pitWallCondition = findCheckItem(EskalatorCategory.RUNWAY, "Pit Wall Condition"),
-            escalatorFrameEnclosure = findCheckItem(EskalatorCategory.RUNWAY, "Escalator Frame Enclosure"),
-            lighting = findCheckItem(EskalatorCategory.RUNWAY, "Lighting"),
-            headroomClearance = findCheckItem(EskalatorCategory.RUNWAY, "Headroom Clearance"),
-            balustradeToObjectClearance = findCheckItem(EskalatorCategory.RUNWAY, "Balustrade to Object Clearance"),
-            antiClimbDeviceHeight = findCheckItem(EskalatorCategory.RUNWAY, "Anti-Climb Device Height"),
-            ornamentPlacement = findCheckItem(EskalatorCategory.RUNWAY, "Ornament Placement"),
-            outdoorClearance = findCheckItem(EskalatorCategory.RUNWAY, "Outdoor Clearance")
+            beamStrengthAndPosition = findCheckItem(EskalatorCategory.RUNWAY, "Kekuatan & Posisi Balok"),
+            pitWallCondition = findCheckItem(EskalatorCategory.RUNWAY, "Kondisi Dinding Pit"),
+            escalatorFrameEnclosure = findCheckItem(EskalatorCategory.RUNWAY, "Penutup Rangka Eskalator"),
+            lighting = findCheckItem(EskalatorCategory.RUNWAY, "Penerangan"),
+            headroomClearance = findCheckItem(EskalatorCategory.RUNWAY, "Jarak Bebas Headroom"),
+            balustradeToObjectClearance = findCheckItem(EskalatorCategory.RUNWAY, "Jarak Balustrade ke Objek"),
+            antiClimbDeviceHeight = findCheckItem(EskalatorCategory.RUNWAY, "Tinggi Alat Anti-Panjat"),
+            ornamentPlacement = findCheckItem(EskalatorCategory.RUNWAY, "Penempatan Ornamen"),
+            outdoorClearance = findCheckItem(EskalatorCategory.RUNWAY, "Jarak Bebas Outdoor")
         ),
         safetyEquipment = SafetyEquipment(
-            operationControlKey = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Operation Control Key"),
-            emergencyStopSwitch = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Emergency Stop Switch"),
-            stepChainSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Step Chain Safety Device"),
-            driveChainSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Drive Chain Safety Device"),
-            stepSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Step Safety Device"),
-            handrailSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Handrail Safety Device"),
-            reversalStopDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Reversal Stop Device"),
-            handrailEntryGuard = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Handrail Entry Guard"),
-            combPlateSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Comb Plate Safety Device"),
-            innerDeckingBrush = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Inner Decking Brush"),
-            stopButtons = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Stop Buttons")
+            operationControlKey = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Kunci Kontrol Operasi"),
+            emergencyStopSwitch = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Saklar Stop Darurat"),
+            stepChainSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Pengaman Rantai Step"),
+            driveChainSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Pengaman Rantai Penggerak"),
+            stepSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Pengaman Step"),
+            handrailSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Pengaman Handrail"),
+            reversalStopDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Pengaman Pembalikan Arah"),
+            handrailEntryGuard = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Pelindung Masuk Handrail"),
+            combPlateSafetyDevice = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Pengaman Plat Sisir"),
+            innerDeckingBrush = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Sikat Inner Decking"),
+            stopButtons = findCheckItem(EskalatorCategory.SAFETY_EQUIPMENT, "Tombol Stop")
         ),
         electricalInstallation = ElectricalInstallation(
-            installationStandard = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Installation Standard"),
-            electricalPanel = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Electrical Panel"),
-            groundingCable = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Grounding Cable"),
-            fireAlarmConnection = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Fire Alarm Connection")
+            installationStandard = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Standar Instalasi"),
+            electricalPanel = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Panel Listrik"),
+            groundingCable = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Kabel Grounding"),
+            fireAlarmConnection = findCheckItem(EskalatorCategory.ELECTRICAL_INSTALLATION, "Koneksi Alarm Kebakaran")
         ),
         outdoorSpecifics = OutdoorSpecifics(
-            pitWaterPump = findCheckItem(EskalatorCategory.OUTDOOR_SPECIFICS, "Pit Water Pump"),
-            weatherproofComponents = findCheckItem(EskalatorCategory.OUTDOOR_SPECIFICS, "Weatherproof Components")
+            pitWaterPump = findCheckItem(EskalatorCategory.OUTDOOR_SPECIFICS, "Pompa Air Pit"),
+            weatherproofComponents = findCheckItem(EskalatorCategory.OUTDOOR_SPECIFICS, "Komponen Tahan Cuaca")
         ),
         userSafetySignage = UserSafetySignage(
-            noBulkyItems = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "No Bulky Items Sign"),
-            noJumping = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "No Jumping Sign"),
-            unattendedChildren = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Unattended Children Sign"),
-            noTrolleysOrStrollers = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "No Trolleys or Strollers Sign"),
-            noLeaning = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "No Leaning Sign"),
-            noSteppingOnSkirt = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "No Stepping on Skirt Sign"),
-            softSoleFootwearWarning = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Soft Sole Footwear Warning"),
-            noSittingOnSteps = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "No Sitting on Steps Sign"),
-            holdHandrail = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Hold Handrail Sign")
+            noBulkyItems = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Dilarang Membawa Barang Besar"),
+            noJumping = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Dilarang Melompat"),
+            unattendedChildren = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Anak-anak Harus Diawasi"),
+            noTrolleysOrStrollers = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Dilarang Membawa Troli/Stroller"),
+            noLeaning = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Dilarang Bersandar"),
+            noSteppingOnSkirt = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Dilarang Menginjak Skirt"),
+            softSoleFootwearWarning = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Peringatan Alas Kaki Lunak"),
+            noSittingOnSteps = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Dilarang Duduk di Tangga"),
+            holdHandrail = findCheckItem(EskalatorCategory.USER_SAFETY_SIGNAGE, "Pegang Handrail")
         )
     )
 
     val testingSummary = EskalatorTestingSummary(
-        safetyDevices = findTestResult("Safety Devices Test"),
-        noLoadTest = findTestResult("No-Load Test"),
-        brakeTest = findTestResult("Brake Test")
+        safetyDevices = findTestResult("Alat Pengaman"),
+        noLoadTest = findTestResult("Uji Tanpa Beban"),
+        brakeTest = findTestResult("Uji Rem")
     )
 
     val generalData = EskalatorGeneralData(
-        id = domainData.checkItems.firstOrNull()?.inspectionId ?: 0L,
-        documentType = domainData.inspection.documentType,
-        inspectionType = domainData.inspection.inspectionType,
-        subInspectionType = domainData.inspection.subInspectionType,
-        equipmentType = domainData.inspection.equipmentType,
-        examinationType = domainData.inspection.examinationType,
-        conclusion = domainData.findings.find { it.type == FindingType.RECOMMENDATION }?.description ?: "",
+        equipmentType = this.inspection.equipmentType,
+        examinationType = this.inspection.examinationType,
+        conclusion = this.findings.find { it.type == FindingType.RECOMMENDATION }?.description ?: "",
         companyData = companyData,
         technicalData = technicalData,
         inspectionAndTesting = inspectionAndTesting,
