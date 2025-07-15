@@ -18,6 +18,8 @@ data class GantryCraneUiState(
 
 @Immutable
 data class GantryCraneInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: GantryCraneGeneralData = GantryCraneGeneralData(),
     val technicalData: GantryCraneTechnicalData = GantryCraneTechnicalData(),
     val visualInspection: GantryCraneVisualInspection = GantryCraneVisualInspection(),
@@ -28,12 +30,6 @@ data class GantryCraneInspectionReport(
 
 @Immutable
 data class GantryCraneGeneralData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
-    val examinationType: String = "",
     val owner: String = "",
     val address: String = "",
     val user: String = "",

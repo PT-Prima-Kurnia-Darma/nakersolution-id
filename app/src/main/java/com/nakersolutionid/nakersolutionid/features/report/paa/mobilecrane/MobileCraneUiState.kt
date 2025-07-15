@@ -18,6 +18,8 @@ data class MobileCraneUiState(
 
 @Immutable
 data class MobileCraneInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: MobileCraneGeneralData = MobileCraneGeneralData(),
     val technicalData: MobileCraneTechnicalData = MobileCraneTechnicalData(),
     val visualInspection: MobileCraneVisualInspection = MobileCraneVisualInspection(),
@@ -28,12 +30,6 @@ data class MobileCraneInspectionReport(
 
 @Immutable
 data class MobileCraneGeneralData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
-    val examinationType: String = "",
     val owner: String = "",
     val address: String = "",
     val personInCharge: String = "",

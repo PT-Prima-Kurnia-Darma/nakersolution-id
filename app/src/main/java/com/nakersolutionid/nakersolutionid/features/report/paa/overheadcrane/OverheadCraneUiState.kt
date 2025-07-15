@@ -18,6 +18,8 @@ data class OverheadCraneUiState(
 
 @Immutable
 data class OverheadCraneInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: OverheadCraneGeneralData = OverheadCraneGeneralData(),
     val technicalData: OverheadCraneTechnicalData = OverheadCraneTechnicalData(),
     val visualInspection: OverheadCraneVisualInspection = OverheadCraneVisualInspection(),
@@ -28,12 +30,6 @@ data class OverheadCraneInspectionReport(
 
 @Immutable
 data class OverheadCraneGeneralData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
-    val examinationType: String = "",
     val owner: String = "",
     val address: String = "",
     val user: String = "",

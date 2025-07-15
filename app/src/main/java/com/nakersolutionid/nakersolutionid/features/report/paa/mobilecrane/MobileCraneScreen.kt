@@ -158,6 +158,15 @@ fun MobileCraneScreen(
         contentPadding = contentPadding,
         verticalArrangement = verticalArrangement
     ) {
+        // Main Data Section
+        item {
+            val data = report
+            ExpandableSection(title = "DATA UTAMA", initiallyExpanded = true) {
+                FormTextField(label = "Jenis Pemeriksaan", value = data.examinationType, onValueChange = { onDataChange(data.copy(examinationType = it)) })
+                FormTextField(label = "Jenis Pesawat Angkat", value = data.equipmentType, onValueChange = { onDataChange(data.copy(equipmentType = it)) })
+            }
+        }
+
         item {
             val data = report.generalData
             ExpandableSection(title = "DATA UMUM", initiallyExpanded = true) {

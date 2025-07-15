@@ -18,6 +18,8 @@ data class GondolaUiState(
 
 @Immutable
 data class GondolaInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: GondolaGeneralData = GondolaGeneralData(),
     val technicalData: GondolaTechnicalData = GondolaTechnicalData(),
     val visualInspection: GondolaVisualInspection = GondolaVisualInspection(),
@@ -28,12 +30,6 @@ data class GondolaInspectionReport(
 
 @Immutable
 data class GondolaGeneralData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
-    val examinationType: String = "",
     val owner: String = "",
     val ownerAddress: String = "",
     val user: String = "",
@@ -42,6 +38,7 @@ data class GondolaGeneralData(
     val operatorName: String? = "",
     val manufacturer: String = "",
     val brandType: String = "",
+    val driveType: String = "",
     val yearOfManufacture: String = "",
     val serialNumberUnitNumber: String = "",
     val capacity: String = "",
