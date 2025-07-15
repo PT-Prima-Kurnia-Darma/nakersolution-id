@@ -36,6 +36,7 @@ enum class SubInspectionType {
     Storage_Tank,
     Compressor_BT,
     Pressure_Powered_Pipe,
+    General_PUBT,
     // IPK
     Fire_Protection,
     // PTP
@@ -64,6 +65,7 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Storage_Tank -> "Tangki Timbun"
         SubInspectionType.Compressor_BT -> "Compressor BT"
         SubInspectionType.Pressure_Powered_Pipe -> "Pipa Bertenaga/Bertekanan"
+        SubInspectionType.General_PUBT -> "General PUBT"
 
         SubInspectionType.Fire_Protection -> "Instalasi Proteksi Kebakaran"
 
@@ -137,6 +139,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Tangki Timbun" -> SubInspectionType.Storage_Tank
         "Compressor BT" -> SubInspectionType.Compressor_BT
         "Pipa Bertenaga/Bertekanan" -> SubInspectionType.Pressure_Powered_Pipe
+        "General PUBT" -> SubInspectionType.General_PUBT
 
         "Instalasi Proteksi Kebakaran" -> SubInspectionType.Fire_Protection
 
