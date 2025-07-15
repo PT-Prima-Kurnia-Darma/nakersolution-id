@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.pubt.general
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -24,12 +27,17 @@ data class GeneralInspectionReport(
 
 @Immutable
 data class GeneralData(
+    val id: Long = 0,
+    val documentType: DocumentType = DocumentType.LAPORAN,
+    val inspectionType: InspectionType = InspectionType.EE,
+    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val ownerName: String = "",
     val ownerAddress: String = "",
     val user: String = "",
     val userAddress: String = "",
     val operatorName: String = "",
-    val equipmentType: String = "",
     val manufacturer: String = "",
     val brandModelType: String = "",
     val countryAndYearOfManufacture: String = "",

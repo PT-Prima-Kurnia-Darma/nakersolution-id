@@ -16,7 +16,7 @@ import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionTestResul
         InspectionTestResult::class
     ],
     version = 1,
-    exportSchema = true // Set to true for production apps to export schema for migration testing
+    exportSchema = false // Set to true for production apps to export schema for migration testing
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun inspectionDao(): InspectionDao

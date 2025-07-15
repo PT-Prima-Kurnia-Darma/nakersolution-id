@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -28,6 +31,12 @@ data class LightningProtectionInspectionReport(
 
 @Immutable
 data class LightningProtectionServiceProviderData(
+    val id: Long = 0,
+    val documentType: DocumentType = DocumentType.LAPORAN,
+    val inspectionType: InspectionType = InspectionType.EE,
+    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val companyName: String = "",
     val companyAddress: String = "",
     val companyPermitNo: String = "",

@@ -30,12 +30,12 @@ enum class SubInspectionType {
     Electrical,
     Lightning_Conductor,
     // PUBT
-    Boiler,
-    Steam_Vessel,
-    BPV,
-    Storage_Tank,
-    Compressor_BT,
-    Pressure_Powered_Pipe,
+//    Boiler,
+//    Steam_Vessel,
+//    BPV,
+//    Storage_Tank,
+//    Compressor_BT,
+//    Pressure_Powered_Pipe,
     General_PUBT,
     // IPK
     Fire_Protection,
@@ -59,12 +59,12 @@ fun SubInspectionType.toDisplayString(): String {
         SubInspectionType.Electrical -> "Instalasi Listrik"
         SubInspectionType.Lightning_Conductor -> "Instalasi Penyalur Petir"
 
-        SubInspectionType.Boiler -> "Ketel Uap"
-        SubInspectionType.Steam_Vessel -> "Bejana Uap"
-        SubInspectionType.BPV -> "BPV"
-        SubInspectionType.Storage_Tank -> "Tangki Timbun"
-        SubInspectionType.Compressor_BT -> "Compressor BT"
-        SubInspectionType.Pressure_Powered_Pipe -> "Pipa Bertenaga/Bertekanan"
+//        SubInspectionType.Boiler -> "Ketel Uap"
+//        SubInspectionType.Steam_Vessel -> "Bejana Uap"
+//        SubInspectionType.BPV -> "BPV"
+//        SubInspectionType.Storage_Tank -> "Tangki Timbun"
+//        SubInspectionType.Compressor_BT -> "Compressor BT"
+//        SubInspectionType.Pressure_Powered_Pipe -> "Pipa Bertenaga/Bertekanan"
         SubInspectionType.General_PUBT -> "Pesawat Uap dan Bejana Tekan"
 
         SubInspectionType.Fire_Protection -> "Instalasi Proteksi Kebakaran"
@@ -133,12 +133,12 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Instalasi Petir" -> SubInspectionType.Electrical
         "Instalasi Penyalur Petir" -> SubInspectionType.Lightning_Conductor
 
-        "Ketel Uap" -> SubInspectionType.Boiler
-        "Bejana Uap" -> SubInspectionType.Steam_Vessel
-        "BPV" -> SubInspectionType.BPV
-        "Tangki Timbun" -> SubInspectionType.Storage_Tank
-        "Compressor BT" -> SubInspectionType.Compressor_BT
-        "Pipa Bertenaga/Bertekanan" -> SubInspectionType.Pressure_Powered_Pipe
+//        "Ketel Uap" -> SubInspectionType.Boiler
+//        "Bejana Uap" -> SubInspectionType.Steam_Vessel
+//        "BPV" -> SubInspectionType.BPV
+//        "Tangki Timbun" -> SubInspectionType.Storage_Tank
+//        "Compressor BT" -> SubInspectionType.Compressor_BT
+//        "Pipa Bertenaga/Bertekanan" -> SubInspectionType.Pressure_Powered_Pipe
         "Pesawat Uap dan Bejana Tekan" -> SubInspectionType.General_PUBT
 
         "Instalasi Proteksi Kebakaran" -> SubInspectionType.Fire_Protection

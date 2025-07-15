@@ -13,6 +13,7 @@ data class EskalatorUiState(
 
 @Immutable
 data class EskalatorGeneralData(
+    val id: Long = 0,
     val documentType: DocumentType = DocumentType.LAPORAN,
     val inspectionType: InspectionType = InspectionType.EE,
     val subInspectionType: SubInspectionType = SubInspectionType.Escalator,

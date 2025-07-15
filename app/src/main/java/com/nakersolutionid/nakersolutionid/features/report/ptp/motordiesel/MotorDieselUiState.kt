@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -28,13 +31,18 @@ data class DieselMotorInspectionReport(
 
 @Immutable
 data class DieselMotorGeneralData(
+    val id: Long = 0,
+    val documentType: DocumentType = DocumentType.LAPORAN,
+    val inspectionType: InspectionType = InspectionType.EE,
+    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val ownerName: String = "",
     val ownerAddress: String = "",
     val userInCharge: String = "",
     val userAddressInCharge: String = "",
     val subcontractorPersonInCharge: String = "",
     val unitLocation: String = "",
-    val equipmentType: String = "",
     val brandType: String = "",
     val serialNumberUnitNumber: String = "",
     val manufacturer: String = "",
