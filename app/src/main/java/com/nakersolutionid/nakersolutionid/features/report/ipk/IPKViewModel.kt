@@ -1,13 +1,17 @@
 package com.nakersolutionid.nakersolutionid.features.report.ipk
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionHydrantOperationalTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionPumpFunctionTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionUiState
+import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,13 +28,26 @@ class IPKViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
+            val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Fire_Protection -> {
-                    // TODO: Implement save logic for Machine report using _machineUiState.value
+                    val electricalInspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _ipkUiState.update { it.copy(fireProtectionResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _ipkUiState.update { it.copy(fireProtectionResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _ipkUiState.update { it.copy(fireProtectionResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 else -> {}
             }
         }
+    }
+
+    fun onIPKUpdateState(updater: (IPKUiState) -> IPKUiState) {
+        _ipkUiState.update(updater)
     }
 
     fun onFireProtectionReportChange(newReport: FireProtectionInspectionReport) {

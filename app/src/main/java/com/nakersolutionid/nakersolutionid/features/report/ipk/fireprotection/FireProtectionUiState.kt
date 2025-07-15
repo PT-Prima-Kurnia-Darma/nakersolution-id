@@ -46,11 +46,6 @@ data class FireProtectionDocumentChecklist(
 
 @Immutable
 data class FireProtectionCompanyData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
     val examinationType: String = "",
     val companyName: String = "",
     val companyLocation: String = "",
