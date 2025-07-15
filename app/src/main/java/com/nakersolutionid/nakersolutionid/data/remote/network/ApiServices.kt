@@ -27,7 +27,7 @@ interface ApiServices {
         @Body request: RegisterRequest
     ) : RegisterResponse
 
-    @POST("auth/login")
+    @POST("auth/login") // TODO: Create endpoints for checking if JWT is expired
     suspend fun login(
         @Body request: LoginRequest
     ) : LoginResponse

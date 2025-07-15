@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.Utils
@@ -99,11 +100,9 @@ fun HistoryItem(
             // Section 2: Details - Informasi Spesifik Laporan
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 InfoRow(label = "Jenis Pemeriksaan", value = history.examinationType)
-                InfoRow(
-                    label = "Tipe Laporan",
-                    value = "${history.inspectionType.name} - ${formatEnumName(history.subInspectionType)}"
-                )
-                InfoRow(label = "Jenis Dokumen", value = formatEnumName(history.documentType))
+                InfoRow(label = "Jenis Laporan", value = history.inspectionType.toDisplayString())
+                InfoRow(label = "Jenis Alat", value = history.subInspectionType.toDisplayString())
+                InfoRow(label = "Jenis Dokumen", value = history.documentType.toDisplayString())
                 InfoRow(label = "Tanggal Laporan", value = history.reportDate ?: "-")
             }
 
@@ -170,15 +169,6 @@ private fun ActionButton(
             tint = MaterialTheme.colorScheme.secondary
         )
     }
-}
-
-/**
- * Helper function untuk mengubah nama enum menjadi format yang lebih mudah dibaca.
- * Contoh: `SURAT_KETERANGAN_SEMENTARA` menjadi "Surat Keterangan Sementara".
- */
-private fun formatEnumName(enum: Enum<*>): String {
-    return enum.name.replace('_', ' ').lowercase(Locale.getDefault())
-        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 }
 
 

@@ -48,7 +48,7 @@ enum class SubInspectionType {
 fun SubInspectionType.toDisplayString(): String {
     return when (this) {
         SubInspectionType.Elevator -> "Elevator"
-        SubInspectionType.Escalator -> "Escalator"
+        SubInspectionType.Escalator -> "Eskalator"
 
         SubInspectionType.Forklift -> "Forklift"
         SubInspectionType.Mobile_Crane -> "Mobile Crane"
@@ -122,7 +122,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
     // Membandingkan langsung dengan string display yang tepat, peka huruf besar/kecil
     return when (this) {
         "Elevator" -> SubInspectionType.Elevator
-        "Escalator" -> SubInspectionType.Escalator
+        "Eskalator" -> SubInspectionType.Escalator
 
         "Forklift" -> SubInspectionType.Forklift
         "Mobil Crane" -> SubInspectionType.Mobile_Crane
