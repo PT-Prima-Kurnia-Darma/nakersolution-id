@@ -138,19 +138,19 @@ fun GeneralScreen(
                     GeneralFormTextField("Ketebalan (mm)", tubes.firstPass.thicknessMm) { onTubesChanged(tubes.copy(firstPass = tubes.firstPass.copy(thicknessMm = it))) }
                     GeneralFormTextField("Panjang (mm)", tubes.firstPass.lengthMm) { onTubesChanged(tubes.copy(firstPass = tubes.firstPass.copy(lengthMm = it))) }
                     GeneralFormTextField("Jumlah", tubes.firstPass.quantity) { onTubesChanged(tubes.copy(firstPass = tubes.firstPass.copy(quantity = it))) }
-                    Divider(Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
                     Text("Jalur Kedua / Second Pass", fontWeight = FontWeight.SemiBold)
                     GeneralFormTextField("Diameter (mm)", tubes.secondPass.diameterMm) { onTubesChanged(tubes.copy(secondPass = tubes.secondPass.copy(diameterMm = it))) }
                     GeneralFormTextField("Ketebalan (mm)", tubes.secondPass.thicknessMm) { onTubesChanged(tubes.copy(secondPass = tubes.secondPass.copy(thicknessMm = it))) }
                     GeneralFormTextField("Panjang (mm)", tubes.secondPass.lengthMm) { onTubesChanged(tubes.copy(secondPass = tubes.secondPass.copy(lengthMm = it))) }
                     GeneralFormTextField("Jumlah", tubes.secondPass.quantity) { onTubesChanged(tubes.copy(secondPass = tubes.secondPass.copy(quantity = it))) }
-                    Divider(Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
                     Text("Stay Tube", fontWeight = FontWeight.SemiBold)
                     GeneralFormTextField("Diameter (mm)", tubes.stayTube.diameterMm) { onTubesChanged(tubes.copy(stayTube = tubes.stayTube.copy(diameterMm = it))) }
                     GeneralFormTextField("Ketebalan (mm)", tubes.stayTube.thicknessMm) { onTubesChanged(tubes.copy(stayTube = tubes.stayTube.copy(thicknessMm = it))) }
                     GeneralFormTextField("Panjang (mm)", tubes.stayTube.lengthMm) { onTubesChanged(tubes.copy(stayTube = tubes.stayTube.copy(lengthMm = it))) }
                     GeneralFormTextField("Jumlah", tubes.stayTube.quantity) { onTubesChanged(tubes.copy(stayTube = tubes.stayTube.copy(quantity = it))) }
-                    Divider(Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
                     GeneralFormTextField("Material", tubes.material) { onTubesChanged(tubes.copy(material = it)) }
                     GeneralFormTextField("Cara Penyambungan", tubes.connectionMethod) { onTubesChanged(tubes.copy(connectionMethod = it)) }
                 }
@@ -272,13 +272,13 @@ fun GeneralScreen(
                     GeneralFormTextField("Metode NDT", ndt.shell.method) { onNdtChanged(ndt.copy(shell = ndt.shell.copy(method = it))) }
                     NdtResultInput("Longitudinal Weld Joint", ndt.shell.longitudinalWeldJoint) { onNdtChanged(ndt.copy(shell = ndt.shell.copy(longitudinalWeldJoint = it))) }
                     NdtResultInput("Circumferential Weld Joint", ndt.shell.circumferentialWeldJoint) { onNdtChanged(ndt.copy(shell = ndt.shell.copy(circumferentialWeldJoint = it))) }
-                    Divider(Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
 
                     Text("Furnace", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     GeneralFormTextField("Metode NDT", ndt.furnace.method) { onNdtChanged(ndt.copy(furnace = ndt.furnace.copy(method = it))) }
                     NdtResultInput("Longitudinal Weld Joint", ndt.furnace.longitudinalWeldJoint) { onNdtChanged(ndt.copy(furnace = ndt.furnace.copy(longitudinalWeldJoint = it))) }
                     NdtResultInput("Circumferential Weld Joint", ndt.furnace.circumferentialWeldJoint) { onNdtChanged(ndt.copy(furnace = ndt.furnace.copy(circumferentialWeldJoint = it))) }
-                    Divider(Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
 
                     Text("Pipa Api", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     GeneralFormTextField("Metode NDT", ndt.fireTubes.method) { onNdtChanged(ndt.copy(fireTubes = ndt.fireTubes.copy(method = it))) }
