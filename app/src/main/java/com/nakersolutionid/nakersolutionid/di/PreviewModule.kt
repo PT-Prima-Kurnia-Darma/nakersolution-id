@@ -17,6 +17,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ilpp.ILPPViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ipk.IPKViewModel
 import com.nakersolutionid.nakersolutionid.features.report.paa.PAAViewModel
 import com.nakersolutionid.nakersolutionid.features.report.ptp.PTPViewModel
+import com.nakersolutionid.nakersolutionid.features.report.pubt.PUBTViewModel
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import org.koin.core.module.dsl.viewModel
@@ -39,4 +40,5 @@ val previewModule = module {
     viewModel { ILPPViewModel(get()) }
     viewModel { PTPViewModel(get()) }
     viewModel { IPKViewModel(get()) }
+    viewModel { PUBTViewModel(get()) }
 }
