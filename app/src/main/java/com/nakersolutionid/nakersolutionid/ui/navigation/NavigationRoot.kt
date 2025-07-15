@@ -25,6 +25,11 @@ import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
 import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.EEScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorScreen
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.ILPPScreen
+import com.nakersolutionid.nakersolutionid.features.report.ipk.IPKScreen
+import com.nakersolutionid.nakersolutionid.features.report.paa.PAAScreen
+import com.nakersolutionid.nakersolutionid.features.report.ptp.PTPScreen
+import com.nakersolutionid.nakersolutionid.features.report.pubt.PUBTScreen
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsScreen
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpScreen
 import kotlinx.serialization.Serializable
@@ -37,6 +42,11 @@ import kotlinx.serialization.Serializable
 @Serializable data object Settings : NavKey
 
 @Serializable data object EE : NavKey
+@Serializable data object PAA : NavKey
+@Serializable data object ILPP : NavKey
+@Serializable data object PTP : NavKey
+@Serializable data object IPK : NavKey
+@Serializable data object PUBT : NavKey
 
 @Composable
 fun NavigationRoot(
@@ -100,7 +110,12 @@ fun NavigationRoot(
                 ReportScreen(
                     onBackClick = { backStack.removeLastOrNull() },
                     onMenuTypeClick = { menu ->
-                        when (menu.id) {
+                        when (menu) {
+                            1 -> backStack.add(ILPP)
+                            2 -> backStack.add(IPK)
+                            3 -> backStack.add(PAA)
+                            4 -> backStack.add(PUBT)
+                            5 -> backStack.add(PTP)
                             6 -> backStack.add(EE)
                             else -> {}
                         }
@@ -124,6 +139,21 @@ fun NavigationRoot(
             }
             entry<EE> {
                 EEScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<PAA> {
+                PAAScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<ILPP> {
+                ILPPScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<PTP> {
+                PTPScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<IPK> {
+                IPKScreen(onBackClick = { backStack.removeLastOrNull() })
+            }
+            entry<PUBT> {
+                PUBTScreen(onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {

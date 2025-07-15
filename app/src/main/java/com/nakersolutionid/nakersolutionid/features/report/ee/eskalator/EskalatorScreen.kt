@@ -77,7 +77,7 @@ fun EskalatorScreen(
         item {
             ExpandableSection(title = "Informasi Umum", initiallyExpanded = true) {
                 FormTextField(
-                    label = "Jenis Eskalator",
+                    label = "Jenis Escalator",
                     value = data.equipmentType,
                     onValueChange = { onDataChange(data.copy(equipmentType = it)) }
                 )
@@ -229,7 +229,7 @@ fun EskalatorScreen(
                         val d = inspection.runway
                         ResultStatusInput(label = "Kekuatan & Posisi Balok", provision = "Disesuaikan dengan spesifikasi", value = d.beamStrengthAndPosition, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(beamStrengthAndPosition = it)))) })
                         ResultStatusInput(label = "Kondisi Dinding Pit", provision = "Kedap air", value = d.pitWallCondition, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(pitWallCondition = it)))) })
-                        ResultStatusInput(label = "Penutup Rangka Eskalator", provision = "Tertutup dan dari bahan yang tidak Mudah pecah", value = d.escalatorFrameEnclosure, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(escalatorFrameEnclosure = it)))) })
+                        ResultStatusInput(label = "Penutup Rangka Escalator", provision = "Tertutup dan dari bahan yang tidak Mudah pecah", value = d.escalatorFrameEnclosure, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(escalatorFrameEnclosure = it)))) })
                         ResultStatusInput(label = "Penerangan", provision = "> 50 lux", value = d.lighting, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(lighting = it)))) })
                         ResultStatusInput(label = "Jarak Bebas Headroom", provision = "> 2300 mm", value = d.headroomClearance, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(headroomClearance = it)))) })
                         ResultStatusInput(label = "Jarak Balustrade ke Objek", provision = "< 120 mm", value = d.balustradeToObjectClearance, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(runway = d.copy(balustradeToObjectClearance = it)))) })
@@ -264,7 +264,7 @@ fun EskalatorScreen(
                     }
                     HorizontalDivider()
                     // Outdoor Specifics
-                    ExpandableSubSection(title = "Khusus Eskalator Outdoor") {
+                    ExpandableSubSection(title = "Khusus Escalator Outdoor") {
                         val d = inspection.outdoorSpecifics
                         ResultStatusInput(label = "Pompa Air Pit", provision = "Tersedia", value = d.pitWaterPump, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(outdoorSpecifics = d.copy(pitWaterPump = it)))) })
                         ResultStatusInput(label = "Komponen Tahan Cuaca", provision = "Tahan air, suhu/cuaca", value = d.weatherproofComponents, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(outdoorSpecifics = d.copy(weatherproofComponents = it)))) })
