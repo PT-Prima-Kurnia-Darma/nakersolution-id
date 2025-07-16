@@ -204,7 +204,7 @@ fun EskalatorScreen(
                     ExpandableSubSection(title = "Pagar Pelindung") {
                         val d = inspection.balustrade
                         val p = d.balustradePanel
-                        ExpandableSubSection(title = "Panel Balustrade") {
+                        ExpandableSubSection(title = "Panel Balustrade", modifier = Modifier.padding(horizontal = 12.dp)) {
                             ResultStatusInput(label = "Material", provision = "Dari baja dan kuat", value = p.material, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(balustrade = d.copy(balustradePanel = p.copy(material = it))))) })
                             ResultStatusInput(label = "Tinggi", provision = "750 < tinggi < 1100mm", value = p.height, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(balustrade = d.copy(balustradePanel = p.copy(height = it))))) })
                             ResultStatusInput(label = "Tekanan Samping", provision = "> 58,5 kg/m²", value = p.sidePressure, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(balustrade = d.copy(balustradePanel = p.copy(sidePressure = it))))) })
@@ -372,12 +372,13 @@ fun ExpandableSection(
 
 @Composable
 private fun ExpandableSubSection(
+    modifier: Modifier = Modifier,
     title: String,
     content: @Composable () -> Unit,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .animateContentSize(
                 animationSpec = tween(
