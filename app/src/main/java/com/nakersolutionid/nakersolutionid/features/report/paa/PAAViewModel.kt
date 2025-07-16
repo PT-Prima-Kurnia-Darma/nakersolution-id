@@ -1,7 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftInspectionReport
@@ -9,6 +11,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.Forklift
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeForkItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneDeflectionItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeGirderItem
@@ -29,6 +32,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.Mobil
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
+import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,11 +61,19 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
+            val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Forklift -> {
-                    // TODO: Implement save logic for Forklift report
+                    val electricalInspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(forkliftResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
-
                 SubInspectionType.Mobile_Crane -> {
                     // TODO: Implement save logic for Mobile Crane report
                 }
@@ -71,7 +83,6 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 SubInspectionType.Gantry_Crane -> {
                     // TODO: Implement save logic for Gantry Crane report
                 }
-
                 SubInspectionType.Gondola -> {
                     // TODO: Implement save logic for Gondola report
                 }
