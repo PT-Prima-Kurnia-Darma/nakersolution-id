@@ -241,10 +241,6 @@ data class InspectionAndTestingUiState(
 
 @Immutable
 data class ElevatorUiState(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val nameOfInspectionType: InspectionType = InspectionType.EE,
-    val subNameOfInspectionType: SubInspectionType = SubInspectionType.Elevator,
     val typeInspection: String = "",
     val eskOrElevType: String = "",
     val generalData: GeneralDataUiState = GeneralDataUiState(),

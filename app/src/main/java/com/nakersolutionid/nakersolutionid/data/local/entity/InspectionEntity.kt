@@ -108,7 +108,10 @@ data class InspectionEntity(
     val inspectorName: String? = null,
 
     @ColumnInfo(name = "status")
-    val status: String? = null // e.g., "LAIK", "Aman untuk dioperasikan"
+    val status: String? = null, // e.g., "LAIK", "Aman untuk dioperasikan"
+
+    @ColumnInfo(name = "is_synced")
+    val isSynced: Boolean = false
 )
 
 /**

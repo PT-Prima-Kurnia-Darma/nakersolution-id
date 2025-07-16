@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -15,6 +18,8 @@ data class GantryCraneUiState(
 
 @Immutable
 data class GantryCraneInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: GantryCraneGeneralData = GantryCraneGeneralData(),
     val technicalData: GantryCraneTechnicalData = GantryCraneTechnicalData(),
     val visualInspection: GantryCraneVisualInspection = GantryCraneVisualInspection(),
@@ -76,7 +81,9 @@ data class GantryCraneDriveMotor(
     val rpm: GantryCraneMovementData = GantryCraneMovementData(),
     val voltageV: GantryCraneMovementData = GantryCraneMovementData(),
     val currentA: GantryCraneMovementData = GantryCraneMovementData(),
-    val frequencyHz: GantryCraneMovementData = GantryCraneMovementData()
+    val frequencyHz: GantryCraneMovementData = GantryCraneMovementData(),
+    val phase: GantryCraneMovementData = GantryCraneMovementData(), // ADDED
+    val powerSupply: GantryCraneMovementData = GantryCraneMovementData() // ADDED
 )
 
 // ADDED a new data class for Starting Resistor
@@ -391,6 +398,7 @@ data class GantryCraneLoadTestResult(
 @Immutable
 data class GantryCraneStaticTest(
     val load: String = "",
+    val deflectionResult: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val deflectionStandard: GantryCraneDeflectionStandard = GantryCraneDeflectionStandard(),
     val deflectionMeasurement: ImmutableList<GantryCraneDeflectionItem> = persistentListOf()
 )
@@ -413,5 +421,6 @@ data class GantryCraneDeflectionItem(
 @Immutable
 data class GantryCraneConclusion(
     val summary: ImmutableList<String> = persistentListOf(),
-    val recommendations: ImmutableList<String> = persistentListOf()
+    val recommendations: ImmutableList<String> = persistentListOf(),
+    val nextInspectionDateSuggestion: String = ""
 )

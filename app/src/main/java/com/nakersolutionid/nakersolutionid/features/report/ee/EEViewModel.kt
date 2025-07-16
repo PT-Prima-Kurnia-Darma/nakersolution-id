@@ -1,14 +1,17 @@
 package com.nakersolutionid.nakersolutionid.features.report.ee
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorGeneralData
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorUiState
-import com.nakersolutionid.nakersolutionid.utils.toDomain
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,14 +30,29 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
+            val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Elevator -> {
-                    reportUseCase.sendReport(_elevatorUiState.value.toDomain()).collect { result ->
-                        _eeUiState.update { it.copy(elevatorResult = result) }
+                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(elevatorInspection)
+                        _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
                     }
                 }
                 SubInspectionType.Escalator -> {
-                    _eeUiState.update { it.copy(eskalatorResult = Resource.Error("Not Implemented Yet")) }
+                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(escalatorInspection)
+                        _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 else -> null
             }

@@ -170,16 +170,25 @@ fun GondolaScreen(
         contentPadding = contentPadding,
         verticalArrangement = verticalArrangement
     ) {
+        // Main Data Section
+        item {
+            val data = report
+            ExpandableSection(title = "DATA UTAMA", initiallyExpanded = true) {
+                FormTextField(label = "Jenis Pemeriksaan", value = data.examinationType, onValueChange = { onDataChange(data.copy(examinationType = it)) })
+                FormTextField(label = "Jenis Pesawat Angkat", value = data.equipmentType, onValueChange = { onDataChange(data.copy(equipmentType = it)) })
+            }
+        }
+
         item {
             val data = report.generalData
-            ExpandableSection(title = "DATA UMUM", initiallyExpanded = true) {
+            ExpandableSection(title = "DATA UMUM", initiallyExpanded = false) {
                 FormTextField(label = "Pemilik", value = data.owner, onValueChange = { onDataChange(report.copy(generalData = data.copy(owner = it))) })
                 FormTextField(label = "Alamat", value = data.ownerAddress, onValueChange = { onDataChange(report.copy(generalData = data.copy(ownerAddress = it))) })
                 FormTextField(label = "Pemakai", value = data.user, onValueChange = { onDataChange(report.copy(generalData = data.copy(user = it))) })
                 FormTextField(label = "Pengurus/Sub Kontraktor", value = data.personInCharge, onValueChange = { onDataChange(report.copy(generalData = data.copy(personInCharge = it))) })
                 FormTextField(label = "Lokasi Unit", value = data.unitLocation, onValueChange = { onDataChange(report.copy(generalData = data.copy(unitLocation = it))) })
                 FormTextField(label = "Nama Operator", value = data.operatorName, onValueChange = { onDataChange(report.copy(generalData = data.copy(operatorName = it))) })
-                FormTextField(label = "Jenis Pesawat", value = data.equipmentType, onValueChange = { onDataChange(report.copy(generalData = data.copy(equipmentType = it))) })
+                FormTextField(label = "Jenis Pesawat", value = data.driveType, onValueChange = { onDataChange(report.copy(generalData = data.copy(driveType = it))) })
                 FormTextField(label = "Pabrik Pembuat", value = data.manufacturer, onValueChange = { onDataChange(report.copy(generalData = data.copy(manufacturer = it))) })
                 FormTextField(label = "Merek / Type", value = data.brandType, onValueChange = { onDataChange(report.copy(generalData = data.copy(brandType = it))) })
                 FormTextField(label = "Tahun Pembuatan", value = data.yearOfManufacture, onValueChange = { onDataChange(report.copy(generalData = data.copy(yearOfManufacture = it))) })

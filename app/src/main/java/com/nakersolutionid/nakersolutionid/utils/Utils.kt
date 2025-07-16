@@ -1,9 +1,9 @@
 package com.nakersolutionid.nakersolutionid.utils
 
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 object Utils {
 
@@ -21,25 +21,32 @@ object Utils {
      * message if the input string is invalid.
      */
     fun formatIsoDate(isoDateString: String): String {
+        // 1. Create a formatter that matches the input string
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+
+        // 2. Create a formatter for the desired output string
+        val outputFormat = SimpleDateFormat("MM-dd-yyyy (HH:mm)", Locale.US)
+
         return try {
-            // 1. Parse the input string into an OffsetDateTime object.
-            // This object understands time zones and offsets.
-            val parsedDateTime = OffsetDateTime.parse(isoDateString)
-
-            // 2. Define the desired output format.
-            // MM: Month
-            // dd: Day
-            // yyyy: Year
-            // HH: Hour (00-23)
-            // mm: Minute
-            val outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy (HH:mm)", Locale.getDefault())
-
-            // 3. Format the parsed date-time object into the target string format.
-            parsedDateTime.format(outputFormatter)
-
-        } catch (e: DateTimeParseException) {
-            // Handle cases where the input string is not a valid date format.
+            // Parse the input string into a Date object
+            val date = inputFormat.parse(isoDateString)
+            // Format the Date object into the new string format
+            if (date != null) {
+                outputFormat.format(date)
+            } else {
+                "Format tanggal tidak valid."
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
             "Format tanggal tidak valid."
         }
+    }
+
+    fun getCurrentTime(): String {
+        // The format XXX will produce the offset like +07:00
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        // Set the time zone to UTC+7 (Jakarta Time)
+        dateFormat.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+        return dateFormat.format(Date())
     }
 }

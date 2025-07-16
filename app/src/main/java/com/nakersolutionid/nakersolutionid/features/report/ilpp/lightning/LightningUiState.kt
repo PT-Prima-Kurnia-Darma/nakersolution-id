@@ -42,14 +42,14 @@ data class LightningProtectionClientData(
     val companyLocation: String = "",
     val usageLocation: String = "",
     val objectType: String = "",
-    val inspectionType: String = "",
+    val inspectionType: String = "", // Examination Type
     val certificateNo: String = "",
     val inspectionDate: String = ""
 )
 
 @Immutable
 data class LightningProtectionTechnicalData(
-    val conductorType: String = "",
+    val conductorType: String = "", // Drive Type
     val buildingHeight: String = "",
     val buildingArea: String = "",
     val receiverHeight: String = "",

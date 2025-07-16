@@ -106,10 +106,19 @@ fun OverheadCraneScreen(
         contentPadding = contentPadding,
         verticalArrangement = verticalArrangement
     ) {
+        // Main Data Section
+        item {
+            val data = report
+            ExpandableSection(title = "DATA UTAMA", initiallyExpanded = true) {
+                FormTextField(label = "Jenis Pemeriksaan", value = data.examinationType, onValueChange = { onDataChange(data.copy(examinationType = it)) })
+                FormTextField(label = "Jenis Pesawat Angkat", value = data.equipmentType, onValueChange = { onDataChange(data.copy(equipmentType = it)) })
+            }
+        }
+
         // General Data Section
         item {
             val data = report.generalData
-            ExpandableSection(title = "DATA UMUM", initiallyExpanded = true) {
+            ExpandableSection(title = "DATA UMUM", initiallyExpanded = false) {
                 FormTextField(label = "Pemilik", value = data.owner, onValueChange = { onDataChange(report.copy(generalData = data.copy(owner = it))) })
                 FormTextField(label = "Alamat", value = data.address, onValueChange = { onDataChange(report.copy(generalData = data.copy(address = it))) })
                 FormTextField(label = "Pemakai", value = data.user, onValueChange = { onDataChange(report.copy(generalData = data.copy(user = it))) })

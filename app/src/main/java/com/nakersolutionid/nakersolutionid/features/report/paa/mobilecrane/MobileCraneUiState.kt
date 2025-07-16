@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -15,6 +18,8 @@ data class MobileCraneUiState(
 
 @Immutable
 data class MobileCraneInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: MobileCraneGeneralData = MobileCraneGeneralData(),
     val technicalData: MobileCraneTechnicalData = MobileCraneTechnicalData(),
     val visualInspection: MobileCraneVisualInspection = MobileCraneVisualInspection(),

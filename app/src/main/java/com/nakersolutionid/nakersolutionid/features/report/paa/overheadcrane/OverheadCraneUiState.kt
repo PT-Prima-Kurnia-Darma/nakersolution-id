@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -15,6 +18,8 @@ data class OverheadCraneUiState(
 
 @Immutable
 data class OverheadCraneInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: OverheadCraneGeneralData = OverheadCraneGeneralData(),
     val technicalData: OverheadCraneTechnicalData = OverheadCraneTechnicalData(),
     val visualInspection: OverheadCraneVisualInspection = OverheadCraneVisualInspection(),

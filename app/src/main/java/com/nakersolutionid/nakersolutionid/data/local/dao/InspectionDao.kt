@@ -44,13 +44,15 @@ interface InspectionDao {
         checkItems: List<InspectionCheckItem>,
         findings: List<InspectionFinding>,
         testResults: List<InspectionTestResult>
-    ) {
+    ): Long {
         val inspectionId = insertInspection(inspectionEntity)
 
         // Associate the returned ID with each related item
         insertCheckItems(checkItems.map { it.copy(inspectionId = inspectionId) })
         insertFindings(findings.map { it.copy(inspectionId = inspectionId) })
         insertTestResults(testResults.map { it.copy(inspectionId = inspectionId) })
+
+        return inspectionId
     }
 
     /**
@@ -67,4 +69,10 @@ interface InspectionDao {
     @Transaction
     @Query("SELECT * FROM inspections ORDER BY created_at ASC")
     fun getAllInspectionsWithDetails(): Flow<List<InspectionWithDetails>>
+
+    /**
+     * Efficiently updates only the sync status of an inspection by its ID.
+     */
+    @Query("UPDATE inspections SET is_synced = :isSynced WHERE id = :id")
+    suspend fun updateSyncStatus(id: Long, isSynced: Boolean)
 }

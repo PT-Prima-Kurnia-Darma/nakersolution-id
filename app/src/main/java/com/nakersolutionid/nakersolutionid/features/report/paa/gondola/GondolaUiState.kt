@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa.gondola
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -15,6 +18,8 @@ data class GondolaUiState(
 
 @Immutable
 data class GondolaInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: GondolaGeneralData = GondolaGeneralData(),
     val technicalData: GondolaTechnicalData = GondolaTechnicalData(),
     val visualInspection: GondolaVisualInspection = GondolaVisualInspection(),
@@ -31,9 +36,9 @@ data class GondolaGeneralData(
     val personInCharge: String? = "",
     val unitLocation: String = "",
     val operatorName: String? = "",
-    val equipmentType: String = "",
     val manufacturer: String = "",
     val brandType: String = "",
+    val driveType: String = "",
     val yearOfManufacture: String = "",
     val serialNumberUnitNumber: String = "",
     val capacity: String = "",

@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.pubt.general
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -16,6 +19,8 @@ data class GeneralUiState(
 
 @Immutable
 data class GeneralInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: GeneralData = GeneralData(),
     val technicalData: GeneralTechnicalData = GeneralTechnicalData(),
     val inspectionAndMeasurement: GeneralInspectionAndMeasurement = GeneralInspectionAndMeasurement(),
@@ -29,9 +34,9 @@ data class GeneralData(
     val user: String = "",
     val userAddress: String = "",
     val operatorName: String = "",
-    val equipmentType: String = "",
     val manufacturer: String = "",
     val brandModelType: String = "",
+    val driveType: String = "",
     val countryAndYearOfManufacture: String = "",
     val serialNumber: String = "",
     val designPressureKgCm2: String = "",

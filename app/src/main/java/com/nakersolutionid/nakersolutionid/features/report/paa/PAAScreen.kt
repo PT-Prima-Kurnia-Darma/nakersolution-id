@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
@@ -39,6 +41,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.Mobil
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneScreen
 import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
@@ -67,19 +70,19 @@ fun PAAScreen(
         SubInspectionType.Overhead_Crane
     )
 
-    /*LaunchedEffect(uiState.elevatorResult) {
-        when (val result = uiState.elevatorResult) {
+    LaunchedEffect(paaUiState.forkliftResult) {
+        when (val result = paaUiState.forkliftResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, forkliftResult = null) }
             }
 
             is Resource.Loading -> {
-                viewModel.onUpdateState { it.copy(isLoading = true) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
             }
 
             is Resource.Success -> {
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, forkliftResult = null) }
                 onBackClick()
             }
 
@@ -87,24 +90,85 @@ fun PAAScreen(
         }
     }
 
-    LaunchedEffect(uiState.eskalatorResult) {
-        when (val result = uiState.eskalatorResult) {
+    LaunchedEffect(paaUiState.gantryCraneResult) {
+        when (val result = paaUiState.gantryCraneResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, gantryCraneResult = null) }
             }
 
             is Resource.Loading -> {
-                viewModel.onUpdateState { it.copy(isLoading = true) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
             }
 
             is Resource.Success -> {
-                viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, gantryCraneResult = null) }
+                onBackClick()
             }
 
             null -> null
         }
-    }*/
+    }
+
+    LaunchedEffect(paaUiState.gondolaResult) {
+        when (val result = paaUiState.gondolaResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, gondolaResult = null) }
+            }
+
+            is Resource.Loading -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
+            }
+
+            is Resource.Success -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, gondolaResult = null) }
+                onBackClick()
+            }
+
+            null -> null
+        }
+    }
+
+    LaunchedEffect(paaUiState.mobileCraneResult) {
+        when (val result = paaUiState.mobileCraneResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, mobileCraneResult = null) }
+            }
+
+            is Resource.Loading -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
+            }
+
+            is Resource.Success -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, mobileCraneResult = null) }
+                onBackClick()
+            }
+
+            null -> null
+        }
+    }
+
+    LaunchedEffect(paaUiState.overheadCraneResult) {
+        when (val result = paaUiState.overheadCraneResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, overheadCraneResult = null) }
+            }
+
+            is Resource.Loading -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
+            }
+
+            is Resource.Success -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, overheadCraneResult = null) }
+                onBackClick()
+            }
+
+            null -> null
+        }
+    }
 
     Scaffold(
         modifier = Modifier

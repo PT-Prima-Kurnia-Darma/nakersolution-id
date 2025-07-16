@@ -131,10 +131,19 @@ fun GantryCraneScreen(
         contentPadding = contentPadding,
         verticalArrangement = verticalArrangement
     ) {
+        // Main Data Section
+        item {
+            val data = report
+            ExpandableSection(title = "DATA UTAMA", initiallyExpanded = true) {
+                FormTextField(label = "Jenis Pemeriksaan", value = data.examinationType, onValueChange = { onDataChange(data.copy(examinationType = it)) })
+                FormTextField(label = "Jenis Pesawat Angkat", value = data.equipmentType, onValueChange = { onDataChange(data.copy(equipmentType = it)) })
+            }
+        }
+
         // General Data Section
         item {
             val data = report.generalData
-            ExpandableSection(title = "DATA UMUM", initiallyExpanded = true) {
+            ExpandableSection(title = "DATA UMUM", initiallyExpanded = false) {
                 FormTextField(label = "Pemilik", value = data.owner, onValueChange = { onDataChange(report.copy(generalData = data.copy(owner = it))) })
                 FormTextField(label = "Alamat", value = data.address, onValueChange = { onDataChange(report.copy(generalData = data.copy(address = it))) })
                 FormTextField(label = "Pemakai", value = data.user, onValueChange = { onDataChange(report.copy(generalData = data.copy(user = it))) })
@@ -181,6 +190,8 @@ fun GantryCraneScreen(
                     MovementDataInput(label = "Voltage (v)", data = d.voltageV, onValueChange = { onDataChange(report.copy(technicalData = data.copy(driveMotor = d.copy(voltageV = it)))) })
                     MovementDataInput(label = "Arus (A)", data = d.currentA, onValueChange = { onDataChange(report.copy(technicalData = data.copy(driveMotor = d.copy(currentA = it)))) })
                     MovementDataInput(label = "Frekuensi (Hz)", data = d.frequencyHz, onValueChange = { onDataChange(report.copy(technicalData = data.copy(driveMotor = d.copy(frequencyHz = it)))) })
+                    MovementDataInput(label = "Phase", data = d.phase, onValueChange = { onDataChange(report.copy(technicalData = data.copy(driveMotor = d.copy(phase = it)))) })
+                    MovementDataInput(label = "Power Supply", data = d.powerSupply, onValueChange = { onDataChange(report.copy(technicalData = data.copy(driveMotor = d.copy(powerSupply = it)))) })
                 }
                 HorizontalDivider()
 
@@ -558,9 +569,16 @@ fun GantryCraneScreen(
                 HorizontalDivider()
                 ExpandableSubSection("PENGUJIAN STATIS (Defleksi)") {
                     val data = testing.staticTest
+                    FormTextField(label = "Berdasarkan Design", value = data.deflectionStandard.designBased, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionStandard = data.deflectionStandard.copy(designBased = it))))) })
                     FormTextField(label = "Beban Uji", value = data.load, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(load = it)))) })
                     FormTextField(label = "Panjang Span", value = data.deflectionStandard.spanLength, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionStandard = data.deflectionStandard.copy(spanLength = it))))) })
                     FormTextField(label = "Perhitungan (1/600 x Span)", value = data.deflectionStandard.calculation, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionStandard = data.deflectionStandard.copy(calculation = it))))) })
+                    // MODIFIED: Changed from FormTextField to GantryCraneResultStatusInput
+                    GantryCraneResultStatusInput(
+                        label = "Hasil",
+                        value = data.deflectionResult,
+                        onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionResult = it)))) }
+                    )
 
                     Spacer(modifier = Modifier.height(8.dp))
                     FilledTonalButton(onClick = { showDeflectionDialog = true }, modifier = Modifier.fillMaxWidth()) {
@@ -598,6 +616,14 @@ fun GantryCraneScreen(
         item {
             val data = report.conclusion
             ExpandableSection(title = "SARAN-SARAN") {
+                // ADDED
+                FormTextField(
+                    label = "Tanggal Inspeksi Berikutnya",
+                    value = data.nextInspectionDateSuggestion,
+                    onValueChange = { onDataChange(report.copy(conclusion = data.copy(nextInspectionDateSuggestion = it))) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                // END ADDED
                 FilledTonalButton(onClick = { showRecommendationDialog = true }, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                     Spacer(modifier = Modifier.width(8.dp))
@@ -766,8 +792,8 @@ fun GantryCraneResultStatusInput(
             modifier = Modifier.clip(MaterialTheme.shapes.small).clickable { onValueChange(value.copy(status = !value.status)) }.padding(end = 8.dp)
         ) {
             Checkbox(
-                checked = !value.status,
-                onCheckedChange = { onCheckedChange -> onValueChange(value.copy(status = !onCheckedChange)) }
+                checked = value.status,
+                onCheckedChange = { onCheckedChange -> onValueChange(value.copy(status = onCheckedChange)) }
             )
             Text("Memenuhi")
         }

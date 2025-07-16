@@ -1,21 +1,19 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
 //import com.nakersolutionid.nakersolutionid.utils.toEntity
-import com.nakersolutionid.nakersolutionid.data.Resource
+//import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
+//import com.nakersolutionid.nakersolutionid.data.local.mapper.toInspectionWithDetails
+import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
-import com.nakersolutionid.nakersolutionid.data.local.mapper.toInspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
-import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.History
-import com.nakersolutionid.nakersolutionid.domain.model.Report
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
-import com.nakersolutionid.nakersolutionid.utils.toNetwork
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class ReportRepository(
@@ -23,20 +21,31 @@ class ReportRepository(
     private val remoteDataSource: RemoteDataSource,
     private val userPreference: UserPreference
 ) : IReportRepository {
-    override fun sendReport(request: Report): Flow<Resource<String>> = flow {
+    override suspend fun saveReport(request: InspectionWithDetailsDomain) {
+        val inspectionWithDetails = request.toEntity("")
+        localDataSource.insertInspection(
+            inspectionEntity = inspectionWithDetails.inspectionEntity,
+            checkItems = inspectionWithDetails.checkItems,
+            findings = inspectionWithDetails.findings,
+            testResults = inspectionWithDetails.testResults
+        )
+    }
+
+    /*override fun saveReportInCloud(localId: Long, request: InspectionWithDetailsDomain): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
         val token = userPreference.getUserToken() ?: ""
-        when (val apiResponse = remoteDataSource.sendReport(token, request.toNetwork()).first()) {
+        val apiResponse = remoteDataSource.sendReport(token, request.toNetworkDto()).first()
+        when (apiResponse) {
             is ApiResponse.Success -> {
-                val extraId = apiResponse.data.data?.laporan?.id ?: "NONE"
-                val createdAt = apiResponse.data.data?.laporan?.createdAt ?: "NONE"
-                val inspectionWithDetails = request.toInspectionWithDetails(extraId = extraId, createdAt = createdAt)
+                val extraId = apiResponse.data.data.laporan?.id ?: "NONE"
+                val inspectionWithDetails = request.toEntity(extraId, request.inspection.id)
                 localDataSource.insertInspection(
                     inspectionEntity = inspectionWithDetails.inspectionEntity,
                     checkItems = inspectionWithDetails.checkItems,
                     findings = inspectionWithDetails.findings,
                     testResults = inspectionWithDetails.testResults
                 )
+//                saveInspectionInLocal("", localDataSource, request)
                 emit(Resource.Success(apiResponse.data.message))
             }
 
@@ -46,7 +55,7 @@ class ReportRepository(
 
             is ApiResponse.Empty -> {}
         }
-    }
+    }*/
 
     override fun getAllReports(): Flow<List<History>> {
         return localDataSource.getAllInspectionsWithDetails().map {

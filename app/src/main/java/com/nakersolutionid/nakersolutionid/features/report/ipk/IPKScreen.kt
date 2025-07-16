@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,12 +29,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionScreen
 import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
@@ -58,44 +61,25 @@ fun IPKScreen(
         SubInspectionType.Fire_Protection
     )
 
-    /*LaunchedEffect(uiState.elevatorResult) {
-        when (val result = uiState.elevatorResult) {
+    LaunchedEffect(ipkUiState.fireProtectionResult) {
+        when (val result = ipkUiState.fireProtectionResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onIPKUpdateState { it.copy(isLoading = false, fireProtectionResult = null) }
             }
 
             is Resource.Loading -> {
-                viewModel.onUpdateState { it.copy(isLoading = true) }
+                viewModel.onIPKUpdateState { it.copy(isLoading = true) }
             }
 
             is Resource.Success -> {
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onIPKUpdateState { it.copy(isLoading = false, fireProtectionResult = null) }
                 onBackClick()
             }
 
             null -> null
         }
     }
-
-    LaunchedEffect(uiState.eskalatorResult) {
-        when (val result = uiState.eskalatorResult) {
-            is Resource.Error -> {
-                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
-            }
-
-            is Resource.Loading -> {
-                viewModel.onUpdateState { it.copy(isLoading = true) }
-            }
-
-            is Resource.Success -> {
-                viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
-            }
-
-            null -> null
-        }
-    }*/
 
     Scaffold(
         modifier = Modifier

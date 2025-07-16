@@ -307,7 +307,7 @@ fun GeneralDataSection(generalData: GeneralDataUiState, onDataChange: (GeneralDa
         FormTextField("Lokasi Pemakaian", generalData.nameUsageLocation) { onDataChange(generalData.copy(nameUsageLocation = it)) }
         FormTextField("Alamat Pemakaian", generalData.addressUsageLocation) { onDataChange(generalData.copy(addressUsageLocation = it)) }
         FormTextField("Perusahaan Pembuat / Pemasang", generalData.manufacturerOrInstaller) { onDataChange(generalData.copy(manufacturerOrInstaller = it)) }
-        FormTextField("Jenis Elevator", generalData.elevatorType) { onDataChange(generalData.copy(elevatorType = it)) }
+        FormTextField("Tipe Elevator", generalData.elevatorType) { onDataChange(generalData.copy(elevatorType = it)) }
         FormTextField("Merk / Type", generalData.brandOrType) { onDataChange(generalData.copy(brandOrType = it)) }
         FormTextField("Negara / Tahun Pembuatan", generalData.countryAndYear) { onDataChange(generalData.copy(countryAndYear = it)) }
         FormTextField("No. Seri / No. Unit", generalData.serialNumber) { onDataChange(generalData.copy(serialNumber = it)) }

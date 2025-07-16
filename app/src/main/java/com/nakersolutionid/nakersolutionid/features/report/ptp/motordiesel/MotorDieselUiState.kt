@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -16,6 +19,8 @@ data class DieselMotorUiState(
 
 @Immutable
 data class DieselMotorInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: DieselMotorGeneralData = DieselMotorGeneralData(),
     val technicalData: DieselMotorTechnicalData = DieselMotorTechnicalData(),
     val visualInspection: DieselMotorVisualInspection = DieselMotorVisualInspection(),
@@ -34,8 +39,8 @@ data class DieselMotorGeneralData(
     val userAddressInCharge: String = "",
     val subcontractorPersonInCharge: String = "",
     val unitLocation: String = "",
-    val equipmentType: String = "",
     val brandType: String = "",
+    val driveType: String = "",
     val serialNumberUnitNumber: String = "",
     val manufacturer: String = "",
     val locationAndYearOfManufacture: String = "",

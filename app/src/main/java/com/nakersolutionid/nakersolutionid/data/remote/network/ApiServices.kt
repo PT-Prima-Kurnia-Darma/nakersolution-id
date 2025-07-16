@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.remote.network
 
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportDto
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.SendElevatorReportRequest
@@ -26,7 +27,7 @@ interface ApiServices {
         @Body request: RegisterRequest
     ) : RegisterResponse
 
-    @POST("auth/login")
+    @POST("auth/login") // TODO: Create endpoints for checking if JWT is expired
     suspend fun login(
         @Body request: LoginRequest
     ) : LoginResponse
@@ -50,7 +51,7 @@ interface ApiServices {
     @POST("elevatorEskalator/elevator/laporan")
     suspend fun sendReport(
         @Header("Authorization") token: String,
-        @Body request: SendElevatorReportRequest
+        @Body request: ElevatorReportDto
     ) : ElevatorReportResponse
 
     @GET("elevatorEskalator/elevator/laporan")

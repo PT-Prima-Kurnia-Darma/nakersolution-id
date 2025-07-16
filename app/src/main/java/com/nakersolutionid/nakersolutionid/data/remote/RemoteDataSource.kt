@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.data.remote
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportDto
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
@@ -144,7 +145,7 @@ class RemoteDataSource(private val apiServices: ApiServices) {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun sendReport(token: String, request: SendElevatorReportRequest): Flow<ApiResponse<ElevatorReportResponse>> {
+    fun sendReport(token: String, request: ElevatorReportDto): Flow<ApiResponse<ElevatorReportResponse>> {
         return flow {
             try {
                 val response = apiServices.sendReport("Bearer $token", request)

@@ -77,7 +77,7 @@ fun EskalatorScreen(
         item {
             ExpandableSection(title = "Informasi Umum", initiallyExpanded = true) {
                 FormTextField(
-                    label = "Jenis Escalator",
+                    label = "Jenis Eskalator",
                     value = data.equipmentType,
                     onValueChange = { onDataChange(data.copy(equipmentType = it)) }
                 )

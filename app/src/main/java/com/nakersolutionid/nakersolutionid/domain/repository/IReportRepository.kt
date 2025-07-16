@@ -1,11 +1,10 @@
 package com.nakersolutionid.nakersolutionid.domain.repository
 
-import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.domain.model.History
-import com.nakersolutionid.nakersolutionid.domain.model.Report
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import kotlinx.coroutines.flow.Flow
 
 interface IReportRepository {
-    fun sendReport(request: Report): Flow<Resource<String>>
+    suspend fun saveReport(request: InspectionWithDetailsDomain)
     fun getAllReports(): Flow<List<History>>
 }

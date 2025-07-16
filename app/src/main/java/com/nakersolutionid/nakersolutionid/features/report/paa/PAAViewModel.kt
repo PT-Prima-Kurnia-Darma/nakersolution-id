@@ -1,7 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftInspectionReport
@@ -9,11 +11,13 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.Forklift
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeForkItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneDeflectionItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeGirderItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaCageItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaClampsItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaInspectionReport
@@ -21,14 +25,18 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaLo
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSteelWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSuspensionStructureItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTestItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,23 +65,62 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
+            val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Forklift -> {
-                    // TODO: Implement save logic for Forklift report
+                    val electricalInspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(forkliftResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
-
                 SubInspectionType.Mobile_Crane -> {
-                    // TODO: Implement save logic for Mobile Crane report
+                    val electricalInspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 SubInspectionType.Overhead_Crane -> {
-                    // TODO: Implement save logic for Overhead Crane report
+                    val electricalInspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 SubInspectionType.Gantry_Crane -> {
-                    // TODO: Implement save logic for Gantry Crane report
+                    val electricalInspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
-
                 SubInspectionType.Gondola -> {
-                    // TODO: Implement save logic for Gondola report
+                    val electricalInspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(gondolaResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 else -> {}
             }

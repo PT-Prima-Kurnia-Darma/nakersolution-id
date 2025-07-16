@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
@@ -35,6 +37,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.Electri
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningScreen
 import com.nakersolutionid.nakersolutionid.ui.components.InspectionTopAppBar
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
@@ -60,19 +63,19 @@ fun ILPPScreen(
         SubInspectionType.Lightning_Conductor
     )
 
-    /*LaunchedEffect(uiState.elevatorResult) {
-        when (val result = uiState.elevatorResult) {
+    LaunchedEffect(paaUiState.electricResult) {
+        when (val result = paaUiState.electricResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = false, electricResult = null) }
             }
 
             is Resource.Loading -> {
-                viewModel.onUpdateState { it.copy(isLoading = true) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = true) }
             }
 
             is Resource.Success -> {
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = false, electricResult = null) }
                 onBackClick()
             }
 
@@ -80,24 +83,25 @@ fun ILPPScreen(
         }
     }
 
-    LaunchedEffect(uiState.eskalatorResult) {
-        when (val result = uiState.eskalatorResult) {
+    LaunchedEffect(paaUiState.lightningResult) {
+        when (val result = paaUiState.lightningResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = false, lightningResult = null) }
             }
 
             is Resource.Loading -> {
-                viewModel.onUpdateState { it.copy(isLoading = true) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = true) }
             }
 
             is Resource.Success -> {
-                viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = false, lightningResult = null) }
+                onBackClick()
             }
 
             null -> null
         }
-    }*/
+    }
 
     Scaffold(
         modifier = Modifier

@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.SyncProblem
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.Utils
@@ -52,28 +56,53 @@ fun HistoryItem(
                 .padding(16.dp)
         ) {
             // Section 1: Header - Identitas Utama Laporan
-            Text(
-                text = history.ownerName ?: "Nama Pemilik Tidak Tersedia",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = history.equipmentType,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.secondary
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically // Align items vertically in the center
+            ) {
+                // Add weight(1f) to this Column to make it fill all available space
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = history.ownerName ?: "Nama Pemilik Tidak Tersedia",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = history.equipmentType,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+
+                // This Icon will now be pushed to the far right
+                if (history.isSynced) {
+                    Icon(
+                        modifier = Modifier
+                            .size(42.dp),
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Synced",
+                        tint = MaterialTheme.colorScheme.primary// Changed for clarity
+                    )
+                } else {
+                    Icon(
+                        modifier = Modifier
+                            .size(42.dp),
+                        imageVector = Icons.Filled.SyncProblem,
+                        contentDescription = "Not synced",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Section 2: Details - Informasi Spesifik Laporan
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 InfoRow(label = "Jenis Pemeriksaan", value = history.examinationType)
-                InfoRow(
-                    label = "Tipe Laporan",
-                    value = "${history.inspectionType.name} - ${formatEnumName(history.subInspectionType)}"
-                )
-                InfoRow(label = "Jenis Dokumen", value = formatEnumName(history.documentType))
+                InfoRow(label = "Jenis Laporan", value = history.inspectionType.toDisplayString())
+                InfoRow(label = "Jenis Alat", value = history.subInspectionType.toDisplayString())
+                InfoRow(label = "Jenis Dokumen", value = history.documentType.toDisplayString())
                 InfoRow(label = "Tanggal Laporan", value = history.reportDate ?: "-")
             }
 
@@ -142,15 +171,6 @@ private fun ActionButton(
     }
 }
 
-/**
- * Helper function untuk mengubah nama enum menjadi format yang lebih mudah dibaca.
- * Contoh: `SURAT_KETERANGAN_SEMENTARA` menjadi "Surat Keterangan Sementara".
- */
-private fun formatEnumName(enum: Enum<*>): String {
-    return enum.name.replace('_', ' ').lowercase(Locale.getDefault())
-        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-}
-
 
 @Preview(showBackground = true)
 @Composable
@@ -165,7 +185,8 @@ private fun HistoryItemPreview() {
         examinationType = "Pemeriksaan dan Pengujian Berkala",
         ownerName = "PT Gedung Sejahtera",
         createdAt = "2025-07-06T15:22:10.123Z",
-        reportDate = "25 Oktober 2024"
+        reportDate = "25 Oktober 2024",
+        isSynced = false
     )
 
     NakersolutionidTheme {

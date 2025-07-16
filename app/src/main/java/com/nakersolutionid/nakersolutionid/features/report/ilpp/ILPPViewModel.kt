@@ -1,16 +1,21 @@
 package com.nakersolutionid.nakersolutionid.features.report.ilpp
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalUiState
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingMeasurementItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionUiState
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,17 +35,38 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
+            val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Electrical -> {
-                    // TODO: Implement save logic for Electrical Installation report using _electricalUiState.value
+                    val electricalInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _ilppUiState.update { it.copy(electricResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _ilppUiState.update { it.copy(electricResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _ilppUiState.update { it.copy(electricResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
 
                 SubInspectionType.Lightning_Conductor -> {
-                    // TODO: Implement save logic for Lightning Protection report using _lightningUiState.value
+                    val lightningInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(lightningInspection)
+                        _ilppUiState.update { it.copy(lightningResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _ilppUiState.update { it.copy(lightningResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _ilppUiState.update { it.copy(lightningResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 else -> {}
             }
         }
+    }
+
+    fun onILPPUpdateState(updater: (ILPPUiState) -> ILPPUiState) {
+        _ilppUiState.update(updater)
     }
 
     //region Electrical Installation Logic

@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection
 
 import androidx.compose.runtime.Immutable
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -43,10 +46,10 @@ data class FireProtectionDocumentChecklist(
 
 @Immutable
 data class FireProtectionCompanyData(
+    val examinationType: String = "",
     val companyName: String = "",
     val companyLocation: String = "",
     val usageLocation: String = "",
-    val examinationType: String = "",
     val certificateNumber: String = "",
     val objectType: String = "",
     val inspectionDate: String = ""
