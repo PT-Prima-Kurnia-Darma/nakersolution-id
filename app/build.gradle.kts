@@ -31,6 +31,9 @@ android {
 
     buildTypes {
         release {
+            // Enables resource shrinking.
+            isShrinkResources = false // TODO(): Enable minification
+            // Enables code-related app optimization.
             isMinifyEnabled = false // TODO(): Enable minification
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
