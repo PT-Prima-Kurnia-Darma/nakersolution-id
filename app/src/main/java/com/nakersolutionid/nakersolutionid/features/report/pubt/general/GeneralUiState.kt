@@ -19,6 +19,8 @@ data class GeneralUiState(
 
 @Immutable
 data class GeneralInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: GeneralData = GeneralData(),
     val technicalData: GeneralTechnicalData = GeneralTechnicalData(),
     val inspectionAndMeasurement: GeneralInspectionAndMeasurement = GeneralInspectionAndMeasurement(),
@@ -27,12 +29,6 @@ data class GeneralInspectionReport(
 
 @Immutable
 data class GeneralData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
-    val examinationType: String = "",
     val ownerName: String = "",
     val ownerAddress: String = "",
     val user: String = "",
@@ -40,6 +36,7 @@ data class GeneralData(
     val operatorName: String = "",
     val manufacturer: String = "",
     val brandModelType: String = "",
+    val driveType: String = "",
     val countryAndYearOfManufacture: String = "",
     val serialNumber: String = "",
     val designPressureKgCm2: String = "",

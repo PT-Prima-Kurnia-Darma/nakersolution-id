@@ -63,15 +63,23 @@ fun GeneralScreen(
         verticalArrangement = verticalArrangement
     ) {
         item {
+            val data = report
+            GeneralExpandableSection("DATA UTAMA", true) {
+                GeneralFormTextField(label = "Jenis Pemeriksaan", value = data.examinationType, onValueChange = { onDataChange(data.copy(examinationType = it)) })
+                GeneralFormTextField(label = "Jenis Pesawat Uap", value = data.equipmentType, onValueChange = { onDataChange(data.copy(equipmentType = it)) })
+            }
+        }
+
+        item {
             val data = report.generalData
             val onDataChanged: (GeneralData) -> Unit = { onDataChange(report.copy(generalData = it)) }
-            GeneralExpandableSection("DATA UMUM", true) {
+            GeneralExpandableSection("DATA UMUM", false) {
                 GeneralFormTextField("Nama Perusahaan / Pemilik", data.ownerName) { onDataChanged(data.copy(ownerName = it)) }
                 GeneralFormTextField("Alamat Perusahaan", data.ownerAddress) { onDataChanged(data.copy(ownerAddress = it)) }
                 GeneralFormTextField("Pemakai", data.user) { onDataChanged(data.copy(user = it)) }
                 GeneralFormTextField("Alamat Pemakai", data.userAddress) { onDataChanged(data.copy(userAddress = it)) }
                 GeneralFormTextField("Nama Operator", data.operatorName) { onDataChanged(data.copy(operatorName = it)) }
-                GeneralFormTextField("Jenis Pesawat Uap", data.equipmentType) { onDataChanged(data.copy(equipmentType = it)) }
+                GeneralFormTextField("Jenis Pesawat Uap", data.driveType) { onDataChanged(data.copy(driveType = it)) }
                 GeneralFormTextField("Pabrik Pembuat", data.manufacturer) { onDataChanged(data.copy(manufacturer = it)) }
                 GeneralFormTextField("Merk/Model/Type", data.brandModelType) { onDataChanged(data.copy(brandModelType = it)) }
                 GeneralFormTextField("Negara & Tahun Pembuatan", data.countryAndYearOfManufacture) { onDataChanged(data.copy(countryAndYearOfManufacture = it)) }
