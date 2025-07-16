@@ -689,8 +689,8 @@ fun ForkliftResultStatusInput(
                 // Di laporan, centang berarti "Memenuhi Syarat".
                 // Di data class, 'status = false' bisa kita artikan "Memenuhi Syarat" (tidak ada masalah).
                 // Jadi, `checked` adalah kebalikan dari `status`.
-                checked = !value.status,
-                onCheckedChange = { onValueChange(value.copy(status = !it)) }
+                checked = value.status,
+                onCheckedChange = { onValueChange(value.copy(status = it)) }
             )
             Text("Memenuhi")
         }

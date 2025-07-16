@@ -81,7 +81,9 @@ data class GantryCraneDriveMotor(
     val rpm: GantryCraneMovementData = GantryCraneMovementData(),
     val voltageV: GantryCraneMovementData = GantryCraneMovementData(),
     val currentA: GantryCraneMovementData = GantryCraneMovementData(),
-    val frequencyHz: GantryCraneMovementData = GantryCraneMovementData()
+    val frequencyHz: GantryCraneMovementData = GantryCraneMovementData(),
+    val phase: GantryCraneMovementData = GantryCraneMovementData(), // ADDED
+    val powerSupply: GantryCraneMovementData = GantryCraneMovementData() // ADDED
 )
 
 // ADDED a new data class for Starting Resistor
@@ -396,6 +398,7 @@ data class GantryCraneLoadTestResult(
 @Immutable
 data class GantryCraneStaticTest(
     val load: String = "",
+    val deflectionResult: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val deflectionStandard: GantryCraneDeflectionStandard = GantryCraneDeflectionStandard(),
     val deflectionMeasurement: ImmutableList<GantryCraneDeflectionItem> = persistentListOf()
 )
@@ -418,5 +421,6 @@ data class GantryCraneDeflectionItem(
 @Immutable
 data class GantryCraneConclusion(
     val summary: ImmutableList<String> = persistentListOf(),
-    val recommendations: ImmutableList<String> = persistentListOf()
+    val recommendations: ImmutableList<String> = persistentListOf(),
+    val nextInspectionDateSuggestion: String = ""
 )

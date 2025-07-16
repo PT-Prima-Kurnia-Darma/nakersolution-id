@@ -68,7 +68,7 @@ fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String): Inspecti
 private fun createCheckItemsFromUiState(report: ForkliftInspectionReport, id: Long): List<InspectionCheckItemDomain> {
     val items = mutableListOf<InspectionCheckItemDomain>()
     fun add(cat: String, name: String, value: ForkliftInspectionResult) {
-        items.add(InspectionCheckItemDomain(inspectionId = id, category = cat, itemName = name, status = !value.status, result = value.result))
+        items.add(InspectionCheckItemDomain(inspectionId = id, category = cat, itemName = name, status = value.status, result = value.result))
     }
 
     report.visualInspection.let { v ->

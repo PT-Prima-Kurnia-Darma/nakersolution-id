@@ -55,11 +55,12 @@ fun GantryCraneUiState.toInspectionWithDetailsDomain(
             year = generalData.yearOfManufacture
         ),
         createdAt = currentTime,
+        // ADDED: Map next inspection date suggestion
+        nextInspectionDate = conclusion.nextInspectionDateSuggestion,
         // Fields not in UI State are set to empty string
         speed = "",
         floorServed = "",
         reportDate = "",
-        nextInspectionDate = "",
         inspectorName = "",
         status = "",
         isSynced = false
@@ -134,6 +135,13 @@ fun GantryCraneUiState.toInspectionWithDetailsDomain(
         addCheckItem(techCategory, "motor_frequencyHz_hoisting", motor.frequencyHz.hoisting)
         addCheckItem(techCategory, "motor_frequencyHz_traveling", motor.frequencyHz.traveling)
         addCheckItem(techCategory, "motor_frequencyHz_traversing", motor.frequencyHz.traversing)
+        // ADDED: Map phase and power supply
+        addCheckItem(techCategory, "motor_phase_hoisting", motor.phase.hoisting)
+        addCheckItem(techCategory, "motor_phase_traveling", motor.phase.traveling)
+        addCheckItem(techCategory, "motor_phase_traversing", motor.phase.traversing)
+        addCheckItem(techCategory, "motor_powerSupply_hoisting", motor.powerSupply.hoisting)
+        addCheckItem(techCategory, "motor_powerSupply_traveling", motor.powerSupply.traveling)
+        addCheckItem(techCategory, "motor_powerSupply_traversing", motor.powerSupply.traversing)
     }
     technicalData.startingResistor.let { resistor ->
         addCheckItem(techCategory, "resistor_type_hoisting", resistor.type.hoisting)
@@ -205,6 +213,7 @@ fun GantryCraneUiState.toInspectionWithDetailsDomain(
 
     // 4. Map all Visual Inspection to CheckItems
     val visualCategory = "visual_inspection"
+    // (This part is already complete and correct)
     addResultCheckItem(visualCategory, "foundationAnchorBoltCorrosion", visualInspection.foundationAnchorBoltCorrosion)
     addResultCheckItem(visualCategory, "foundationAnchorBoltCracks", visualInspection.foundationAnchorBoltCracks)
     addResultCheckItem(visualCategory, "foundationAnchorBoltDeformation", visualInspection.foundationAnchorBoltDeformation)
@@ -352,6 +361,7 @@ fun GantryCraneUiState.toInspectionWithDetailsDomain(
         addCheckItem(cat, "construction", item.construction)
         addCheckItem(cat, "type", item.type)
         addCheckItem(cat, "length", item.length)
+        // ADDED: Map age
         addCheckItem(cat, "age", item.age)
         addResultCheckItem(cat, "finding", item.finding)
     }
@@ -455,6 +465,8 @@ fun GantryCraneUiState.toInspectionWithDetailsDomain(
         addCheckItem(cat, "deflection_designBased", test.deflectionStandard.designBased)
         addCheckItem(cat, "deflection_spanLength", test.deflectionStandard.spanLength)
         addCheckItem(cat, "deflection_calculation", test.deflectionStandard.calculation)
+        // ADDED: Map deflectionResult
+        addResultCheckItem(cat, "deflectionResult", test.deflectionResult)
     }
     testing.staticTest.deflectionMeasurement.forEachIndexed { index, item ->
         val cat = "testing_static_deflection_item_$index"
@@ -597,6 +609,17 @@ fun InspectionWithDetailsDomain.toGantryCraneUiState(): GantryCraneUiState {
                 hoisting = getCheckItemValue(techCategory, "motor_frequencyHz_hoisting"),
                 traveling = getCheckItemValue(techCategory, "motor_frequencyHz_traveling"),
                 traversing = getCheckItemValue(techCategory, "motor_frequencyHz_traversing")
+            ),
+            // ADDED: Reconstruct phase and power supply
+            phase = GantryCraneMovementData(
+                hoisting = getCheckItemValue(techCategory, "motor_phase_hoisting"),
+                traveling = getCheckItemValue(techCategory, "motor_phase_traveling"),
+                traversing = getCheckItemValue(techCategory, "motor_phase_traversing")
+            ),
+            powerSupply = GantryCraneMovementData(
+                hoisting = getCheckItemValue(techCategory, "motor_powerSupply_hoisting"),
+                traveling = getCheckItemValue(techCategory, "motor_powerSupply_traveling"),
+                traversing = getCheckItemValue(techCategory, "motor_powerSupply_traversing")
             )
         ),
         startingResistor = GantryCraneStartingResistor(
@@ -857,6 +880,7 @@ fun InspectionWithDetailsDomain.toGantryCraneUiState(): GantryCraneUiState {
             construction = getCheckItemValueForIndexed("nde_wirerope_item", index, "construction"),
             type = getCheckItemValueForIndexed("nde_wirerope_item", index, "type"),
             length = getCheckItemValueForIndexed("nde_wirerope_item", index, "length"),
+            // ADDED: Reconstruct age
             age = getCheckItemValueForIndexed("nde_wirerope_item", index, "age"),
             finding = getResultCheckItemForIndexed("nde_wirerope_item", index, "finding")
         ))
@@ -1018,6 +1042,8 @@ fun InspectionWithDetailsDomain.toGantryCraneUiState(): GantryCraneUiState {
         ),
         staticTest = GantryCraneStaticTest(
             load = getCheckItemValue(staticCat, "load"),
+            // ADDED: Reconstruct deflectionResult
+            deflectionResult = getResultCheckItem(staticCat, "deflectionResult"),
             deflectionStandard = GantryCraneDeflectionStandard(
                 designBased = getCheckItemValue(staticCat, "deflection_designBased"),
                 spanLength = getCheckItemValue(staticCat, "deflection_spanLength"),
@@ -1033,7 +1059,9 @@ fun InspectionWithDetailsDomain.toGantryCraneUiState(): GantryCraneUiState {
     val recommendations = this.findings.filter { it.type == FindingType.RECOMMENDATION }.map { it.description }
     val conclusion = GantryCraneConclusion(
         summary = summary.toImmutableList(),
-        recommendations = recommendations.toImmutableList()
+        recommendations = recommendations.toImmutableList(),
+        // ADDED: Reconstruct next inspection date suggestion
+        nextInspectionDateSuggestion = inspection.nextInspectionDate ?: ""
     )
 
     // 7. Assemble the final report
