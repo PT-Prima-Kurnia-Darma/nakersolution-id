@@ -99,16 +99,24 @@ fun MotorDieselScreen(
         verticalArrangement = verticalArrangement
     ) {
         item {
+            val data = report
+            MotorDieselExpandableSection("DATA UTAMA", true) {
+                MotorDieselFormTextField(label = "Jenis Pemeriksaan", value = data.examinationType, onValueChange = { onDataChange(data.copy(examinationType = it)) })
+                MotorDieselFormTextField(label = "Jenis Pesawat", value = data.equipmentType, onValueChange = { onDataChange(data.copy(equipmentType = it)) })
+            }
+        }
+
+        item {
             val data = report.generalData
             val onDataChanged: (DieselMotorGeneralData) -> Unit = { onDataChange(report.copy(generalData = it)) }
-            MotorDieselExpandableSection("DATA UMUM", true) {
+            MotorDieselExpandableSection("DATA UMUM", false) {
                 MotorDieselFormTextField("Perusahaan Pemilik", data.ownerName) { onDataChanged(data.copy(ownerName = it)) }
                 MotorDieselFormTextField("Alamat Pemilik", data.ownerAddress) { onDataChanged(data.copy(ownerAddress = it)) }
                 MotorDieselFormTextField("Perusahaan Pemakai", data.userInCharge) { onDataChanged(data.copy(userInCharge = it)) }
                 MotorDieselFormTextField("Alamat Pemakai", data.userAddressInCharge) { onDataChanged(data.copy(userAddressInCharge = it)) }
                 MotorDieselFormTextField("Pengurus / Penanggung Jawab", data.subcontractorPersonInCharge) { onDataChanged(data.copy(subcontractorPersonInCharge = it)) }
                 MotorDieselFormTextField("Lokasi Unit", data.unitLocation) { onDataChanged(data.copy(unitLocation = it)) }
-                MotorDieselFormTextField("Jenis Pesawat / Tipe", data.equipmentType) { onDataChanged(data.copy(equipmentType = it)) }
+                MotorDieselFormTextField("Jenis Pesawat / Tipe", data.driveType) { onDataChanged(data.copy(driveType = it)) }
                 MotorDieselFormTextField("Merk / Model", data.brandType) { onDataChanged(data.copy(brandType = it)) }
                 MotorDieselFormTextField("No. Seri / No. Unit", data.serialNumberUnitNumber) { onDataChanged(data.copy(serialNumberUnitNumber = it)) }
                 MotorDieselFormTextField("Perusahaan Pembuat / Pemasang", data.manufacturer) { onDataChanged(data.copy(manufacturer = it)) }

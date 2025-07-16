@@ -89,16 +89,24 @@ fun MachineScreen(
         verticalArrangement = verticalArrangement
     ) {
         item {
+            val data = report
+            MachineExpandableSection("DATA UTAMA", true) {
+                MachineFormTextField(label = "Jenis Pemeriksaan", value = data.examinationType, onValueChange = { onDataChange(data.copy(examinationType = it)) })
+                MachineFormTextField(label = "Jenis Pesawat", value = data.equipmentType, onValueChange = { onDataChange(data.copy(equipmentType = it)) })
+            }
+        }
+
+        item {
             val data = report.generalData
             val onDataChanged: (ProductionMachineGeneralData) -> Unit = { onDataChange(report.copy(generalData = it)) }
-            MachineExpandableSection("DATA UMUM", true) {
+            MachineExpandableSection("DATA UMUM", false) {
                 MachineFormTextField("Perusahaan Pemilik", data.ownerName) { onDataChanged(data.copy(ownerName = it)) }
                 MachineFormTextField("Alamat Pemilik", data.ownerAddress) { onDataChanged(data.copy(ownerAddress = it)) }
                 MachineFormTextField("Perusahaan Pemakai", data.userInCharge) { onDataChanged(data.copy(userInCharge = it)) }
                 MachineFormTextField("Alamat Pemakai", data.userAddressInCharge) { onDataChanged(data.copy(userAddressInCharge = it)) }
                 MachineFormTextField("Pengurus / Penanggung Jawab", data.subcontractorPersonInCharge) { onDataChanged(data.copy(subcontractorPersonInCharge = it)) }
                 MachineFormTextField("Lokasi Unit", data.unitLocation) { onDataChanged(data.copy(unitLocation = it)) }
-                MachineFormTextField("Jenis Pesawat / Tipe", data.equipmentType) { onDataChanged(data.copy(equipmentType = it)) }
+                MachineFormTextField("Jenis Pesawat / Tipe", data.driveType) { onDataChanged(data.copy(driveType = it)) }
                 MachineFormTextField("Merek / Tipe", data.brandType) { onDataChanged(data.copy(brandType = it)) }
                 MachineFormTextField("No Seri / No. Unit", data.serialNumberUnitNumber) { onDataChanged(data.copy(serialNumberUnitNumber = it)) }
                 MachineFormTextField("Perusahaan Pembuat / Pemasang", data.manufacturer) { onDataChanged(data.copy(manufacturer = it)) }

@@ -19,6 +19,8 @@ data class DieselMotorUiState(
 
 @Immutable
 data class DieselMotorInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: DieselMotorGeneralData = DieselMotorGeneralData(),
     val technicalData: DieselMotorTechnicalData = DieselMotorTechnicalData(),
     val visualInspection: DieselMotorVisualInspection = DieselMotorVisualInspection(),
@@ -31,12 +33,6 @@ data class DieselMotorInspectionReport(
 
 @Immutable
 data class DieselMotorGeneralData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
-    val examinationType: String = "",
     val ownerName: String = "",
     val ownerAddress: String = "",
     val userInCharge: String = "",
@@ -44,6 +40,7 @@ data class DieselMotorGeneralData(
     val subcontractorPersonInCharge: String = "",
     val unitLocation: String = "",
     val brandType: String = "",
+    val driveType: String = "",
     val serialNumberUnitNumber: String = "",
     val manufacturer: String = "",
     val locationAndYearOfManufacture: String = "",

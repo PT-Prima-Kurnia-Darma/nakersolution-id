@@ -19,6 +19,8 @@ data class ProductionMachineUiState(
 
 @Immutable
 data class ProductionMachineInspectionReport(
+    val equipmentType: String = "",
+    val examinationType: String = "",
     val generalData: ProductionMachineGeneralData = ProductionMachineGeneralData(),
     val technicalData: ProductionMachineTechnicalData = ProductionMachineTechnicalData(),
     val visualInspection: ProductionMachineVisualInspection = ProductionMachineVisualInspection(),
@@ -30,12 +32,7 @@ data class ProductionMachineInspectionReport(
 
 @Immutable
 data class ProductionMachineGeneralData(
-    val id: Long = 0,
-    val documentType: DocumentType = DocumentType.LAPORAN,
-    val inspectionType: InspectionType = InspectionType.EE,
-    val subInspectionType: SubInspectionType = SubInspectionType.Escalator,
-    val equipmentType: String = "",
-    val examinationType: String = "",
+    val driveType: String = "",
     val ownerName: String = "",
     val ownerAddress: String = "",
     val userInCharge: String = "",
