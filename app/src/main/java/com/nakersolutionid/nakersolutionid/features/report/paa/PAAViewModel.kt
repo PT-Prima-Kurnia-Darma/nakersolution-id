@@ -17,6 +17,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.Gantr
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeGirderItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaCageItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaClampsItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaInspectionReport
@@ -81,7 +82,15 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     // TODO: Implement save logic for Overhead Crane report
                 }
                 SubInspectionType.Gantry_Crane -> {
-                    // TODO: Implement save logic for Gantry Crane report
+                    val electricalInspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 SubInspectionType.Gondola -> {
                     // TODO: Implement save logic for Gondola report
