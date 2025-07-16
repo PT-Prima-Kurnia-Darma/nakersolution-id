@@ -150,6 +150,26 @@ fun PAAScreen(
         }
     }
 
+    LaunchedEffect(paaUiState.overheadCraneResult) {
+        when (val result = paaUiState.overheadCraneResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, overheadCraneResult = null) }
+            }
+
+            is Resource.Loading -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
+            }
+
+            is Resource.Success -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, overheadCraneResult = null) }
+                onBackClick()
+            }
+
+            null -> null
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),

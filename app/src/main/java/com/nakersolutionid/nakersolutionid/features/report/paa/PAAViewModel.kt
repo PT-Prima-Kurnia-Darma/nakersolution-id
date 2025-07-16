@@ -35,6 +35,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.toIns
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,9 +72,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(forkliftResult = Resource.Success("Laporan berhasil disimpan")) }
-                    } catch(e: SQLiteConstraintException) {
+                    } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
                     }
                 }
@@ -82,23 +83,31 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(mobileCraneResult = Resource.Success("Laporan berhasil disimpan")) }
-                    } catch(e: SQLiteConstraintException) {
+                    } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
                     }
                 }
                 SubInspectionType.Overhead_Crane -> {
-                    // TODO: Implement save logic for Overhead Crane report
+                    val electricalInspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 SubInspectionType.Gantry_Crane -> {
                     val electricalInspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(gantryCraneResult = Resource.Success("Laporan berhasil disimpan")) }
-                    } catch(e: SQLiteConstraintException) {
+                    } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
                     }
                 }
@@ -107,9 +116,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(gondolaResult = Resource.Success("Laporan berhasil disimpan")) }
-                    } catch(e: SQLiteConstraintException) {
+                    } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
                     }
                 }
