@@ -130,6 +130,26 @@ fun PAAScreen(
         }
     }
 
+    LaunchedEffect(paaUiState.mobileCraneResult) {
+        when (val result = paaUiState.mobileCraneResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, mobileCraneResult = null) }
+            }
+
+            is Resource.Loading -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
+            }
+
+            is Resource.Success -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, mobileCraneResult = null) }
+                onBackClick()
+            }
+
+            null -> null
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),

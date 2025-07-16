@@ -31,6 +31,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.Mobil
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
@@ -77,7 +78,15 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     }
                 }
                 SubInspectionType.Mobile_Crane -> {
-                    // TODO: Implement save logic for Mobile Crane report
+                    val electricalInspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 SubInspectionType.Overhead_Crane -> {
                     // TODO: Implement save logic for Overhead Crane report
