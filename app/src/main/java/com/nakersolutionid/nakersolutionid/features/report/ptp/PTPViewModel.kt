@@ -13,6 +13,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.Diese
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +49,15 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
 
                 SubInspectionType.Motor_Diesel -> {
-                    // TODO: Implement save logic for Motor Diesel report using _motorDieselUiState.value
+                    val electricalInspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 else -> {}
             }

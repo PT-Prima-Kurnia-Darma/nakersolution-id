@@ -84,6 +84,26 @@ fun PTPScreen(
         }
     }
 
+    LaunchedEffect(ptpUiState.motorDieselResult) {
+        when (val result = ptpUiState.motorDieselResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdatePTPState { it.copy(isLoading = false, motorDieselResult = null) }
+            }
+
+            is Resource.Loading -> {
+                viewModel.onUpdatePTPState { it.copy(isLoading = true) }
+            }
+
+            is Resource.Success -> {
+                viewModel.onUpdatePTPState { it.copy(isLoading = false, motorDieselResult = null) }
+                onBackClick()
+            }
+
+            null -> null
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
