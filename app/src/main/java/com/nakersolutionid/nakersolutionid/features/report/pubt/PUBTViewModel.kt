@@ -1,12 +1,16 @@
 package com.nakersolutionid.nakersolutionid.features.report.pubt
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMeasurementResultItem
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralUiState
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +27,26 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
+            val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.General_PUBT -> {
-                    // TODO: Implement save logic for Machine report using _machineUiState.value
+                    val electricalInspection = _generalUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _pubtUiState.update { it.copy(generalResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 else -> {}
             }
         }
+    }
+
+    fun onUpdatePUBTState(updater: (PUBTUiState) -> PUBTUiState) {
+        _pubtUiState.update(updater)
     }
 
     fun onGeneralReportChange(newReport: GeneralInspectionReport) {
