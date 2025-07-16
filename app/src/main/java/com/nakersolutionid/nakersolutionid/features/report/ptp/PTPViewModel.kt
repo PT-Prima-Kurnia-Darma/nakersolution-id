@@ -1,15 +1,19 @@
 package com.nakersolutionid.nakersolutionid.features.report.ptp
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineUiState
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
+import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,9 +33,18 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
+            val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Machine -> {
-                    // TODO: Implement save logic for Machine report using _machineUiState.value
+                    val electricalInspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _ptpUiState.update { it.copy(machineResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(_: SQLiteConstraintException) {
+                        _ptpUiState.update { it.copy(machineResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (_: Exception) {
+                        _ptpUiState.update { it.copy(machineResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
 
                 SubInspectionType.Motor_Diesel -> {
@@ -40,6 +53,10 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 else -> {}
             }
         }
+    }
+
+    fun onUpdatePTPState(updater: (PTPUiState) -> PTPUiState) {
+        _ptpUiState.update(updater)
     }
 
     //region Machine Logic
