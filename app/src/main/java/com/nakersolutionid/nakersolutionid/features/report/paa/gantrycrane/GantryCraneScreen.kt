@@ -143,7 +143,7 @@ fun GantryCraneScreen(
         // General Data Section
         item {
             val data = report.generalData
-            ExpandableSection(title = "DATA UMUM", initiallyExpanded = true) {
+            ExpandableSection(title = "DATA UMUM", initiallyExpanded = false) {
                 FormTextField(label = "Pemilik", value = data.owner, onValueChange = { onDataChange(report.copy(generalData = data.copy(owner = it))) })
                 FormTextField(label = "Alamat", value = data.address, onValueChange = { onDataChange(report.copy(generalData = data.copy(address = it))) })
                 FormTextField(label = "Pemakai", value = data.user, onValueChange = { onDataChange(report.copy(generalData = data.copy(user = it))) })

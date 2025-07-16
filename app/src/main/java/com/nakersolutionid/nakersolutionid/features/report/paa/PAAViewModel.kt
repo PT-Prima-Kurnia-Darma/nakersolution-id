@@ -25,6 +25,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaLo
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSteelWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSuspensionStructureItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTestItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomItem
@@ -93,7 +94,15 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     }
                 }
                 SubInspectionType.Gondola -> {
-                    // TODO: Implement save logic for Gondola report
+                    val electricalInspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    try {
+                        reportUseCase.saveReport(electricalInspection)
+                        _paaUiState.update { it.copy(gondolaResult = Resource.Success("Laporan berhasil disimpan")) }
+                    } catch(e: SQLiteConstraintException) {
+                        _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
+                    } catch (e: Exception) {
+                        _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
+                    }
                 }
                 else -> {}
             }

@@ -110,6 +110,26 @@ fun PAAScreen(
         }
     }
 
+    LaunchedEffect(paaUiState.gondolaResult) {
+        when (val result = paaUiState.gondolaResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, gondolaResult = null) }
+            }
+
+            is Resource.Loading -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
+            }
+
+            is Resource.Success -> {
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, gondolaResult = null) }
+                onBackClick()
+            }
+
+            null -> null
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),

@@ -169,7 +169,7 @@ fun MobileCraneScreen(
 
         item {
             val data = report.generalData
-            ExpandableSection(title = "DATA UMUM", initiallyExpanded = true) {
+            ExpandableSection(title = "DATA UMUM", initiallyExpanded = false) {
                 FormTextField(label = "Pemilik", value = data.owner, onValueChange = { onDataChange(report.copy(generalData = data.copy(owner = it))) })
                 FormTextField(label = "Alamat", value = data.address, onValueChange = { onDataChange(report.copy(generalData = data.copy(address = it))) })
                 FormTextField(label = "Pemakai / Penanggung Jawab", value = data.personInCharge, onValueChange = { onDataChange(report.copy(generalData = data.copy(personInCharge = it))) })
