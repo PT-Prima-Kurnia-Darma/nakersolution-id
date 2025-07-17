@@ -39,7 +39,7 @@ fun HistoryAppBar(
                 colors = IconButtonDefaults.iconButtonColors(
                     contentColor = MaterialTheme.colorScheme.primary
                 )
-            ) { Icon(Icons.Default.FilterList, contentDescription = "More") }
+            ) { Icon(Icons.Default.FilterList, contentDescription = "Filter") }
         }
     )
 }

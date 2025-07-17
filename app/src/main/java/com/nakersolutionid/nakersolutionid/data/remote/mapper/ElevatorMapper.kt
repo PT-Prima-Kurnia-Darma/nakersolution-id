@@ -1,6 +1,24 @@
 package com.nakersolutionid.nakersolutionid.data.remote.mapper
 
-import com.nakersolutionid.nakersolutionid.data.remote.dto.*
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.AccessibilityElevatorDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.CarDoorSpecsDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.CarDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.CarSignageDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.CounterweightGuideRailsAndBuffersDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.DrumsAndSheavesDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.ElectricalInstallationDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.ElevatorReportDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.FireServiceElevatorDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.GeneralDataDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.GovernorAndSafetyBrakeDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.HoistwayAndPitDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.InspectionAndTestingDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.MachineRoomAndMachineryDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.MachineRoomlessDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.ResultStatusDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.SeismicSensorDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.SuspensionRopesAndBeltsDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.TechnicalDocumentInspectionDto
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 
 // --- Kategori yang sama dari Mapper UI State, untuk konsistensi ---
@@ -23,13 +41,18 @@ private object ElevatorCategory {
 }
 
 /**
- * Mengubah [InspectionWithDetailsDomain] menjadi [ElevatorReportDto] yang siap dikirim ke network.
+ * Mengubah [InspectionWithDetailsDomain] menjadi [com.nakersolutionid.nakersolutionid.data.remote.dto.report.ElevatorReportDto] yang siap dikirim ke network.
  */
 fun InspectionWithDetailsDomain.toNetworkDto(): ElevatorReportDto {
 
     fun findItem(category: String, itemName: String): ResultStatusDto {
         val item = this.checkItems.find { it.category == category && it.itemName == itemName }
-        return item?.let { ResultStatusDto(result = it.result ?: "", status = it.status) } ?: ResultStatusDto()
+        return item?.let {
+            ResultStatusDto(
+                result = it.result ?: "",
+                status = it.status
+            )
+        } ?: ResultStatusDto()
     }
 
     fun findBoolItem(category: String, itemName: String): Boolean {
@@ -58,7 +81,10 @@ fun InspectionWithDetailsDomain.toNetworkDto(): ElevatorReportDto {
         technicalCalculation = findBoolItem(ElevatorCategory.TECHNICAL_DOC, "Perhitungan Teknis"),
         materialCertificate = findBoolItem(ElevatorCategory.TECHNICAL_DOC, "Sertifikat Material"),
         controlPanelDiagram = findBoolItem(ElevatorCategory.TECHNICAL_DOC, "Diagram Panel Kontrol"),
-        asBuiltDrawing = findBoolItem(ElevatorCategory.TECHNICAL_DOC, "Gambar Jadi (As Built Drawing)"),
+        asBuiltDrawing = findBoolItem(
+            ElevatorCategory.TECHNICAL_DOC,
+            "Gambar Jadi (As Built Drawing)"
+        ),
         componentCertificates = findBoolItem(ElevatorCategory.TECHNICAL_DOC, "Sertifikat Komponen"),
         safeWorkProcedure = findBoolItem(ElevatorCategory.TECHNICAL_DOC, "Prosedur Kerja Aman")
     )
@@ -68,60 +94,123 @@ fun InspectionWithDetailsDomain.toNetworkDto(): ElevatorReportDto {
             machineMounting = findItem(ElevatorCategory.MACHINE_ROOM, "Pemasangan Mesin"),
             mechanicalBrake = findItem(ElevatorCategory.MACHINE_ROOM, "Rem Mekanik"),
             electricalBrake = findItem(ElevatorCategory.MACHINE_ROOM, "Rem Listrik"),
-            machineRoomConstruction = findItem(ElevatorCategory.MACHINE_ROOM, "Konstruksi Ruang Mesin"),
-            machineRoomClearance = findItem(ElevatorCategory.MACHINE_ROOM, "Jarak Bebas Ruang Mesin"),
-            machineRoomImplementation = findItem(ElevatorCategory.MACHINE_ROOM, "Pelaksanaan Ruang Mesin"),
+            machineRoomConstruction = findItem(
+                ElevatorCategory.MACHINE_ROOM,
+                "Konstruksi Ruang Mesin"
+            ),
+            machineRoomClearance = findItem(
+                ElevatorCategory.MACHINE_ROOM,
+                "Jarak Bebas Ruang Mesin"
+            ),
+            machineRoomImplementation = findItem(
+                ElevatorCategory.MACHINE_ROOM,
+                "Pelaksanaan Ruang Mesin"
+            ),
             ventilation = findItem(ElevatorCategory.MACHINE_ROOM, "Ventilasi"),
             machineRoomDoor = findItem(ElevatorCategory.MACHINE_ROOM, "Pintu Ruang Mesin"),
-            mainPowerPanelPosition = findItem(ElevatorCategory.MACHINE_ROOM, "Posisi Panel Listrik Utama"),
-            rotatingPartsGuard = findItem(ElevatorCategory.MACHINE_ROOM, "Pelindung Bagian Berputar"),
+            mainPowerPanelPosition = findItem(
+                ElevatorCategory.MACHINE_ROOM,
+                "Posisi Panel Listrik Utama"
+            ),
+            rotatingPartsGuard = findItem(
+                ElevatorCategory.MACHINE_ROOM,
+                "Pelindung Bagian Berputar"
+            ),
             ropeHoleGuard = findItem(ElevatorCategory.MACHINE_ROOM, "Pelindung Lubang Tali"),
-            machineRoomAccessLadder = findItem(ElevatorCategory.MACHINE_ROOM, "Tangga Akses Ruang Mesin"),
-            floorLevelDifference = findItem(ElevatorCategory.MACHINE_ROOM, "Perbedaan Level Lantai"),
+            machineRoomAccessLadder = findItem(
+                ElevatorCategory.MACHINE_ROOM,
+                "Tangga Akses Ruang Mesin"
+            ),
+            floorLevelDifference = findItem(
+                ElevatorCategory.MACHINE_ROOM,
+                "Perbedaan Level Lantai"
+            ),
             fireExtinguisher = findItem(ElevatorCategory.MACHINE_ROOM, "Alat Pemadam Api"),
             emergencyStopSwitch = findItem(ElevatorCategory.MACHINE_ROOM, "Saklar Stop Darurat"),
             machineRoomless = MachineRoomlessDto(
                 panelPlacement = findItem(ElevatorCategory.MACHINE_ROOMLESS, "Penempatan Panel"),
-                lightingWorkArea = findItem(ElevatorCategory.MACHINE_ROOMLESS, "Penerangan Area Kerja"),
-                lightingBetweenWorkArea = findItem(ElevatorCategory.MACHINE_ROOMLESS, "Penerangan Antar Area Kerja"),
-                manualBrakeRelease = findItem(ElevatorCategory.MACHINE_ROOMLESS, "Pelepas Rem Manual"),
-                fireExtinguisherPlacement = findItem(ElevatorCategory.MACHINE_ROOMLESS, "Penempatan Alat Pemadam Api")
+                lightingWorkArea = findItem(
+                    ElevatorCategory.MACHINE_ROOMLESS,
+                    "Penerangan Area Kerja"
+                ),
+                lightingBetweenWorkArea = findItem(
+                    ElevatorCategory.MACHINE_ROOMLESS,
+                    "Penerangan Antar Area Kerja"
+                ),
+                manualBrakeRelease = findItem(
+                    ElevatorCategory.MACHINE_ROOMLESS,
+                    "Pelepas Rem Manual"
+                ),
+                fireExtinguisherPlacement = findItem(
+                    ElevatorCategory.MACHINE_ROOMLESS,
+                    "Penempatan Alat Pemadam Api"
+                )
             )
         ),
         suspensionRopesAndBelts = SuspensionRopesAndBeltsDto(
             condition = findItem(ElevatorCategory.SUSPENSION, "Kondisi"),
             chainUsage = findItem(ElevatorCategory.SUSPENSION, "Penggunaan Rantai"),
             safetyFactor = findItem(ElevatorCategory.SUSPENSION, "Faktor Keamanan"),
-            ropeWithCounterweight = findItem(ElevatorCategory.SUSPENSION, "Tali dengan Bobot Imbang"),
-            ropeWithoutCounterweight = findItem(ElevatorCategory.SUSPENSION, "Tali tanpa Bobot Imbang"),
+            ropeWithCounterweight = findItem(
+                ElevatorCategory.SUSPENSION,
+                "Tali dengan Bobot Imbang"
+            ),
+            ropeWithoutCounterweight = findItem(
+                ElevatorCategory.SUSPENSION,
+                "Tali tanpa Bobot Imbang"
+            ),
             belt = findItem(ElevatorCategory.SUSPENSION, "Sabuk (Belt)"),
             slackRopeDevice = findItem(ElevatorCategory.SUSPENSION, "Alat Pengaman Tali Kendor")
         ),
         drumsAndSheaves = DrumsAndSheavesDto(
             drumGrooves = findItem(ElevatorCategory.DRUMS_SHEAVES, "Alur Drum"),
-            passengerDrumDiameter = findItem(ElevatorCategory.DRUMS_SHEAVES, "Diameter Drum Penumpang"),
-            governorDrumDiameter = findItem(ElevatorCategory.DRUMS_SHEAVES, "Diameter Drum Governor")
+            passengerDrumDiameter = findItem(
+                ElevatorCategory.DRUMS_SHEAVES,
+                "Diameter Drum Penumpang"
+            ),
+            governorDrumDiameter = findItem(
+                ElevatorCategory.DRUMS_SHEAVES,
+                "Diameter Drum Governor"
+            )
         ),
         hoistwayAndPit = HoistwayAndPitDto(
             construction = findItem(ElevatorCategory.HOISTWAY_PIT, "Konstruksi"),
             walls = findItem(ElevatorCategory.HOISTWAY_PIT, "Dinding"),
-            inclinedElevatorTrackBed = findItem(ElevatorCategory.HOISTWAY_PIT, "Landasan Lintasan Lift Miring"),
+            inclinedElevatorTrackBed = findItem(
+                ElevatorCategory.HOISTWAY_PIT,
+                "Landasan Lintasan Lift Miring"
+            ),
             cleanliness = findItem(ElevatorCategory.HOISTWAY_PIT, "Kebersihan"),
             lighting = findItem(ElevatorCategory.HOISTWAY_PIT, "Penerangan"),
-            emergencyDoorNonStop = findItem(ElevatorCategory.HOISTWAY_PIT, "Pintu Darurat Non-Stop"),
+            emergencyDoorNonStop = findItem(
+                ElevatorCategory.HOISTWAY_PIT,
+                "Pintu Darurat Non-Stop"
+            ),
             emergencyDoorSize = findItem(ElevatorCategory.HOISTWAY_PIT, "Ukuran Pintu Darurat"),
-            emergencyDoorSafetySwitch = findItem(ElevatorCategory.HOISTWAY_PIT, "Saklar Pengaman Pintu Darurat"),
+            emergencyDoorSafetySwitch = findItem(
+                ElevatorCategory.HOISTWAY_PIT,
+                "Saklar Pengaman Pintu Darurat"
+            ),
             emergencyDoorBridge = findItem(ElevatorCategory.HOISTWAY_PIT, "Jembatan Pintu Darurat"),
             carTopClearance = findItem(ElevatorCategory.HOISTWAY_PIT, "Jarak Bebas Atas Kereta"),
             pitClearance = findItem(ElevatorCategory.HOISTWAY_PIT, "Jarak Bebas Pit"),
             pitLadder = findItem(ElevatorCategory.HOISTWAY_PIT, "Tangga Pit"),
-            pitBelowWorkingArea = findItem(ElevatorCategory.HOISTWAY_PIT, "Area Kerja di Bawah Pit"),
+            pitBelowWorkingArea = findItem(
+                ElevatorCategory.HOISTWAY_PIT,
+                "Area Kerja di Bawah Pit"
+            ),
             pitAccessSwitch = findItem(ElevatorCategory.HOISTWAY_PIT, "Saklar Akses Pit"),
             pitScreen = findItem(ElevatorCategory.HOISTWAY_PIT, "Layar Pelindung Pit"),
             hoistwayDoorLeaf = findItem(ElevatorCategory.HOISTWAY_PIT, "Daun Pintu Ruang Luncur"),
-            hoistwayDoorInterlock = findItem(ElevatorCategory.HOISTWAY_PIT, "Interlock Pintu Ruang Luncur"),
+            hoistwayDoorInterlock = findItem(
+                ElevatorCategory.HOISTWAY_PIT,
+                "Interlock Pintu Ruang Luncur"
+            ),
             floorLeveling = findItem(ElevatorCategory.HOISTWAY_PIT, "Leveling Lantai"),
-            hoistwaySeparatorBeam = findItem(ElevatorCategory.HOISTWAY_PIT, "Balok Pemisah Ruang Luncur"),
+            hoistwaySeparatorBeam = findItem(
+                ElevatorCategory.HOISTWAY_PIT,
+                "Balok Pemisah Ruang Luncur"
+            ),
             inclinedElevatorStairs = findItem(ElevatorCategory.HOISTWAY_PIT, "Tangga Lift Miring")
         ),
         car = CarDto(
@@ -158,7 +247,10 @@ fun InspectionWithDetailsDomain.toNetworkDto(): ElevatorReportDto {
                 loadCapacity = findItem(ElevatorCategory.CAR_SIGNAGE, "Kapasitas Beban"),
                 noSmokingSign = findItem(ElevatorCategory.CAR_SIGNAGE, "Tanda Dilarang Merokok"),
                 overloadIndicator = findItem(ElevatorCategory.CAR_SIGNAGE, "Indikator Beban Lebih"),
-                doorOpenCloseButtons = findItem(ElevatorCategory.CAR_SIGNAGE, "Tombol Buka/Tutup Pintu"),
+                doorOpenCloseButtons = findItem(
+                    ElevatorCategory.CAR_SIGNAGE,
+                    "Tombol Buka/Tutup Pintu"
+                ),
                 floorButtons = findItem(ElevatorCategory.CAR_SIGNAGE, "Tombol Lantai"),
                 alarmButton = findItem(ElevatorCategory.CAR_SIGNAGE, "Tombol Alarm"),
                 twoWayIntercom = findItem(ElevatorCategory.CAR_SIGNAGE, "Interkom Dua Arah")
@@ -169,21 +261,48 @@ fun InspectionWithDetailsDomain.toNetworkDto(): ElevatorReportDto {
             governorSwitch = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Saklar Governor"),
             safetyBrakeSpeed = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Kecepatan Rem Pengaman"),
             safetyBrakeType = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Tipe Rem Pengaman"),
-            safetyBrakeMechanism = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Mekanisme Rem Pengaman"),
-            progressiveSafetyBrake = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Rem Pengaman Progresif"),
-            instantaneousSafetyBrake = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Rem Pengaman Seketika"),
-            safetyBrakeOperation = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Operasi Rem Pengaman"),
-            electricalCutoutSwitch = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Saklar Pemutus Listrik"),
+            safetyBrakeMechanism = findItem(
+                ElevatorCategory.GOVERNOR_BRAKE,
+                "Mekanisme Rem Pengaman"
+            ),
+            progressiveSafetyBrake = findItem(
+                ElevatorCategory.GOVERNOR_BRAKE,
+                "Rem Pengaman Progresif"
+            ),
+            instantaneousSafetyBrake = findItem(
+                ElevatorCategory.GOVERNOR_BRAKE,
+                "Rem Pengaman Seketika"
+            ),
+            safetyBrakeOperation = findItem(
+                ElevatorCategory.GOVERNOR_BRAKE,
+                "Operasi Rem Pengaman"
+            ),
+            electricalCutoutSwitch = findItem(
+                ElevatorCategory.GOVERNOR_BRAKE,
+                "Saklar Pemutus Listrik"
+            ),
             limitSwitch = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Saklar Batas"),
             overloadDevice = findItem(ElevatorCategory.GOVERNOR_BRAKE, "Alat Beban Lebih")
         ),
         counterweightGuideRailsAndBuffers = CounterweightGuideRailsAndBuffersDto(
-            counterweightMaterial = findItem(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Material Bobot Imbang"),
-            counterweightGuardScreen = findItem(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Layar Pelindung Bobot Imbang"),
-            guideRailConstruction = findItem(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Konstruksi Rel Pemandu"),
+            counterweightMaterial = findItem(
+                ElevatorCategory.COUNTERWEIGHT_BUFFER,
+                "Material Bobot Imbang"
+            ),
+            counterweightGuardScreen = findItem(
+                ElevatorCategory.COUNTERWEIGHT_BUFFER,
+                "Layar Pelindung Bobot Imbang"
+            ),
+            guideRailConstruction = findItem(
+                ElevatorCategory.COUNTERWEIGHT_BUFFER,
+                "Konstruksi Rel Pemandu"
+            ),
             bufferType = findItem(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Tipe Buffer"),
             bufferFunction = findItem(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Fungsi Buffer"),
-            bufferSafetySwitch = findItem(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Saklar Pengaman Buffer")
+            bufferSafetySwitch = findItem(
+                ElevatorCategory.COUNTERWEIGHT_BUFFER,
+                "Saklar Pengaman Buffer"
+            )
         ),
         electricalInstallation = ElectricalInstallationDto(
             installationStandard = findItem(ElevatorCategory.ELECTRICAL, "Standar Instalasi"),
@@ -196,8 +315,14 @@ fun InspectionWithDetailsDomain.toNetworkDto(): ElevatorReportDto {
                 specialOperation = findItem(ElevatorCategory.FIRE_SERVICE, "Operasi Khusus"),
                 fireSwitch = findItem(ElevatorCategory.FIRE_SERVICE, "Saklar Kebakaran"),
                 label = findItem(ElevatorCategory.FIRE_SERVICE, "Label"),
-                electricalFireResistance = findItem(ElevatorCategory.FIRE_SERVICE, "Ketahanan Api Listrik"),
-                hoistwayWallFireResistance = findItem(ElevatorCategory.FIRE_SERVICE, "Ketahanan Api Dinding Ruang Luncur"),
+                electricalFireResistance = findItem(
+                    ElevatorCategory.FIRE_SERVICE,
+                    "Ketahanan Api Listrik"
+                ),
+                hoistwayWallFireResistance = findItem(
+                    ElevatorCategory.FIRE_SERVICE,
+                    "Ketahanan Api Dinding Ruang Luncur"
+                ),
                 carSize = findItem(ElevatorCategory.FIRE_SERVICE, "Ukuran Kereta"),
                 doorSize = findItem(ElevatorCategory.FIRE_SERVICE, "Ukuran Pintu"),
                 travelTime = findItem(ElevatorCategory.FIRE_SERVICE, "Waktu Perjalanan"),

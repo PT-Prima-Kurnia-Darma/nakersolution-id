@@ -67,7 +67,6 @@ fun HistoryItem(
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = history.equipmentType,
                         style = MaterialTheme.typography.titleMedium,
