@@ -11,6 +11,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspect
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorGeneralData
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,7 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _eeUiState = MutableStateFlow(EEUiState())
     val eeUiState: StateFlow<EEUiState> = _eeUiState.asStateFlow()
 
-    private val _elevatorUiState = MutableStateFlow(ElevatorUiState())
+    private val _elevatorUiState = MutableStateFlow(Dummy.getDummyElevatorUiState())
     val elevatorUiState: StateFlow<ElevatorUiState> = _elevatorUiState.asStateFlow()
 
     private val _eskalatorUiState = MutableStateFlow(EskalatorUiState())
