@@ -6,6 +6,7 @@ package com.nakersolutionid.nakersolutionid.data.repository
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
@@ -56,6 +57,8 @@ class ReportRepository(
             is ApiResponse.Empty -> {}
         }
     }*/
+
+    override suspend fun getInspection(id: Long): InspectionWithDetails? = localDataSource.getInspection(id)
 
     override fun getAllReports(): Flow<List<History>> {
         return localDataSource.getAllInspectionsWithDetails().map {

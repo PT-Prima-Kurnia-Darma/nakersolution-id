@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.di
 
+import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -12,6 +13,10 @@ import kotlinx.coroutines.flow.flowOf
 class FakeReportRepository : IReportRepository {
     override suspend fun saveReport(request: InspectionWithDetailsDomain) {
         return
+    }
+
+    override suspend fun getInspection(id: Long): InspectionWithDetails? {
+        return null
     }
 
     override fun getAllReports(): Flow<List<History>> {

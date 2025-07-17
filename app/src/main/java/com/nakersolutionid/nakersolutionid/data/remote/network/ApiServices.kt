@@ -1,9 +1,8 @@
 package com.nakersolutionid.nakersolutionid.data.remote.network
 
-import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.ElevatorReportDto
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
-import com.nakersolutionid.nakersolutionid.data.remote.request.SendElevatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.ValidateTokenRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.ElevatorReportResponse
