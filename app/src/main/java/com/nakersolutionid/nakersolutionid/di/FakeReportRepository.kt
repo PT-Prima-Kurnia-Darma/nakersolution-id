@@ -1,6 +1,5 @@
 package com.nakersolutionid.nakersolutionid.di
 
-import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -15,7 +14,7 @@ class FakeReportRepository : IReportRepository {
         return
     }
 
-    override suspend fun getInspection(id: Long): InspectionWithDetails? {
+    override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? {
         return null
     }
 

@@ -19,6 +19,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.features.bap.BAPCreationScreen
 import com.nakersolutionid.nakersolutionid.features.bap.BAPScreen
 import com.nakersolutionid.nakersolutionid.features.history.HistoryScreen
@@ -40,7 +41,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object Home : NavKey
 @Serializable data object Report : NavKey
 @Serializable data object BAP : NavKey
-@Serializable data class BAPCreation(val id: Long) : NavKey
+@Serializable data class BAPCreation(val id: Long, val subInspectionType: SubInspectionType) : NavKey
 @Serializable data object History : NavKey
 @Serializable data object Settings : NavKey
 
@@ -136,10 +137,10 @@ fun NavigationRoot(
             entry<BAP> {
                 BAPScreen(
                     onBackClick = { backStack.removeLastOrNull() },
-                    onItemClick = { backStack.add(BAPCreation(it)) })
+                    onItemClick = { id, subInspectionType -> backStack.add(BAPCreation(id, subInspectionType)) })
             }
             entry<BAPCreation> { key ->
-                BAPCreationScreen(id = key.id, onBackClick = { backStack.removeLastOrNull() })
+                BAPCreationScreen(id = key.id, subInspectionType = key.subInspectionType, onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {
