@@ -31,12 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.ui.components.MenuItem
 import com.nakersolutionid.nakersolutionid.ui.components.MenuItemButton
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.KoinApplicationPreview
 
 private val menuItems = listOf(
     MenuItem(1, "Instalasi Listrik dan Penyalur Petir", Icons.Outlined.Bolt),
@@ -118,11 +115,7 @@ fun ReportScreen(
 @Preview(showBackground = true, device = Devices.TABLET, showSystemUi = true, name = "Tablet View")
 @Composable
 fun ReportScreenPreview() {
-    KoinApplicationPreview(application = {
-        modules(previewModule)
-    }) {
-        NakersolutionidTheme {
-            ReportScreen(onMenuTypeClick = {}, onBackClick = {})
-        }
+    NakersolutionidTheme {
+        ReportScreen(onMenuTypeClick = {}, onBackClick = {})
     }
 }
