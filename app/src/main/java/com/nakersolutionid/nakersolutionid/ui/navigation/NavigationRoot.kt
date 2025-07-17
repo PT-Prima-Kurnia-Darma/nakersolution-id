@@ -19,12 +19,13 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.nakersolutionid.nakersolutionid.features.bap.BAPCreationScreen
+import com.nakersolutionid.nakersolutionid.features.bap.BAPScreen
 import com.nakersolutionid.nakersolutionid.features.history.HistoryScreen
 import com.nakersolutionid.nakersolutionid.features.home.HomeScreen
 import com.nakersolutionid.nakersolutionid.features.login.LoginScreen
 import com.nakersolutionid.nakersolutionid.features.report.ReportScreen
 import com.nakersolutionid.nakersolutionid.features.report.ee.EEScreen
-import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorScreen
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.ILPPScreen
 import com.nakersolutionid.nakersolutionid.features.report.ipk.IPKScreen
 import com.nakersolutionid.nakersolutionid.features.report.paa.PAAScreen
@@ -38,6 +39,8 @@ import kotlinx.serialization.Serializable
 @Serializable data object SignUp : NavKey
 @Serializable data object Home : NavKey
 @Serializable data object Report : NavKey
+@Serializable data object BAP : NavKey
+@Serializable data class BAPCreation(val id: Long) : NavKey
 @Serializable data object History : NavKey
 @Serializable data object Settings : NavKey
 
@@ -74,33 +77,22 @@ fun NavigationRoot(
                     onLoginClick = {
                         backStack.clear()
                         backStack.add(Home)
-//                        backStack.removeFirstOrNull()
                     }
                 )
             }
-            entry<SignUp> {
-                SignUpScreen(onLoginClick = {
-                    backStack.removeLastOrNull()
-                })
-            }
+            entry<SignUp> { SignUpScreen(onLoginClick = { backStack.removeLastOrNull() }) }
             entry<Home> {
                 HomeScreen(
                     onLogoutClick = {
                         backStack.clear()
                         backStack.add(Login)
-//                        backStack.removeFirstOrNull()
                     },
                     onMenuItemClick = { item ->
                         when (item) {
-                            1 -> {
-                                backStack.add(Report)
-                            }
-                            7 -> {
-                                backStack.add(Settings)
-                            }
-                            6 -> {
-                                backStack.add(History)
-                            }
+                            1 -> { backStack.add(Report) }
+                            2 -> { backStack.add(BAP) }
+                            7 -> { backStack.add(Settings) }
+                            6 -> { backStack.add(History) }
                             else -> {}
                         }
                     }
@@ -122,38 +114,32 @@ fun NavigationRoot(
                     }
                 )
             }
+
             entry<Settings> {
                 SettingsScreen(
-                    onBackClick = {
-                        backStack.removeLastOrNull()
-                    },
+                    onBackClick = { backStack.removeLastOrNull() },
                     onLogoutClick = {
                         backStack.clear()
                         backStack.add(Login)
-//                        backStack.removeRange(0, backStack.size - 1)
                     }
                 )
             }
-            entry<History> {
-                HistoryScreen(onBackClick = { backStack.removeLastOrNull() })
+            entry<History> { HistoryScreen(onBackClick = { backStack.removeLastOrNull() }) }
+
+            entry<EE> { EEScreen(onBackClick = { backStack.removeLastOrNull() }) }
+            entry<PAA> { PAAScreen(onBackClick = { backStack.removeLastOrNull() }) }
+            entry<ILPP> { ILPPScreen(onBackClick = { backStack.removeLastOrNull() }) }
+            entry<PTP> { PTPScreen(onBackClick = { backStack.removeLastOrNull() }) }
+            entry<IPK> { IPKScreen(onBackClick = { backStack.removeLastOrNull() }) }
+            entry<PUBT> { PUBTScreen(onBackClick = { backStack.removeLastOrNull() }) }
+
+            entry<BAP> {
+                BAPScreen(
+                    onBackClick = { backStack.removeLastOrNull() },
+                    onItemClick = { backStack.add(BAPCreation(it)) })
             }
-            entry<EE> {
-                EEScreen(onBackClick = { backStack.removeLastOrNull() })
-            }
-            entry<PAA> {
-                PAAScreen(onBackClick = { backStack.removeLastOrNull() })
-            }
-            entry<ILPP> {
-                ILPPScreen(onBackClick = { backStack.removeLastOrNull() })
-            }
-            entry<PTP> {
-                PTPScreen(onBackClick = { backStack.removeLastOrNull() })
-            }
-            entry<IPK> {
-                IPKScreen(onBackClick = { backStack.removeLastOrNull() })
-            }
-            entry<PUBT> {
-                PUBTScreen(onBackClick = { backStack.removeLastOrNull() })
+            entry<BAPCreation> { key ->
+                BAPCreationScreen(id = key.id, onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {
