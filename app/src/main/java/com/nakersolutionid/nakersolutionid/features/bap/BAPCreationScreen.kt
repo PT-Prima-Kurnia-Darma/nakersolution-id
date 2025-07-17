@@ -7,17 +7,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPScreen
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 
@@ -32,18 +39,44 @@ fun BAPCreationScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val elevatorState by viewModel.elevatorBAPUiState.collectAsStateWithLifecycle()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     viewModel.getInspectionDetail(id)
+
+    LaunchedEffect(uiState.elevatorResult) {
+        when (val result = uiState.elevatorResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+            }
+            is Resource.Loading -> {
+                viewModel.onUpdateState { it.copy(isLoading = true) }
+            }
+            is Resource.Success -> {
+                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                onBackClick()
+            }
+            null -> null
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             BAPCreationAppBar(
                 onBackClick = onBackClick,
-                onSaveClick = {},
+                onSaveClick = { viewModel.onSaveClick(subInspectionType) },
                 name = subInspectionType.toDisplayString(),
                 actionEnable = true
             )
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding()
+            )
+        },
     ) { paddingValues ->
         when (subInspectionType) {
             SubInspectionType.Elevator -> {
