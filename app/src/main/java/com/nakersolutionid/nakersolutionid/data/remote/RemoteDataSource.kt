@@ -2,12 +2,11 @@ package com.nakersolutionid.nakersolutionid.data.remote
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.report.ElevatorReportDto
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
-import com.nakersolutionid.nakersolutionid.data.remote.request.SendElevatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.ElevatorReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
