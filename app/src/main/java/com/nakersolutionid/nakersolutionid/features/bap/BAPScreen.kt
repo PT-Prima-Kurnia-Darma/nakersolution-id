@@ -60,7 +60,6 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
-import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -79,7 +78,7 @@ fun BAPScreen(
     modifier: Modifier = Modifier,
     viewModel: BAPViewModel = koinViewModel(),
     onBackClick: () -> Unit,
-    onItemClick: (Long) -> Unit
+    onItemClick: (Long, SubInspectionType) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -132,7 +131,7 @@ fun BAPScreen(
                     BAPItem(
                         modifier = Modifier.animateItem(),
                         history = history,
-                        onItemClick = { onItemClick(history.id) }
+                        onItemClick = { onItemClick(history.id, history.subInspectionType) }
                     )
                 }
             }
@@ -350,7 +349,7 @@ fun HistoryScreenPreview() {
         modules(previewModule)
     }) {
         NakersolutionidTheme {
-            BAPScreen(onBackClick = {}, onItemClick = {})
+            BAPScreen(onBackClick = {}, onItemClick = { _, _ -> })
         }
     }
 }
