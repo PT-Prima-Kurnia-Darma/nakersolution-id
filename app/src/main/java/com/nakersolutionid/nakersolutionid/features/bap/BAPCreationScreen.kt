@@ -32,6 +32,8 @@ fun BAPCreationScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val elevatorState by viewModel.elevatorBAPUiState.collectAsStateWithLifecycle()
 
+    viewModel.getInspectionDetail(id)
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {

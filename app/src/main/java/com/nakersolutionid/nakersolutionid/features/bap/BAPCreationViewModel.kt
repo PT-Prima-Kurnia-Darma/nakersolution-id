@@ -1,13 +1,16 @@
 package com.nakersolutionid.nakersolutionid.features.bap
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.elevator.toElevatorBAPReport
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(BAPCreationUiState())
@@ -16,13 +19,14 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
     private val _elevatorBAPUiState = MutableStateFlow(ElevatorBAPUiState())
     val elevatorBAPUiState: StateFlow<ElevatorBAPUiState> = _elevatorBAPUiState.asStateFlow()
 
-    /*fun getInspectionDetail(id: Long) {
+    fun getInspectionDetail(id: Long) {
         viewModelScope.launch {
             onUpdateState { it.copy(isLoading = true) }
-            val data = reportUseCase.getInspection(id)
+            val data = reportUseCase.getInspection(id)?.toElevatorBAPReport() ?: ElevatorBAPReport()
+            onUpdateElevatorBAPState(data)
             onUpdateState { it.copy(isLoading = false) }
         }
-    }*/
+    }
 
     /*fun onSaveClick() {
 
