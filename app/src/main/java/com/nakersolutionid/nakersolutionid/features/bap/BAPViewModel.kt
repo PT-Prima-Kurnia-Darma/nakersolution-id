@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.features.bap
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
@@ -55,7 +56,7 @@ class BAPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     // State untuk filter yang aktif
-    private val _filterState = MutableStateFlow(FilterState())
+    private val _filterState = MutableStateFlow(FilterState(documentType = DocumentType.LAPORAN))
     val filterState: StateFlow<FilterState> = _filterState.asStateFlow() // Expose filterState
 
     // Holds the original, unfiltered list of histories from the source.
