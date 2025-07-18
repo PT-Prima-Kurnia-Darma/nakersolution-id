@@ -11,6 +11,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.Fi
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionPumpFunctionTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,7 @@ class IPKViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _ipkUiState = MutableStateFlow(IPKUiState())
     val ipkUiState: StateFlow<IPKUiState> = _ipkUiState.asStateFlow()
 
-    private val _fireProtectionUiState = MutableStateFlow(FireProtectionUiState())
+    private val _fireProtectionUiState = MutableStateFlow(Dummy.getDummyFireProtectionUiState())
     val fireProtectionUiState: StateFlow<FireProtectionUiState> = _fireProtectionUiState.asStateFlow()
 
     fun onSaveClick(selectedIndex: SubInspectionType) {

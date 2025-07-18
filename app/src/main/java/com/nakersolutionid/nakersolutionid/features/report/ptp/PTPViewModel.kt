@@ -14,6 +14,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.Diese
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,10 +27,10 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _ptpUiState = MutableStateFlow(PTPUiState())
     val ptpUiState: StateFlow<PTPUiState> = _ptpUiState.asStateFlow()
 
-    private val _machineUiState = MutableStateFlow(ProductionMachineUiState())
+    private val _machineUiState = MutableStateFlow(Dummy.getDummyProductionMachineUiState())
     val machineUiState: StateFlow<ProductionMachineUiState> = _machineUiState.asStateFlow()
 
-    private val _motorDieselUiState = MutableStateFlow(DieselMotorUiState())
+    private val _motorDieselUiState = MutableStateFlow(Dummy.getDummyDieselMotorUiState())
     val motorDieselUiState: StateFlow<DieselMotorUiState> = _motorDieselUiState.asStateFlow()
 
     fun onSaveClick(selectedIndex: SubInspectionType) {
