@@ -23,6 +23,11 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPScreen
+import com.nakersolutionid.nakersolutionid.features.bap.escalator.EscalatorBAPScreen
+import com.nakersolutionid.nakersolutionid.features.bap.forklift.ForkliftBAPScreen
+import com.nakersolutionid.nakersolutionid.features.bap.gantrycrane.GantryCraneBAPScreen
+import com.nakersolutionid.nakersolutionid.features.bap.gondola.GondolaBAPScreen
+import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPScreen
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -38,6 +43,11 @@ fun BAPCreationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val elevatorState by viewModel.elevatorBAPUiState.collectAsStateWithLifecycle()
+    val escalatorState by viewModel.escalatorBAPUiState.collectAsStateWithLifecycle()
+    val forkliftState by viewModel.forkliftBAPUiState.collectAsStateWithLifecycle()
+    val gantryCraneState by viewModel.gantryCraneBAPUiState.collectAsStateWithLifecycle()
+    val gondolaState by viewModel.gondolaBAPUiState.collectAsStateWithLifecycle()
+    val mobileCraneState by viewModel.mobileCraneBAPUiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -89,12 +99,57 @@ fun BAPCreationScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 )
             }
-            SubInspectionType.Escalator -> {}
-            SubInspectionType.Forklift -> {}
-            SubInspectionType.Mobile_Crane -> {}
+            SubInspectionType.Escalator -> {
+                EscalatorBAPScreen(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .imePadding(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                )
+            }
+            SubInspectionType.Forklift -> {
+                ForkliftBAPScreen(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .imePadding(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                )
+            }
+            SubInspectionType.Mobile_Crane -> {
+                MobileCraneBAPScreen(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .imePadding(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                )
+            }
             SubInspectionType.Overhead_Crane -> {}
-            SubInspectionType.Gantry_Crane -> {}
-            SubInspectionType.Gondola -> {}
+            SubInspectionType.Gantry_Crane -> {
+                GantryCraneBAPScreen(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .imePadding(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                )
+            }
+            SubInspectionType.Gondola -> {
+                GondolaBAPScreen(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .imePadding(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                )
+            }
             SubInspectionType.Electrical -> {}
             SubInspectionType.Lightning_Conductor -> {}
             SubInspectionType.General_PUBT -> {}
