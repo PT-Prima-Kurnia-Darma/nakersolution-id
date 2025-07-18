@@ -24,4 +24,6 @@ class LocalDataSource(private val inspectionDao: InspectionDao) {
 
     fun getInspection(id: Long): Flow<InspectionWithDetails> = inspectionDao.getInspectionWithDetails(id)
     fun getAllInspectionsWithDetails(): Flow<List<InspectionWithDetails>> = inspectionDao.getAllInspectionsWithDetails()
+    
+    suspend fun deleteInspection(id: Long) = inspectionDao.deleteInspectionWithDetails(id)
 }

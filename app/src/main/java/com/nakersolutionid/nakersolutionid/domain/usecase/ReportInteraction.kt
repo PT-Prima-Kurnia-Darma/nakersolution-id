@@ -9,4 +9,5 @@ class ReportInteraction(private val reportRepository: IReportRepository) : Repor
     override suspend fun saveReport(request: InspectionWithDetailsDomain) = reportRepository.saveReport(request)
     override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? = reportRepository.getInspection(id)
     override fun getAllReports(): Flow<List<History>> = reportRepository.getAllReports()
+    override suspend fun deleteReport(id: Long) = reportRepository.deleteReport(id)
 }
