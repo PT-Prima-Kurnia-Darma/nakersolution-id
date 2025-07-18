@@ -569,8 +569,8 @@ fun GantryCraneScreen(
                 HorizontalDivider()
                 ExpandableSubSection("PENGUJIAN STATIS (Defleksi)") {
                     val data = testing.staticTest
-                    FormTextField(label = "Berdasarkan Design", value = data.deflectionStandard.designBased, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionStandard = data.deflectionStandard.copy(designBased = it))))) })
                     FormTextField(label = "Beban Uji", value = data.load, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(load = it)))) })
+                    FormTextField(label = "Berdasarkan Design", value = data.deflectionStandard.designBased, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionStandard = data.deflectionStandard.copy(designBased = it))))) })
                     FormTextField(label = "Panjang Span", value = data.deflectionStandard.spanLength, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionStandard = data.deflectionStandard.copy(spanLength = it))))) })
                     FormTextField(label = "Perhitungan (1/600 x Span)", value = data.deflectionStandard.calculation, onValueChange = { onDataChange(report.copy(testing = testing.copy(staticTest = data.copy(deflectionStandard = data.deflectionStandard.copy(calculation = it))))) })
                     // MODIFIED: Changed from FormTextField to GantryCraneResultStatusInput
