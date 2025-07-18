@@ -50,4 +50,8 @@ class FakeReportRepository : IReportRepository {
             )
         )
     }
+
+    override suspend fun deleteReport(id: Long) {
+        null
+    }
 }
