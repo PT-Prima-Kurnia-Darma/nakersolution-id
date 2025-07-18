@@ -1,10 +1,6 @@
-// ElevatorUiState.kt
 package com.nakersolutionid.nakersolutionid.features.report.ee.elevator
 
 import androidx.compose.runtime.Immutable
-import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
-import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 
 @Immutable
 data class ResultStatusUiState(

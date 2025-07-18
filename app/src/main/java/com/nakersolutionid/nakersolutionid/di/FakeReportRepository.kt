@@ -14,6 +14,10 @@ class FakeReportRepository : IReportRepository {
         return
     }
 
+    override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? {
+        return null
+    }
+
     override fun getAllReports(): Flow<List<History>> {
         return flowOf(
             listOf(

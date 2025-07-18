@@ -1,5 +1,6 @@
-package com.nakersolutionid.nakersolutionid.features.history
+package com.nakersolutionid.nakersolutionid.features.bap
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,25 +8,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.SyncProblem
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,19 +26,19 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.Utils
-import java.util.Locale
 
 @Composable
-fun HistoryItem(
+fun BAPItem(
     history: History,
-    onDeleteClick: () -> Unit,
-    onDownloadClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onPreviewClick: () -> Unit,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+               onClick = onItemClick
+            ),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(
@@ -56,42 +46,17 @@ fun HistoryItem(
                 .padding(16.dp)
         ) {
             // Section 1: Header - Identitas Utama Laporan
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically // Align items vertically in the center
-            ) {
-                // Add weight(1f) to this Column to make it fill all available space
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = history.ownerName ?: "Nama Pemilik Tidak Tersedia",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = history.equipmentType,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-
-                // This Icon will now be pushed to the far right
-                if (history.isSynced) {
-                    Icon(
-                        modifier = Modifier
-                            .size(42.dp),
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = "Synced",
-                        tint = MaterialTheme.colorScheme.primary// Changed for clarity
-                    )
-                } else {
-                    Icon(
-                        modifier = Modifier
-                            .size(42.dp),
-                        imageVector = Icons.Filled.SyncProblem,
-                        contentDescription = "Not synced",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = history.ownerName ?: "Nama Pemilik Tidak Tersedia",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = history.equipmentType,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.secondary
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -105,12 +70,11 @@ fun HistoryItem(
                 InfoRow(label = "Tanggal Laporan", value = history.reportDate ?: "-")
             }
 
-
             Spacer(modifier = Modifier.height(16.dp))
 
             // Section 3: Footer - Metadata dan Tombol Aksi
             HorizontalDivider()
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -123,12 +87,6 @@ fun HistoryItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f)
                 )
-
-                // Tombol Aksi
-                ActionButton(icon = Icons.Default.Delete, description = "Delete", onClick = onDeleteClick)
-                ActionButton(icon = Icons.Default.Download, description = "Download", onClick = onDownloadClick)
-                ActionButton(icon = Icons.Default.Edit, description = "Edit", onClick = onEditClick)
-                ActionButton(icon = Icons.Default.Visibility, description = "Preview", onClick = onPreviewClick)
             }
         }
     }
@@ -152,26 +110,7 @@ private fun InfoRow(label: String, value: String) {
     }
 }
 
-/**
- * Composable untuk tombol aksi di dalam card.
- */
-@Composable
-private fun ActionButton(
-    icon: ImageVector,
-    description: String,
-    onClick: () -> Unit
-) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = icon,
-            contentDescription = description,
-            tint = MaterialTheme.colorScheme.secondary
-        )
-    }
-}
-
-
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun HistoryItemPreview() {
     val sampleHistory = History(
@@ -189,12 +128,9 @@ private fun HistoryItemPreview() {
     )
 
     NakersolutionidTheme {
-        HistoryItem(
+        BAPItem(
             history = sampleHistory,
-            onDeleteClick = {},
-            onDownloadClick = {},
-            onEditClick = {},
-            onPreviewClick = {}
+            onItemClick = {}
         )
     }
 }

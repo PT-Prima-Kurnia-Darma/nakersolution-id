@@ -1,4 +1,4 @@
-package com.nakersolutionid.nakersolutionid.features.history
+package com.nakersolutionid.nakersolutionid.features.bap
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -18,7 +18,7 @@ import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryAppBar(
+fun BAPAppBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onFilterClick: () -> Unit
@@ -26,7 +26,7 @@ fun HistoryAppBar(
     TopAppBar(
         modifier = modifier,
         title = {
-            Text("Riwayat", fontWeight = FontWeight.Bold)
+            Text("Pilih BAP", fontWeight = FontWeight.Bold)
         },
         navigationIcon = {
             IconButton(
@@ -49,6 +49,6 @@ fun HistoryAppBar(
 @Composable
 fun SearchAppBarPreview() {
     NakersolutionidTheme {
-        HistoryAppBar(onBackClick = {}, onFilterClick = {})
+        BAPAppBar(onBackClick = {}, onFilterClick = {})
     }
 }

@@ -3,9 +3,8 @@ package com.nakersolutionid.nakersolutionid.data.repository
 //import com.nakersolutionid.nakersolutionid.utils.toEntity
 //import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
 //import com.nakersolutionid.nakersolutionid.data.local.mapper.toInspectionWithDetails
-import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
@@ -14,6 +13,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class ReportRepository(
@@ -56,6 +56,10 @@ class ReportRepository(
             is ApiResponse.Empty -> {}
         }
     }*/
+
+    override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? {
+        return localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
+    }
 
     override fun getAllReports(): Flow<List<History>> {
         return localDataSource.getAllInspectionsWithDetails().map {
