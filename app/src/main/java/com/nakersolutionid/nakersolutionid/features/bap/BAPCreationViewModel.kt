@@ -37,8 +37,8 @@ import com.nakersolutionid.nakersolutionid.features.bap.lightning.LightningBAPUi
 import com.nakersolutionid.nakersolutionid.features.bap.lightning.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPUiState
-import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toMobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toMobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.toInspectionWithDetailsDomain
