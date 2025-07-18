@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +39,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -60,6 +62,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -85,6 +88,8 @@ fun HistoryScreen(
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var historyToDelete by remember { mutableStateOf<History?>(null) }
     val lazyListState = rememberLazyListState()
 
     // This effect correctly scrolls the list to the top AFTER the data has been updated
@@ -130,7 +135,10 @@ fun HistoryScreen(
                     HistoryItem(
                         modifier = Modifier.animateItem(),
                         history = history,
-                        onDeleteClick = {},
+                        onDeleteClick = {
+                            historyToDelete = history
+                            showDeleteDialog = true
+                        },
                         onDownloadClick = {},
                         onEditClick = {},
                         onPreviewClick = {}
@@ -151,6 +159,21 @@ fun HistoryScreen(
                 onResetFilters = {
                     viewModel.clearFilters()
                 },
+            )
+        }
+
+        if (showDeleteDialog && historyToDelete != null) {
+            DeleteConfirmationDialog(
+                historyToDelete = historyToDelete!!,
+                onConfirm = {
+                    viewModel.deleteReport(historyToDelete!!.id)
+                    showDeleteDialog = false
+                    historyToDelete = null
+                },
+                onDismiss = {
+                    showDeleteDialog = false
+                    historyToDelete = null
+                }
             )
         }
     }
@@ -358,6 +381,67 @@ private fun FilterSection(title: String, content: @Composable () -> Unit) {
         content()
         Spacer(modifier = Modifier.height(24.dp))
     }
+}
+
+@Composable
+fun DeleteConfirmationDialog(
+    historyToDelete: History,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Hapus Laporan",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                Text(
+                    text = "Apakah Anda yakin ingin menghapus laporan ini?",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Pemilik: ${historyToDelete.ownerName ?: "Tidak diketahui"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "Alat: ${historyToDelete.equipmentType}",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Tindakan ini tidak dapat dibatalkan.",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text("Hapus")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Batal")
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true, name = "Phone View")

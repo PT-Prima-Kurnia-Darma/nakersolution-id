@@ -132,4 +132,18 @@ class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         _filterState.value = FilterState() // Reset filter ke kondisi awal
         _uiState.update { it.copy(activeFilters = FilterState()) } // Perbarui activeFilters di UiState
     }
+
+    /**
+     * Called by the UI to delete a report.
+     */
+    fun deleteReport(id: Long) {
+        viewModelScope.launch {
+            try {
+                reportUseCase.deleteReport(id)
+                // Data akan otomatis diperbarui melalui Flow yang sudah ada
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = "Gagal menghapus laporan: ${e.message}") }
+            }
+        }
+    }
 }

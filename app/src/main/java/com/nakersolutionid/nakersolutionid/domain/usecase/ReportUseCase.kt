@@ -9,4 +9,5 @@ interface ReportUseCase {
     suspend fun saveReport(request: InspectionWithDetailsDomain)
     suspend fun getInspection(id: Long): InspectionWithDetailsDomain?
     fun getAllReports(): Flow<List<History>>
+    suspend fun deleteReport(id: Long)
 }
