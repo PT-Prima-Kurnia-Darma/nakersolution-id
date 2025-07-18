@@ -318,7 +318,7 @@ data class ForkliftLoadTest(
 data class ForkliftLoadTestItem(
     val forkLiftingHeight: String = "",
     val testLoad: String = "",
-    val travellingSpeed: String = "",
+    val travelingSpeed: String = "",
     val movement: String = "",
     val result: String = "",
     val remarks: String = ""

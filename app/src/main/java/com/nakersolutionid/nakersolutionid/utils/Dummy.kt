@@ -1551,7 +1551,7 @@ object Dummy {
                             ForkliftLoadTestItem(
                                 forkLiftingHeight = "4.0 m",
                                 testLoad = "1800 kg",
-                                travellingSpeed = "10 km/h",
+                                travelingSpeed = "10 km/h",
                                 movement = "Lift, Lower, Tilt, Travel",
                                 result = "Passed",
                                 remarks = "Stable, no issues"
@@ -1559,7 +1559,7 @@ object Dummy {
                             ForkliftLoadTestItem(
                                 forkLiftingHeight = "4.5 m",
                                 testLoad = "1500 kg",
-                                travellingSpeed = "8 km/h",
+                                travelingSpeed = "8 km/h",
                                 movement = "Lift, Lower, Tilt",
                                 result = "Passed",
                                 remarks = "Stable, no issues"
