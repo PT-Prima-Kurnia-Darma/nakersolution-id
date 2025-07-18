@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
+import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalInstallationBAPReport
+import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalInstallationBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.electric.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.toElevatorBAPReport
@@ -14,6 +17,9 @@ import com.nakersolutionid.nakersolutionid.features.bap.escalator.EscalatorBAPRe
 import com.nakersolutionid.nakersolutionid.features.bap.escalator.EscalatorBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.escalator.toEscalatorBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.escalator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.FireProtectionBAPReport
+import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.FireProtectionBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.forklift.ForkliftBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.forklift.ForkliftBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.forklift.toForkliftBAPReport
@@ -26,10 +32,22 @@ import com.nakersolutionid.nakersolutionid.features.bap.gondola.GondolaBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.gondola.GondolaBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.gondola.toGondolaBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.gondola.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.lightning.LightningBAPReport
+import com.nakersolutionid.nakersolutionid.features.bap.lightning.LightningBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.lightning.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toMobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPReport
+import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.PtpBAPReport
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.PtpBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPReport
+import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.pubt.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,6 +76,25 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
 
     private val _mobileCraneBAPUiState = MutableStateFlow(MobileCraneBAPUiState())
     val mobileCraneBAPUiState: StateFlow<MobileCraneBAPUiState> = _mobileCraneBAPUiState.asStateFlow()
+
+    // New states
+    private val _lightningBAPUiState = MutableStateFlow(LightningBAPUiState())
+    val lightningBAPUiState: StateFlow<LightningBAPUiState> = _lightningBAPUiState.asStateFlow()
+
+    private val _electricalBAPUiState = MutableStateFlow(ElectricalInstallationBAPUiState())
+    val electricalBAPUiState: StateFlow<ElectricalInstallationBAPUiState> = _electricalBAPUiState.asStateFlow()
+
+    private val _pubtBAPUiState = MutableStateFlow(PubtBAPUiState())
+    val pubtBAPUiState: StateFlow<PubtBAPUiState> = _pubtBAPUiState.asStateFlow()
+
+    private val _ptpBAPUiState = MutableStateFlow(PtpBAPUiState())
+    val ptpBAPUiState: StateFlow<PtpBAPUiState> = _ptpBAPUiState.asStateFlow()
+
+    private val _fireProtectionBAPUiState = MutableStateFlow(FireProtectionBAPUiState())
+    val fireProtectionBAPUiState: StateFlow<FireProtectionBAPUiState> = _fireProtectionBAPUiState.asStateFlow()
+
+    private val _overheadCraneBAPUiState = MutableStateFlow(OverheadCraneBAPUiState())
+    val overheadCraneBAPUiState: StateFlow<OverheadCraneBAPUiState> = _overheadCraneBAPUiState.asStateFlow()
 
     fun getInspectionDetail(id: Long) {
         viewModelScope.launch {
@@ -129,13 +166,34 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
                     val inspection = _mobileCraneBAPUiState.value.mobileCraneBAPReport.toInspectionWithDetailsDomain(currentTime)
                     saveReport(inspection)
                 }
-                SubInspectionType.Overhead_Crane -> TODO()
-                SubInspectionType.Electrical -> TODO()
-                SubInspectionType.Lightning_Conductor -> TODO()
-                SubInspectionType.General_PUBT -> TODO()
-                SubInspectionType.Fire_Protection -> TODO()
-                SubInspectionType.Motor_Diesel -> TODO()
-                SubInspectionType.Machine -> TODO()
+                SubInspectionType.Overhead_Crane -> {
+                    val inspection = _overheadCraneBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    saveReport(inspection)
+                }
+                SubInspectionType.Electrical -> {
+                    val inspection = _electricalBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    saveReport(inspection)
+                }
+                SubInspectionType.Lightning_Conductor -> {
+                    val inspection = _lightningBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    saveReport(inspection)
+                }
+                SubInspectionType.General_PUBT -> {
+                    val inspection = _pubtBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    saveReport(inspection)
+                }
+                SubInspectionType.Fire_Protection -> {
+                    val inspection = _fireProtectionBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    saveReport(inspection)
+                }
+                SubInspectionType.Motor_Diesel -> {
+                    val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    saveReport(inspection)
+                }
+                SubInspectionType.Machine -> {
+                    val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    saveReport(inspection)
+                }
             }
         }
     }
@@ -173,6 +231,31 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
 
     fun onUpdateMobileCraneBAPState(newData: MobileCraneBAPReport) {
         _mobileCraneBAPUiState.update { it.copy(mobileCraneBAPReport = newData) }
+    }
+
+    // New update functions
+    fun onUpdateLightningBAPState(newData: LightningBAPReport) {
+        _lightningBAPUiState.update { it.copy(report = newData) }
+    }
+
+    fun onUpdateElectricalBAPState(newData: ElectricalInstallationBAPReport) {
+        _electricalBAPUiState.update { it.copy(report = newData) }
+    }
+
+    fun onUpdatePubtBAPState(newData: PubtBAPReport) {
+        _pubtBAPUiState.update { it.copy(report = newData) }
+    }
+
+    fun onUpdatePtpBAPState(newData: PtpBAPReport) {
+        _ptpBAPUiState.update { it.copy(report = newData) }
+    }
+
+    fun onUpdateFireProtectionBAPState(newData: FireProtectionBAPReport) {
+        _fireProtectionBAPUiState.update { it.copy(report = newData) }
+    }
+
+    fun onUpdateOverheadCraneBAPState(newData: OverheadCraneBAPReport) {
+        _overheadCraneBAPUiState.update { it.copy(report = newData) }
     }
 
     fun onUpdateState(updater: (BAPCreationUiState) -> BAPCreationUiState) {
