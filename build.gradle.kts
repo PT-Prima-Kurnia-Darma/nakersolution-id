@@ -3,9 +3,6 @@ buildscript {
         mavenCentral()
         google()
     }
-    dependencies {
-        classpath("io.kotzilla:kotzilla-plugin:1.0.2-RC4")
-    }
 }
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.

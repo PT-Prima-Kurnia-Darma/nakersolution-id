@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.utils
 
-import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.* // Asumsikan semua data class berada dalam paket ini
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.*
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.*
 
 object Dummy {
     fun getDummyElevatorUiState(): ElevatorUiState {
@@ -189,6 +190,145 @@ object Dummy {
             conclusion = "Elevator in good working condition, minor recommendations for future maintenance.",
             createdAt = "2025-07-16T10:00:00Z",
             isLoading = false
+        )
+    }
+
+    fun getDummyEskalatorUiState(): EskalatorUiState {
+        return EskalatorUiState(
+            isLoading = false,
+            eskalatorData = EskalatorGeneralData(
+                equipmentType = "Eskalator",
+                examinationType = "Routine Inspection",
+                conclusion = "Eskalator is in good condition and operating normally.",
+                companyData = EskalatorCompanyData(
+                    companyOrBuildingName = "Plaza Serpong",
+                    usageAddress = "Jl. MH Thamrin No. 1, Tangerang Selatan",
+                    safetyObjectTypeAndNumber = "ESK-45678",
+                    intendedUse = "Commercial Building",
+                    usagePermit = "PERMIT-ESK-2024-002",
+                    inspectionDate = "2024-08-01"
+                ),
+                technicalData = EskalatorTechnicalData(
+                    manufacturer = "Hyundai",
+                    brand = "Hyundai Elevator",
+                    countryAndYear = "South Korea, 2015",
+                    serialNumber = "SN-HYUNDAI-54321",
+                    transports = "Passenger",
+                    capacity = "750 kg",
+                    liftHeight = "15 meters",
+                    speed = "0.75 m/s",
+                    driveType = "Standard Drive",
+                    motorCurrent = "15A",
+                    motorPower = "7.5 kW",
+                    safetyDevices = "Emergency Stop, Handrail Safety Device, Step Chain Safety Device"
+                ),
+                inspectionAndTesting = EskalatorInspectionAndTesting(
+                    frameAndMachineRoom = FrameAndMachineRoom(
+                        frame = EskalatorResultStatus("Solid", true),
+                        supportBeams = EskalatorResultStatus("Stable", true),
+                        machineRoomCondition = EskalatorResultStatus("Clean", true),
+                        machineRoomClearance = EskalatorResultStatus("Sufficient", true),
+                        machineRoomLighting = EskalatorResultStatus("Adequate", true),
+                        machineCoverPlate = EskalatorResultStatus("Secure", true),
+                        pitCondition = EskalatorResultStatus("Dry", true),
+                        pitClearance = EskalatorResultStatus("Sufficient", true),
+                        pitStepCoverPlate = EskalatorResultStatus("In Place", true)
+                    ),
+                    driveEquipment = DriveEquipment(
+                        driveMachine = EskalatorResultStatus("Lubricated", true),
+                        speedUnder30Degrees = EskalatorResultStatus("0.75 m/s", true),
+                        speed30to35Degrees = EskalatorResultStatus("Not Applicable", false),
+                        travelatorSpeed = EskalatorResultStatus("Not Applicable", false),
+                        stoppingDistance0_5 = EskalatorResultStatus("0.5 m", true),
+                        stoppingDistance0_75 = EskalatorResultStatus("0.75 m", true),
+                        stoppingDistance0_90 = EskalatorResultStatus("0.90 m", true),
+                        driveChain = EskalatorResultStatus("Good Condition", true),
+                        chainBreakingStrength = EskalatorResultStatus("Sufficient", true)
+                    ),
+                    stepsOrPallets = StepsOrPallets(
+                        stepMaterial = EskalatorResultStatus("Aluminum", true),
+                        stepDimensions = EskalatorResultStatus("Standard", true),
+                        palletDimensions = EskalatorResultStatus("Standard", true),
+                        stepSurface = EskalatorResultStatus("Non-slip", true),
+                        stepLevelness = EskalatorResultStatus("Accurate", true),
+                        skirtBrush = EskalatorResultStatus("Present and Intact", true),
+                        stepWheels = EskalatorResultStatus("Well-lubricated", true)
+                    ),
+                    landingArea = LandingArea(
+                        landingPlates = EskalatorResultStatus("Clean and Intact", true),
+                        combTeeth = EskalatorResultStatus("Undamaged", true),
+                        combCondition = EskalatorResultStatus("Good", true),
+                        landingCover = EskalatorResultStatus("Secure", true),
+                        landingAccessArea = EskalatorResultStatus("Clear", true)
+                    ),
+                    balustrade = Balustrade(
+                        balustradePanel = BalustradePanel(
+                            material = EskalatorResultStatus("Tempered Glass", true),
+                            height = EskalatorResultStatus("1100 mm", true),
+                            sidePressure = EskalatorResultStatus("Within Limit", true),
+                            verticalPressure = EskalatorResultStatus("Within Limit", true)
+                        ),
+                        skirtPanel = EskalatorResultStatus("Intact", true),
+                        skirtPanelFlexibility = EskalatorResultStatus("Good", true),
+                        stepToSkirtClearance = EskalatorResultStatus("Sufficient", true)
+                    ),
+                    handrail = Handrail(
+                        handrailCondition = EskalatorResultStatus("Good", true),
+                        handrailSpeedSynchronization = EskalatorResultStatus("Synchronized", true),
+                        handrailWidth = EskalatorResultStatus("Standard", true)
+                    ),
+                    runway = Runway(
+                        beamStrengthAndPosition = EskalatorResultStatus("Good", true),
+                        pitWallCondition = EskalatorResultStatus("Clean", true),
+                        escalatorFrameEnclosure = EskalatorResultStatus("Secure", true),
+                        lighting = EskalatorResultStatus("Adequate", true),
+                        headroomClearance = EskalatorResultStatus("Sufficient", true),
+                        balustradeToObjectClearance = EskalatorResultStatus("Sufficient", true),
+                        antiClimbDeviceHeight = EskalatorResultStatus("Compliant", true),
+                        ornamentPlacement = EskalatorResultStatus("Not Present", false),
+                        outdoorClearance = EskalatorResultStatus("Not Applicable", false)
+                    ),
+                    safetyEquipment = SafetyEquipment(
+                        operationControlKey = EskalatorResultStatus("Accessible", true),
+                        emergencyStopSwitch = EskalatorResultStatus("Functional", true),
+                        stepChainSafetyDevice = EskalatorResultStatus("Functional", true),
+                        driveChainSafetyDevice = EskalatorResultStatus("Functional", true),
+                        stepSafetyDevice = EskalatorResultStatus("Functional", true),
+                        handrailSafetyDevice = EskalatorResultStatus("Functional", true),
+                        reversalStopDevice = EskalatorResultStatus("Functional", true),
+                        handrailEntryGuard = EskalatorResultStatus("Present", true),
+                        combPlateSafetyDevice = EskalatorResultStatus("Functional", true),
+                        innerDeckingBrush = EskalatorResultStatus("Present", true),
+                        stopButtons = EskalatorResultStatus("Accessible", true)
+                    ),
+                    electricalInstallation = ElectricalInstallation(
+                        installationStandard = EskalatorResultStatus("IEC Compliant", true),
+                        electricalPanel = EskalatorResultStatus("Organized", true),
+                        groundingCable = EskalatorResultStatus("Connected", true),
+                        fireAlarmConnection = EskalatorResultStatus("Linked", true)
+                    ),
+                    outdoorSpecifics = OutdoorSpecifics(
+                        pitWaterPump = EskalatorResultStatus("Functional", true),
+                        weatherproofComponents = EskalatorResultStatus("Compliant", true)
+                    ),
+                    userSafetySignage = UserSafetySignage(
+                        noBulkyItems = EskalatorResultStatus("Visible", true),
+                        noJumping = EskalatorResultStatus("Visible", true),
+                        unattendedChildren = EskalatorResultStatus("Visible", true),
+                        noTrolleysOrStrollers = EskalatorResultStatus("Visible", true),
+                        noLeaning = EskalatorResultStatus("Visible", true),
+                        noSteppingOnSkirt = EskalatorResultStatus("Visible", true),
+                        softSoleFootwearWarning = EskalatorResultStatus("Visible", true),
+                        noSittingOnSteps = EskalatorResultStatus("Visible", true),
+                        holdHandrail = EskalatorResultStatus("Visible", true)
+                    )
+                ),
+                testingSummary = EskalatorTestingSummary(
+                    safetyDevices = "All safety devices tested and functional.",
+                    noLoadTest = "Passed",
+                    brakeTest = "Passed"
+                )
+            )
         )
     }
 }
