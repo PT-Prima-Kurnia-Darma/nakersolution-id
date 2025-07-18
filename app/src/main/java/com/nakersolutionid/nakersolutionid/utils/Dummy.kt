@@ -153,6 +153,157 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.Gantr
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneVisualInspection
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneWireRope
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaBeam
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaBrake
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaCageItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaClampsItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaConclusion
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaElectricMotor
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaEngineWeight
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaGeneralData
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaHoist
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaInspectionResult
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaLoadTest
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaMechanicalSuspension
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaNdtSection
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaNonDestructiveTesting
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaPlatformSize
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSpecifications
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSteelWireRopeItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSuspensionStructureItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaTechnicalData
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaTesting
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaVisualInspection
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneConclusion
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneDriveMotor
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneFunctionTest
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneGeneralData
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneHook
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneInspectionResult
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTest
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTestItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTestType
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomSection
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeDrumSection
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeHookSection
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdePulleySection
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeSection
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNonDestructiveExamination
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneSpecifications
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneTechnicalData
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneTestResult
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneTesting
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneVisualInspection
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneWireRope
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneWireRopeDrum
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneBrake
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneChain
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneConclusion
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneControllerBrake
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneDeflectionMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneDriveMotor
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneDynamicTest
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneDynamicTestItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneDynamicWithLoad
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneDynamicWithoutLoad
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneGeneralData
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneHook
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionResult
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneLoadTestResult
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneMovementData
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNde
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChain
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeHook
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneStartingResistor
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneStaticTest
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneTechSpecs
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneTechnicalData
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneTesting
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneVisualInspection
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneWireRope
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineConditionResult
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineConclusion
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineDimensions
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineElectricalMeasurements
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineFoundationAnalysis
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineFoundationDimensions
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineFoundationHeight
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineFunctionalTests
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineGeneralData
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineLightingMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineMinFoundationWeight
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineNoiseAndLightingMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineNoiseMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachinePanelControlDrawing
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachinePowerInfo
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineTechnicalData
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineTestResult
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineTestingAndMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineUiState
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineVisualInspection
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineWeight
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorConclusion
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorConditionResult
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorElectricalMeasurements
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorGeneralData
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorGeneratorInfo
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorInfo
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurementPoint
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMcbCalculation
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMcbCalculationResult
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMcbKnownData
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMeasurementAnalysis
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurementPoint
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNdtTests
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorPanelControl
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorPowerInfo
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorSafetyDeviceTests
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorTechnicalData
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorTestResult
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorTestingAndMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorVisualInspection
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralAppendageResult
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralAppendagesInspection
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralCheckResult
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralConclusion
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralData
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralFurnace
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralHeads
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralHydrotest
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionAndMeasurement
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionReport
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMaterialThickness
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMeasurementResultItem
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralNdtResult
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralNdtTestComponent
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralNdtTestFireTubes
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralNdtTests
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralSafetyValveTest
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralShell
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralTechnicalData
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralThicknessMeasurementSetup
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralTubePass
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralTubePlate
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralUiState
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralValueResult
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralVisualInspection
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralWaterTubes
 import kotlinx.collections.immutable.persistentListOf
 
 object Dummy {
@@ -1400,7 +1551,7 @@ object Dummy {
                             ForkliftLoadTestItem(
                                 forkLiftingHeight = "4.0 m",
                                 testLoad = "1800 kg",
-                                travelingSpeed = "10 km/h",
+                                travellingSpeed = "10 km/h",
                                 movement = "Lift, Lower, Tilt, Travel",
                                 result = "Passed",
                                 remarks = "Stable, no issues"
@@ -1408,7 +1559,7 @@ object Dummy {
                             ForkliftLoadTestItem(
                                 forkLiftingHeight = "4.5 m",
                                 testLoad = "1500 kg",
-                                travelingSpeed = "8 km/h",
+                                travellingSpeed = "8 km/h",
                                 movement = "Lift, Lower, Tilt",
                                 result = "Passed",
                                 remarks = "Stable, no issues"
@@ -1926,6 +2077,1431 @@ object Dummy {
                         "Consider upgrading the operator cabin's AC unit for better climate control."
                     ),
                     nextInspectionDateSuggestion = "2025-10-01"
+                )
+            )
+        )
+    }
+
+    fun getDummyGondolaUiState(): GondolaUiState {
+        return GondolaUiState(
+            gondolaInspectionReport = GondolaInspectionReport(
+                equipmentType = "Gondola",
+                examinationType = "Periodic Inspection",
+                generalData = GondolaGeneralData(
+                    owner = "PT. Gedung Tinggi Sejahtera",
+                    ownerAddress = "Jl. Jenderal Sudirman Kav. 52-53, Jakarta Selatan",
+                    user = "Gedung Perkantoran ABC",
+                    personInCharge = "Rahmat Hidayat",
+                    unitLocation = "Rooftop, Tower 1",
+                    operatorName = "Joko Susilo",
+                    manufacturer = "Manntech",
+                    brandType = "Type C",
+                    driveType = "Electric",
+                    yearOfManufacture = "2018",
+                    serialNumberUnitNumber = "MT-GC-2018-001",
+                    capacity = "250 kg / 2 persons",
+                    standardUsed = "EN 1808",
+                    usedFor = "Building Maintenance and Cleaning",
+                    usagePermitNumber = "GONDOLA-IZIN-2024-001",
+                    operatorCertificate = "OPR-GDL-2024-010"
+                ),
+                technicalData = GondolaTechnicalData(
+                    gondolaSpecifications = GondolaSpecifications(
+                        supportPoleHeight = "2.5 m",
+                        beam = GondolaBeam(
+                            frontBeamLength = "1.5 m",
+                            middleBeamLength = "2.0 m",
+                            rearBeamLength = "2.5 m"
+                        ),
+                        balanceWeightToBeamDistance = "3.0 m",
+                        capacity = "250 kg",
+                        speed = "9 m/min",
+                        platformSize = GondolaPlatformSize(
+                            length = "2.0 m",
+                            width = "0.7 m",
+                            height = "1.1 m"
+                        ),
+                        wireRope = "8.3 mm"
+                    ),
+                    hoist = GondolaHoist(
+                        model = "Tirak X-500",
+                        liftingPower = "500 kg",
+                        electricMotor = GondolaElectricMotor(
+                            type = "AC Squirrel Cage",
+                            power = "1.1 kW",
+                            voltage = "380V / 3 Phase"
+                        )
+                    ),
+                    safetyLockType = "Blockstop BSO 500",
+                    brake = GondolaBrake(
+                        type = "Electromagnetic Disc Brake",
+                        model = "EMB-200",
+                        capacity = "Rated for 125% of motor torque"
+                    ),
+                    mechanicalSuspension = GondolaMechanicalSuspension(
+                        supportPoleHeight = "2.5 m",
+                        frontBeamLength = "1.5 m",
+                        material = "Galvanized Steel"
+                    ),
+                    engineWeight = GondolaEngineWeight(
+                        totalPlatformWeightIncludingHoistSafetyLockControlPanel = "180 kg",
+                        mechanicalSuspensionWeight = "350 kg",
+                        balanceWeight = "600 kg",
+                        totalEngineWeightExcludingWireRopeAndCable = "1130 kg"
+                    )
+                ),
+                visualInspection = GondolaVisualInspection(
+                    suspensionStructureFrontBeam = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureMiddleBeam = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureRearBeam = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureFrontBeamSupportPole = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureLowerFrontBeamSupportPole = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureReinforcementClamp = GondolaInspectionResult(true, "Secure"),
+                    suspensionStructureCouplingSleeve = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureTurnbuckle = GondolaInspectionResult(true, "Tight"),
+                    suspensionStructureReinforcementRope = GondolaInspectionResult(true, "Good tension"),
+                    suspensionStructureRearSupportPole = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureBalanceWeight = GondolaInspectionResult(true, "Correct weight, secure"),
+                    suspensionStructureFrontSupportPoleBase = GondolaInspectionResult(true, "Stable"),
+                    suspensionStructureRearSupportPoleBase = GondolaInspectionResult(true, "Stable"),
+                    suspensionStructureJackBaseJoint = GondolaInspectionResult(true, "Good"),
+                    suspensionStructureConnectionBolts = GondolaInspectionResult(true, "All present and tight"),
+                    steelWireRopeMainRope = GondolaInspectionResult(true, "No kinks or broken strands"),
+                    steelWireRopeSafetyRope = GondolaInspectionResult(true, "No kinks or broken strands"),
+                    steelWireRopeSlingBinder = GondolaInspectionResult(true, "Good condition"),
+                    electricalSystemHoistMotor = GondolaInspectionResult(true, "Runs smoothly"),
+                    electricalSystemBrakeRelease = GondolaInspectionResult(true, "Functional"),
+                    electricalSystemManualRelease = GondolaInspectionResult(true, "Functional"),
+                    electricalSystemPowerControl = GondolaInspectionResult(true, "Panel is clean, switches work"),
+                    electricalSystemPowerCable = GondolaInspectionResult(true, "No damage to insulation"),
+                    electricalSystemHandleSwitch = GondolaInspectionResult(true, "Responsive"),
+                    electricalSystemUpperLimitSwitch = GondolaInspectionResult(true, "Functional"),
+                    electricalSystemLimitStopper = GondolaInspectionResult(true, "Present"),
+                    electricalSystemSocketFitting = GondolaInspectionResult(true, "Secure connection"),
+                    electricalSystemGrounding = GondolaInspectionResult(true, "Connected"),
+                    electricalSystemBreakerFuse = GondolaInspectionResult(true, "Intact"),
+                    electricalSystemEmergencyStop = GondolaInspectionResult(true, "Functional"),
+                    platformHoistMountingFrame = GondolaInspectionResult(true, "Secure"),
+                    platformFrame = GondolaInspectionResult(true, "No deformation"),
+                    platformBottomPlate = GondolaInspectionResult(true, "Good condition"),
+                    platformPinsAndBolts = GondolaInspectionResult(true, "All present and secure"),
+                    platformBracket = GondolaInspectionResult(true, "No cracks"),
+                    platformToeBoard = GondolaInspectionResult(true, "Intact"),
+                    platformRollerAndGuidePulley = GondolaInspectionResult(true, "Rolls smoothly"),
+                    platformNameplate = GondolaInspectionResult(true, "Legible"),
+                    safetyDevicesSafetyLock = GondolaInspectionResult(true, "Engages correctly"),
+                    safetyDevicesRubberBumper = GondolaInspectionResult(true, "Present"),
+                    safetyDevicesSafetyLifeline = GondolaInspectionResult(true, "Good condition"),
+                    safetyDevicesLoadLimitSwitch = GondolaInspectionResult(true, "Functional"),
+                    safetyDevicesLimitBlock = GondolaInspectionResult(true, "Present"),
+                    safetyDevicesUpperLimitSwitch = GondolaInspectionResult(true, "Functional"),
+                    safetyDevicesBodyHarness = GondolaInspectionResult(true, "Available and in good condition"),
+                    safetyDevicesSafetyHarnessAnchorage = GondolaInspectionResult(true, "Secure"),
+                    safetyDevicesHandyTalkie = GondolaInspectionResult(true, "Functional"),
+                    safetyDevicesSafetyHelmet = GondolaInspectionResult(true, "Available"),
+                    safetyDevicesHandrail = GondolaInspectionResult(true, "Secure, no deformation"),
+                    safetyDevicesOtherPpe = GondolaInspectionResult(true, "Safety shoes and gloves available"),
+                    safetyDevicesCoupForGlass = GondolaInspectionResult(true, "Not applicable")
+                ),
+                nonDestructiveTesting = GondolaNonDestructiveTesting(
+                    steelWireRope = GondolaNdtSection(
+                        ndtType = "Visual and Magnetic Rope Test",
+                        items = persistentListOf(
+                            GondolaSteelWireRopeItem(
+                                usage = "Main Hoist Rope",
+                                specDiameter = "8.3 mm",
+                                actualDiameter = "8.25 mm",
+                                construction = "6x19",
+                                type = "IWRC",
+                                length = "120 m",
+                                age = "2 years",
+                                defect = "Minor external wear",
+                                description = "Within allowable limits"
+                            ),
+                            GondolaSteelWireRopeItem(
+                                usage = "Safety Rope",
+                                specDiameter = "8.3 mm",
+                                actualDiameter = "8.28 mm",
+                                construction = "6x19",
+                                type = "IWRC",
+                                length = "120 m",
+                                age = "2 years",
+                                defect = "No visible defects",
+                                description = "Good condition"
+                            )
+                        )
+                    ),
+                    suspensionStructure = GondolaNdtSection(
+                        ndtType = "Magnetic Particle Inspection",
+                        items = persistentListOf(
+                            GondolaSuspensionStructureItem(
+                                inspectedPart = "Front Beam Weld",
+                                location = "Joint with support pole",
+                                defect = "No cracks",
+                                description = "Passed inspection"
+                            )
+                        )
+                    ),
+                    gondolaCage = GondolaNdtSection(
+                        ndtType = "Dye Penetrant Test",
+                        items = persistentListOf(
+                            GondolaCageItem(
+                                inspectedPart = "Platform Frame",
+                                location = "Corner welds",
+                                defect = "No indications found",
+                                description = "Passed inspection"
+                            )
+                        )
+                    ),
+                    clamps = GondolaNdtSection(
+                        ndtType = "Visual Inspection",
+                        items = persistentListOf(
+                            GondolaClampsItem(
+                                inspectedPart = "Reinforcement Clamps",
+                                location = "All locations",
+                                defect = "No visible defects",
+                                description = "Passed inspection"
+                            )
+                        )
+                    )
+                ),
+                testing = GondolaTesting(
+                    dynamicLoad = persistentListOf(
+                        GondolaLoadTest(
+                            loadPercentage = "100%",
+                            load = "250 kg",
+                            result = "Passed",
+                            description = "Smooth operation during ascent and descent. Brakes engaged properly."
+                        ),
+                        GondolaLoadTest(
+                            loadPercentage = "125%",
+                            load = "312.5 kg",
+                            result = "Passed",
+                            description = "Hoist motor handled the load without issues. Safety lock tested and functional."
+                        )
+                    ),
+                    staticLoad = persistentListOf(
+                        GondolaLoadTest(
+                            loadPercentage = "150%",
+                            load = "375 kg",
+                            result = "Passed",
+                            description = "Held load for 10 minutes with no slippage or deformation."
+                        )
+                    )
+                ),
+                conclusion = GondolaConclusion(
+                    summary = persistentListOf(
+                        "The gondola system is in good working order and complies with safety standards.",
+                        "All safety devices are functional.",
+                        "Visual and NDT inspections revealed no significant defects."
+                    ),
+                    recommendations = persistentListOf(
+                        "Continue with the monthly preventive maintenance schedule.",
+                        "Replace the main hoist wire rope in the next 12 months due to age and minor wear.",
+                        "Operator to perform daily pre-use checks as per the logbook."
+                    )
+                )
+            )
+        )
+    }
+
+    fun getDummyMobileCraneUiState(): MobileCraneUiState {
+        return MobileCraneUiState(
+            mobileCraneInspectionReport = MobileCraneInspectionReport(
+                equipmentType = "Mobile Crane",
+                examinationType = "Periodic Inspection",
+                generalData = MobileCraneGeneralData(
+                    owner = "PT. Konstruksi Megah",
+                    address = "Jl. Raya Industri No. 123, Bekasi",
+                    personInCharge = "Budi Hartono",
+                    userAddress = "Proyek Pembangunan Jembatan",
+                    unitLocation = "Sisi Utara",
+                    operatorName = "Andi Wijaya",
+                    driveType = "Diesel",
+                    manufacturer = "Tadano",
+                    brandType = "GR-800EX",
+                    yearOfManufacture = "2021",
+                    serialNumber = "TMC-2021-001",
+                    liftingCapacity = "80 Ton",
+                    intendedUse = "Lifting and Material Handling",
+                    permitNumber = "CRANE-IZIN-2024-002",
+                    operatorCertificate = "OPR-MC-2024-001",
+                    equipmentHistory = "Routine maintenance every 250 hours."
+                ),
+                technicalData = MobileCraneTechnicalData(
+                    specifications = MobileCraneSpecifications(
+                        maximumWorkingLoadCapacity = "80 Ton",
+                        boomLength = "47 m",
+                        maximumJibLength = "17.7 m",
+                        maximumJibWorkingLoad = "5 Ton",
+                        maxBoomJibLength = "64.7 m",
+                        craneWeight = "45 Ton",
+                        maxLiftingHeight = "65 m",
+                        boomWorkingAngle = "0-80 degrees"
+                    ),
+                    driveMotor = MobileCraneDriveMotor(
+                        engineNumber = "M-ENG-001",
+                        type = "6-Cylinder Diesel",
+                        numberOfCylinders = "6",
+                        netPower = "200 kW",
+                        brandYearOfManufacture = "Mitsubishi, 2021",
+                        manufacturer = "Mitsubishi"
+                    ),
+                    mainHook = MobileCraneHook(
+                        type = "5-Sheave Hook Block",
+                        capacity = "80 Ton",
+                        material = "High-Tensile Forged Steel",
+                        serialNumber = "HK-MAIN-001"
+                    ),
+                    auxiliaryHook = MobileCraneHook(
+                        type = "Single Line Hook",
+                        capacity = "5 Ton",
+                        material = "High-Tensile Forged Steel",
+                        serialNumber = "HK-AUX-001"
+                    ),
+                    wireRope = MobileCraneWireRope(
+                        mainLoadHoistDrum = MobileCraneWireRopeDrum(
+                            diameter = "22 mm",
+                            type = "IWRC",
+                            construction = "6x37",
+                            breakingStrength = "350 kN",
+                            length = "250 m"
+                        ),
+                        auxiliaryLoadHoistDrum = MobileCraneWireRopeDrum(
+                            diameter = "16 mm",
+                            type = "IWRC",
+                            construction = "6x37",
+                            breakingStrength = "200 kN",
+                            length = "120 m"
+                        ),
+                        boomHoistDrum = MobileCraneWireRopeDrum(
+                            diameter = "18 mm",
+                            type = "IWRC",
+                            construction = "6x37",
+                            breakingStrength = "250 kN",
+                            length = "150 m"
+                        )
+                    )
+                ),
+                visualInspection = MobileCraneVisualInspection(
+                    foundationAnchorBoltCorrosion = MobileCraneInspectionResult(true, "N/A"),
+                ),
+                nonDestructiveExamination = MobileCraneNonDestructiveExamination(
+                    wireRope = MobileCraneNdeWireRopeSection(
+                        ndtType = "Magnetic Rope Testing (MRT)",
+                        items = persistentListOf(
+                            MobileCraneNdeWireRopeItem(
+                                usage = "Main Hoist",
+                                specDiameter = "22 mm",
+                                actualDiameter = "21.8 mm",
+                                construction = "6x37",
+                                type = "IWRC",
+                                length = "250 m",
+                                age = "1 year",
+                                hasDefect = false,
+                                remarks = "Minor wear, within limits."
+                            )
+                        )
+                    ),
+                    boom = MobileCraneNdeBoomSection(
+                        boomType = "Telescopic Boom",
+                        ndtType = "Ultrasonic Testing (UT)",
+                        items = persistentListOf(
+                            MobileCraneNdeBoomItem(
+                                partInspected = "Main Boom Section 1 Weld",
+                                location = "Base",
+                                hasDefect = false,
+                                remarks = "No defects found."
+                            )
+                        )
+                    ),
+                    mainHook = MobileCraneNdeHookSection(
+                        hookCapacity = "80 T",
+                        ndtType = "Magnetic Particle Inspection (MPI)",
+                        specification = MobileCraneNdeMeasurement(a = "200", b = "100", c = "50", d = "30", e = "", f = "", g = "", h = ""),
+                        measurementResult = MobileCraneNdeMeasurement(a = "200.1", b = "100", c = "50.2", d = "30", e = "", f = "", g = "", h = ""),
+                        tolerance = MobileCraneNdeMeasurement(a = "±2", b = "±1", c = "±1", d = "±0.5", e = "", f = "", g = "", h = "")
+                    ),
+                ),
+                testing = MobileCraneTesting(
+                    functionTest = MobileCraneFunctionTest(
+                        hoistingLowering = MobileCraneTestResult(true, "Smooth operation"),
+                        extendedRetractedBoom = MobileCraneTestResult(true, "Smooth operation"),
+                        swingSlewing = MobileCraneTestResult(true, "Smooth operation"),
+                        loadMomentIndicator = MobileCraneTestResult(true, "Functional and accurate")
+                    ),
+                    loadTest = MobileCraneLoadTest(
+                        dynamic = MobileCraneLoadTestType(
+                            mainHook = persistentListOf(
+                                MobileCraneLoadTestItem(
+                                    boomLength = "30 m",
+                                    radius = "10 m",
+                                    boomAngle = "60",
+                                    testLoadKg = "20000",
+                                    safeWorkingLoadKg = "25000",
+                                    result = "Passed"
+                                )
+                            )
+                        ),
+                        static = MobileCraneLoadTestType(
+                            mainHook = persistentListOf(
+                                MobileCraneLoadTestItem(
+                                    boomLength = "30 m",
+                                    radius = "10 m",
+                                    boomAngle = "60",
+                                    testLoadKg = "31250",
+                                    safeWorkingLoadKg = "25000",
+                                    result = "Passed, held for 10 mins"
+                                )
+                            )
+                        )
+                    )
+                ),
+                conclusion = MobileCraneConclusion(
+                    summary = persistentListOf(
+                        "The mobile crane is in excellent working condition and meets all safety standards.",
+                        "All systems and safety devices are functioning correctly."
+                    ),
+                    recommendations = persistentListOf(
+                        "Continue with the existing preventive maintenance schedule.",
+                        "Perform annual NDT on all critical welds."
+                    )
+                )
+            )
+        )
+    }
+
+    fun getDummyOverheadCraneUiState(): OverheadCraneUiState {
+        return OverheadCraneUiState(
+            overheadCraneInspectionReport = OverheadCraneInspectionReport(
+                equipmentType = "Overhead Crane",
+                examinationType = "Periodic Inspection",
+                generalData = OverheadCraneGeneralData(
+                    owner = "PT. Industri Manufaktur",
+                    address = "Jl. Pabrik No. 5, Kawasan Industri",
+                    user = "Lini Produksi A",
+                    personInCharge = "Budi Santoso",
+                    unitLocation = "Workshop Utama",
+                    hoistType = "Wire Rope Hoist",
+                    manufacturer = "Demag",
+                    brandType = "KBK-IIM",
+                    yearOfManufacture = "2018",
+                    serialNumber = "DMG-OH-2018-001",
+                    liftingCapacity = "5000 kg",
+                    intendedUse = "Material Handling in Production",
+                    permitNumber = "CRANE-OH-IZIN-2024-001",
+                    operatorCertificate = "OPR-OH-2024-001",
+                    technicalDataManual = "Available and up-to-date"
+                ),
+                technicalData = OverheadCraneTechnicalData(
+                    specifications = OverheadCraneTechSpecs(
+                        liftingHeight = OverheadCraneMovementData(
+                            hoisting = "10 m",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        girderLength = OverheadCraneMovementData(
+                            hoisting = "",
+                            traveling = "20 m",
+                            traversing = ""
+                        ),
+                        speed = OverheadCraneMovementData(
+                            hoisting = "0.05 m/s",
+                            traveling = "0.3 m/s",
+                            traversing = "0.2 m/s"
+                        )
+                    ),
+                    driveMotor = OverheadCraneDriveMotor(
+                        capacity = OverheadCraneMovementData(
+                            hoisting = "7.5 kW",
+                            traveling = "5 kW",
+                            traversing = "3 kW"
+                        ),
+                        powerKw = OverheadCraneMovementData(
+                            hoisting = "7.5",
+                            traveling = "5",
+                            traversing = "3"
+                        ),
+                        type = OverheadCraneMovementData(
+                            hoisting = "AC",
+                            traveling = "AC",
+                            traversing = "AC"
+                        ),
+                        rpm = OverheadCraneMovementData(
+                            hoisting = "1450",
+                            traveling = "960",
+                            traversing = "960"
+                        ),
+                        voltageV = OverheadCraneMovementData(
+                            hoisting = "380",
+                            traveling = "380",
+                            traversing = "380"
+                        ),
+                        currentA = OverheadCraneMovementData(
+                            hoisting = "15",
+                            traveling = "10",
+                            traversing = "7"
+                        ),
+                        frequencyHz = OverheadCraneMovementData(
+                            hoisting = "50",
+                            traveling = "50",
+                            traversing = "50"
+                        )
+                    ),
+                    startingResistor = OverheadCraneStartingResistor(
+                        type = OverheadCraneMovementData(
+                            hoisting = "Rheostat",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        voltageV = OverheadCraneMovementData(
+                            hoisting = "380",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        currentA = OverheadCraneMovementData(
+                            hoisting = "20",
+                            traveling = "",
+                            traversing = ""
+                        )
+                    ),
+                    brake = OverheadCraneBrake(
+                        type = OverheadCraneMovementData(
+                            hoisting = "Disc",
+                            traveling = "Drum",
+                            traversing = "Drum"
+                        ),
+                        model = OverheadCraneMovementData(
+                            hoisting = "BHD-100",
+                            traveling = "BHT-050",
+                            traversing = "BHT-030"
+                        )
+                    ),
+                    controllerBrake = OverheadCraneControllerBrake(
+                        type = OverheadCraneMovementData(
+                            hoisting = "Pendant",
+                            traveling = "Pendant",
+                            traversing = "Pendant"
+                        ),
+                        model = OverheadCraneMovementData(
+                            hoisting = "PC-1",
+                            traveling = "PC-1",
+                            traversing = "PC-1"
+                        )
+                    ),
+                    hook = OverheadCraneHook(
+                        type = OverheadCraneMovementData(
+                            hoisting = "Single",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        capacity = OverheadCraneMovementData(
+                            hoisting = "5000 kg",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        material = OverheadCraneMovementData(
+                            hoisting = "Forged Steel",
+                            traveling = "",
+                            traversing = ""
+                        )
+                    ),
+                    chain = OverheadCraneChain(
+                        type = OverheadCraneMovementData(
+                            hoisting = "N/A",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        construction = OverheadCraneMovementData(
+                            hoisting = "N/A",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        diameter = OverheadCraneMovementData(
+                            hoisting = "N/A",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        length = OverheadCraneMovementData(
+                            hoisting = "N/A",
+                            traveling = "",
+                            traversing = ""
+                        )
+                    ),
+                    wireRope = OverheadCraneWireRope(
+                        type = OverheadCraneMovementData(
+                            hoisting = "6x36 WS",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        construction = OverheadCraneMovementData(
+                            hoisting = "IWRC",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        diameter = OverheadCraneMovementData(
+                            hoisting = "12 mm",
+                            traveling = "",
+                            traversing = ""
+                        ),
+                        length = OverheadCraneMovementData(
+                            hoisting = "50 m",
+                            traveling = "",
+                            traversing = ""
+                        )
+                    )
+                ),
+                visualInspection = OverheadCraneVisualInspection(
+                    foundationAnchorBoltCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    foundationAnchorBoltCracks = OverheadCraneInspectionResult(true, "None"),
+                    foundationAnchorBoltDeformation = OverheadCraneInspectionResult(true, "None"),
+                    foundationAnchorBoltFastening = OverheadCraneInspectionResult(true, "Tight"),
+                    columnFrameCorrosion = OverheadCraneInspectionResult(true, "Minor surface rust"),
+                    columnFrameCracks = OverheadCraneInspectionResult(true, "None"),
+                    columnFrameDeformation = OverheadCraneInspectionResult(true, "None"),
+                    columnFrameFastening = OverheadCraneInspectionResult(true, "Secure"),
+                    columnFrameCrossBracing = OverheadCraneInspectionResult(true, "Intact"),
+                    columnFrameDiagonalBracing = OverheadCraneInspectionResult(true, "Intact"),
+                    ladderCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    ladderCracks = OverheadCraneInspectionResult(true, "None"),
+                    ladderDeformation = OverheadCraneInspectionResult(true, "None"),
+                    ladderFastening = OverheadCraneInspectionResult(true, "Secure"),
+                    workPlatformCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    workPlatformCracks = OverheadCraneInspectionResult(true, "None"),
+                    workPlatformDeformation = OverheadCraneInspectionResult(true, "None"),
+                    workPlatformFastening = OverheadCraneInspectionResult(true, "Secure"),
+                    railMountingBeamCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    railMountingBeamCracks = OverheadCraneInspectionResult(true, "None"),
+                    railMountingBeamDeformation = OverheadCraneInspectionResult(true, "None"),
+                    railMountingBeamFastening = OverheadCraneInspectionResult(true, "Secure"),
+                    travelingRailCorrosion = OverheadCraneInspectionResult(true, "Minor surface rust"),
+                    travelingRailCracks = OverheadCraneInspectionResult(true, "None"),
+                    travelingRailJoint = OverheadCraneInspectionResult(true, "Good"),
+                    travelingRailStraightness = OverheadCraneInspectionResult(true, "Straight"),
+                    travelingRailAlignmentBetweenRails = OverheadCraneInspectionResult(true, "Aligned"),
+                    travelingRailEvennessBetweenRails = OverheadCraneInspectionResult(true, "Even"),
+                    travelingRailGapBetweenRailJoints = OverheadCraneInspectionResult(true, "Consistent"),
+                    travelingRailFastener = OverheadCraneInspectionResult(true, "Tight"),
+                    travelingRailStopper = OverheadCraneInspectionResult(true, "Present and secure"),
+                    traversingRailCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    traversingRailCracks = OverheadCraneInspectionResult(true, "None"),
+                    traversingRailJoint = OverheadCraneInspectionResult(true, "Good"),
+                    traversingRailStraightness = OverheadCraneInspectionResult(true, "Straight"),
+                    traversingRailAlignmentBetweenRails = OverheadCraneInspectionResult(true, "Aligned"),
+                    traversingRailEvennessBetweenRails = OverheadCraneInspectionResult(true, "Even"),
+                    traversingRailGapBetweenRailJoints = OverheadCraneInspectionResult(true, "Consistent"),
+                    traversingRailFastener = OverheadCraneInspectionResult(true, "Tight"),
+                    traversingRailStopper = OverheadCraneInspectionResult(true, "Present and secure"),
+                    girderCorrosion = OverheadCraneInspectionResult(true, "Minor"),
+                    girderCracks = OverheadCraneInspectionResult(true, "None"),
+                    girderCamber = OverheadCraneInspectionResult(true, "Within tolerance"),
+                    girderJoint = OverheadCraneInspectionResult(true, "Secure"),
+                    girderEndJoint = OverheadCraneInspectionResult(true, "Secure"),
+                    girderTruckMountOnGirder = OverheadCraneInspectionResult(true, "Secure"),
+                    travelingGearboxGirderCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    travelingGearboxGirderCracks = OverheadCraneInspectionResult(true, "None"),
+                    travelingGearboxGirderLubricatingOil = OverheadCraneInspectionResult(true, "Adequate"),
+                    travelingGearboxGirderOilSeal = OverheadCraneInspectionResult(true, "No leaks"),
+                    driveWheelWear = OverheadCraneInspectionResult(true, "Minor"),
+                    driveWheelCracks = OverheadCraneInspectionResult(true, "None"),
+                    driveWheelDeformation = OverheadCraneInspectionResult(true, "None"),
+                    driveWheelFlangeCondition = OverheadCraneInspectionResult(true, "Good"),
+                    driveWheelChainCondition = OverheadCraneInspectionResult(true, "Good"),
+                    idleWheelSecurity = OverheadCraneInspectionResult(true, "Secure"),
+                    idleWheelCracks = OverheadCraneInspectionResult(true, "None"),
+                    idleWheelDeformation = OverheadCraneInspectionResult(true, "None"),
+                    idleWheelFlangeCondition = OverheadCraneInspectionResult(true, "Good"),
+                    wheelConnectorBogieAxleStraightness = OverheadCraneInspectionResult(true, "Straight"),
+                    wheelConnectorBogieAxleCrossJoint = OverheadCraneInspectionResult(true, "Secure"),
+                    wheelConnectorBogieAxleLubrication = OverheadCraneInspectionResult(true, "Adequate"),
+                    stopperBumperOnGirderCondition = OverheadCraneInspectionResult(true, "Good"),
+                    stopperBumperOnGirderReinforcement = OverheadCraneInspectionResult(true, "Strong"),
+                    traversingGearboxTrolleyCarrierFastening = OverheadCraneInspectionResult(true, "Secure"),
+                    traversingGearboxTrolleyCarrierCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    traversingGearboxTrolleyCarrierCracks = OverheadCraneInspectionResult(true, "None"),
+                    traversingGearboxTrolleyCarrierLubricatingOil = OverheadCraneInspectionResult(true, "Adequate"),
+                    traversingGearboxTrolleyCarrierOilSeal = OverheadCraneInspectionResult(true, "No leaks"),
+                    driveWheelOnTrolleyWear = OverheadCraneInspectionResult(true, "Minor"),
+                    driveWheelOnTrolleyCracks = OverheadCraneInspectionResult(true, "None"),
+                    driveWheelOnTrolleyDeformation = OverheadCraneInspectionResult(true, "None"),
+                    driveWheelOnTrolleyFlangeCondition = OverheadCraneInspectionResult(true, "Good"),
+                    driveWheelOnTrolleyChainCondition = OverheadCraneInspectionResult(true, "Good"),
+                    idleWheelOnTrolleyWear = OverheadCraneInspectionResult(true, "Minor"),
+                    idleWheelOnTrolleyCracks = OverheadCraneInspectionResult(true, "None"),
+                    idleWheelOnTrolleyDeformation = OverheadCraneInspectionResult(true, "None"),
+                    idleWheelOnTrolleyFlangeCondition = OverheadCraneInspectionResult(true, "Good"),
+                    windingDrumGroove = OverheadCraneInspectionResult(true, "Good"),
+                    windingDrumGrooveFlange = OverheadCraneInspectionResult(true, "Good"),
+                    windingDrumFlanges = OverheadCraneInspectionResult(true, "Good"),
+                    brakeWear = OverheadCraneInspectionResult(true, "Within limit"),
+                    brakeAdjustment = OverheadCraneInspectionResult(true, "Properly adjusted"),
+                    hoistGearboxLubrication = OverheadCraneInspectionResult(true, "Adequate"),
+                    hoistGearboxOilSeal = OverheadCraneInspectionResult(true, "No leaks"),
+                    pulleyDiscChainSprocketPulleyGroove = OverheadCraneInspectionResult(true, "Good"),
+                    pulleyDiscChainSprocketPulleyFlange = OverheadCraneInspectionResult(true, "Good"),
+                    pulleyDiscChainSprocketPulleyPin = OverheadCraneInspectionResult(true, "Secure"),
+                    pulleyDiscChainSprocketBearing = OverheadCraneInspectionResult(true, "Smooth"),
+                    pulleyDiscChainSprocketPulleyGuard = OverheadCraneInspectionResult(true, "Present and secure"),
+                    pulleyDiscChainSprocketWireRopeChainGuard = OverheadCraneInspectionResult(true, "Present and secure"),
+                    mainHookWear = OverheadCraneInspectionResult(true, "Minor"),
+                    mainHookThroatOpening = OverheadCraneInspectionResult(true, "Within limit"),
+                    mainHookSwivelNutAndBearing = OverheadCraneInspectionResult(true, "Smooth"),
+                    mainHookTrunnion = OverheadCraneInspectionResult(true, "Good"),
+                    auxiliaryHookWear = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryHookThroatOpening = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryHookSwivelNutAndBearing = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryHookTrunnion = OverheadCraneInspectionResult(true, "N/A"),
+                    mainWireRopeCorrosion = OverheadCraneInspectionResult(true, "None"),
+                    mainWireRopeWear = OverheadCraneInspectionResult(true, "Minor"),
+                    mainWireRopeBroken = OverheadCraneInspectionResult(true, "None"),
+                    mainWireRopeDeformation = OverheadCraneInspectionResult(true, "None"),
+                    auxiliaryWireRopeCorrosion = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryWireRopeWear = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryWireRopeBroken = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryWireRopeDeformation = OverheadCraneInspectionResult(true, "N/A"),
+                    mainChainCorrosion = OverheadCraneInspectionResult(true, "N/A"),
+                    mainChainWear = OverheadCraneInspectionResult(true, "N/A"),
+                    mainChainCrackedBroken = OverheadCraneInspectionResult(true, "N/A"),
+                    mainChainDeformation = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryChainCorrosion = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryChainWear = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryChainCrackedBroken = OverheadCraneInspectionResult(true, "N/A"),
+                    auxiliaryChainDeformation = OverheadCraneInspectionResult(true, "N/A"),
+                    limitSwitchLsLongTraveling = OverheadCraneInspectionResult(true, "Functional"),
+                    limitSwitchLsCrossTraveling = OverheadCraneInspectionResult(true, "Functional"),
+                    limitSwitchLsHoisting = OverheadCraneInspectionResult(true, "Functional"),
+                    operatorRoomCabinSafetyLadder = OverheadCraneInspectionResult(true, "Secure"),
+                    operatorRoomCabinDoor = OverheadCraneInspectionResult(true, "Functional"),
+                    operatorRoomCabinWindow = OverheadCraneInspectionResult(true, "Clean and clear"),
+                    operatorRoomCabinFanAC = OverheadCraneInspectionResult(true, "Functional"),
+                    operatorRoomCabinControlLeversButtons = OverheadCraneInspectionResult(true, "Responsive"),
+                    operatorRoomCabinPendantControl = OverheadCraneInspectionResult(true, "Functional"),
+                    operatorRoomCabinLighting = OverheadCraneInspectionResult(true, "Adequate"),
+                    operatorRoomCabinHorn = OverheadCraneInspectionResult(true, "Functional"),
+                    operatorRoomCabinFuseProtection = OverheadCraneInspectionResult(true, "Intact"),
+                    operatorRoomCabinCommunicationDevice = OverheadCraneInspectionResult(true, "Functional"),
+                    operatorRoomCabinFireExtinguisher = OverheadCraneInspectionResult(true, "Present and charged"),
+                    operatorRoomCabinOperatingSigns = OverheadCraneInspectionResult(true, "Clear and visible"),
+                    operatorRoomCabinIgnitionKeyMasterSwitch = OverheadCraneInspectionResult(true, "Functional"),
+                    electricalComponentPanelConnectorConductor = OverheadCraneInspectionResult(true, "Secure"),
+                    electricalComponentConductorProtection = OverheadCraneInspectionResult(true, "Intact"),
+                    electricalComponentMotorInstallationSafetySystem = OverheadCraneInspectionResult(true, "Functional"),
+                    electricalComponentGroundingSystem = OverheadCraneInspectionResult(true, "Good"),
+                    electricalComponentInstallation = OverheadCraneInspectionResult(true, "Neat and compliant")
+                ),
+                nonDestructiveExamination = OverheadCraneNde(
+                    chain = OverheadCraneNdeChain(
+                        method = "Visual Inspection",
+                        items = persistentListOf(
+                            OverheadCraneNdeChainItem(
+                                name = "Hoist Chain",
+                                specificationMm = "10",
+                                measurementMm = "9.9",
+                                lengthIncrease = "0.5%",
+                                wear = "Minor",
+                                safetyFactor = "7:1",
+                                finding = OverheadCraneInspectionResult(true, "Within tolerance")
+                            )
+                        )
+                    ),
+                    mainHook = OverheadCraneNdeHook(
+                        method = "Magnetic Particle Testing",
+                        specification = OverheadCraneNdeMeasurement(
+                            a = "100", b = "50", c = "120", d = "30",
+                            e = "", f = "", g = "", h = "",
+                            finding = OverheadCraneInspectionResult(null, "")
+                        ),
+                        measurementResult = OverheadCraneNdeMeasurement(
+                            a = "99.8", b = "50.1", c = "119.5", d = "29.9",
+                            e = "", f = "", g = "", h = "",
+                            finding = OverheadCraneInspectionResult(true, "Within tolerance")
+                        ),
+                        tolerance = OverheadCraneNdeMeasurement(
+                            a = "±2", b = "±1", c = "±2", d = "±0.5",
+                            e = "", f = "", g = "", h = "",
+                            finding = OverheadCraneInspectionResult(null, "")
+                        )
+                    )
+                ),
+                testing = OverheadCraneTesting(
+                    dynamicTest = OverheadCraneDynamicTest(
+                        withoutLoad = OverheadCraneDynamicWithoutLoad(
+                            traveling = OverheadCraneDynamicTestItem("Smooth", "Smooth", "Ok"),
+                            traversing = OverheadCraneDynamicTestItem("Smooth", "Smooth", "Ok"),
+                            hoisting = OverheadCraneDynamicTestItem("Smooth", "Smooth", "Ok"),
+                            safetyLatch = OverheadCraneDynamicTestItem("Functional", "Functional", "Ok"),
+                            brakeSwitch = OverheadCraneDynamicTestItem("Functional", "Functional", "Ok"),
+                            brakeLockingDevice = OverheadCraneDynamicTestItem("Functional", "Functional", "Ok"),
+                            electricalInstallation = OverheadCraneDynamicTestItem("Compliant", "Compliant", "Ok")
+                        ),
+                        withLoad = OverheadCraneDynamicWithLoad(
+                            noLoad = OverheadCraneLoadTestResult("Smooth", "Smooth", "Smooth", "Effective", "Ok"),
+                            swl25 = OverheadCraneLoadTestResult("Smooth", "Smooth", "Smooth", "Effective", "Ok"),
+                            swl50 = OverheadCraneLoadTestResult("Smooth", "Smooth", "Smooth", "Effective", "Ok"),
+                            swl75 = OverheadCraneLoadTestResult("Smooth", "Smooth", "Smooth", "Effective", "Ok"),
+                            swl100 = OverheadCraneLoadTestResult("Smooth", "Smooth", "Smooth", "Effective", "Ok")
+                        )
+                    ),
+                    staticTest = OverheadCraneStaticTest(
+                        load = "6250 kg (125% SWL)",
+                        deflectionMeasurement = OverheadCraneDeflectionMeasurement(
+                            singleGirder = mapOf(
+                                "Center" to "8 mm",
+                                "Quarter Left" to "4 mm",
+                                "Quarter Right" to "4 mm"
+                            ),
+                            doubleGirder = emptyMap()
+                        ),
+                        notes = "Deflection within acceptable limits (L/1000)"
+                    )
+                ),
+                conclusion = OverheadCraneConclusion(
+                    summary = persistentListOf(
+                        "The overhead crane is in good operating condition and complies with all safety regulations.",
+                        "All critical components passed visual inspection and NDE tests.",
+                        "Dynamic and static load tests showed satisfactory performance."
+                    ),
+                    recommendations = persistentListOf(
+                        "Conduct weekly visual inspections of the hoist chain for wear.",
+                        "Schedule annual lubrication of all gearboxes and bearings.",
+                        "Ensure operator has refresher training every two years."
+                    )
+                )
+            )
+        )
+    }
+
+    fun getDummyProductionMachineUiState(): ProductionMachineUiState {
+        return ProductionMachineUiState(
+            isLoading = false,
+            inspectionReport = ProductionMachineInspectionReport(
+                equipmentType = "Shearing Machine",
+                examinationType = "Periodic Inspection",
+                generalData = ProductionMachineGeneralData(
+                    driveType = "Electric",
+                    ownerName = "PT. Manufaktur Baja",
+                    ownerAddress = "Jl. Industri Baja No. 1, Cikarang",
+                    userInCharge = "Produksi Sheet Metal",
+                    userAddressInCharge = "Workshop Sheet Metal",
+                    subcontractorPersonInCharge = "None",
+                    unitLocation = "Lini Produksi 3",
+                    brandType = "Amada HFE300",
+                    serialNumberUnitNumber = "AMDA-SHR-2020-001",
+                    manufacturer = "Amada Co., Ltd.",
+                    locationAndYearOfManufacture = "Japan, 2020",
+                    motorPower = "30 kW",
+                    intendedUse = "Cutting Metal Sheets",
+                    pjk3SkpNo = "PJK3/001/2023",
+                    ak3SkpNo = "AK3/005/2022",
+                    usagePermitNumber = "PM-IZIN-2024-001",
+                    operatorName = "Denny Wijaya",
+                    equipmentHistory = "Routine maintenance performed monthly. Blade sharpened bi-annually."
+                ),
+                technicalData = ProductionMachineTechnicalData(
+                    type = "Hydraulic Guillotine Shear",
+                    maxFeederSpeed = "10 m/min",
+                    maxPlateWidth = "3000 mm",
+                    plateThickness = "10 mm (Mild Steel)",
+                    maxPlateWeight = "500 kg",
+                    maxInnerCoilDiameter = "N/A",
+                    maxOuterCoilDiameter = "N/A",
+                    driveMotor = "Siemens 3-Phase Induction Motor",
+                    motorPowerKw = "30",
+                    brandAndSerial = "Siemens, SN: SMN-MOT-001",
+                    locationAndYear = "Germany, 2019",
+                    machineDimensions = ProductionMachineDimensions(
+                        weightKg = "8500",
+                        overallDimension = "3.5m x 2.0m x 2.5m (LxWxH)"
+                    ),
+                    foundationDimensions = ProductionMachineFoundationDimensions(
+                        dim = "4.0m x 2.5m x 1.0m",
+                        distance = "0.5m (from wall)",
+                        vibrationDamperType = "Rubber Pads",
+                        weightKg1 = "24000",
+                        weightKg2 = "24000"
+                    )
+                ),
+                visualInspection = ProductionMachineVisualInspection(
+                    foundationCondition = ProductionMachineConditionResult(true, "No cracks, stable."),
+                    foundationBearingCondition = ProductionMachineConditionResult(true, "Secure and no excessive wear."),
+                    mainFrameCondition = ProductionMachineConditionResult(true, "No deformation or visible cracks."),
+                    braceFrameCondition = ProductionMachineConditionResult(true, "All braces intact and tight."),
+                    rollerCondition = ProductionMachineConditionResult(true, "Rollers move freely, no flat spots."),
+                    controlPanelCondition = ProductionMachineConditionResult(true, "Clean, all indicators functional."),
+                    displayCondition = ProductionMachineConditionResult(true, "Clear and legible."),
+                    operationButtonsCondition = ProductionMachineConditionResult(true, "All buttons responsive and clearly labeled."),
+                    electricalVoltage = ProductionMachineConditionResult(true, "380V (Measured)"),
+                    electricalPower = ProductionMachineConditionResult(true, "30 kW (Rated)"),
+                    electricalPhase = ProductionMachineConditionResult(true, "3 Phase"),
+                    electricalFrequency = ProductionMachineConditionResult(true, "50 Hz (Measured)"),
+                    electricalCurrent = ProductionMachineConditionResult(true, "45 A (No Load)"),
+                    electricalPanel = ProductionMachineConditionResult(true, "Clean, organized, and properly labeled."),
+                    electricalConductor = ProductionMachineConditionResult(true, "Cables intact, no exposed wires."),
+                    electricalInsulation = ProductionMachineConditionResult(true, "All insulation in good condition."),
+                    safetyLimitSwitchUp = ProductionMachineConditionResult(true, "Functional, stops motion at upper limit."),
+                    safetyLimitSwitchDown = ProductionMachineConditionResult(true, "Functional, stops motion at lower limit."),
+                    safetyGrounding = ProductionMachineConditionResult(true, "Properly grounded."),
+                    safetyGuard = ProductionMachineConditionResult(true, "All guards in place and secure."),
+                    safetyStampLock = ProductionMachineConditionResult(true, "N/A (Shearing machine)"),
+                    safetyPressureIndicator = ProductionMachineConditionResult(true, "Functional, accurate hydraulic pressure reading."),
+                    safetyEmergencyStop = ProductionMachineConditionResult(true, "Functional, immediately stops machine."),
+                    safetyHandSensor = ProductionMachineConditionResult(true, "Functional, detects hands in danger zone."),
+                    hydraulicPumpCondition = ProductionMachineConditionResult(true, "No leaks, quiet operation."),
+                    hydraulicHoseCondition = ProductionMachineConditionResult(true, "No cracks or bulges, secure connections.")
+                ),
+                testingAndMeasurement = ProductionMachineTestingAndMeasurement(
+                    functionalTests = ProductionMachineFunctionalTests(
+                        safetyGrounding = ProductionMachineTestResult(true, "Resistance measured at 0.5 Ohm (Pass < 1 Ohm)."),
+                        safetyGuard = ProductionMachineTestResult(true, "Interlocks functional, machine stops when guard opened."),
+                        safetyRoller = ProductionMachineTestResult(true, "Rollers engage and feed material smoothly."),
+                        safetyEmergencyStop = ProductionMachineTestResult(true, "Emergency stop buttons on all panels functional."),
+                        speedTest = ProductionMachineTestResult(true, "Feeder speed matches specification (10 m/min)."),
+                        functionTest = ProductionMachineTestResult(true, "Machine cuts accurately and consistently."),
+                        weldJointTest = ProductionMachineTestResult(false, "Minor surface corrosion on one weld joint on main frame."),
+                        vibrationTest = ProductionMachineTestResult(true, "Vibration levels within acceptable limits (measured 0.8 mm/s RMS)."),
+                        lightingTest = ProductionMachineTestResult(true, "Work area lighting > 300 lux (Measured 350 lux)."),
+                        noiseTest = ProductionMachineTestResult(true, "Noise level at operator station 78 dB (Pass < 85 dB).")
+                    ),
+                    electricalMeasurements = ProductionMachineElectricalMeasurements(
+                        panelControlDrawing = ProductionMachinePanelControlDrawing(
+                            ka = "500 A",
+                            voltageRS = "380 V",
+                            voltageRT = "380 V",
+                            voltageST = "380 V",
+                            voltageRN = "220 V",
+                            voltageRG = "0 V",
+                            voltageNG = "0 V"
+                        ),
+                        powerInfo = ProductionMachinePowerInfo(
+                            frequency = "50.1 Hz",
+                            cosQ = "0.85",
+                            ampereR = "42 A",
+                            ampereS = "41 A",
+                            ampereT = "43 A",
+                            remarks = "Power readings are stable and within normal operating range."
+                        )
+                    )
+                ),
+                foundationAnalysis = ProductionMachineFoundationAnalysis(
+                    machineWeight = ProductionMachineWeight(
+                        actualTon = "8.5",
+                        additionalMaterialTon = "0.5",
+                        totalTon = "9.0"
+                    ),
+                    minFoundationWeight = ProductionMachineMinFoundationWeight(
+                        calculation = "Machine Weight x 2.5",
+                        resultTon = "22.5"
+                    ),
+                    foundationHeight = ProductionMachineFoundationHeight(
+                        formula = "Berat Pondasi = Panjang x Lebar x Tinggi x Berat Jenis Pondasi",
+                        calculation = "4.0m x 2.5m x 1.0m x 2400 kg/m³ = 24000 kg (24 Ton)",
+                        resultMeter = "1.0"
+                    ),
+                    summary = "Foundation weight (24 Ton) is sufficient for the machine's total weight (9.0 Ton), exceeding the minimum required by a factor of 2.6. This ensures stability and minimizes vibration."
+                ),
+                noiseAndLightingMeasurement = ProductionMachineNoiseAndLightingMeasurement(
+                    noise = ProductionMachineNoiseMeasurement(
+                        measurementPointA_db = "78",
+                        standard = "< 85 db",
+                        result = "Compliant"
+                    ),
+                    lighting = ProductionMachineLightingMeasurement(
+                        measurementPointA_lux = "350",
+                        standard = "> 100 lux",
+                        result = "Compliant"
+                    ),
+                    regulationBasis = "Permenaker No. 5 Tahun 2018"
+                ),
+                conclusion = ProductionMachineConclusion(
+                    summary = persistentListOf(
+                        "The shearing machine is in good operational condition and meets most safety and technical specifications.",
+                        "Routine maintenance practices are being followed.",
+                        "Minor surface corrosion on one weld joint should be addressed."
+                    ),
+                    requirements = persistentListOf(
+                        "Apply anti-corrosion coating to the minor surface corrosion found on the weld joint of the main frame within 30 days.",
+                        "Continue regular lubrication of all moving parts, especially rollers and hydraulic components.",
+                        "Ensure all operators receive annual refresher training on machine safety and emergency procedures."
+                    )
+                )
+            )
+        )
+    }
+
+    fun getDummyDieselMotorUiState(): DieselMotorUiState {
+        return DieselMotorUiState(
+            isLoading = false,
+            inspectionReport = DieselMotorInspectionReport(
+                equipmentType = "Diesel Generator Set",
+                examinationType = "Periodic Inspection",
+                generalData = DieselMotorGeneralData(
+                    ownerName = "PT. Daya Lestari",
+                    ownerAddress = "Jl. Generator No. 10, Jakarta Utara",
+                    userInCharge = "Gedung Kantor Pusat",
+                    userAddressInCharge = "Jl. Jend. Sudirman Kav. 1, Jakarta Pusat",
+                    subcontractorPersonInCharge = "PT. Mekanik Handal",
+                    unitLocation = "Ruang Genset Basement",
+                    brandType = "Caterpillar C15",
+                    driveType = "Diesel",
+                    serialNumberUnitNumber = "CAT-GEN-2022-001",
+                    manufacturer = "Caterpillar Inc.",
+                    locationAndYearOfManufacture = "USA, 2022",
+                    capacityRpm = "500 kVA / 1500 RPM",
+                    intendedUse = "Emergency Power Supply",
+                    pjk3SkpNo = "PJK3/GEN/001/2023",
+                    ak3SkpNo = "AK3/GEN/002/2023",
+                    classification = "Stationary Generator",
+                    usagePermitNumber = "DIESEL-IZIN-2024-001",
+                    operatorName = "Hadi Prasetyo",
+                    equipmentHistory = "Routine maintenance performed every 250 running hours or 6 months."
+                ),
+                technicalData = DieselMotorTechnicalData(
+                    dieselMotor = DieselMotorInfo(
+                        brandModel = "Caterpillar C15",
+                        manufacturer = "Caterpillar Inc.",
+                        classification = "Heavy Duty Diesel Engine",
+                        serialNumber = "ENG-CAT-C15-001",
+                        powerRpm = "450 kW / 1500 RPM",
+                        startingPower = "24V DC",
+                        cylinderCount = "6"
+                    ),
+                    generator = DieselMotorGeneratorInfo(
+                        brandType = "Stamford HCI444F",
+                        manufacturer = "Cummins Generator Technologies",
+                        serialNumber = "GEN-STAM-001",
+                        power = "500 kVA",
+                        frequency = "50 Hz",
+                        rpm = "1500",
+                        voltage = "400V / 3 Phase",
+                        powerFactor = "0.8",
+                        current = "720 A"
+                    )
+                ),
+                visualInspection = DieselMotorVisualInspection(
+                    baseConstructionFoundation = DieselMotorConditionResult(true, "No cracks, stable."),
+                    baseConstructionDieselHousing = DieselMotorConditionResult(true, "Intact, minor paint chips."),
+                    baseConstructionSupport = DieselMotorConditionResult(true, "Secure, no loose bolts."),
+                    baseConstructionAnchorBolt = DieselMotorConditionResult(true, "Tight and corrosion-free."),
+                    structureDailyTank = DieselMotorConditionResult(true, "Clean, no leaks, fuel level adequate."),
+                    structureMuffler = DieselMotorConditionResult(true, "Securely mounted, no visible damage."),
+                    structureAirVessel = DieselMotorConditionResult(true, "Pressure within limits, no leaks."),
+                    structurePanel = DieselMotorConditionResult(true, "Clean, all gauges and indicators visible."),
+                    lubeSystemOil = DieselMotorConditionResult(true, "Oil level correct, clean oil."),
+                    lubeSystemOilStrainer = DieselMotorConditionResult(true, "Clean, no blockages."),
+                    lubeSystemOilCooler = DieselMotorConditionResult(true, "No leaks, fins clean."),
+                    lubeSystemOilFilter = DieselMotorConditionResult(true, "New, properly installed."),
+                    lubeSystemByPassFilter = DieselMotorConditionResult(true, "Clean, functional."),
+                    lubeSystemSafetyValve = DieselMotorConditionResult(true, "Functional, no leaks."),
+                    lubeSystemPacking = DieselMotorConditionResult(true, "No leaks, good condition."),
+                    fuelSystemDailyTank = DieselMotorConditionResult(true, "Clean, no leaks, adequate fuel."),
+                    fuelSystemFuelInjector = DieselMotorConditionResult(true, "No leaks, clean."),
+                    fuelSystemConnections = DieselMotorConditionResult(true, "Tight, no leaks."),
+                    fuelSystemFloatTank = DieselMotorConditionResult(true, "Functional, accurate level."),
+                    fuelSystemFuelFilter = DieselMotorConditionResult(true, "Clean, no contaminants."),
+                    fuelSystemFuelInjectorPump = DieselMotorConditionResult(true, "No leaks, smooth operation."),
+                    fuelSystemMagneticScreen = DieselMotorConditionResult(true, "Clean, no debris."),
+                    fuelSystemGovernor = DieselMotorConditionResult(true, "Functional, maintains stable RPM."),
+                    fuelSystemThrottleShaft = DieselMotorConditionResult(true, "Moves freely, no excessive play."),
+                    fuelSystemRegulator = DieselMotorConditionResult(true, "Functional, stable pressure."),
+                    fuelSystemShutOffValve = DieselMotorConditionResult(true, "Functional, no leaks."),
+                    startingSystemFeedPump = DieselMotorConditionResult(true, "Functional, no leaks."),
+                    startingSystemFuelValve = DieselMotorConditionResult(true, "Functional, no leaks."),
+                    startingSystemPrimingPump = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemHeaterPlug = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemHeaterSwitch = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemPreHeater = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemWaterSignal = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemSwitch = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemBatteryPoles = DieselMotorConditionResult(true, "Clean, no corrosion, tight connections."),
+                    startingSystemThermostartTank = DieselMotorConditionResult(true, "No leaks, sufficient fluid."),
+                    startingSystemThermostart = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemHeaterSignal = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemThermostartSwitch = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemGlowPlug = DieselMotorConditionResult(true, "Functional."),
+                    startingSystemSpeedSensor = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    startingSystemServiceMeter = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    startingSystemTempSensor = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    startingSystemMotor = DieselMotorConditionResult(true, "No abnormal noise, starts quickly."),
+                    coolingSystemWater = DieselMotorConditionResult(true, "Coolant level adequate, clean."),
+                    coolingSystemBolts = DieselMotorConditionResult(true, "Tight, no leaks."),
+                    coolingSystemClamps = DieselMotorConditionResult(true, "Tight, no leaks."),
+                    coolingSystemRadiator = DieselMotorConditionResult(true, "Clean, no blockages, no leaks."),
+                    coolingSystemThermostat = DieselMotorConditionResult(true, "Functional, opens at correct temperature."),
+                    coolingSystemFan = DieselMotorConditionResult(true, "No damage, balanced rotation."),
+                    coolingSystemFanGuard = DieselMotorConditionResult(true, "Intact, secure."),
+                    coolingSystemFanRotation = DieselMotorConditionResult(true, "Smooth, no obstruction."),
+                    coolingSystemBearing = DieselMotorConditionResult(true, "No abnormal noise, smooth rotation."),
+                    airCirculationPreCleaner = DieselMotorConditionResult(true, "Clean, functional."),
+                    airCirculationDustIndicator = DieselMotorConditionResult(true, "Functional."),
+                    airCirculationAirCleaner = DieselMotorConditionResult(true, "Clean, no blockages."),
+                    airCirculationTurboCharger = DieselMotorConditionResult(true, "No abnormal noise, smooth rotation."),
+                    airCirculationClamps = DieselMotorConditionResult(true, "Tight, no leaks."),
+                    airCirculationAfterCooler = DieselMotorConditionResult(true, "Clean, no blockages."),
+                    airCirculationMuffler = DieselMotorConditionResult(true, "No leaks, secure."),
+                    airCirculationSilencer = DieselMotorConditionResult(true, "Functional, reduces noise effectively."),
+                    airCirculationHeatDamper = DieselMotorConditionResult(true, "Functional, no obstruction."),
+                    airCirculationBolts = DieselMotorConditionResult(true, "Tight, no corrosion."),
+                    mainPartsDamperBolts = DieselMotorConditionResult(true, "Tight, no vibration."),
+                    mainPartsSupport = DieselMotorConditionResult(true, "Secure, no cracks."),
+                    mainPartsFlyWheelHousing = DieselMotorConditionResult(true, "No cracks, secure."),
+                    mainPartsFlyWheel = DieselMotorConditionResult(true, "No cracks, balanced."),
+                    mainPartsVibrationDamper = DieselMotorConditionResult(true, "Functional, reduces vibration."),
+                    mainPartsBeltAndPulley = DieselMotorConditionResult(true, "Good tension, no wear, no cracks."),
+                    mainPartsCrankshaft = DieselMotorConditionResult(true, "No visible damage, smooth rotation."),
+                    generatorTerminalConnection = DieselMotorConditionResult(true, "Tight, no corrosion."),
+                    generatorCableToPanel = DieselMotorConditionResult(true, "Intact insulation, properly routed."),
+                    generatorPanelBoard = DieselMotorConditionResult(true, "Clean, all components labeled."),
+                    generatorAmpereMeter = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    generatorVoltMeter = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    generatorFrequencyMeter = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    generatorCircuitBreaker = DieselMotorConditionResult(true, "Functional, trips at overload."),
+                    generatorOnOffSwitch = DieselMotorConditionResult(true, "Functional."),
+                    transmissionGear = DieselMotorConditionResult(true, "No abnormal noise, smooth engagement (if applicable)."),
+                    transmissionBelt = DieselMotorConditionResult(true, "Good tension, no wear (if applicable)."),
+                    transmissionChain = DieselMotorConditionResult(true, "Good tension, lubricated (if applicable)."),
+                    mdpCableConnection = DieselMotorConditionResult(true, "Tight, no overheating signs."),
+                    mdpCondition = DieselMotorConditionResult(true, "Clean, no dust, no corrosion."),
+                    mdpAmpereMeter = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    mdpVoltMeter = DieselMotorConditionResult(true, "Functional, accurate reading."),
+                    mdpMainCircuitBreaker = DieselMotorConditionResult(true, "Functional, trips at overload."),
+                    safetyGrounding = DieselMotorConditionResult(true, "Resistance measured at 0.8 Ohm (Pass < 1 Ohm)."),
+                    safetyLightningArrester = DieselMotorConditionResult(true, "Installed, no damage."),
+                    safetyEmergencyStop = DieselMotorConditionResult(true, "Functional, immediately stops engine."),
+                    safetyGovernor = DieselMotorConditionResult(true, "Functional, maintains stable RPM under load."),
+                    safetyThermostat = DieselMotorConditionResult(true, "Functional, maintains engine temperature."),
+                    safetyWaterSignal = DieselMotorConditionResult(true, "Functional, warns of low water level."),
+                    safetyFanGuard = DieselMotorConditionResult(true, "Present, secure."),
+                    safetySilencer = DieselMotorConditionResult(true, "Functional, effective noise reduction."),
+                    safetyVibrationDamper = DieselMotorConditionResult(true, "Functional, reduces engine vibration."),
+                    safetyCircuitBreaker = DieselMotorConditionResult(true, "Functional, trips on fault."),
+                    safetyAvr = DieselMotorConditionResult(true, "Functional, maintains stable voltage output.")
+                ),
+                testingAndMeasurement = DieselMotorTestingAndMeasurement(
+                    ndtTests = DieselMotorNdtTests(
+                        shaftRpm = DieselMotorTestResult("1500 RPM", "Stable under no-load and full-load conditions."),
+                        weldJoint = DieselMotorTestResult("No defects", "Visual inspection and dye penetrant test showed no cracks."),
+                        noise = DieselMotorTestResult("82 dB", "Measured at 1 meter, within acceptable limits (< 85 dB)."),
+                        lighting = DieselMotorTestResult("400 Lux", "Measured at operating panel, sufficient for visibility (> 200 Lux)."),
+                        loadTest = DieselMotorTestResult("Passed", "Performed at 100% SWL for 1 hour, stable voltage and frequency.")
+                    ),
+                    safetyDeviceTests = DieselMotorSafetyDeviceTests(
+                        governor = DieselMotorTestResult("Functional", "Maintains +/- 0.5% RPM stability."),
+                        emergencyStop = DieselMotorTestResult("Functional", "Engine stops within 3 seconds of activation."),
+                        grounding = DieselMotorTestResult("Functional", "Grounding resistance is 0.8 Ohm (Pass < 1 Ohm)."),
+                        panelIndicators = DieselMotorTestResult("Functional", "All warning lights and gauges accurate."),
+                        pressureGauge = DieselMotorTestResult("Functional", "Accurate oil and fuel pressure readings."),
+                        temperatureIndicator = DieselMotorTestResult("Functional", "Accurate engine temperature readings."),
+                        waterIndicator = DieselMotorTestResult("Functional", "Low water level alarm tested and working."),
+                        safetyValves = DieselMotorTestResult("Functional", "All relief valves open at set pressure."),
+                        radiator = DieselMotorTestResult("Functional", "Maintains coolant temperature effectively.")
+                    ),
+                    electricalMeasurements = DieselMotorElectricalMeasurements(
+                        panelControl = DieselMotorPanelControl(
+                            ka = "10 kA",
+                            voltageRS = "400 V",
+                            voltageRT = "400 V",
+                            voltageST = "400 V",
+                            voltageRN = "230 V",
+                            voltageRG = "0 V",
+                            voltageNG = "0 V"
+                        ),
+                        powerInfo = DieselMotorPowerInfo(
+                            frequency = "50.0 Hz",
+                            cosQ = "0.8",
+                            ampereR = "715 A",
+                            ampereS = "720 A",
+                            ampereT = "718 A",
+                            remarks = "Electrical parameters are stable and within specification under full load."
+                        )
+                    )
+                ),
+                mcbCalculation = DieselMotorMcbCalculation(
+                    known = DieselMotorMcbKnownData(
+                        phase = "3",
+                        voltage = "400V",
+                        cosQ = "0.8",
+                        generatorPowerKva = "500",
+                        generatorPowerKw = "400"
+                    ),
+                    calculation = DieselMotorMcbCalculationResult(
+                        resultA = "721.68 A",
+                        requiredAmps = "800 A (Rounded up for safety factor)"
+                    ),
+                    conclusion = "The calculated MCB rating of 800A is appropriate for the generator's capacity, providing adequate protection."
+                ),
+                noiseMeasurement = DieselMotorNoiseMeasurement(
+                    location = "Operator Station",
+                    measurements = persistentListOf(
+                        DieselMotorNoiseMeasurementPoint("Point A", "82 dB"),
+                        DieselMotorNoiseMeasurementPoint("Point B", "80 dB")
+                    ),
+                    analysis = DieselMotorMeasurementAnalysis(
+                        standard = "< 85 dB",
+                        result = "Compliant, noise levels are within acceptable limits."
+                    )
+                ),
+                lightingMeasurement = DieselMotorLightingMeasurement(
+                    location = "Control Panel Area",
+                    measurements = persistentListOf(
+                        DieselMotorLightingMeasurementPoint("Point X", "400 Lux"),
+                        DieselMotorLightingMeasurementPoint("Point Y", "380 Lux")
+                    ),
+                    analysis = DieselMotorMeasurementAnalysis(
+                        standard = "> 200 Lux",
+                        result = "Compliant, lighting levels are sufficient for safe operation."
+                    )
+                ),
+                conclusion = DieselMotorConclusion(
+                    summary = persistentListOf(
+                        "The diesel generator set is in excellent operational condition, meeting all safety and performance standards.",
+                        "All major components are functional, and recent maintenance records are up-to-date."
+                    ),
+                    requirements = persistentListOf(
+                        "Maintain the existing preventive maintenance schedule.",
+                        "Conduct annual load bank testing to verify full load capacity and engine performance."
+                    )
+                )
+            )
+        )
+    }
+
+    fun getDummyGeneralUiState(): GeneralUiState {
+        return GeneralUiState(
+            isLoading = false,
+            inspectionReport = GeneralInspectionReport(
+                equipmentType = "Bejana Uap",
+                examinationType = "Pemeriksaan Berkala",
+                generalData = GeneralData(
+                    ownerName = "PT. Pangan Sejahtera",
+                    ownerAddress = "Jl. Industri Raya No. 12, Kawasan Industri Pulogadung, Jakarta",
+                    user = "Pabrik Pengolahan Makanan",
+                    userAddress = "Jl. Industri Raya No. 12, Kawasan Industri Pulogadung, Jakarta",
+                    operatorName = "Slamet Riyadi",
+                    manufacturer = "PT. Boiler Indonesia",
+                    brandModelType = "Fire Tube Boiler / BI-FT-1000",
+                    driveType = "Steam Generation",
+                    countryAndYearOfManufacture = "Indonesia, 2017",
+                    serialNumber = "SN-BIF-2017-005",
+                    designPressureKgCm2 = "12 kg/cm²",
+                    maxAllowableWorkingPressureKgCm2 = "10 kg/cm²",
+                    capacityKgH = "1000 Kg/H",
+                    steamTemperature = "180 °C",
+                    operatingPressureKgCm2 = "8 kg/cm²",
+                    fuelType = "Gas Alam",
+                    intendedUse = "Proses Pemanasan & Sterilisasi",
+                    permitNumber = "SKP-BU-0987/2022",
+                    operatorCertificate = "SIO Kelas 1 No. 12345/OP/2021",
+                    equipmentHistory = "Perawatan rutin setiap tahun. Tidak ada perbaikan besar.",
+                    inspectionDate = "2025-07-20"
+                ),
+                technicalData = GeneralTechnicalData(
+                    shell = GeneralShell(
+                        numberOfRounds = "3",
+                        connectionMethod = "Welding (SAW)",
+                        material = "SA-516 Gr. 70",
+                        pipeDiameterMm = "1500 mm",
+                        thicknessMm = "14 mm",
+                        bodyLengthMm = "4500 mm"
+                    ),
+                    heads = GeneralHeads(
+                        type = "Ellipsoidal",
+                        topDiameterMm = "1500 mm",
+                        topThicknessMm = "16 mm",
+                        rearDiameterMm = "1500 mm",
+                        rearThicknessMm = "16 mm"
+                    ),
+                    tubePlate = GeneralTubePlate(
+                        frontDim1Mm = "1500 mm",
+                        frontDim2Mm = "20 mm",
+                        rearDim1Mm = "1500 mm",
+                        rearDim2Mm = "20 mm"
+                    ),
+                    furnace = GeneralFurnace(
+                        type = "Cylindrical",
+                        material = "SA-516 Gr. 70",
+                        outerDiameterMm = "800 mm",
+                        innerDiameterMm = "780 mm",
+                        thicknessMm = "10 mm"
+                    ),
+                    waterTubes = GeneralWaterTubes(
+                        firstPass = GeneralTubePass(
+                            diameterMm = "50.8 mm",
+                            thicknessMm = "3.2 mm",
+                            lengthMm = "4000 mm",
+                            quantity = "40"
+                        ),
+                        secondPass = GeneralTubePass(
+                            diameterMm = "50.8 mm",
+                            thicknessMm = "3.2 mm",
+                            lengthMm = "4000 mm",
+                            quantity = "35"
+                        ),
+                        stayTube = GeneralTubePass(
+                            diameterMm = "63.5 mm",
+                            thicknessMm = "4.0 mm",
+                            lengthMm = "4000 mm",
+                            quantity = "8"
+                        ),
+                        material = "STB 340",
+                        connectionMethod = "Expanded & Beaded"
+                    )
+                ),
+                inspectionAndMeasurement = GeneralInspectionAndMeasurement(
+                    visualInspection = GeneralVisualInspection(
+                        // Most checks are met, with a few notes for realism
+                        steamEquipmentShellDrum = GeneralCheckResult(
+                            isMet = true,
+                            remarks = "Kondisi baik, tidak ada korosi."
+                        ),
+                        steamEquipmentFurnace = GeneralCheckResult(
+                            isMet = true,
+                            remarks = "Tidak ada deformasi."
+                        ),
+                        boilerDetailsBurner = GeneralCheckResult(
+                            isMet = true,
+                            remarks = "Berfungsi normal."
+                        ),
+                        boilerDetailsInsulation = GeneralCheckResult(
+                            isMet = false,
+                            remarks = "Ada sedikit sobekan pada insulasi dekat manhole."
+                        ),
+                        pressureGaugeMark = GeneralCheckResult(
+                            isMet = true,
+                            remarks = "Tanda batas aman terlihat jelas."
+                        ),
+                        feedwaterPump = GeneralCheckResult(
+                            isMet = true,
+                            remarks = "Beroperasi tanpa getaran berlebih."
+                        ),
+                        idMarkNameplate = GeneralCheckResult(
+                            isMet = true,
+                            remarks = "Terpasang dan dapat dibaca."
+                        )
+                    ),
+                    materialThickness = GeneralMaterialThickness(
+                        shellThicknessMm = GeneralValueResult(
+                            value = "13.8 mm",
+                            remarks = "Masih dalam toleransi."
+                        ),
+                        headerThicknessMm = GeneralValueResult(
+                            value = "15.7 mm",
+                            remarks = "Masih dalam toleransi."
+                        )
+                    ),
+                    thicknessMeasurementSetup = GeneralThicknessMeasurementSetup(
+                        owner = "PT. Pangan Sejahtera",
+                        inspectionDate = "2025-07-20",
+                        objectType = "Shell & Heads",
+                        equipmentUsed = "Olympus 38DL Plus",
+                        methodUsed = "Ultrasonic Testing",
+                        probeType = "D790-SM",
+                        materialType = "Carbon Steel",
+                        surfaceCondition = "Painted, Good",
+                        couplantUsed = "Glycerin"
+                    ),
+                    measurementResultsTable = persistentListOf(
+                        GeneralMeasurementResultItem(
+                            "Shell Top",
+                            "14",
+                            "13.9",
+                            "13.8",
+                            "13.9",
+                            "13.8",
+                            "13.9"
+                        ),
+                        GeneralMeasurementResultItem(
+                            "Shell Bottom",
+                            "14",
+                            "13.8",
+                            "13.8",
+                            "13.9",
+                            "13.8",
+                            "13.9"
+                        ),
+                        GeneralMeasurementResultItem(
+                            "Front Head",
+                            "16",
+                            "15.8",
+                            "15.7",
+                            "15.8",
+                            "15.7",
+                            "15.8"
+                        )
+                    ),
+                    ndtTests = GeneralNdtTests(
+                        shell = GeneralNdtTestComponent(
+                            method = "Magnetic Particle Test",
+                            longitudinalWeldJoint = GeneralNdtResult(
+                                location = "Main seam",
+                                isGood = true,
+                                remarks = "Tidak ada indikasi retak."
+                            ),
+                            circumferentialWeldJoint = GeneralNdtResult(
+                                location = "Head-to-shell",
+                                isGood = true,
+                                remarks = "Tidak ada indikasi retak."
+                            )
+                        ),
+                        fireTubes = GeneralNdtTestFireTubes(
+                            method = "Eddy Current Test",
+                            weldJointFront = GeneralNdtResult(
+                                location = "Tube sheet depan",
+                                isGood = true,
+                                remarks = "Tidak ditemukan penipisan signifikan."
+                            ),
+                            weldJointRear = GeneralNdtResult(
+                                location = "Tube sheet belakang",
+                                isGood = true,
+                                remarks = "Tidak ditemukan penipisan signifikan."
+                            )
+                        )
+                    ),
+                    hydrotest = GeneralHydrotest(
+                        testPressureKgCm2 = "15 kg/cm²",
+                        mawpKgCm2 = "10 kg/cm²",
+                        testMedium = "Air",
+                        testDate = "2025-07-20",
+                        testResult = "Lulus, tidak ada kebocoran atau deformasi."
+                    ),
+                    appendagesInspection = GeneralAppendagesInspection(
+                        pressureGauge = GeneralAppendageResult(
+                            quantity = "2",
+                            isGood = true,
+                            remarks = "Akurat setelah dikalibrasi."
+                        ),
+                        safetyValve = GeneralAppendageResult(
+                            quantity = "2",
+                            isGood = true,
+                            remarks = "Telah diuji dan berfungsi baik."
+                        ),
+                        levelGlassIndicator = GeneralAppendageResult(
+                            quantity = "2",
+                            isGood = true,
+                            remarks = "Kaca bersih dan terlihat jelas."
+                        ),
+                        nameplate = GeneralAppendageResult(
+                            quantity = "1",
+                            isGood = true,
+                            remarks = "Terpasang kokoh."
+                        )
+                    ),
+                    safetyValveTest = GeneralSafetyValveTest(
+                        header = "Safety Valve #1",
+                        startsToOpenKgCm2 = "10.1 kg/cm²",
+                        valveInfo = "Brand: Yoshitake, Model: AL-150, Size: 1.5 inch"
+                    )
+                ),
+                conclusion = GeneralConclusion(
+                    summary = persistentListOf(
+                        "Bejana uap dalam kondisi operasi yang aman dan laik pakai.",
+                        "Hasil pengujian ketebalan dan NDT menunjukkan material masih dalam batas aman.",
+                        "Seluruh alat pengaman (appendages) berfungsi dengan baik sesuai standar."
+                    ),
+                    recommendations = persistentListOf(
+                        "Perbaiki bagian insulasi yang sobek untuk efisiensi termal yang lebih baik.",
+                        "Lakukan kalibrasi rutin untuk pressure gauge setiap 6 bulan.",
+                        "Jadwalkan inspeksi internal pada pemberhentian unit berikutnya."
+                    )
                 )
             )
         )
