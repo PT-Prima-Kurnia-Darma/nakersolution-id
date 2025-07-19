@@ -7,6 +7,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomai
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils
 
 /**
  * Stores all category names as constants to prevent typos and ensure consistency for BAP.
@@ -146,7 +147,7 @@ fun InspectionWithDetailsDomain.toEscalatorBAPReport(): EscalatorBAPReport {
     return EscalatorBAPReport(
         equipmentType = this.inspection.equipmentType,
         examinationType = this.inspection.examinationType,
-        inspectionDate = this.inspection.reportDate ?: "",
+        inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),
         generalData = generalData,
         technicalData = technicalData,
         visualInspection = visualInspection,

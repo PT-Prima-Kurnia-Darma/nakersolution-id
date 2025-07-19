@@ -7,6 +7,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomai
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils
 
 private object FireProtectionBAPCategory {
     const val TECHNICAL_DATA = "DATA TEKNIK"
@@ -174,7 +175,7 @@ fun InspectionWithDetailsDomain.toFireProtectionBAPReport(): FireProtectionBAPRe
     return FireProtectionBAPReport(
         equipmentType = this.inspection.equipmentType,
         examinationType = this.inspection.examinationType,
-        inspectionDate = this.inspection.reportDate ?: "",
+        inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),
         generalData = generalData,
         technicalData = technicalData,
         testResults = FireProtectionBAPTestResults(

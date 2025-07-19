@@ -8,6 +8,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils
 
 private object PubtBAPCategory {
     const val TECHNICAL_DATA = "DATA TEKNIK"
@@ -160,7 +161,7 @@ fun InspectionWithDetailsDomain.toPubtBAPReport(): PubtBAPReport {
     return PubtBAPReport(
         examinationType = this.inspection.examinationType,
         inspectionType = this.inspection.equipmentType,
-        inspectionDate = this.inspection.reportDate ?: "",
+        inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),
         generalData = generalData,
         technicalData = technicalData,
         testResults = PubtBAPTestResults(visualInspection = visualInspection, testing = testing)
