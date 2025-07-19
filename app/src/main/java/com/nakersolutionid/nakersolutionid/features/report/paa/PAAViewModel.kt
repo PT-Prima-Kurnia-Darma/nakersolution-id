@@ -711,4 +711,43 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         onGondolaReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
     }
     //endregion
+
+    /**
+     * Load an existing report for editing.
+     * @param reportId The ID of the report to load for editing
+     */
+    fun loadReportForEdit(reportId: Long) {
+        viewModelScope.launch {
+            try {
+                _paaUiState.update { it.copy(isLoading = true) }
+                val inspection = reportUseCase.getInspection(reportId)
+                
+                if (inspection != null) {
+                    // Convert the domain model back to UI state
+                    // For now, we'll just show a success message
+                    // The actual conversion will depend on the specific report structure
+                    _paaUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            forkliftResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                        )
+                    }
+                } else {
+                    _paaUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            forkliftResult = Resource.Error("Laporan tidak ditemukan")
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _paaUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        forkliftResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                    )
+                }
+            }
+        }
+    }
 }

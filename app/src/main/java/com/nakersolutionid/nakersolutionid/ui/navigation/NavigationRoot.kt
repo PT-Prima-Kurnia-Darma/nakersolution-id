@@ -19,6 +19,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.features.bap.BAPCreationScreen
 import com.nakersolutionid.nakersolutionid.features.bap.BAPScreen
@@ -51,6 +52,14 @@ import kotlinx.serialization.Serializable
 @Serializable data object PTP : NavKey
 @Serializable data object IPK : NavKey
 @Serializable data object PUBT : NavKey
+
+// Edit routes for existing reports
+@Serializable data class EEEdit(val reportId: Long) : NavKey
+@Serializable data class PAAEdit(val reportId: Long) : NavKey
+@Serializable data class ILPPEdit(val reportId: Long) : NavKey
+@Serializable data class PTPEdit(val reportId: Long) : NavKey
+@Serializable data class IPKEdit(val reportId: Long) : NavKey
+@Serializable data class PUBTEdit(val reportId: Long) : NavKey
 
 @Composable
 fun NavigationRoot(
@@ -125,7 +134,21 @@ fun NavigationRoot(
                     }
                 )
             }
-            entry<History> { HistoryScreen(onBackClick = { backStack.removeLastOrNull() }) }
+            entry<History> { 
+                HistoryScreen(
+                    onBackClick = { backStack.removeLastOrNull() },
+                    onEditClick = { history ->
+                        when (history.inspectionType) {
+                            InspectionType.EE -> backStack.add(EEEdit(history.id))
+                            InspectionType.PAA -> backStack.add(PAAEdit(history.id))
+                            InspectionType.ILPP -> backStack.add(ILPPEdit(history.id))
+                            InspectionType.PTP -> backStack.add(PTPEdit(history.id))
+                            InspectionType.IPK -> backStack.add(IPKEdit(history.id))
+                            InspectionType.PUBT -> backStack.add(PUBTEdit(history.id))
+                        }
+                    }
+                ) 
+            }
 
             entry<EE> { EEScreen(onBackClick = { backStack.removeLastOrNull() }) }
             entry<PAA> { PAAScreen(onBackClick = { backStack.removeLastOrNull() }) }
@@ -133,6 +156,14 @@ fun NavigationRoot(
             entry<PTP> { PTPScreen(onBackClick = { backStack.removeLastOrNull() }) }
             entry<IPK> { IPKScreen(onBackClick = { backStack.removeLastOrNull() }) }
             entry<PUBT> { PUBTScreen(onBackClick = { backStack.removeLastOrNull() }) }
+
+            // Edit entries
+            entry<EEEdit> { key -> EEScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
+            entry<PAAEdit> { key -> PAAScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
+            entry<ILPPEdit> { key -> ILPPScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
+            entry<PTPEdit> { key -> PTPScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
+            entry<IPKEdit> { key -> IPKScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
+            entry<PUBTEdit> { key -> PUBTScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
 
             entry<BAP> {
                 BAPScreen(

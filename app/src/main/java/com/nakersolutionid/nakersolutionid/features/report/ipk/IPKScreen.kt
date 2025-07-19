@@ -46,6 +46,7 @@ fun IPKScreen(
     modifier: Modifier = Modifier,
     viewModel: IPKViewModel = koinViewModel(),
     menuTitle: String = "Instalasi Proteksi Kebakaran",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val ipkUiState by viewModel.ipkUiState.collectAsStateWithLifecycle()
@@ -78,6 +79,13 @@ fun IPKScreen(
             }
 
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
         }
     }
 

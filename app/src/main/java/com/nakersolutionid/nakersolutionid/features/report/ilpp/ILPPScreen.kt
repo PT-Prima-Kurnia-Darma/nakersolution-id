@@ -47,6 +47,7 @@ fun ILPPScreen(
     modifier: Modifier = Modifier,
     viewModel: ILPPViewModel = koinViewModel(),
     menuTitle: String = "Instalasi Listrik dan Penyalur Petir",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val paaUiState by viewModel.ilppUiState.collectAsStateWithLifecycle()
@@ -100,6 +101,13 @@ fun ILPPScreen(
             }
 
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
         }
     }
 

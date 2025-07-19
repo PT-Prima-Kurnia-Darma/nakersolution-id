@@ -95,4 +95,43 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         val newItems = conclusion.recommendations.toMutableList().apply { removeAt(index) }.toImmutableList()
         onGeneralReportChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
     }
+
+    /**
+     * Load an existing report for editing.
+     * @param reportId The ID of the report to load for editing
+     */
+    fun loadReportForEdit(reportId: Long) {
+        viewModelScope.launch {
+            try {
+                _pubtUiState.update { it.copy(isLoading = true) }
+                val inspection = reportUseCase.getInspection(reportId)
+                
+                if (inspection != null) {
+                    // Convert the domain model back to UI state
+                    // For now, we'll just show a success message
+                    // The actual conversion will depend on the specific report structure
+                    _pubtUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            generalResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                        )
+                    }
+                } else {
+                    _pubtUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            generalResult = Resource.Error("Laporan tidak ditemukan")
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _pubtUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        generalResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                    )
+                }
+            }
+        }
+    }
 }

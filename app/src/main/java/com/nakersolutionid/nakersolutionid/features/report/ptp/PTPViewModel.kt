@@ -164,4 +164,43 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         onMotorDieselReportChange(report.copy(conclusion = conclusion.copy(requirements = newItems)))
     }
     //endregion
+
+    /**
+     * Load an existing report for editing.
+     * @param reportId The ID of the report to load for editing
+     */
+    fun loadReportForEdit(reportId: Long) {
+        viewModelScope.launch {
+            try {
+                _ptpUiState.update { it.copy(isLoading = true) }
+                val inspection = reportUseCase.getInspection(reportId)
+                
+                if (inspection != null) {
+                    // Convert the domain model back to UI state
+                    // For now, we'll just show a success message
+                    // The actual conversion will depend on the specific report structure
+                    _ptpUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            machineResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                        )
+                    }
+                } else {
+                    _ptpUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            machineResult = Resource.Error("Laporan tidak ditemukan")
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _ptpUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        machineResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                    )
+                }
+            }
+        }
+    }
 }

@@ -46,6 +46,7 @@ fun PUBTScreen(
     modifier: Modifier = Modifier,
     viewModel: PUBTViewModel = koinViewModel(),
     menuTitle: String = "Pesawat Uap dan Bejana Tekan",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val pubtUiState by viewModel.pubtUiState.collectAsStateWithLifecycle()
@@ -78,6 +79,13 @@ fun PUBTScreen(
             }
 
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
         }
     }
 

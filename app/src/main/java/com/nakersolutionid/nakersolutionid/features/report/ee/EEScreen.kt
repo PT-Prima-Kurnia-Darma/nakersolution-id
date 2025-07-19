@@ -47,6 +47,7 @@ fun EEScreen(
     modifier: Modifier = Modifier,
     viewModel: EEViewModel = koinViewModel(),
     menuTitle: String = "Elevator dan Escalator",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val eeUiState by viewModel.eeUiState.collectAsStateWithLifecycle()
@@ -88,6 +89,13 @@ fun EEScreen(
                 viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
             }
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
         }
     }
 
