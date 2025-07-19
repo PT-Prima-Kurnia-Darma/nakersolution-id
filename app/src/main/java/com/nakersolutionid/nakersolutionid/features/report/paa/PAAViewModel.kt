@@ -36,6 +36,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.Ove
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,19 +49,19 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _paaUiState = MutableStateFlow(PAAUiState())
     val paaUiState: StateFlow<PAAUiState> = _paaUiState.asStateFlow()
 
-    private val _forkliftUiState = MutableStateFlow(ForkliftUiState())
+    private val _forkliftUiState = MutableStateFlow(Dummy.getDummyForkliftUiState())
     val forkliftUiState: StateFlow<ForkliftUiState> = _forkliftUiState.asStateFlow()
 
-    private val _gantryCraneUiState = MutableStateFlow(GantryCraneUiState())
+    private val _gantryCraneUiState = MutableStateFlow(Dummy.getDummyGantryCraneUiState())
     val gantryCraneUiState: StateFlow<GantryCraneUiState> = _gantryCraneUiState.asStateFlow()
 
-    private val _gondolaUiState = MutableStateFlow(GondolaUiState())
+    private val _gondolaUiState = MutableStateFlow(Dummy.getDummyGondolaUiState())
     val gondolaUiState: StateFlow<GondolaUiState> = _gondolaUiState.asStateFlow()
 
-    private val _mobileCraneUiState = MutableStateFlow(MobileCraneUiState())
+    private val _mobileCraneUiState = MutableStateFlow(Dummy.getDummyMobileCraneUiState())
     val mobileCraneUiState: StateFlow<MobileCraneUiState> = _mobileCraneUiState.asStateFlow()
 
-    private val _overheadCraneUiState = MutableStateFlow(OverheadCraneUiState())
+    private val _overheadCraneUiState = MutableStateFlow(Dummy.getDummyOverheadCraneUiState())
     val overheadCraneUiState: StateFlow<OverheadCraneUiState> = _overheadCraneUiState.asStateFlow()
 
     fun onSaveClick(selectedIndex: SubInspectionType) {

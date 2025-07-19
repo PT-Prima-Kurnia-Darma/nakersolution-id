@@ -15,6 +15,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.Lightn
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,10 +28,10 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _ilppUiState = MutableStateFlow(ILPPUiState())
     val ilppUiState: StateFlow<ILPPUiState> = _ilppUiState.asStateFlow()
 
-    private val _electricalUiState = MutableStateFlow(ElectricalUiState())
+    private val _electricalUiState = MutableStateFlow(Dummy.getDummyElectricUiState())
     val electricalUiState: StateFlow<ElectricalUiState> = _electricalUiState.asStateFlow()
 
-    private val _lightningUiState = MutableStateFlow(LightningProtectionUiState())
+    private val _lightningUiState = MutableStateFlow(Dummy.getDummyLightningUiState())
     val lightningUiState: StateFlow<LightningProtectionUiState> = _lightningUiState.asStateFlow()
 
     fun onSaveClick(selectedIndex: SubInspectionType) {

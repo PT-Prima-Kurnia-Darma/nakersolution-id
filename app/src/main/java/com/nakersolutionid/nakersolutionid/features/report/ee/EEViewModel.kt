@@ -26,7 +26,7 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _elevatorUiState = MutableStateFlow(Dummy.getDummyElevatorUiState())
     val elevatorUiState: StateFlow<ElevatorUiState> = _elevatorUiState.asStateFlow()
 
-    private val _eskalatorUiState = MutableStateFlow(EskalatorUiState())
+    private val _eskalatorUiState = MutableStateFlow(Dummy.getDummyEskalatorUiState())
     val eskalatorUiState: StateFlow<EskalatorUiState> = _eskalatorUiState.asStateFlow()
 
     fun onSaveClick(selectedIndex: SubInspectionType) {

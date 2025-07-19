@@ -75,4 +75,28 @@ interface InspectionDao {
      */
     @Query("UPDATE inspections SET is_synced = :isSynced WHERE id = :id")
     suspend fun updateSyncStatus(id: Long, isSynced: Boolean)
+
+    /**
+     * Deletes an inspection and all its related data by ID.
+     * Due to foreign key constraints, related data will be automatically deleted.
+     */
+    @Transaction
+    suspend fun deleteInspectionWithDetails(id: Long) {
+        deleteCheckItems(id)
+        deleteFindings(id)
+        deleteTestResults(id)
+        deleteInspection(id)
+    }
+
+    @Query("DELETE FROM inspections WHERE id = :id")
+    suspend fun deleteInspection(id: Long)
+
+    @Query("DELETE FROM inspection_check_items WHERE inspection_id = :inspectionId")
+    suspend fun deleteCheckItems(inspectionId: Long)
+
+    @Query("DELETE FROM inspection_findings WHERE inspection_id = :inspectionId")
+    suspend fun deleteFindings(inspectionId: Long)
+
+    @Query("DELETE FROM inspection_test_results WHERE inspection_id = :inspectionId")
+    suspend fun deleteTestResults(inspectionId: Long)
 }

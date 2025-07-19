@@ -10,6 +10,7 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralI
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMeasurementResultItem
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralUiState
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _pubtUiState = MutableStateFlow(PUBTUiState())
     val pubtUiState: StateFlow<PUBTUiState> = _pubtUiState.asStateFlow()
 
-    private val _generalUiState = MutableStateFlow(GeneralUiState())
+    private val _generalUiState = MutableStateFlow(Dummy.getDummyGeneralUiState())
     val generalUiState: StateFlow<GeneralUiState> = _generalUiState.asStateFlow()
 
     fun onSaveClick(selectedIndex: SubInspectionType) {

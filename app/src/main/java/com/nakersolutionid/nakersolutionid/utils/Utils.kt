@@ -42,6 +42,74 @@ object Utils {
         }
     }
 
+    /**
+     * Formats an ISO 8601 date string into "dd MMMM yyyy" format with Indonesian month names.
+     *
+     * The input string can be in various ISO 8601 formats, such as "2024-07-26T10:00:00Z"
+     * or "2024-07-26T10:00:00.123+07:00".
+     *
+     * @param isoDateString The date string in ISO 8601 format.
+     * @return The formatted date string (e.g., "26 Juli 2024"), or an error
+     * message if the input string is invalid.
+     */
+    fun formatIsoDateToIndonesian(isoDateString: String): String {
+        val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
+
+        // List of possible input formats to try, from most specific to most general
+        val inputFormats = listOf(
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }
+        )
+
+        for (format in inputFormats) {
+            try {
+                val date = format.parse(isoDateString)
+                if (date != null) {
+                    return outputFormat.format(date)
+                }
+            } catch (e: Exception) {
+                // Ignore and try the next format
+            }
+        }
+
+        return "Format tanggal tidak valid."
+    }
+
+    /**
+     * Formats an ISO 8601 date string into "dd MMMM yyyy" format with Indonesian month names.
+     *
+     * The input string can be in various ISO 8601 formats, such as "2024-07-26T10:00:00Z"
+     * or "2024-07-26T10:00:00.123+07:00".
+     *
+     * @param isoDateString The date string in ISO 8601 format.
+     * @return The formatted date string (e.g., "26 Juli 2024"), or an error
+     * message if the input string is invalid.
+     */
+    fun formatDateToIndonesian(isoDateString: String): String {
+        val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
+
+        // List of possible input formats to try, from most specific to most general
+        val inputFormats = listOf(
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }
+        )
+
+        for (format in inputFormats) {
+            try {
+                val date = format.parse(isoDateString)
+                if (date != null) {
+                    return outputFormat.format(date)
+                }
+            } catch (e: Exception) {
+                // Ignore and try the next format
+            }
+        }
+
+        return "Format tanggal tidak valid."
+    }
+
     fun getCurrentTime(): String {
         // The format XXX will produce the offset like +07:00
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)

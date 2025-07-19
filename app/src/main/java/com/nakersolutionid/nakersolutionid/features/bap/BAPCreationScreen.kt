@@ -23,26 +23,18 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalBAPScreen
-import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalInstallationBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPScreen
 import com.nakersolutionid.nakersolutionid.features.bap.escalator.EscalatorBAPScreen
 import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.FireProtectionBAPScreen
-import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.FireProtectionBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.forklift.ForkliftBAPScreen
 import com.nakersolutionid.nakersolutionid.features.bap.gantrycrane.GantryCraneBAPScreen
 import com.nakersolutionid.nakersolutionid.features.bap.gondola.GondolaBAPScreen
 import com.nakersolutionid.nakersolutionid.features.bap.lightning.LightningBAPScreen
-import com.nakersolutionid.nakersolutionid.features.bap.lightning.LightningBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPScreen
-import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPScreen
 import com.nakersolutionid.nakersolutionid.features.bap.ptp.PtpBAPScreen
-import com.nakersolutionid.nakersolutionid.features.bap.ptp.PtpBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPScreen
-import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPUiState
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
@@ -150,7 +142,16 @@ fun BAPCreationScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 )
             }
-            SubInspectionType.Overhead_Crane -> {}
+            SubInspectionType.Overhead_Crane -> {
+                OverheadCraneBAPScreen(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .imePadding(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                )
+            }
             SubInspectionType.Gantry_Crane -> {
                 GantryCraneBAPScreen(
                     modifier = modifier

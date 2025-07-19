@@ -8,6 +8,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalInstallationBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalInstallationBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.electric.toElectricalInstallationBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.electric.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.elevator.ElevatorBAPUiState
@@ -19,6 +20,7 @@ import com.nakersolutionid.nakersolutionid.features.bap.escalator.toEscalatorBAP
 import com.nakersolutionid.nakersolutionid.features.bap.escalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.FireProtectionBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.FireProtectionBAPUiState
+import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.toFireProtectionBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.fireprotection.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.forklift.ForkliftBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.forklift.ForkliftBAPUiState
@@ -35,19 +37,23 @@ import com.nakersolutionid.nakersolutionid.features.bap.gondola.toInspectionWith
 import com.nakersolutionid.nakersolutionid.features.bap.lightning.LightningBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.lightning.LightningBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.lightning.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.lightning.toLightningBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.MobileCraneBAPUiState
-import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toMobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.mobilecrane.toMobileCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.OverheadCraneBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.overheadcrane.toOverheadCraneBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.ptp.PtpBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.ptp.PtpBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.ptp.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.toPtpBAPCreationReport
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.bap.pubt.toPubtBAPReport
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -127,10 +133,33 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
                         val data = inspection.toMobileCraneBAPReport()
                         onUpdateMobileCraneBAPState(data)
                     }
-                    else -> {
-                        // Default to elevator for unsupported types
-                        val data = inspection.toElevatorBAPReport()
-                        onUpdateElevatorBAPState(data)
+                    SubInspectionType.Overhead_Crane -> {
+                        val data = inspection.toOverheadCraneBAPReport()
+                        onUpdateOverheadCraneBAPState(data)
+                    }
+                    SubInspectionType.Electrical -> {
+                        val data = inspection.toElectricalInstallationBAPReport()
+                        onUpdateElectricalBAPState(data)
+                    }
+                    SubInspectionType.Lightning_Conductor -> {
+                        val data = inspection.toLightningBAPReport()
+                        onUpdateLightningBAPState(data)
+                    }
+                    SubInspectionType.General_PUBT -> {
+                        val data = inspection.toPubtBAPReport()
+                        onUpdatePubtBAPState(data)
+                    }
+                    SubInspectionType.Fire_Protection -> {
+                        val data = inspection.toFireProtectionBAPReport()
+                        onUpdateFireProtectionBAPState(data)
+                    }
+                    SubInspectionType.Motor_Diesel -> {
+                        val data = inspection.toPtpBAPCreationReport().report
+                        onUpdatePtpBAPState(data)
+                    }
+                    SubInspectionType.Machine -> {
+                        val data = inspection.toPtpBAPCreationReport().report
+                        onUpdatePtpBAPState(data)
                     }
                 }
             }

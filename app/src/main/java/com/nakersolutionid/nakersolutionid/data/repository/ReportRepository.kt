@@ -68,4 +68,8 @@ class ReportRepository(
             }
         }
     }
+
+    override suspend fun deleteReport(id: Long) {
+        localDataSource.deleteInspection(id)
+    }
 }
