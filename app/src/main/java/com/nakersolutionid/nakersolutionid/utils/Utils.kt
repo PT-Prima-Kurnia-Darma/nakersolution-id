@@ -53,7 +53,7 @@ object Utils {
      * message if the input string is invalid.
      */
     fun formatIsoDateToIndonesian(isoDateString: String): String {
-        val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+        val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
 
         // List of possible input formats to try, from most specific to most general
         val inputFormats = listOf(
