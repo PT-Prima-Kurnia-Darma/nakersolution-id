@@ -10,5 +10,6 @@ data class PAAUiState(
     val gantryCraneResult: Resource<String>? = null,
     val gondolaResult: Resource<String>? = null,
     val mobileCraneResult: Resource<String>? = null,
-    val overheadCraneResult: Resource<String>? = null
+    val overheadCraneResult: Resource<String>? = null,
+    val editLoadResult: Resource<String>? = null
 )

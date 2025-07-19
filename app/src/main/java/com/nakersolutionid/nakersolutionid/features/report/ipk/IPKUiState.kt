@@ -4,5 +4,6 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 
 data class IPKUiState(
     val isLoading: Boolean = false,
-    val fireProtectionResult: Resource<String>? = null
+    val fireProtectionResult: Resource<String>? = null,
+    val editLoadResult: Resource<String>? = null
 )

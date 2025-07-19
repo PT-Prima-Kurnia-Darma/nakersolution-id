@@ -27,12 +27,15 @@ class IPKViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _fireProtectionUiState = MutableStateFlow(Dummy.getDummyFireProtectionUiState())
     val fireProtectionUiState: StateFlow<FireProtectionUiState> = _fireProtectionUiState.asStateFlow()
 
+    // Store the current report ID for editing
+    private var currentReportId: Long? = null
+
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Fire_Protection -> {
-                    val electricalInspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val electricalInspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _ipkUiState.update { it.copy(fireProtectionResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -104,20 +107,23 @@ class IPKViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 val inspection = reportUseCase.getInspection(reportId)
                 
                 if (inspection != null) {
+                    // Store the report ID for editing
+                    currentReportId = reportId
+                    
                     // Convert the domain model back to UI state
                     // For now, we'll just show a success message
                     // The actual conversion will depend on the specific report structure
                     _ipkUiState.update { 
                         it.copy(
                             isLoading = false,
-                            fireProtectionResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
                         )
                     }
                 } else {
                     _ipkUiState.update { 
                         it.copy(
                             isLoading = false,
-                            fireProtectionResult = Resource.Error("Laporan tidak ditemukan")
+                            editLoadResult = Resource.Error("Laporan tidak ditemukan")
                         )
                     }
                 }
@@ -125,7 +131,7 @@ class IPKViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 _ipkUiState.update { 
                     it.copy(
                         isLoading = false,
-                        fireProtectionResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                        editLoadResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
                     )
                 }
             }

@@ -7,5 +7,6 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 data class ILPPUiState(
     val isLoading: Boolean = false,
     val electricResult: Resource<String>? = null,
-    val lightningResult: Resource<String>? = null
+    val lightningResult: Resource<String>? = null,
+    val editLoadResult: Resource<String>? = null
 )

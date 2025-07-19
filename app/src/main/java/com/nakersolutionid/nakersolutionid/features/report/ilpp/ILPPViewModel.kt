@@ -34,12 +34,15 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _lightningUiState = MutableStateFlow(Dummy.getDummyLightningUiState())
     val lightningUiState: StateFlow<LightningProtectionUiState> = _lightningUiState.asStateFlow()
 
+    // Store the current report ID for editing
+    private var currentReportId: Long? = null
+
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Electrical -> {
-                    val electricalInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val electricalInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _ilppUiState.update { it.copy(electricResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -51,7 +54,7 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
 
                 SubInspectionType.Lightning_Conductor -> {
-                    val lightningInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val lightningInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(lightningInspection)
                         _ilppUiState.update { it.copy(lightningResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -201,20 +204,23 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 val inspection = reportUseCase.getInspection(reportId)
                 
                 if (inspection != null) {
+                    // Store the report ID for editing
+                    currentReportId = reportId
+                    
                     // Convert the domain model back to UI state
                     // For now, we'll just show a success message
                     // The actual conversion will depend on the specific report structure
                     _ilppUiState.update { 
                         it.copy(
                             isLoading = false,
-                            electricResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
                         )
                     }
                 } else {
                     _ilppUiState.update { 
                         it.copy(
                             isLoading = false,
-                            electricResult = Resource.Error("Laporan tidak ditemukan")
+                            editLoadResult = Resource.Error("Laporan tidak ditemukan")
                         )
                     }
                 }
@@ -222,7 +228,7 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 _ilppUiState.update { 
                     it.copy(
                         isLoading = false,
-                        electricResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                        editLoadResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
                     )
                 }
             }
