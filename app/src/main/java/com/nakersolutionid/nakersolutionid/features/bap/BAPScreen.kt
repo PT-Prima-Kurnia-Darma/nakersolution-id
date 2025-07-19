@@ -78,7 +78,7 @@ fun BAPScreen(
     modifier: Modifier = Modifier,
     viewModel: BAPViewModel = koinViewModel(),
     onBackClick: () -> Unit,
-    onItemClick: (Long, SubInspectionType) -> Unit
+    onItemClick: (Long, SubInspectionType, DocumentType) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -131,7 +131,7 @@ fun BAPScreen(
                     BAPItem(
                         modifier = Modifier.animateItem(),
                         history = history,
-                        onItemClick = { onItemClick(history.id, history.subInspectionType) }
+                        onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
                     )
                 }
             }
@@ -349,7 +349,7 @@ fun HistoryScreenPreview() {
         modules(previewModule)
     }) {
         NakersolutionidTheme {
-            BAPScreen(onBackClick = {}, onItemClick = { _, _ -> })
+            BAPScreen(onBackClick = {}, onItemClick = { _, _, _ -> })
         }
     }
 }

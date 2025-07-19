@@ -19,8 +19,8 @@ private object FireProtectionBAPCategory {
     const val TESTING_DETECTOR = "$TESTING - Detektor"
 }
 
-fun FireProtectionBAPReport.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId: Long = 0
+fun FireProtectionBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+    val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,

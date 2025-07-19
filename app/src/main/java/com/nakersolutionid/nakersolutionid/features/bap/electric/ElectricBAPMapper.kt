@@ -15,8 +15,8 @@ private object ElectricBAPCategory {
     const val TESTING = "PENGUJIAN"
 }
 
-fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId: Long = 0
+fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+    val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,

@@ -21,8 +21,8 @@ private object OverheadCraneBAPCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId: Long = 0
+fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+    val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,

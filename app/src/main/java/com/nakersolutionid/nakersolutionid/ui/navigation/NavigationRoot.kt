@@ -19,6 +19,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.features.bap.BAPCreationScreen
@@ -42,7 +43,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object Home : NavKey
 @Serializable data object Report : NavKey
 @Serializable data object BAP : NavKey
-@Serializable data class BAPCreation(val id: Long, val subInspectionType: SubInspectionType) : NavKey
+@Serializable data class BAPCreation(val id: Long, val subInspectionType: SubInspectionType, val documentType: DocumentType) : NavKey
 @Serializable data object History : NavKey
 @Serializable data object Settings : NavKey
 
@@ -138,13 +139,31 @@ fun NavigationRoot(
                 HistoryScreen(
                     onBackClick = { backStack.removeLastOrNull() },
                     onEditClick = { history ->
-                        when (history.inspectionType) {
-                            InspectionType.EE -> backStack.add(EEEdit(history.id))
-                            InspectionType.PAA -> backStack.add(PAAEdit(history.id))
-                            InspectionType.ILPP -> backStack.add(ILPPEdit(history.id))
-                            InspectionType.PTP -> backStack.add(PTPEdit(history.id))
-                            InspectionType.IPK -> backStack.add(IPKEdit(history.id))
-                            InspectionType.PUBT -> backStack.add(PUBTEdit(history.id))
+                        if (history.documentType == DocumentType.LAPORAN) {
+                            when (history.inspectionType) {
+                                InspectionType.EE -> backStack.add(EEEdit(history.id))
+                                InspectionType.PAA -> backStack.add(PAAEdit(history.id))
+                                InspectionType.ILPP -> backStack.add(ILPPEdit(history.id))
+                                InspectionType.PTP -> backStack.add(PTPEdit(history.id))
+                                InspectionType.IPK -> backStack.add(IPKEdit(history.id))
+                                InspectionType.PUBT -> backStack.add(PUBTEdit(history.id))
+                            }
+                        } else if (history.documentType == DocumentType.BAP) {
+                            when (history.subInspectionType) {
+                                SubInspectionType.Elevator -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Escalator -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Forklift -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Mobile_Crane -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Overhead_Crane -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Gantry_Crane -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Gondola -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Electrical -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Lightning_Conductor -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.General_PUBT -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Fire_Protection -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Motor_Diesel -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                                SubInspectionType.Machine -> backStack.add(BAPCreation(history.id, history.subInspectionType, history.documentType))
+                            }
                         }
                     }
                 ) 
@@ -168,10 +187,10 @@ fun NavigationRoot(
             entry<BAP> {
                 BAPScreen(
                     onBackClick = { backStack.removeLastOrNull() },
-                    onItemClick = { id, subInspectionType -> backStack.add(BAPCreation(id, subInspectionType)) })
+                    onItemClick = { id, subInspectionType, documentType -> backStack.add(BAPCreation(id, subInspectionType, documentType)) })
             }
             entry<BAPCreation> { key ->
-                BAPCreationScreen(id = key.id, subInspectionType = key.subInspectionType, onBackClick = { backStack.removeLastOrNull() })
+                BAPCreationScreen(key.id, key.subInspectionType, key.documentType, onBackClick = { backStack.removeLastOrNull() })
             }
         },
         transitionSpec = {
