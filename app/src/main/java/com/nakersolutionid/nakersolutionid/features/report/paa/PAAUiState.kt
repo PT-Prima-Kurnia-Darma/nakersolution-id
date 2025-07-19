@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.features.report.paa
 
 import androidx.compose.runtime.Immutable
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 
 @Immutable
 data class PAAUiState(
@@ -11,5 +12,6 @@ data class PAAUiState(
     val gondolaResult: Resource<String>? = null,
     val mobileCraneResult: Resource<String>? = null,
     val overheadCraneResult: Resource<String>? = null,
-    val editLoadResult: Resource<String>? = null
+    val editLoadResult: Resource<String>? = null,
+    val loadedEquipmentType: SubInspectionType? = null
 )

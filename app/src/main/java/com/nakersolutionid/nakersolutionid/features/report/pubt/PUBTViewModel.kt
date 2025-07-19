@@ -26,6 +26,9 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _generalUiState = MutableStateFlow(Dummy.getDummyGeneralUiState())
     val generalUiState: StateFlow<GeneralUiState> = _generalUiState.asStateFlow()
 
+    // Store the current report ID for editing
+    private var currentReportId: Long? = null
+
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
@@ -107,20 +110,27 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 val inspection = reportUseCase.getInspection(reportId)
                 
                 if (inspection != null) {
+                    // Store the report ID for editing
+                    currentReportId = reportId
+                    
+                    // Extract the equipment type from the loaded inspection
+                    val equipmentType = inspection.inspection.subInspectionType
+                    
                     // Convert the domain model back to UI state
                     // For now, we'll just show a success message
                     // The actual conversion will depend on the specific report structure
                     _pubtUiState.update { 
                         it.copy(
                             isLoading = false,
-                            generalResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit"),
+                            loadedEquipmentType = equipmentType
                         )
                     }
                 } else {
                     _pubtUiState.update { 
                         it.copy(
                             isLoading = false,
-                            generalResult = Resource.Error("Laporan tidak ditemukan")
+                            editLoadResult = Resource.Error("Laporan tidak ditemukan")
                         )
                     }
                 }
@@ -128,7 +138,7 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 _pubtUiState.update { 
                     it.copy(
                         isLoading = false,
-                        generalResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                        editLoadResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
                     )
                 }
             }

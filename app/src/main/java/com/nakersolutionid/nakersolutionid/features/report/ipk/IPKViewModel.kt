@@ -110,13 +110,17 @@ class IPKViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     // Store the report ID for editing
                     currentReportId = reportId
                     
+                    // Extract the equipment type from the loaded inspection
+                    val equipmentType = inspection.inspection.subInspectionType
+                    
                     // Convert the domain model back to UI state
                     // For now, we'll just show a success message
                     // The actual conversion will depend on the specific report structure
                     _ipkUiState.update { 
                         it.copy(
                             isLoading = false,
-                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit"),
+                            loadedEquipmentType = equipmentType
                         )
                     }
                 } else {

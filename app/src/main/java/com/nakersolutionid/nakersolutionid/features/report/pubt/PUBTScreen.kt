@@ -89,6 +89,13 @@ fun PUBTScreen(
         }
     }
 
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(pubtUiState.loadedEquipmentType) {
+        pubtUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),

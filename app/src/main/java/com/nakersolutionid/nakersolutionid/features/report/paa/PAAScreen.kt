@@ -178,6 +178,13 @@ fun PAAScreen(
         }
     }
 
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(paaUiState.loadedEquipmentType) {
+        paaUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),

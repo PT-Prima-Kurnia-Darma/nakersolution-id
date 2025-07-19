@@ -112,6 +112,13 @@ fun PTPScreen(
         }
     }
 
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(ptpUiState.loadedEquipmentType) {
+        ptpUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),

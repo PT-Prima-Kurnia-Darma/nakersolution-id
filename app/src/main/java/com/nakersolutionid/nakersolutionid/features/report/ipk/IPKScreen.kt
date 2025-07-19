@@ -89,6 +89,13 @@ fun IPKScreen(
         }
     }
 
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(ipkUiState.loadedEquipmentType) {
+        ipkUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
