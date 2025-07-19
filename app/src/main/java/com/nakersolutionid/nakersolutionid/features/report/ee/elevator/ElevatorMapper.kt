@@ -40,8 +40,8 @@ private object ElevatorCategory {
 /**
  * Mengubah [ElevatorUiState] (dari UI) menjadi [InspectionWithDetailsDomain] (untuk data layer).
  */
-fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId: Long = 0
+fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+    val inspectionId: Long = reportId ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,

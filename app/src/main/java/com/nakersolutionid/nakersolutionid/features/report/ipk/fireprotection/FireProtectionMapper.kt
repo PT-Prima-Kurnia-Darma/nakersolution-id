@@ -22,10 +22,10 @@ private object FireProtectionCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun FireProtectionUiState.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
+fun FireProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.inspectionReport
     val companyData = report.companyData
-    val inspectionId: Long = 0
+    val inspectionId: Long = reportId ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,

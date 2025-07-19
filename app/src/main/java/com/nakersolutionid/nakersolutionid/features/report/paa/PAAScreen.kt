@@ -51,6 +51,7 @@ fun PAAScreen(
     modifier: Modifier = Modifier,
     viewModel: PAAViewModel = koinViewModel(),
     menuTitle: String = "Pesawat Angkat dan Angkut",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val paaUiState by viewModel.paaUiState.collectAsStateWithLifecycle()
@@ -167,6 +168,20 @@ fun PAAScreen(
             }
 
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
+        }
+    }
+
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(paaUiState.loadedEquipmentType) {
+        paaUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
         }
     }
 

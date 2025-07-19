@@ -47,9 +47,10 @@ fun ILPPScreen(
     modifier: Modifier = Modifier,
     viewModel: ILPPViewModel = koinViewModel(),
     menuTitle: String = "Instalasi Listrik dan Penyalur Petir",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
-    val paaUiState by viewModel.ilppUiState.collectAsStateWithLifecycle()
+    val ilppUiState by viewModel.ilppUiState.collectAsStateWithLifecycle()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         rememberTopAppBarState()
@@ -63,8 +64,8 @@ fun ILPPScreen(
         SubInspectionType.Lightning_Conductor
     )
 
-    LaunchedEffect(paaUiState.electricResult) {
-        when (val result = paaUiState.electricResult) {
+    LaunchedEffect(ilppUiState.electricResult) {
+        when (val result = ilppUiState.electricResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
                 viewModel.onILPPUpdateState { it.copy(isLoading = false, electricResult = null) }
@@ -83,8 +84,8 @@ fun ILPPScreen(
         }
     }
 
-    LaunchedEffect(paaUiState.lightningResult) {
-        when (val result = paaUiState.lightningResult) {
+    LaunchedEffect(ilppUiState.lightningResult) {
+        when (val result = ilppUiState.lightningResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
                 viewModel.onILPPUpdateState { it.copy(isLoading = false, lightningResult = null) }
@@ -100,6 +101,20 @@ fun ILPPScreen(
             }
 
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
+        }
+    }
+
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(ilppUiState.loadedEquipmentType) {
+        ilppUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
         }
     }
 
@@ -111,7 +126,7 @@ fun ILPPScreen(
                 name = menuTitle,
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
-                actionEnable = !paaUiState.isLoading,
+                actionEnable = !ilppUiState.isLoading,
                 onSaveClick = { viewModel.onSaveClick(selectedFilter) }
             )
         },

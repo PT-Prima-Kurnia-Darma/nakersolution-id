@@ -7,6 +7,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomai
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils
 
 private object ElectricBAPCategory {
     const val TECHNICAL_DATA = "DATA TEKNIK"
@@ -15,8 +16,8 @@ private object ElectricBAPCategory {
     const val TESTING = "PENGUJIAN"
 }
 
-fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId: Long = 0
+fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+    val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
@@ -142,7 +143,7 @@ fun InspectionWithDetailsDomain.toElectricalInstallationBAPReport(): ElectricalI
     return ElectricalInstallationBAPReport(
         examinationType = this.inspection.examinationType,
         equipmentType = this.inspection.equipmentType,
-        inspectionDate = this.inspection.reportDate ?: "",
+        inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),
         generalData = generalData,
         technicalData = technicalData,
         testResults = ElectricalInstallationBAPTestResults(

@@ -167,60 +167,60 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
         }
     }
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onSaveClick(selectedIndex: SubInspectionType, id: Long? = null) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Elevator -> {
-                    val inspection = _elevatorBAPUiState.value.elevatorBAPReport.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _elevatorBAPUiState.value.elevatorBAPReport.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Escalator -> {
-                    val inspection = _escalatorBAPUiState.value.escalatorBAPReport.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _escalatorBAPUiState.value.escalatorBAPReport.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Forklift -> {
-                    val inspection = _forkliftBAPUiState.value.forkliftBAPReport.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _forkliftBAPUiState.value.forkliftBAPReport.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Gantry_Crane -> {
-                    val inspection = _gantryCraneBAPUiState.value.gantryCraneBAPReport.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _gantryCraneBAPUiState.value.gantryCraneBAPReport.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Gondola -> {
-                    val inspection = _gondolaBAPUiState.value.gondolaBAPReport.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _gondolaBAPUiState.value.gondolaBAPReport.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Mobile_Crane -> {
-                    val inspection = _mobileCraneBAPUiState.value.mobileCraneBAPReport.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _mobileCraneBAPUiState.value.mobileCraneBAPReport.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Overhead_Crane -> {
-                    val inspection = _overheadCraneBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _overheadCraneBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Electrical -> {
-                    val inspection = _electricalBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _electricalBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Lightning_Conductor -> {
-                    val inspection = _lightningBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _lightningBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.General_PUBT -> {
-                    val inspection = _pubtBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _pubtBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Fire_Protection -> {
-                    val inspection = _fireProtectionBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _fireProtectionBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Motor_Diesel -> {
-                    val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
                 SubInspectionType.Machine -> {
-                    val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime)
+                    val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
                     saveReport(inspection)
                 }
             }
@@ -230,11 +230,11 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
     private suspend fun saveReport(inspection: com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain) {
         try {
             reportUseCase.saveReport(inspection)
-            _uiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
+            _uiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
         } catch(_: SQLiteConstraintException) {
-            _uiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
+            _uiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         } catch (_: Exception) {
-            _uiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
+            _uiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 

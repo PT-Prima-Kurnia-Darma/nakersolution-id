@@ -47,6 +47,7 @@ fun EEScreen(
     modifier: Modifier = Modifier,
     viewModel: EEViewModel = koinViewModel(),
     menuTitle: String = "Elevator dan Escalator",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val eeUiState by viewModel.eeUiState.collectAsStateWithLifecycle()
@@ -86,6 +87,32 @@ fun EEScreen(
             }
             is Resource.Success -> {
                 viewModel.onUpdateState { it.copy(isLoading = false, eskalatorResult = null) }
+            }
+            null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
+        }
+    }
+
+    // Handle edit load result
+    LaunchedEffect(eeUiState.editLoadResult) {
+        when (val result = eeUiState.editLoadResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdateState { it.copy(isLoading = false, editLoadResult = null) }
+            }
+            is Resource.Loading -> {
+                viewModel.onUpdateState { it.copy(isLoading = true) }
+            }
+            is Resource.Success -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.data}") }
+                viewModel.onUpdateState { it.copy(isLoading = false, editLoadResult = null) }
+                // Don't navigate back on successful load - only show message
             }
             null -> null
         }

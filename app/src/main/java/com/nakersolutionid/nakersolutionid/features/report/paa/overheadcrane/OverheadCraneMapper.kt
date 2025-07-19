@@ -16,7 +16,8 @@ import kotlinx.collections.immutable.toImmutableList
  * All UI state data is flattened into InspectionDomain, InspectionFindingDomain, or InspectionCheckItemDomain.
  */
 fun OverheadCraneUiState.toInspectionWithDetailsDomain(
-    currentTime: String
+    currentTime: String,
+    reportId: Long? = null
 ): InspectionWithDetailsDomain {
     val report = this.overheadCraneInspectionReport
     val generalData = report.generalData
@@ -27,7 +28,7 @@ fun OverheadCraneUiState.toInspectionWithDetailsDomain(
     val conclusion = report.conclusion
 
     // Hardcoded values as requested
-    val inspectionId = 0L
+    val inspectionId = reportId ?: 0L
     val documentType = DocumentType.LAPORAN
     val inspectionType = InspectionType.PAA
     val subInspectionType = SubInspectionType.Overhead_Crane

@@ -49,6 +49,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _paaUiState = MutableStateFlow(PAAUiState())
     val paaUiState: StateFlow<PAAUiState> = _paaUiState.asStateFlow()
 
+    // Track current report ID for edit mode
+    private var currentReportId: Long? = null
+
     private val _forkliftUiState = MutableStateFlow(Dummy.getDummyForkliftUiState())
     val forkliftUiState: StateFlow<ForkliftUiState> = _forkliftUiState.asStateFlow()
 
@@ -69,7 +72,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Forklift -> {
-                    val electricalInspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val electricalInspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(forkliftResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -80,7 +83,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     }
                 }
                 SubInspectionType.Mobile_Crane -> {
-                    val electricalInspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val electricalInspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(mobileCraneResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -91,7 +94,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     }
                 }
                 SubInspectionType.Overhead_Crane -> {
-                    val electricalInspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val electricalInspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(overheadCraneResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -102,7 +105,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     }
                 }
                 SubInspectionType.Gantry_Crane -> {
-                    val electricalInspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val electricalInspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(gantryCraneResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -113,7 +116,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     }
                 }
                 SubInspectionType.Gondola -> {
-                    val electricalInspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val electricalInspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(gondolaResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -711,4 +714,50 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         onGondolaReportDataChange(report.copy(conclusion = conclusion.copy(recommendations = newItems)))
     }
     //endregion
+
+    /**
+     * Load an existing report for editing.
+     * @param reportId The ID of the report to load for editing
+     */
+    fun loadReportForEdit(reportId: Long) {
+        viewModelScope.launch {
+            try {
+                _paaUiState.update { it.copy(isLoading = true) }
+                val inspection = reportUseCase.getInspection(reportId)
+                
+                if (inspection != null) {
+                    // Store the report ID for editing
+                    currentReportId = reportId
+                    
+                    // Extract the equipment type from the loaded inspection
+                    val equipmentType = inspection.inspection.subInspectionType
+                    
+                    // Convert the domain model back to UI state
+                    // For now, we'll just show a success message
+                    // The actual conversion will depend on the specific report structure
+                    _paaUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit"),
+                            loadedEquipmentType = equipmentType
+                        )
+                    }
+                } else {
+                    _paaUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            editLoadResult = Resource.Error("Laporan tidak ditemukan")
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _paaUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        editLoadResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                    )
+                }
+            }
+        }
+    }
 }

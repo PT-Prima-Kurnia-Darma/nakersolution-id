@@ -48,6 +48,7 @@ fun PTPScreen(
     modifier: Modifier = Modifier,
     viewModel: PTPViewModel = koinViewModel(),
     menuTitle: String = "Pesawat Tenaga dan Produksi",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val ptpUiState by viewModel.ptpUiState.collectAsStateWithLifecycle()
@@ -101,6 +102,20 @@ fun PTPScreen(
             }
 
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
+        }
+    }
+
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(ptpUiState.loadedEquipmentType) {
+        ptpUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
         }
     }
 

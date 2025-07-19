@@ -26,10 +26,10 @@ private object ForkliftCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
+fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.forkliftInspectionReport
     val general = report.generalData
-    val inspectionId: Long = 0
+    val inspectionId: Long = reportId ?: 0
 
     val manufacturer = ManufacturerDomain(
         name = general.manufacturer,

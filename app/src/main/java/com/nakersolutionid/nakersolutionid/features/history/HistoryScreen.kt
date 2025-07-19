@@ -81,6 +81,7 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = koinViewModel(),
     onBackClick: () -> Unit,
+    onEditClick: (History) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -139,9 +140,12 @@ fun HistoryScreen(
                             historyToDelete = history
                             showDeleteDialog = true
                         },
-                        onDownloadClick = {},
-                        onEditClick = {},
-                        onPreviewClick = {}
+                        onDownloadClick = {
+                            // TODO: Implement download functionality
+                        },
+                        onEditClick = {
+                            onEditClick(history)
+                        },
                     )
                 }
             }
@@ -452,7 +456,7 @@ fun HistoryScreenPreview() {
         modules(previewModule)
     }) {
         NakersolutionidTheme {
-            HistoryScreen(onBackClick = {})
+            HistoryScreen(onBackClick = {}, onEditClick = {})
         }
     }
 }
