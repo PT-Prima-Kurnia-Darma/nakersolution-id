@@ -22,7 +22,7 @@ class ReportRepository(
     private val userPreference: UserPreference
 ) : IReportRepository {
     override suspend fun saveReport(request: InspectionWithDetailsDomain) {
-        val inspectionWithDetails = request.toEntity("")
+        val inspectionWithDetails = request.toEntity("", request.inspection.id)
         localDataSource.insertInspection(
             inspectionEntity = inspectionWithDetails.inspectionEntity,
             checkItems = inspectionWithDetails.checkItems,

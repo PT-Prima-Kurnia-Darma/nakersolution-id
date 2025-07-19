@@ -46,6 +46,7 @@ fun PUBTScreen(
     modifier: Modifier = Modifier,
     viewModel: PUBTViewModel = koinViewModel(),
     menuTitle: String = "Pesawat Uap dan Bejana Tekan",
+    reportId: Long? = null,
     onBackClick: () -> Unit
 ) {
     val pubtUiState by viewModel.pubtUiState.collectAsStateWithLifecycle()
@@ -78,6 +79,20 @@ fun PUBTScreen(
             }
 
             null -> null
+        }
+    }
+
+    // Load existing report data for edit mode
+    LaunchedEffect(reportId) {
+        reportId?.let { id ->
+            viewModel.loadReportForEdit(id)
+        }
+    }
+
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(pubtUiState.loadedEquipmentType) {
+        pubtUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
         }
     }
 

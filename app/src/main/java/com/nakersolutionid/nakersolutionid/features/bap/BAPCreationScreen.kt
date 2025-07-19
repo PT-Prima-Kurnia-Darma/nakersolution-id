@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
@@ -43,41 +44,31 @@ import org.koin.compose.KoinApplicationPreview
 fun BAPCreationScreen(
     id: Long,
     subInspectionType: SubInspectionType,
+    documentType: DocumentType,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: BAPCreationViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val elevatorState by viewModel.elevatorBAPUiState.collectAsStateWithLifecycle()
-    val escalatorState by viewModel.escalatorBAPUiState.collectAsStateWithLifecycle()
-    val forkliftState by viewModel.forkliftBAPUiState.collectAsStateWithLifecycle()
-    val gantryCraneState by viewModel.gantryCraneBAPUiState.collectAsStateWithLifecycle()
-    val gondolaState by viewModel.gondolaBAPUiState.collectAsStateWithLifecycle()
-    val mobileCraneState by viewModel.mobileCraneBAPUiState.collectAsStateWithLifecycle()
-
-    val lightningState by viewModel.lightningBAPUiState.collectAsStateWithLifecycle()
-    val electricalState by viewModel.electricalBAPUiState.collectAsStateWithLifecycle()
-    val pubtState by viewModel.pubtBAPUiState.collectAsStateWithLifecycle()
-    val ptpState by viewModel.ptpBAPUiState.collectAsStateWithLifecycle()
-    val fireProtectionState by viewModel.fireProtectionBAPUiState.collectAsStateWithLifecycle()
-    val overheadCraneState by viewModel.overheadCraneBAPUiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    viewModel.getInspectionDetail(id)
+    LaunchedEffect(id) {
+        viewModel.getInspectionDetail(id)
+    }
 
-    LaunchedEffect(uiState.elevatorResult) {
-        when (val result = uiState.elevatorResult) {
+    LaunchedEffect(uiState.result) {
+        when (val result = uiState.result) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onUpdateState { it.copy(isLoading = false, result = null) }
             }
             is Resource.Loading -> {
                 viewModel.onUpdateState { it.copy(isLoading = true) }
             }
             is Resource.Success -> {
-                viewModel.onUpdateState { it.copy(isLoading = false, elevatorResult = null) }
+                viewModel.onUpdateState { it.copy(isLoading = false, result = null) }
                 onBackClick()
             }
             null -> null
@@ -89,7 +80,13 @@ fun BAPCreationScreen(
         topBar = {
             BAPCreationAppBar(
                 onBackClick = onBackClick,
-                onSaveClick = { viewModel.onSaveClick(subInspectionType) },
+                onSaveClick = {
+                    if (documentType == DocumentType.BAP) {
+                        viewModel.onSaveClick(subInspectionType, id)
+                    } else {
+                        viewModel.onSaveClick(subInspectionType)
+                    }
+                },
                 name = subInspectionType.toDisplayString(),
                 actionEnable = true
             )
@@ -242,7 +239,7 @@ fun BAPCreationScreen(
 private fun BAPCreationScreenPreview() {
     KoinApplicationPreview(application = { modules(previewModule) }) {
         NakersolutionidTheme {
-            BAPCreationScreen(id = 0, subInspectionType = SubInspectionType.Elevator, onBackClick = {})
+            BAPCreationScreen(id = 0, subInspectionType = SubInspectionType.Elevator, DocumentType.LAPORAN, onBackClick = {})
         }
     }
 }

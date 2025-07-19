@@ -22,8 +22,8 @@ private object PtpBAPCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun PtpBAPReport.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId: Long = 0
+fun PtpBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+    val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,

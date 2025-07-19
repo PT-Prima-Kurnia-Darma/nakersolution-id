@@ -8,6 +8,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
+import com.nakersolutionid.nakersolutionid.utils.Utils
 
 private object OverheadCraneBAPCategory {
     const val TECHNICAL_DATA = "DATA TEKNIK"
@@ -21,8 +22,8 @@ private object OverheadCraneBAPCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
-    val inspectionId: Long = 0
+fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+    val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
@@ -148,7 +149,7 @@ fun InspectionWithDetailsDomain.toOverheadCraneBAPReport(): OverheadCraneBAPRepo
     return OverheadCraneBAPReport(
         examinationType = this.inspection.examinationType,
         subInspectionType = this.inspection.equipmentType,
-        inspectionDate = this.inspection.reportDate ?: "",
+        inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),
         generalData = generalData,
         technicalData = technicalData,
         testResults = OverheadCraneBAPTestResults(inspection = inspection, testing = testing)

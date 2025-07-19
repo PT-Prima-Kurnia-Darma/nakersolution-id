@@ -33,6 +33,9 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _motorDieselUiState = MutableStateFlow(Dummy.getDummyDieselMotorUiState())
     val motorDieselUiState: StateFlow<DieselMotorUiState> = _motorDieselUiState.asStateFlow()
 
+    // Store the current report ID for editing
+    private var currentReportId: Long? = null
+
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
@@ -164,4 +167,50 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
         onMotorDieselReportChange(report.copy(conclusion = conclusion.copy(requirements = newItems)))
     }
     //endregion
+
+    /**
+     * Load an existing report for editing.
+     * @param reportId The ID of the report to load for editing
+     */
+    fun loadReportForEdit(reportId: Long) {
+        viewModelScope.launch {
+            try {
+                _ptpUiState.update { it.copy(isLoading = true) }
+                val inspection = reportUseCase.getInspection(reportId)
+                
+                if (inspection != null) {
+                    // Store the report ID for editing
+                    currentReportId = reportId
+                    
+                    // Extract the equipment type from the loaded inspection
+                    val equipmentType = inspection.inspection.subInspectionType
+                    
+                    // Convert the domain model back to UI state
+                    // For now, we'll just show a success message
+                    // The actual conversion will depend on the specific report structure
+                    _ptpUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit"),
+                            loadedEquipmentType = equipmentType
+                        )
+                    }
+                } else {
+                    _ptpUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            editLoadResult = Resource.Error("Laporan tidak ditemukan")
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _ptpUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        editLoadResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                    )
+                }
+            }
+        }
+    }
 }

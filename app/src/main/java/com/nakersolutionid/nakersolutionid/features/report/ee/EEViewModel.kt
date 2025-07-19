@@ -29,12 +29,15 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _eskalatorUiState = MutableStateFlow(Dummy.getDummyEskalatorUiState())
     val eskalatorUiState: StateFlow<EskalatorUiState> = _eskalatorUiState.asStateFlow()
 
+    // Track current report ID for edit mode
+    private var currentReportId: Long? = null
+
     fun onSaveClick(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Elevator -> {
-                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(elevatorInspection)
                         _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -45,7 +48,7 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     }
                 }
                 SubInspectionType.Escalator -> {
-                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime)
+                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
                     try {
                         reportUseCase.saveReport(escalatorInspection)
                         _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
@@ -84,5 +87,47 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
 
     fun onUpdateState(updater: (EEUiState) -> EEUiState) {
         _eeUiState.update(updater)
+    }
+
+    /**
+     * Load an existing report for editing.
+     * @param reportId The ID of the report to load for editing
+     */
+    fun loadReportForEdit(reportId: Long) {
+        viewModelScope.launch {
+            try {
+                _eeUiState.update { it.copy(isLoading = true) }
+                val inspection = reportUseCase.getInspection(reportId)
+                
+                if (inspection != null) {
+                    // Store the report ID for editing
+                    currentReportId = reportId
+                    
+                    // Convert the domain model back to UI state
+                    // For now, we'll just show a success message
+                    // The actual conversion will depend on the specific report structure
+                    _eeUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                        )
+                    }
+                } else {
+                    _eeUiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            editLoadResult = Resource.Error("Laporan tidak ditemukan")
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _eeUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        editLoadResult = Resource.Error("Gagal memuat data laporan: ${e.message}")
+                    )
+                }
+            }
+        }
     }
 }

@@ -24,12 +24,12 @@ private object LightningCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun LightningProtectionUiState.toInspectionWithDetailsDomain(currentTime: String): InspectionWithDetailsDomain {
+fun LightningProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.inspectionReport
     val serviceData = report.serviceProviderData
     val clientData = report.clientData
     val techData = report.technicalData
-    val inspectionId: Long = 0
+    val inspectionId: Long = reportId ?: 0
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
