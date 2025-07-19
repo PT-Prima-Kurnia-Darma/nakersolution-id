@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.SyncProblem
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -36,7 +35,6 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.Utils
-import java.util.Locale
 
 @Composable
 fun HistoryItem(
@@ -44,7 +42,6 @@ fun HistoryItem(
     onDeleteClick: () -> Unit,
     onDownloadClick: () -> Unit,
     onEditClick: () -> Unit,
-    onPreviewClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -128,7 +125,6 @@ fun HistoryItem(
                 ActionButton(icon = Icons.Default.Delete, description = "Delete", onClick = onDeleteClick)
                 ActionButton(icon = Icons.Default.Download, description = "Download", onClick = onDownloadClick)
                 ActionButton(icon = Icons.Default.Edit, description = "Edit", onClick = onEditClick)
-                ActionButton(icon = Icons.Default.Visibility, description = "Preview", onClick = onPreviewClick)
             }
         }
     }
@@ -194,7 +190,6 @@ private fun HistoryItemPreview() {
             onDeleteClick = {},
             onDownloadClick = {},
             onEditClick = {},
-            onPreviewClick = {}
         )
     }
 }

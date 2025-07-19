@@ -141,7 +141,6 @@ fun HistoryScreen(
                         },
                         onDownloadClick = {},
                         onEditClick = {},
-                        onPreviewClick = {}
                     )
                 }
             }
