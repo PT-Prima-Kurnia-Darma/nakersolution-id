@@ -34,7 +34,7 @@
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.nakersolutionid.nakersolutionid.data.remote.response.** { <fields>; }
 -keep class com.nakersolutionid.nakersolutionid.data.remote.request.** { <fields>; }
--keep class com.nakersolutionid.nakersolutionid.data.remote.dto.** { <fields>; }
+-keep class com.nakersolutionid.nakersolutionid.data.remote.body.** { <fields>; }
 
 # Prevent proguard from stripping interface information from TypeAdapter, TypeAdapterFactory,
 # JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
