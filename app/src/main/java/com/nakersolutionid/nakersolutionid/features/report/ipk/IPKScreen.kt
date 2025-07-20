@@ -143,6 +143,8 @@ fun IPKScreen(
                 }
             }
 
+
+
             when (selectedFilter) {
                 SubInspectionType.Fire_Protection -> {
                     FireProtectionScreen(
