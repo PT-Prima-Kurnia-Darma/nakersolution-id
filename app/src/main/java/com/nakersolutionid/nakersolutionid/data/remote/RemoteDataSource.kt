@@ -2,13 +2,13 @@ package com.nakersolutionid.nakersolutionid.data.remote
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.nakersolutionid.nakersolutionid.data.remote.dto.report.ElevatorReportDto
+import com.nakersolutionid.nakersolutionid.data.remote.body.report.CreateElevatorReportBody
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
-import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.ElevatorReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.CreateElevatorReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
@@ -144,16 +144,16 @@ class RemoteDataSource(private val apiServices: ApiServices) {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun sendReport(token: String, request: ElevatorReportDto): Flow<ApiResponse<ElevatorReportResponse>> {
+    fun sendReport(token: String, request: CreateElevatorReportBody): Flow<ApiResponse<CreateElevatorReportResponse>> {
         return flow {
             try {
-                val response = apiServices.sendReport("Bearer $token", request)
+                val response = apiServices.createElevatorReport("Bearer $token", request)
                 emit(ApiResponse.Success(response))
             } catch (e: HttpException) {
                 val errorBody = e.response()?.errorBody()?.string()
                 errorBody?.let {
                     try {
-                        val parsedError = Gson().fromJson(errorBody, ElevatorReportResponse::class.java)
+                        val parsedError = Gson().fromJson(errorBody, CreateElevatorReportResponse::class.java)
                         if (parsedError != null) {
                             emit(ApiResponse.Error(parsedError.message))
                         } else {
