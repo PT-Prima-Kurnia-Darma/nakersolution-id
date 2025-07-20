@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.runtime.tracing)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.material.icons.core)
@@ -95,7 +96,7 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.androidx.compose.navigation)
-
+    implementation(libs.koin.androidx.workmanager)
 
     // Navigation 3
     implementation(libs.androidx.navigation3.ui)
@@ -117,4 +118,7 @@ dependencies {
 
     // Kotlinx Collections Immutable
     implementation(libs.kotlinx.collections.immutable)
+
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
 }
