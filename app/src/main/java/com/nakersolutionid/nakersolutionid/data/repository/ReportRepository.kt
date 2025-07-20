@@ -1,8 +1,5 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
-//import com.nakersolutionid.nakersolutionid.utils.toEntity
-//import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
-//import com.nakersolutionid.nakersolutionid.data.local.mapper.toInspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
@@ -62,7 +59,7 @@ class ReportRepository(
     }
 
     override fun getAllReports(): Flow<List<History>> {
-        return localDataSource.getAllInspectionsWithDetails().map {
+        return localDataSource.getAllInspectionsWithDetails().map { it ->
             it.map {
                 it.inspectionEntity.toHistory()
             }
