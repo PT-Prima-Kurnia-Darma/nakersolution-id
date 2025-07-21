@@ -19,6 +19,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toInsp
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toLightningProtectionUiState
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
+class ILPPViewModel(
+    private val reportUseCase: ReportUseCase,
+    private val syncManager: SyncManager
+) : ViewModel() {
     private val _ilppUiState = MutableStateFlow(ILPPUiState())
     val ilppUiState: StateFlow<ILPPUiState> = _ilppUiState.asStateFlow()
 
@@ -48,6 +52,7 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _ilppUiState.update { it.copy(electricResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(e: SQLiteConstraintException) {
                         _ilppUiState.update { it.copy(electricResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (e: Exception) {
@@ -60,6 +65,7 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(lightningInspection)
                         _ilppUiState.update { it.copy(lightningResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(e: SQLiteConstraintException) {
                         _ilppUiState.update { it.copy(lightningResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (e: Exception) {
@@ -242,5 +248,9 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun startSync() {
+        syncManager.startSync()
     }
 }

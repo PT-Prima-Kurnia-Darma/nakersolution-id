@@ -15,13 +15,17 @@ import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toEskala
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
+class EEViewModel(
+    private val reportUseCase: ReportUseCase,
+    private val syncManager: SyncManager
+) : ViewModel() {
     private val _eeUiState = MutableStateFlow(EEUiState())
     val eeUiState: StateFlow<EEUiState> = _eeUiState.asStateFlow()
 
@@ -43,6 +47,7 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(elevatorInspection)
                         _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(e: SQLiteConstraintException) {
                         _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (e: Exception) {
@@ -54,6 +59,7 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(escalatorInspection)
                         _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(e: SQLiteConstraintException) {
                         _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (e: Exception) {
@@ -138,5 +144,9 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun startSync() {
+        syncManager.startSync()
     }
 }

@@ -53,7 +53,6 @@ class ReportRepository(
         listReports.map {
             it.toDomain()
         }.forEach { report ->
-            // region CAPE
             val apiResponse = when (report.inspection.documentType) {
                 DocumentType.LAPORAN -> when (report.inspection.subInspectionType) {
                     SubInspectionType.Elevator -> remoteDataSource.createElevatorReport(token, report.toCreateElevatorReportBody()).first()
@@ -63,7 +62,6 @@ class ReportRepository(
                 DocumentType.BAP -> ApiResponse.Empty
                 else -> ApiResponse.Empty
             }
-            // endregion
 
             when (apiResponse) {
                 is ApiResponse.Empty -> null

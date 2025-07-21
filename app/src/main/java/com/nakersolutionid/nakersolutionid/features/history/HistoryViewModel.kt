@@ -153,11 +153,11 @@ class HistoryViewModel(
         }
     }
 
-    fun startAppSync() {
-        syncManager.startSyncOnAppStart()
+    fun startSync() {
+        syncManager.startSync()
     }
 
-    fun setupPeriodicSync() {
+    /*fun setupPeriodicSync() {
         syncManager.setupPeriodicSync()
     }
 
@@ -167,6 +167,6 @@ class HistoryViewModel(
 
     fun cancelSync() {
         syncManager.cancelSync()
-    }
+    }*/
 
 }

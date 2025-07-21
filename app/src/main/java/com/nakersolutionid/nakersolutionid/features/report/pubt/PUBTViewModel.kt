@@ -13,6 +13,7 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toGenera
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
+class PUBTViewModel(
+    private val reportUseCase: ReportUseCase,
+    private val syncManager: SyncManager
+) : ViewModel() {
     private val _pubtUiState = MutableStateFlow(PUBTUiState())
     val pubtUiState: StateFlow<PUBTUiState> = _pubtUiState.asStateFlow()
 
@@ -39,6 +43,7 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _pubtUiState.update { it.copy(generalResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -146,5 +151,9 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun startSync() {
+        syncManager.startSync()
     }
 }
