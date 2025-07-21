@@ -11,12 +11,14 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.Forklift
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeForkItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.toForkliftUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneDeflectionItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeGirderItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.GantryCraneUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.toGantryCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaCageItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaClampsItem
@@ -25,6 +27,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaLo
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSteelWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaSuspensionStructureItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.GondolaUiState
+import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.toGondolaUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.gondola.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTestItem
@@ -32,10 +35,12 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.Mobil
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.toMobileCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneNdeChainItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toOverheadCraneUiState
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
@@ -731,10 +736,16 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
-                    
-                    // Convert the domain model back to UI state
-                    // For now, we'll just show a success message
-                    // The actual conversion will depend on the specific report structure
+
+                    when (equipmentType) {
+                        SubInspectionType.Forklift -> _forkliftUiState.update { inspection.toForkliftUiState() }
+                        SubInspectionType.Gantry_Crane -> _gantryCraneUiState.update { inspection.toGantryCraneUiState() }
+                        SubInspectionType.Gondola -> _gondolaUiState.update { inspection.toGondolaUiState() }
+                        SubInspectionType.Mobile_Crane -> _mobileCraneUiState.update { inspection.toMobileCraneUiState() }
+                        SubInspectionType.Overhead_Crane -> _overheadCraneUiState.update { inspection.toOverheadCraneUiState() }
+                        else -> {}
+                    }
+
                     _paaUiState.update { 
                         it.copy(
                             isLoading = false,

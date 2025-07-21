@@ -18,6 +18,16 @@ class FakeReportRepository : IReportRepository {
         return null
     }
 
+    override suspend fun getPendingSyncReports(): List<InspectionWithDetailsDomain> {
+        return emptyList()
+    }
+
+    override suspend fun updateSyncStatus(id: Long, isSynced: Boolean) {
+        return
+    }
+
+    override suspend fun syncInspection(): Boolean = true
+
     override fun getAllReports(): Flow<List<History>> {
         return flowOf(
             listOf(

@@ -36,7 +36,7 @@ val previewModule = module {
     viewModel { SignUpViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { SettingsViewModel(get(), get()) }
-    viewModel { HistoryViewModel(get()) }
+    viewModel { HistoryViewModel(get(), get()) }
     viewModel { BAPViewModel(get()) }
     viewModel { BAPCreationViewModel(get()) }
     viewModel { EEViewModel(get()) }

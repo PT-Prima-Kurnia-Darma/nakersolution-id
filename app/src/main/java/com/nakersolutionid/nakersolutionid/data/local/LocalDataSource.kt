@@ -24,6 +24,11 @@ class LocalDataSource(private val inspectionDao: InspectionDao) {
 
     fun getInspection(id: Long): Flow<InspectionWithDetails> = inspectionDao.getInspectionWithDetails(id)
     fun getAllInspectionsWithDetails(): Flow<List<InspectionWithDetails>> = inspectionDao.getAllInspectionsWithDetails()
-    
+    suspend fun getPendingSyncReports(): List<InspectionWithDetails> {
+        return inspectionDao.getAllUnsyncedInspectionsWithDetails().firstOrNull() ?: emptyList()
+    }
+
+    suspend fun updateSyncStatus(id: Long, isSynced: Boolean) = inspectionDao.updateSyncStatus(id, isSynced)
+
     suspend fun deleteInspection(id: Long) = inspectionDao.deleteInspectionWithDetails(id)
 }

@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.di
 
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.database.AppDatabase
@@ -34,10 +35,14 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.PUBTViewModel
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import com.nakersolutionid.nakersolutionid.workers.SyncReportWorker
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.worker
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -53,6 +58,12 @@ val databaseModule = module {
         ).fallbackToDestructiveMigration(false)
             .build()
     }
+}
+
+val workerModule = module {
+    single { WorkManager.getInstance(androidContext()) }
+    single { SyncManager(get()) }
+    worker { SyncReportWorker(get(), get(), get()) }
 }
 
 val useCaseModule = module {
@@ -116,7 +127,7 @@ val viewModelModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { SettingsViewModel(get(), get()) }
-    viewModel { HistoryViewModel(get()) }
+    viewModel { HistoryViewModel(get(), get()) }
     viewModel { BAPViewModel(get()) }
     viewModel { BAPCreationViewModel(get()) }
     viewModel { EEViewModel(get()) }

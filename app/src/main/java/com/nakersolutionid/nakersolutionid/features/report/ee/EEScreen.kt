@@ -99,6 +99,13 @@ fun EEScreen(
         }
     }
 
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(eeUiState.loadedEquipmentType) {
+        eeUiState.loadedEquipmentType?.let { equipmentType ->
+            selectedFilter = equipmentType
+        }
+    }
+
     // Handle edit load result
     LaunchedEffect(eeUiState.editLoadResult) {
         when (val result = eeUiState.editLoadResult) {

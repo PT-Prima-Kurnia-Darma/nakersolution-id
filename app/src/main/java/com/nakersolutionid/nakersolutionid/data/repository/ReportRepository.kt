@@ -4,12 +4,17 @@ import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toCreateElevatorReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
@@ -28,7 +33,74 @@ class ReportRepository(
         )
     }
 
-    /*override fun saveReportInCloud(localId: Long, request: InspectionWithDetailsDomain): Flow<Resource<String>> = flow {
+    override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? {
+        return localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
+    }
+
+    override suspend fun getPendingSyncReports(): List<InspectionWithDetailsDomain> {
+        return localDataSource.getPendingSyncReports().map { it.toDomain() }
+    }
+
+    override suspend fun updateSyncStatus(id: Long, isSynced: Boolean) {
+        localDataSource.updateSyncStatus(id, isSynced)
+    }
+
+    override suspend fun syncInspection(): Boolean {
+        val token = userPreference.getUserToken() ?: ""
+        val listReports = localDataSource.getPendingSyncReports()
+        var fail = 0
+
+        listReports.map {
+            it.toDomain()
+        }.forEach { report ->
+            // region CAPE
+            val apiResponse = when (report.inspection.documentType) {
+                DocumentType.LAPORAN -> when (report.inspection.subInspectionType) {
+                    SubInspectionType.Elevator -> remoteDataSource.createElevatorReport(token, report.toCreateElevatorReportBody()).first()
+                    else -> ApiResponse.Empty
+                }
+
+                DocumentType.BAP -> ApiResponse.Empty
+                else -> ApiResponse.Empty
+            }
+            // endregion
+
+            when (apiResponse) {
+                is ApiResponse.Empty -> null
+                is ApiResponse.Error -> {
+                    fail++
+                }
+
+                is ApiResponse.Success -> {
+                    try {
+                        localDataSource.updateSyncStatus(report.inspection.id, true)
+                    } catch (_: Exception) {
+                        fail++
+                    }
+                }
+            }
+        }
+        return fail == 0
+    }
+
+    override fun getAllReports(): Flow<List<History>> {
+        return localDataSource.getAllInspectionsWithDetails().map { it ->
+            it.map {
+                it.inspectionEntity.toHistory()
+            }
+        }
+    }
+
+    override suspend fun deleteReport(id: Long) {
+        localDataSource.deleteInspection(id)
+    }
+}
+
+
+
+
+
+/*override fun saveReportInCloud(localId: Long, request: InspectionWithDetailsDomain): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
         val token = userPreference.getUserToken() ?: ""
         val apiResponse = remoteDataSource.sendReport(token, request.toNetworkDto()).first()
@@ -53,20 +125,3 @@ class ReportRepository(
             is ApiResponse.Empty -> {}
         }
     }*/
-
-    override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? {
-        return localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
-    }
-
-    override fun getAllReports(): Flow<List<History>> {
-        return localDataSource.getAllInspectionsWithDetails().map { it ->
-            it.map {
-                it.inspectionEntity.toHistory()
-            }
-        }
-    }
-
-    override suspend fun deleteReport(id: Long) {
-        localDataSource.deleteInspection(id)
-    }
-}

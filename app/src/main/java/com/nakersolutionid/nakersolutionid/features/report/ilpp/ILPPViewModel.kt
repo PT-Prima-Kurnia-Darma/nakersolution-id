@@ -9,12 +9,14 @@ import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalUiState
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.toElectricalUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingMeasurementItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toLightningProtectionUiState
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import kotlinx.collections.immutable.toImmutableList
@@ -209,10 +211,13 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
-                    
-                    // Convert the domain model back to UI state
-                    // For now, we'll just show a success message
-                    // The actual conversion will depend on the specific report structure
+
+                    when (equipmentType) {
+                        SubInspectionType.Electrical -> _electricalUiState.update { inspection.toElectricalUiState() }
+                        SubInspectionType.Lightning_Conductor -> _lightningUiState.update { inspection.toLightningProtectionUiState() }
+                        else -> {}
+                    }
+
                     _ilppUiState.update { 
                         it.copy(
                             isLoading = false,
