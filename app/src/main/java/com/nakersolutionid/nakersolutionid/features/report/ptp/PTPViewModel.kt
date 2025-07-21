@@ -18,6 +18,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toDie
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +26,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
+class PTPViewModel(
+    private val reportUseCase: ReportUseCase,
+    private val syncManager: SyncManager
+) : ViewModel() {
     private val _ptpUiState = MutableStateFlow(PTPUiState())
     val ptpUiState: StateFlow<PTPUiState> = _ptpUiState.asStateFlow()
 
@@ -47,6 +51,7 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _ptpUiState.update { it.copy(machineResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _ptpUiState.update { it.copy(machineResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -59,6 +64,7 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _ptpUiState.update { it.copy(motorDieselResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _ptpUiState.update { it.copy(motorDieselResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -217,5 +223,9 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun startSync() {
+        syncManager.startSync()
     }
 }

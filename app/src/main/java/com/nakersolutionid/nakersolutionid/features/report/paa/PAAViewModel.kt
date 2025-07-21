@@ -43,6 +43,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toI
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toOverheadCraneUiState
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,7 +51,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
+class PAAViewModel(
+    private val reportUseCase: ReportUseCase,
+    private val syncManager: SyncManager
+) : ViewModel() {
     private val _paaUiState = MutableStateFlow(PAAUiState())
     val paaUiState: StateFlow<PAAUiState> = _paaUiState.asStateFlow()
 
@@ -81,6 +85,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(forkliftResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -92,6 +97,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(mobileCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -103,6 +109,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(overheadCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(overheadCraneResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -114,6 +121,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(gantryCraneResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -125,6 +133,7 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     try {
                         reportUseCase.saveReport(electricalInspection)
                         _paaUiState.update { it.copy(gondolaResult = Resource.Success("Laporan berhasil disimpan")) }
+                        startSync()
                     } catch(_: SQLiteConstraintException) {
                         _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
                     } catch (_: Exception) {
@@ -770,5 +779,9 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun startSync() {
+        syncManager.startSync()
     }
 }

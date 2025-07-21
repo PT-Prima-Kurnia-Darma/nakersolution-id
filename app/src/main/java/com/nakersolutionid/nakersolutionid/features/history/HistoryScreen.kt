@@ -94,8 +94,7 @@ fun HistoryScreen(
     val lazyListState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
-        viewModel.startAppSync()
-        viewModel.setupPeriodicSync()
+        viewModel.startSync()
     }
 
     // This effect correctly scrolls the list to the top AFTER the data has been updated

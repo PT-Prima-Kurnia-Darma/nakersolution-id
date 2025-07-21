@@ -17,7 +17,7 @@ class SyncManager(
         private const val SYNC_WORK_TAG = "data_sync"
     }
 
-    fun startSyncOnAppStart() {
+    fun startSync() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -39,6 +39,29 @@ class SyncManager(
             syncRequest
         )
     }
+
+    /*fun startSyncOnAppStart() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val syncRequest = OneTimeWorkRequestBuilder<SyncReportWorker>()
+            .setConstraints(constraints)
+            .addTag(SYNC_WORK_TAG)
+            .setBackoffCriteria(
+                BackoffPolicy.EXPONENTIAL,
+                WorkRequest.MIN_BACKOFF_MILLIS,
+                java.util.concurrent.TimeUnit.MILLISECONDS
+            )
+            .build()
+
+        // Use REPLACE to ensure only one sync runs at a time
+        workManager.enqueueUniqueWork(
+            SYNC_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            syncRequest
+        )
+    }*/
 
     fun setupPeriodicSync() {
 //        val constraints = Constraints.Builder()
