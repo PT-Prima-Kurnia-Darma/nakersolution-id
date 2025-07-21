@@ -1,4 +1,4 @@
-package com.nakersolutionid.nakersolutionid.data.remote.response.elevator
+package com.nakersolutionid.nakersolutionid.data.remote.response.report.elevator
 
 import com.google.gson.annotations.SerializedName
 

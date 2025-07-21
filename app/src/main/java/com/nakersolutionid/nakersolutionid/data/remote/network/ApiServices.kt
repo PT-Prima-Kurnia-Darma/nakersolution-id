@@ -6,9 +6,9 @@ import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.ValidateTokenRequest
 import com.nakersolutionid.nakersolutionid.data.remote.response.deleteuser.DeleteUserApiResponse
-import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.CreateElevatorReportResponse
-import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.DeleteElevatorReportResponse
-import com.nakersolutionid.nakersolutionid.data.remote.response.elevator.GetElevatorReportsResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.report.elevator.CreateElevatorReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.report.elevator.DeleteElevatorReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.response.report.elevator.GetElevatorReportsResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.login.LoginResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
