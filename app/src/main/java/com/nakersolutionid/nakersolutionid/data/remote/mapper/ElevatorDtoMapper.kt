@@ -1,25 +1,25 @@
 package com.nakersolutionid.nakersolutionid.data.remote.mapper
 
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.CreateElevatorReportBody
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportAccessibilityElevatorDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportCarDoorSpecsDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportCarDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportCarSignageDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportCounterweightGuideRailsAndBuffersDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportDrumsAndSheavesDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportElectricalInstallationDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportFireServiceElevatorDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportGeneralDataDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportGovernorAndSafetyBrakeDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportHoistwayAndPitDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportInspectionAndTestingDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportInspectionResultDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportMachineRoomAndMachineryDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportMachineRoomlessDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportSeismicSensorDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportSuspensionRopesAndBeltsDto
-import com.nakersolutionid.nakersolutionid.data.remote.body.report.ElevatorReportTechnicalDocumentInspectionDto
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateElevatorReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportAccessibilityElevator // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportCarDoorSpecs // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportCar // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportCarSignage // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportCounterweightGuideRailsAndBuffers // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportDrumsAndSheaves // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportElectricalInstallation // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportFireServiceElevator // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportGeneralData // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportGovernorAndSafetyBrake // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportHoistwayAndPit // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportInspectionAndTesting // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportInspectionResult // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportMachineRoomAndMachinery // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportMachineRoomless // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportSeismicSensor // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportSuspensionRopesAndBelts // Updated import
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ElevatorReportTechnicalDocumentInspection // Updated import
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 
 /**
@@ -50,12 +50,12 @@ private object ElevatorCategory {
  */
 fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorReportBody {
     // Helper function to find a specific check item by category and item name.
-    // Returns an ElevatorReportInspectionResultDto with default values if not found.
-    fun findCheckItemResult(category: String, itemName: String): ElevatorReportInspectionResultDto {
+    // Returns an ElevatorReportInspectionResult with default values if not found.
+    fun findCheckItemResult(category: String, itemName: String): ElevatorReportInspectionResult {
         val item = this.checkItems.find { it.category == category && it.itemName == itemName }
         return item?.let {
-            ElevatorReportInspectionResultDto(result = it.result ?: "", status = it.status)
-        } ?: ElevatorReportInspectionResultDto()
+            ElevatorReportInspectionResult(result = it.result ?: "", status = it.status)
+        } ?: ElevatorReportInspectionResult()
     }
 
     // Helper function to find a boolean status for a specific check item.
@@ -64,8 +64,8 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         return this.checkItems.find { it.category == category && it.itemName == itemName }?.status ?: false
     }
 
-    // Map general data from InspectionDomain to ElevatorReportGeneralDataDto
-    val generalDataDto = ElevatorReportGeneralDataDto(
+    // Map general data from InspectionDomain to ElevatorReportGeneralData
+    val generalData = ElevatorReportGeneralData( // Updated type
         ownerName = this.inspection.ownerName ?: "",
         ownerAddress = this.inspection.ownerAddress ?: "",
         nameUsageLocation = this.inspection.usageLocation ?: "",
@@ -82,8 +82,8 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         inspectionDate = this.inspection.reportDate ?: ""
     )
 
-    // Map technical document inspection items to ElevatorReportTechnicalDocumentInspectionDto
-    val technicalDocumentInspectionDto = ElevatorReportTechnicalDocumentInspectionDto(
+    // Map technical document inspection items to ElevatorReportTechnicalDocumentInspection
+    val technicalDocumentInspection = ElevatorReportTechnicalDocumentInspection( // Updated type
         designDrawing = findCheckItemStatus(ElevatorCategory.TECHNICAL_DOC, "Gambar Rencana"),
         technicalCalculation = findCheckItemStatus(ElevatorCategory.TECHNICAL_DOC, "Perhitungan Teknis"),
         materialCertificate = findCheckItemStatus(ElevatorCategory.TECHNICAL_DOC, "Sertifikat Material"),
@@ -93,8 +93,8 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         safeWorkProcedure = findCheckItemStatus(ElevatorCategory.TECHNICAL_DOC, "Prosedur Kerja Aman")
     )
 
-    // Map machine room and machinery items to ElevatorReportMachineRoomAndMachineryDto
-    val machineRoomAndMachineryDto = ElevatorReportMachineRoomAndMachineryDto(
+    // Map machine room and machinery items to ElevatorReportMachineRoomAndMachinery
+    val machineRoomAndMachinery = ElevatorReportMachineRoomAndMachinery( // Updated type
         machineMounting = findCheckItemResult(ElevatorCategory.MACHINE_ROOM, "Pemasangan Mesin"),
         mechanicalBrake = findCheckItemResult(ElevatorCategory.MACHINE_ROOM, "Rem Mekanik"),
         electricalBrake = findCheckItemResult(ElevatorCategory.MACHINE_ROOM, "Rem Listrik"),
@@ -110,7 +110,7 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         floorLevelDifference = findCheckItemResult(ElevatorCategory.MACHINE_ROOM, "Perbedaan Level Lantai"),
         fireExtinguisher = findCheckItemResult(ElevatorCategory.MACHINE_ROOM, "Alat Pemadam Api"),
         emergencyStopSwitch = findCheckItemResult(ElevatorCategory.MACHINE_ROOM, "Saklar Stop Darurat"),
-        machineRoomless = ElevatorReportMachineRoomlessDto(
+        machineRoomless = ElevatorReportMachineRoomless( // Updated type
             panelPlacement = findCheckItemResult(ElevatorCategory.MACHINE_ROOMLESS, "Penempatan Panel"),
             lightingWorkArea = findCheckItemResult(ElevatorCategory.MACHINE_ROOMLESS, "Penerangan Area Kerja"),
             lightingBetweenWorkArea = findCheckItemResult(ElevatorCategory.MACHINE_ROOMLESS, "Penerangan Antar Area Kerja"),
@@ -119,8 +119,8 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         )
     )
 
-    // Map suspension ropes and belts items to ElevatorReportSuspensionRopesAndBeltsDto
-    val suspensionRopesAndBeltsDto = ElevatorReportSuspensionRopesAndBeltsDto(
+    // Map suspension ropes and belts items to ElevatorReportSuspensionRopesAndBelts
+    val suspensionRopesAndBelts = ElevatorReportSuspensionRopesAndBelts( // Updated type
         condition = findCheckItemResult(ElevatorCategory.SUSPENSION, "Kondisi"),
         chainUsage = findCheckItemResult(ElevatorCategory.SUSPENSION, "Penggunaan Rantai"),
         safetyFactor = findCheckItemResult(ElevatorCategory.SUSPENSION, "Faktor Keamanan"),
@@ -130,15 +130,15 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         slackRopeDevice = findCheckItemResult(ElevatorCategory.SUSPENSION, "Alat Pengaman Tali Kendor")
     )
 
-    // Map drums and sheaves items to ElevatorReportDrumsAndSheavesDto
-    val drumsAndSheavesDto = ElevatorReportDrumsAndSheavesDto(
+    // Map drums and sheaves items to ElevatorReportDrumsAndSheaves
+    val drumsAndSheaves = ElevatorReportDrumsAndSheaves( // Updated type
         drumGrooves = findCheckItemResult(ElevatorCategory.DRUMS_SHEAVES, "Alur Drum"),
         passengerDrumDiameter = findCheckItemResult(ElevatorCategory.DRUMS_SHEAVES, "Diameter Drum Penumpang"),
         governorDrumDiameter = findCheckItemResult(ElevatorCategory.DRUMS_SHEAVES, "Diameter Drum Governor")
     )
 
-    // Map hoistway and pit items to ElevatorReportHoistwayAndPitDto
-    val hoistwayAndPitDto = ElevatorReportHoistwayAndPitDto(
+    // Map hoistway and pit items to ElevatorReportHoistwayAndPit
+    val hoistwayAndPit = ElevatorReportHoistwayAndPit( // Updated type
         construction = findCheckItemResult(ElevatorCategory.HOISTWAY_PIT, "Konstruksi"),
         walls = findCheckItemResult(ElevatorCategory.HOISTWAY_PIT, "Dinding"),
         inclinedElevatorTrackBed = findCheckItemResult(ElevatorCategory.HOISTWAY_PIT, "Landasan Lintasan Lift Miring"),
@@ -161,8 +161,8 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         inclinedElevatorStairs = findCheckItemResult(ElevatorCategory.HOISTWAY_PIT, "Tangga Lift Miring")
     )
 
-    // Map car items to ElevatorReportCarDto
-    val carDto = ElevatorReportCarDto(
+    // Map car items to ElevatorReportCar
+    val car = ElevatorReportCar( // Updated type
         frame = findCheckItemResult(ElevatorCategory.CAR, "Rangka Kereta"),
         body = findCheckItemResult(ElevatorCategory.CAR, "Badan Kereta"),
         wallHeight = findCheckItemResult(ElevatorCategory.CAR, "Tinggi Dinding"),
@@ -186,12 +186,12 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         carTopLighting = findCheckItemResult(ElevatorCategory.CAR, "Penerangan Atap Kereta"),
         manualOperationButtons = findCheckItemResult(ElevatorCategory.CAR, "Tombol Operasi Manual"),
         carInterior = findCheckItemResult(ElevatorCategory.CAR, "Interior Kereta"),
-        carDoorSpecs = ElevatorReportCarDoorSpecsDto(
+        carDoorSpecs = ElevatorReportCarDoorSpecs( // Updated type
             size = findCheckItemResult(ElevatorCategory.CAR_DOOR_SPECS, "Ukuran"),
             lockAndSwitch = findCheckItemResult(ElevatorCategory.CAR_DOOR_SPECS, "Kunci dan Saklar"),
             sillClearance = findCheckItemResult(ElevatorCategory.CAR_DOOR_SPECS, "Jarak Celah")
         ),
-        carSignage = ElevatorReportCarSignageDto(
+        carSignage = ElevatorReportCarSignage( // Updated type
             manufacturerName = findCheckItemResult(ElevatorCategory.CAR_SIGNAGE, "Nama Pabrikan"),
             loadCapacity = findCheckItemResult(ElevatorCategory.CAR_SIGNAGE, "Kapasitas Beban"),
             noSmokingSign = findCheckItemResult(ElevatorCategory.CAR_SIGNAGE, "Tanda Dilarang Merokok"),
@@ -203,8 +203,8 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         )
     )
 
-    // Map governor and safety brake items to ElevatorReportGovernorAndSafetyBrakeDto
-    val governorAndSafetyBrakeDto = ElevatorReportGovernorAndSafetyBrakeDto(
+    // Map governor and safety brake items to ElevatorReportGovernorAndSafetyBrake
+    val governorAndSafetyBrake = ElevatorReportGovernorAndSafetyBrake( // Updated type
         governorRopeClamp = findCheckItemResult(ElevatorCategory.GOVERNOR_BRAKE, "Klem Tali Governor"),
         governorSwitch = findCheckItemResult(ElevatorCategory.GOVERNOR_BRAKE, "Saklar Governor"),
         safetyBrakeSpeed = findCheckItemResult(ElevatorCategory.GOVERNOR_BRAKE, "Kecepatan Rem Pengaman"),
@@ -218,8 +218,8 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         overloadDevice = findCheckItemResult(ElevatorCategory.GOVERNOR_BRAKE, "Alat Beban Lebih")
     )
 
-    // Map counterweight guide rails and buffers items to ElevatorReportCounterweightGuideRailsAndBuffersDto
-    val counterweightGuideRailsAndBuffersDto = ElevatorReportCounterweightGuideRailsAndBuffersDto(
+    // Map counterweight guide rails and buffers items to ElevatorReportCounterweightGuideRailsAndBuffers
+    val counterweightGuideRailsAndBuffers = ElevatorReportCounterweightGuideRailsAndBuffers( // Updated type
         counterweightMaterial = findCheckItemResult(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Material Bobot Imbang"),
         counterweightGuardScreen = findCheckItemResult(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Layar Pelindung Bobot Imbang"),
         guideRailConstruction = findCheckItemResult(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Konstruksi Rel Pemandu"),
@@ -228,14 +228,14 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
         bufferSafetySwitch = findCheckItemResult(ElevatorCategory.COUNTERWEIGHT_BUFFER, "Saklar Pengaman Buffer")
     )
 
-    // Map electrical installation items to ElevatorReportElectricalInstallationDto
-    val electricalInstallationDto = ElevatorReportElectricalInstallationDto(
+    // Map electrical installation items to ElevatorReportElectricalInstallation
+    val electricalInstallation = ElevatorReportElectricalInstallation( // Updated type
         installationStandard = findCheckItemResult(ElevatorCategory.ELECTRICAL, "Standar Instalasi"),
         electricalPanel = findCheckItemResult(ElevatorCategory.ELECTRICAL, "Panel Listrik"),
         backupPowerARD = findCheckItemResult(ElevatorCategory.ELECTRICAL, "Daya Cadangan (ARD)"),
         groundingCable = findCheckItemResult(ElevatorCategory.ELECTRICAL, "Kabel Pembumian"),
         fireAlarmConnection = findCheckItemResult(ElevatorCategory.ELECTRICAL, "Koneksi Alarm Kebakaran"),
-        fireServiceElevator = ElevatorReportFireServiceElevatorDto(
+        fireServiceElevator = ElevatorReportFireServiceElevator( // Updated type
             backupPower = findCheckItemResult(ElevatorCategory.FIRE_SERVICE, "Daya Cadangan"),
             specialOperation = findCheckItemResult(ElevatorCategory.FIRE_SERVICE, "Operasi Khusus"),
             fireSwitch = findCheckItemResult(ElevatorCategory.FIRE_SERVICE, "Saklar Kebakaran"),
@@ -247,7 +247,7 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
             travelTime = findCheckItemResult(ElevatorCategory.FIRE_SERVICE, "Waktu Perjalanan"),
             evacuationFloor = findCheckItemResult(ElevatorCategory.FIRE_SERVICE, "Lantai Evakuasi")
         ),
-        accessibilityElevator = ElevatorReportAccessibilityElevatorDto(
+        accessibilityElevator = ElevatorReportAccessibilityElevator( // Updated type
             operatingPanel = findCheckItemResult(ElevatorCategory.ACCESSIBILITY, "Panel Operasi"),
             panelHeight = findCheckItemResult(ElevatorCategory.ACCESSIBILITY, "Tinggi Panel"),
             doorOpenTime = findCheckItemResult(ElevatorCategory.ACCESSIBILITY, "Waktu Buka Pintu"),
@@ -255,37 +255,37 @@ fun InspectionWithDetailsDomain.toCreateElevatorReportBody(): CreateElevatorRepo
             audioInformation = findCheckItemResult(ElevatorCategory.ACCESSIBILITY, "Informasi Audio"),
             label = findCheckItemResult(ElevatorCategory.ACCESSIBILITY, "Label")
         ),
-        seismicSensor = ElevatorReportSeismicSensorDto(
+        seismicSensor = ElevatorReportSeismicSensor( // Updated type
             availability = findCheckItemResult(ElevatorCategory.SEISMIC, "Ketersediaan"),
             function = findCheckItemResult(ElevatorCategory.SEISMIC, "Fungsi")
         )
     )
 
     // Combine all inspection and testing sections into a single DTO
-    val inspectionAndTestingDto = ElevatorReportInspectionAndTestingDto(
-        machineRoomAndMachinery = machineRoomAndMachineryDto,
-        suspensionRopesAndBelts = suspensionRopesAndBeltsDto,
-        drumsAndSheaves = drumsAndSheavesDto,
-        hoistwayAndPit = hoistwayAndPitDto,
-        car = carDto,
-        governorAndSafetyBrake = governorAndSafetyBrakeDto,
-        counterweightGuideRailsAndBuffers = counterweightGuideRailsAndBuffersDto,
-        electricalInstallation = electricalInstallationDto
+    val inspectionAndTesting = ElevatorReportInspectionAndTesting( // Updated type
+        machineRoomAndMachinery = machineRoomAndMachinery,
+        suspensionRopesAndBelts = suspensionRopesAndBelts,
+        drumsAndSheaves = drumsAndSheaves,
+        hoistwayAndPit = hoistwayAndPit,
+        car = car,
+        governorAndSafetyBrake = governorAndSafetyBrake,
+        counterweightGuideRailsAndBuffers = counterweightGuideRailsAndBuffers,
+        electricalInstallation = electricalInstallation
     )
 
     // Determine the conclusion. Prefer inspection status, fallback to finding description.
     val conclusionText = this.inspection.status ?: this.findings.firstOrNull()?.description ?: ""
 
     // Construct the final CreateElevatorReportBody
-    return CreateElevatorReportBody( // Renamed to CreateElevatorReportBody
-        inspectionType = this.inspection.inspectionType.toDisplayString(), // Assuming InspectionType is an enum
+    return CreateElevatorReportBody(
+        inspectionType = this.inspection.inspectionType.toDisplayString(),
         examinationType = this.inspection.examinationType,
         createdAt = this.inspection.createdAt ?: "",
         equipmentType = this.inspection.equipmentType,
         extraId = this.inspection.id,
-        generalData = generalDataDto,
-        technicalDocumentInspection = technicalDocumentInspectionDto,
-        inspectionAndTesting = inspectionAndTestingDto,
+        generalData = generalData,
+        technicalDocumentInspection = technicalDocumentInspection,
+        inspectionAndTesting = inspectionAndTesting,
         conclusion = conclusionText
     )
 }
