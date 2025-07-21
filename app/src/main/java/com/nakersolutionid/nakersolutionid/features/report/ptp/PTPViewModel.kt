@@ -9,10 +9,12 @@ import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.toMachineUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toDieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
@@ -184,10 +186,13 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
-                    
-                    // Convert the domain model back to UI state
-                    // For now, we'll just show a success message
-                    // The actual conversion will depend on the specific report structure
+
+                    when (equipmentType) {
+                        SubInspectionType.Machine -> _machineUiState.update { inspection.toMachineUiState() }
+                        SubInspectionType.Motor_Diesel -> _motorDieselUiState.update { inspection.toDieselMotorUiState() }
+                        else -> {}
+                    }
+
                     _ptpUiState.update { 
                         it.copy(
                             isLoading = false,

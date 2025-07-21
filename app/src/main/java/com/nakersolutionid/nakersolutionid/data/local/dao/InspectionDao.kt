@@ -71,6 +71,13 @@ interface InspectionDao {
     fun getAllInspectionsWithDetails(): Flow<List<InspectionWithDetails>>
 
     /**
+     * Fetches all inspection reports that have not yet been synced.
+     */
+    @Transaction
+    @Query("SELECT * FROM inspections WHERE is_synced = 0 ORDER BY created_at ASC")
+    fun getAllUnsyncedInspectionsWithDetails(): Flow<List<InspectionWithDetails>>
+
+    /**
      * Efficiently updates only the sync status of an inspection by its ID.
      */
     @Query("UPDATE inspections SET is_synced = :isSynced WHERE id = :id")

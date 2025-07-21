@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 interface IReportRepository {
     suspend fun saveReport(request: InspectionWithDetailsDomain)
     suspend fun getInspection(id: Long): InspectionWithDetailsDomain?
+    suspend fun getPendingSyncReports(): List<InspectionWithDetailsDomain>
+    suspend fun updateSyncStatus(id: Long, isSynced: Boolean)
+    suspend fun syncInspection(): Boolean
     fun getAllReports(): Flow<List<History>>
     suspend fun deleteReport(id: Long)
 }

@@ -1,7 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -9,6 +11,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.utils.Utils
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -54,7 +57,10 @@ private fun History.matchesFilters(filters: FilterState): Boolean {
 }
 
 @OptIn(FlowPreview::class)
-class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
+class HistoryViewModel(
+    private val reportUseCase: ReportUseCase,
+    private val syncManager: SyncManager
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
 
@@ -146,4 +152,21 @@ class HistoryViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
             }
         }
     }
+
+    fun startAppSync() {
+        syncManager.startSyncOnAppStart()
+    }
+
+    fun setupPeriodicSync() {
+        syncManager.setupPeriodicSync()
+    }
+
+    fun getSyncStatus(): LiveData<List<WorkInfo>> {
+        return syncManager.getSyncStatus()
+    }
+
+    fun cancelSync() {
+        syncManager.cancelSync()
+    }
+
 }

@@ -7,9 +7,11 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toElevatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorGeneralData
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorUiState
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toEskalatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
@@ -102,14 +104,21 @@ class EEViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
-                    
-                    // Convert the domain model back to UI state
-                    // For now, we'll just show a success message
-                    // The actual conversion will depend on the specific report structure
+
+                    // Extract the equipment type from the loaded inspection
+                    val equipmentType = inspection.inspection.subInspectionType
+
+                    when (equipmentType) {
+                        SubInspectionType.Elevator -> _elevatorUiState.update { inspection.toElevatorUiState() }
+                        SubInspectionType.Escalator -> _eskalatorUiState.update { inspection.toEskalatorUiState() }
+                        else -> {}
+                    }
+
                     _eeUiState.update { 
                         it.copy(
                             isLoading = false,
-                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit")
+                            editLoadResult = Resource.Success("Data laporan berhasil dimuat untuk diedit"),
+                            loadedEquipmentType = equipmentType
                         )
                     }
                 } else {

@@ -15,6 +15,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.response.register.Registe
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
@@ -144,32 +145,37 @@ class RemoteDataSource(private val apiServices: ApiServices) {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun sendReport(token: String, request: CreateElevatorReportBody): Flow<ApiResponse<CreateElevatorReportResponse>> {
-        return flow {
-            try {
-                val response = apiServices.createElevatorReport("Bearer $token", request)
-                emit(ApiResponse.Success(response))
-            } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string()
-                errorBody?.let {
-                    try {
-                        val parsedError = Gson().fromJson(errorBody, CreateElevatorReportResponse::class.java)
-                        if (parsedError != null) {
-                            emit(ApiResponse.Error(parsedError.message))
-                        } else {
-                            emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x0)"))
+    fun createElevatorReport(
+        token: String,
+        request: CreateElevatorReportBody
+    ): Flow<ApiResponse<CreateElevatorReportResponse>> {
+        return flow<ApiResponse<CreateElevatorReportResponse>> {
+            val response = apiServices.createElevatorReport("Bearer $token", request)
+            emit(ApiResponse.Success(response))
+        }.catch { e ->
+            val errorResponse: ApiResponse<CreateElevatorReportResponse> = when (e) {
+                is HttpException -> {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    errorBody?.let {
+                        try {
+                            val parsedError = Gson().fromJson(it, CreateElevatorReportResponse::class.java)
+                            ApiResponse.Error(parsedError.message)
+                        } catch (jsonEx: JsonSyntaxException) {
+                            ApiResponse.Error("Terjadi sebuah kesalahan (0x1)")
                         }
-                    } catch (e: JsonSyntaxException) {
-                        emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x1)"))
-                    }
-                } ?: run {
-                    emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x2)"))
+                    } ?: ApiResponse.Error("Terjadi sebuah kesalahan (0x2)")
                 }
-            } catch (e: SocketTimeoutException) {
-                emit(ApiResponse.Error("Gagal terhubung, waktu tunggu koneksi habis"))
-            } catch (e: Exception) {
-                emit(ApiResponse.Error("Terjadi sebuah kesalahan (0x3)"))
+
+                is SocketTimeoutException -> {
+                    ApiResponse.Error("Gagal terhubung, waktu tunggu koneksi habis")
+                }
+
+                else -> {
+                    ApiResponse.Error("Terjadi sebuah kesalahan (0x3)")
+                }
             }
+
+            emit(errorResponse)
         }.flowOn(Dispatchers.IO)
     }
 }

@@ -10,6 +10,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.Fi
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionPumpFunctionTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionUiState
+import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toFireProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
@@ -112,10 +113,12 @@ class IPKViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
-                    
-                    // Convert the domain model back to UI state
-                    // For now, we'll just show a success message
-                    // The actual conversion will depend on the specific report structure
+
+                    when (equipmentType) {
+                        SubInspectionType.Fire_Protection -> _fireProtectionUiState.update { inspection.toFireProtectionUiState() }
+                        else -> {}
+                    }
+
                     _ipkUiState.update { 
                         it.copy(
                             isLoading = false,

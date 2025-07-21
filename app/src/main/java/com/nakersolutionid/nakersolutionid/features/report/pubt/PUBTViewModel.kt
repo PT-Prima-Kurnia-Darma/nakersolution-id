@@ -9,6 +9,7 @@ import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMeasurementResultItem
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralUiState
+import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toGeneralUiState
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
@@ -115,10 +116,12 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
-                    
-                    // Convert the domain model back to UI state
-                    // For now, we'll just show a success message
-                    // The actual conversion will depend on the specific report structure
+
+                    when (equipmentType) {
+                        SubInspectionType.General_PUBT -> _generalUiState.update { inspection.toGeneralUiState() }
+                        else -> {}
+                    }
+
                     _pubtUiState.update { 
                         it.copy(
                             isLoading = false,
