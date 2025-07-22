@@ -37,6 +37,7 @@ import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import com.nakersolutionid.nakersolutionid.workers.SyncReportWorker
+import com.nakersolutionid.nakersolutionid.workers.SyncUpdateReportWorker
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -64,6 +65,7 @@ val workerModule = module {
     single { WorkManager.getInstance(androidContext()) }
     single { SyncManager(get()) }
     worker { SyncReportWorker(get(), get(), get()) }
+    worker { SyncUpdateReportWorker(get(), get(), get()) }
 }
 
 val useCaseModule = module {
