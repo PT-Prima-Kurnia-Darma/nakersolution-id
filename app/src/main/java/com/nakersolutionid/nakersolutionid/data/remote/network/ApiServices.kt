@@ -83,7 +83,7 @@ interface ApiServices {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body request: CreateElevatorReportBody
-    ) : CreateElevatorReportBody
+    ) : CreateElevatorReportResponse
 
     @DELETE("elevatorEskalator/elevator/laporan/{id}")
     suspend fun deleteElevatorReport(
