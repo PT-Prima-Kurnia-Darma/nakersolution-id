@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeReportRepository : IReportRepository {
-    override suspend fun saveReport(request: InspectionWithDetailsDomain) {
+    override suspend fun saveReport(request: InspectionWithDetailsDomain, extraId: String?) {
         return
     }
 
@@ -27,6 +27,7 @@ class FakeReportRepository : IReportRepository {
     }
 
     override suspend fun syncInspection(): Boolean = true
+    override suspend fun syncUpdateInspection(): Boolean = true
 
     override fun getAllReports(): Flow<List<History>> {
         return flowOf(

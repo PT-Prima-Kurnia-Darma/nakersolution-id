@@ -178,4 +178,39 @@ class RemoteDataSource(private val apiServices: ApiServices) {
             emit(errorResponse)
         }.flowOn(Dispatchers.IO)
     }
+
+    fun updateElevatorReport(
+        token: String,
+        extraId: String,
+        request: CreateElevatorReportBody
+    ): Flow<ApiResponse<CreateElevatorReportResponse>> {
+        return flow<ApiResponse<CreateElevatorReportResponse>> {
+            val response = apiServices.updateElevatorReport("Bearer $token", extraId, request)
+            emit(ApiResponse.Success(response))
+        }.catch { e ->
+            val errorResponse: ApiResponse<CreateElevatorReportResponse> = when (e) {
+                is HttpException -> {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    errorBody?.let {
+                        try {
+                            val parsedError = Gson().fromJson(it, CreateElevatorReportResponse::class.java)
+                            ApiResponse.Error(parsedError.message)
+                        } catch (jsonEx: JsonSyntaxException) {
+                            ApiResponse.Error("Terjadi sebuah kesalahan (0x1)")
+                        }
+                    } ?: ApiResponse.Error("Terjadi sebuah kesalahan (0x2)")
+                }
+
+                is SocketTimeoutException -> {
+                    ApiResponse.Error("Gagal terhubung, waktu tunggu koneksi habis")
+                }
+
+                else -> {
+                    ApiResponse.Error("Terjadi sebuah kesalahan (0x3)")
+                }
+            }
+
+            emit(errorResponse)
+        }.flowOn(Dispatchers.IO)
+    }
 }
