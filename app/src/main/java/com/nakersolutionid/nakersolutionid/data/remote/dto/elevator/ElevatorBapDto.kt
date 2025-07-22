@@ -3,16 +3,16 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.elevator
 import com.google.gson.annotations.SerializedName
 
 // Data DTO for single BAP response
-data class BapSingleReportResponseData(
-    @SerializedName("bap") val bap: BapReportData
+data class ElevatorBapSingleReportResponseData(
+    @SerializedName("bap") val bap: ElevatorBapReportData
 )
 
 // Data DTO for list of BAP reports response
-data class BapListReportResponseData(
-    @SerializedName("bap") val bap: List<BapReportData>
+data class ElevatorBapListReportResponseData(
+    @SerializedName("bap") val bap: List<ElevatorBapReportData>
 )
 
-data class BapReportData(
+data class ElevatorBapReportData(
     @SerializedName("laporanId") val laporanId: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("examinationType") val examinationType: String,
@@ -20,23 +20,23 @@ data class BapReportData(
     @SerializedName("extraId") val extraId: Int,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("inspectionType") val inspectionType: String,
-    @SerializedName("generalData") val generalData: BapGeneralData,
-    @SerializedName("technicalData") val technicalData: BapTechnicalData,
-    @SerializedName("visualInspection") val visualInspection: BapVisualInspection,
-    @SerializedName("testing") val testing: BapTesting,
+    @SerializedName("generalData") val generalData: ElevatorBapGeneralData,
+    @SerializedName("technicalData") val technicalData: ElevatorBapTechnicalData,
+    @SerializedName("visualInspection") val visualInspection: ElevatorBapVisualInspection,
+    @SerializedName("testing") val testing: ElevatorBapTesting,
     @SerializedName("id") val id: String,
     @SerializedName("subInspectionType") val subInspectionType: String,
     @SerializedName("documentType") val documentType: String
 )
 
-data class BapGeneralData(
+data class ElevatorBapGeneralData(
     @SerializedName("ownerName") val ownerName: String,
     @SerializedName("ownerAddress") val ownerAddress: String,
     @SerializedName("nameUsageLocation") val nameUsageLocation: String,
     @SerializedName("addressUsageLocation") val addressUsageLocation: String
 )
 
-data class BapTechnicalData(
+data class ElevatorBapTechnicalData(
     @SerializedName("elevatorType") val elevatorType: String,
     @SerializedName("manufacturerOrInstaller") val manufacturerOrInstaller: String,
     @SerializedName("brandOrType") val brandOrType: String,
@@ -47,7 +47,7 @@ data class BapTechnicalData(
     @SerializedName("floorsServed") val floorsServed: String
 )
 
-data class BapVisualInspection(
+data class ElevatorBapVisualInspection(
     @SerializedName("isMachineRoomConditionAcceptable") val isMachineRoomConditionAcceptable: Boolean,
     @SerializedName("isPanelGoodCondition") val isPanelGoodCondition: Boolean,
     @SerializedName("isAparAvailableInPanelRoom") val isAparAvailableInPanelRoom: Boolean,
@@ -55,7 +55,7 @@ data class BapVisualInspection(
     @SerializedName("isPitLadderAvailable") val isPitLadderAvailable: Boolean
 )
 
-data class BapTesting(
+data class ElevatorBapTesting(
     @SerializedName("isNdtThermographPanelOk") val isNdtThermographPanelOk: Boolean,
     @SerializedName("isArdFunctional") val isArdFunctional: Boolean,
     @SerializedName("isGovernorFunctional") val isGovernorFunctional: Boolean,
