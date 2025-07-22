@@ -3,8 +3,18 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane
 import com.google.gson.annotations.SerializedName
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
 
-// Assuming CommonDtos.kt is in the same package or imported
-// import com.your_package_name.CommonDtos.ResultStatus
+data class MobileCraneReportRequest(
+    @SerializedName("inspectionType") val inspectionType: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("equipmentType") val equipmentType: String,
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("generalData") val generalData: MobileCraneGeneralData,
+    @SerializedName("technicalData") val technicalData: MobileCraneTechnicalData,
+    @SerializedName("inspectionAndTesting") val inspectionAndTesting: MobileCraneInspectionAndTesting,
+    @SerializedName("conclusion") val conclusion: String,
+    @SerializedName("recommendation") val recommendation: String,
+)
 
 // Data DTO for single Mobile Crane Report response
 data class MobileCraneSingleReportResponseData(

@@ -1,9 +1,21 @@
 package com.nakersolutionid.nakersolutionid.data.remote.dto.overheadcrane
 
 import com.google.gson.annotations.SerializedName
-// Assuming CommonDtos.kt is in the same package or imported
-// import com.your_package_name.CommonDtos.ResultStatus
 
+data class OverheadCraneReportRequest(
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("inspectionType") val inspectionType: String,
+    @SerializedName("inspectionDate") val inspectionDate: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("generalData") val generalData: OverheadCraneGeneralData,
+    @SerializedName("technicalData") val technicalData: OverheadCraneTechnicalData,
+    @SerializedName("visualInspection") val visualInspection: OverheadCraneVisualInspection,
+    @SerializedName("nonDestructiveExamination") val nonDestructiveExamination: OverheadCraneNonDestructiveExamination,
+    @SerializedName("testing") val testing: OverheadCraneTesting,
+    @SerializedName("conclusion") val conclusion: String,
+    @SerializedName("recommendations") val recommendations: String,
+)
 // Data DTO for single Overhead Crane Report response
 data class OverheadCraneSingleReportResponseData(
     @SerializedName("laporan") val laporan: OverheadCraneReportData
