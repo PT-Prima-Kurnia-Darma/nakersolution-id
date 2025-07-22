@@ -48,12 +48,14 @@ class ReportRepository(
     }
 
     override suspend fun syncInspection(): Boolean {
-        val token = userPreference.getUserToken() ?: ""
         val listReports = localDataSource.getPendingSyncReports()
-        var fail = 0
         if (listReports.isEmpty()) {
             return false
         }
+
+        var fail = 0
+        val token = userPreference.getUserToken() ?: ""
+
         listReports.map {
             it.toDomain()
         }.forEach { report ->
@@ -72,7 +74,6 @@ class ReportRepository(
                 is ApiResponse.Error -> {
                     fail++
                 }
-
                 is ApiResponse.Success -> {
                     try {
                         val extraId = apiResponse.data.data.laporan.id
@@ -88,18 +89,21 @@ class ReportRepository(
     }
 
     override suspend fun syncUpdateInspection(): Boolean {
-        val token = userPreference.getUserToken() ?: ""
         val listReports = localDataSource.getPendingSyncReports()
-        var fail = 0
         if (listReports.isEmpty()) {
             return false
         }
+
+        var fail = 0
+        val token = userPreference.getUserToken() ?: ""
+
         listReports.map {
             it.toDomain()
         }.forEach { report ->
+            val extraId = report.inspection.extraId
             val apiResponse = when (report.inspection.documentType) {
                 DocumentType.LAPORAN -> when (report.inspection.subInspectionType) {
-                    SubInspectionType.Elevator -> remoteDataSource.updateElevatorReport(token, report.inspection.extraId, report.toCreateElevatorReportBody()).first()
+                    SubInspectionType.Elevator -> remoteDataSource.updateElevatorReport(token, extraId, report.toCreateElevatorReportBody()).first()
                     else -> ApiResponse.Empty
                 }
 
@@ -112,7 +116,6 @@ class ReportRepository(
                 is ApiResponse.Error -> {
                     fail++
                 }
-
                 is ApiResponse.Success -> {
                     try {
                         val extraId = apiResponse.data.data.laporan.id
@@ -136,7 +139,35 @@ class ReportRepository(
     }
 
     override suspend fun deleteReport(id: Long) {
-        localDataSource.deleteInspection(id)
+        val data = localDataSource.getInspection(id).firstOrNull()
+        data?.let { data ->
+            val extraId = data.inspectionEntity.extraId
+            val token = userPreference.getUserToken() ?: ""
+            val isSynced = data.inspectionEntity.isSynced
+
+            if (!isSynced) {
+                localDataSource.deleteInspection(id)
+                return
+            }
+
+            val apiResponse = when (data.inspectionEntity.subInspectionType) {
+                SubInspectionType.Elevator -> remoteDataSource.deleteElevatorReport(token, extraId).first()
+                SubInspectionType.Escalator -> remoteDataSource.deleteEscalatorReport(token, extraId).first()
+                SubInspectionType.Forklift -> remoteDataSource.deleteForkliftReport(token, extraId).first()
+                SubInspectionType.Mobile_Crane -> remoteDataSource.deleteMobileCraneReport(token, extraId).first()
+                SubInspectionType.Overhead_Crane -> remoteDataSource.deleteOverheadCraneReport(token, extraId).first()
+                SubInspectionType.Gantry_Crane -> remoteDataSource.deleteGantryCraneReport(token, extraId).first()
+                SubInspectionType.Gondola -> remoteDataSource.deleteGondolaReport(token, extraId).first()
+                else -> ApiResponse.Empty
+            }
+            when (apiResponse) {
+                is ApiResponse.Empty -> null
+                is ApiResponse.Error -> null
+                is ApiResponse.Success -> {
+                    localDataSource.deleteInspection(id)
+                }
+            }
+        }
     }
 }
 
