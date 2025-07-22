@@ -13,8 +13,10 @@ class SyncManager(
 ) {
 
     companion object {
+        private const val SYNC_WORK_UPDATE_NAME = "data_sync_update_work"
         private const val SYNC_WORK_NAME = "data_sync_work"
         private const val SYNC_WORK_TAG = "data_sync"
+
     }
 
     fun startSync() {
@@ -35,6 +37,29 @@ class SyncManager(
         // Use REPLACE to ensure only one sync runs at a time
         workManager.enqueueUniqueWork(
             SYNC_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            syncRequest
+        )
+    }
+
+    fun startSyncUpdate() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val syncRequest = OneTimeWorkRequestBuilder<SyncUpdateReportWorker>()
+            .setConstraints(constraints)
+            .addTag(SYNC_WORK_TAG)
+            .setBackoffCriteria(
+                BackoffPolicy.EXPONENTIAL,
+                WorkRequest.MIN_BACKOFF_MILLIS,
+                java.util.concurrent.TimeUnit.MILLISECONDS
+            )
+            .build()
+
+        // Use REPLACE to ensure only one sync runs at a time
+        workManager.enqueueUniqueWork(
+            SYNC_WORK_UPDATE_NAME,
             ExistingWorkPolicy.REPLACE,
             syncRequest
         )
