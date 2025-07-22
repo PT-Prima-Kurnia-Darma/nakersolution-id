@@ -18,6 +18,26 @@ import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutRes
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.validatetoken.ValidateTokenResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateForkliftReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateForkliftReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.DeleteForkliftReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.GetForkliftReportsResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateGantryCraneReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateGantryCraneReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.DeleteGantryCraneReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.GetGantryCraneReportsResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateGondolaReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateGondolaReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.DeleteGondolaReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.GetGondolaReportsResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateMobileCraneReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateMobileCraneReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.DeleteMobileCraneReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.GetMobileCraneReportsResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateOverheadCraneReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateOverheadCraneReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.DeleteOverheadCraneReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.GetOverheadCraneReportsResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -104,36 +124,36 @@ interface ApiServices {
     // endregion
 
     // region Escalator
-    @POST("elevatorEskalator/elevator/laporan")
+    @POST("elevatorEskalator/escalator/laporan")
     suspend fun createEscalatorReport(
         @Header("Authorization") token: String,
         @Body request: CreateEscalatorReportBody
     ) : CreateEscalatorReportResponse
 
-    @GET("elevatorEskalator/elevator/laporan")
+    @GET("elevatorEskalator/escalator/laporan")
     suspend fun getEscalatorReports(
         @Header("Authorization") token: String
     ) : GetEscalatorReportsResponse
 
-    @GET("elevatorEskalator/elevator/laporan/{id}")
+    @GET("elevatorEskalator/escalator/laporan/{id}")
     suspend fun getEscalatorReport(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ) : CreateEscalatorReportResponse
 
-    @PUT("elevatorEskalator/elevator/laporan/{id}")
+    @PUT("elevatorEskalator/escalator/laporan/{id}")
     suspend fun updateEscalatorReport(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-        @Body request: CreateElevatorReportBody
+        @Body request: CreateEscalatorReportBody
     ) : CreateEscalatorReportResponse
 
-    @DELETE("elevatorEskalator/elevator/laporan/{id}")
+    @DELETE("elevatorEskalator/escalator/laporan/{id}")
     suspend fun deleteEscalatorReport(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ) : DeleteEscalatorReportResponse
-    @POST("elevatorEskalator/elevator/laporan/{id}/download")
+    @POST("elevatorEskalator/escalator/laporan/{id}/download")
     @Streaming
     suspend fun downloadEscalatorReport(
         @Header("Authorization") token: String,
@@ -154,23 +174,198 @@ interface ApiServices {
     // endregion
 
     // region Forklift
+    @POST("elevatorEskalator/forklift/laporan")
+    suspend fun createForkliftReport(
+        @Header("Authorization") token: String,
+        @Body request: CreateForkliftReportBody
+    ) : CreateForkliftReportResponse
 
+    @GET("elevatorEskalator/forklift/laporan")
+    suspend fun getForkliftReports(
+        @Header("Authorization") token: String
+    ) : GetForkliftReportsResponse
+
+    @GET("elevatorEskalator/forklift/laporan/{id}")
+    suspend fun getForkliftReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : CreateForkliftReportResponse
+
+    @PUT("elevatorEskalator/forklift/laporan/{id}")
+    suspend fun updateForkliftReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body request: CreateForkliftReportBody
+    ) : CreateForkliftReportResponse
+
+    @DELETE("elevatorEskalator/forklift/laporan/{id}")
+    suspend fun deleteForkliftReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : DeleteForkliftReportResponse
+
+    @POST("elevatorEskalator/forklift/laporan/{id}/download")
+    @Streaming
+    suspend fun downloadForkliftReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : Response<ResponseBody>
     // endregion
 
     // region Gantry Crane
+    @POST("elevatorEskalator/gantrycrane/laporan")
+    suspend fun createGantryCraneReport(
+        @Header("Authorization") token: String,
+        @Body request: CreateGantryCraneReportBody
+    ) : CreateGantryCraneReportResponse
 
+    @GET("elevatorEskalator/gantrycrane/laporan")
+    suspend fun getGantryCraneReports(
+        @Header("Authorization") token: String
+    ) : GetGantryCraneReportsResponse
+
+    @GET("elevatorEskalator/gantrycrane/laporan/{id}")
+    suspend fun getGantryCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : CreateGantryCraneReportResponse
+
+    @PUT("elevatorEskalator/gantrycrane/laporan/{id}")
+    suspend fun updateGantryCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body request: CreateGantryCraneReportBody
+    ) : CreateGantryCraneReportResponse
+
+    @DELETE("elevatorEskalator/gantrycrane/laporan/{id}")
+    suspend fun deleteGantryCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : DeleteGantryCraneReportResponse
+
+    @POST("elevatorEskalator/gantrycrane/laporan/{id}/download")
+    @Streaming
+    suspend fun downloadGantryCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : Response<ResponseBody>
     // endregion
 
     // region Gondola
+    @POST("elevatorEskalator/gondola/laporan")
+    suspend fun createGondolaReport(
+        @Header("Authorization") token: String,
+        @Body request: CreateGondolaReportBody
+    ) : CreateGondolaReportResponse
 
+    @GET("elevatorEskalator/gondola/laporan")
+    suspend fun getGondolaReports(
+        @Header("Authorization") token: String
+    ) : GetGondolaReportsResponse
+
+    @GET("elevatorEskalator/gondola/laporan/{id}")
+    suspend fun getGondolaReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : CreateGondolaReportResponse
+
+    @PUT("elevatorEskalator/gondola/laporan/{id}")
+    suspend fun updateGondolaReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body request: CreateGondolaReportBody
+    ) : CreateGondolaReportResponse
+
+    @DELETE("elevatorEskalator/gondola/laporan/{id}")
+    suspend fun deleteGondolaReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : DeleteGondolaReportResponse
+
+    @POST("elevatorEskalator/gondola/laporan/{id}/download")
+    @Streaming
+    suspend fun downloadGondolaReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : Response<ResponseBody>
     // endregion
 
     // region Mobile Crane
+    @POST("elevatorEskalator/mobilecrane/laporan")
+    suspend fun createMobileCraneReport(
+        @Header("Authorization") token: String,
+        @Body request: CreateMobileCraneReportBody
+    ) : CreateMobileCraneReportResponse
 
+    @GET("elevatorEskalator/mobilecrane/laporan")
+    suspend fun getMobileCraneReports(
+        @Header("Authorization") token: String
+    ) : GetMobileCraneReportsResponse
+
+    @GET("elevatorEskalator/mobilecrane/laporan/{id}")
+    suspend fun getMobileCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : CreateMobileCraneReportResponse
+
+    @PUT("elevatorEskalator/mobilecrane/laporan/{id}")
+    suspend fun updateMobileCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body request: CreateMobileCraneReportBody
+    ) : CreateMobileCraneReportResponse
+
+    @DELETE("elevatorEskalator/mobilecrane/laporan/{id}")
+    suspend fun deleteMobileCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : DeleteMobileCraneReportResponse
+
+    @POST("elevatorEskalator/mobilecrane/laporan/{id}/download")
+    @Streaming
+    suspend fun downloadMobileCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : Response<ResponseBody>
     // endregion
 
     // region Overhead Crane
+    @POST("elevatorEskalator/overheadcrane/laporan")
+    suspend fun createOverheadCraneReport(
+        @Header("Authorization") token: String,
+        @Body request: CreateOverheadCraneReportBody
+    ) : CreateOverheadCraneReportResponse
 
+    @GET("elevatorEskalator/overheadcrane/laporan")
+    suspend fun getOverheadCraneReports(
+        @Header("Authorization") token: String
+    ) : GetOverheadCraneReportsResponse
+
+    @GET("elevatorEskalator/overheadcrane/laporan/{id}")
+    suspend fun getOverheadCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : CreateOverheadCraneReportResponse
+
+    @PUT("elevatorEskalator/overheadcrane/laporan/{id}")
+    suspend fun updateOverheadCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body request: CreateOverheadCraneReportBody
+    ) : CreateOverheadCraneReportResponse
+
+    @DELETE("elevatorEskalator/overheadcrane/laporan/{id}")
+    suspend fun deleteOverheadCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : DeleteOverheadCraneReportResponse
+
+    @POST("elevatorEskalator/overheadcrane/laporan/{id}/download")
+    @Streaming
+    suspend fun downloadOverheadCraneReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : Response<ResponseBody>
     // endregion
 
     // region Machine
