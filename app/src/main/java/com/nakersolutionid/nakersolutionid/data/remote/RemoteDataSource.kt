@@ -23,6 +23,7 @@ import retrofit2.Response
 import java.net.SocketTimeoutException
 
 class RemoteDataSource(private val apiServices: ApiServices) {
+    // region Auth
     fun register(name: String, username: String, password: String): Flow<ApiResponse<RegisterResponse>> {
         return flow {
             try {
@@ -146,7 +147,6 @@ class RemoteDataSource(private val apiServices: ApiServices) {
         }.flowOn(Dispatchers.IO)
     }
 
-    // region Auth
     fun validateToken(tokenRequest: ValidateTokenRequest): Flow<ApiResponse<ValidateTokenResponse>> {
         return flow<ApiResponse<ValidateTokenResponse>> {
             val response = apiServices.validateToken(tokenRequest)
