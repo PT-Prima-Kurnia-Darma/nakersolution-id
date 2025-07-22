@@ -210,7 +210,7 @@ data class ElevatorElectricalInstallation(
     @SerializedName("fireAlarmConnection") val fireAlarmConnection: ResultStatus,
     @SerializedName("fireServiceElevator") val fireServiceElevator: ElevatorFireServiceElevator,
     @SerializedName("accessibilityElevator") val accessibilityElevator: ElevatorAccessibilityElevator,
-    @SerializedName("seismicSensor") val seismicSensor: ResultStatus
+    @SerializedName("seismicSensor") val seismicSensor: ElevatorSeismicSensor
 )
 
 data class ElevatorFireServiceElevator(
@@ -233,4 +233,9 @@ data class ElevatorAccessibilityElevator(
     @SerializedName("doorWidth") val doorWidth: ResultStatus,
     @SerializedName("audioInformation") val audioInformation: ResultStatus,
     @SerializedName("label") val label: ResultStatus
+)
+
+data class ElevatorSeismicSensor(
+    @SerializedName("availability") val availability: ResultStatus,
+    @SerializedName("function") val function: ResultStatus
 )
