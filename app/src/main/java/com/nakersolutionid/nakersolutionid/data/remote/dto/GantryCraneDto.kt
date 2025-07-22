@@ -17,7 +17,7 @@ data class CreateGantryCraneReportBody(
     @SerializedName("dynamicTesting") val dynamicTesting: GantryCraneReportDynamicTesting = GantryCraneReportDynamicTesting(),
     @SerializedName("staticTesting") val staticTesting: GantryCraneReportStaticTesting = GantryCraneReportStaticTesting(),
     @SerializedName("conclusion") val conclusion: String = "",
-    @SerializedName("recomendation") val recommendation: String = ""
+    @SerializedName("recomendation") val recommendation: String = "" // Note: JSON uses "recomendation"
 )
 
 data class CreateGantryCraneReportResponse(
@@ -51,8 +51,9 @@ data class GantryCraneReportData(
     @SerializedName("laporan") val laporan: GantryCraneReportDetail = GantryCraneReportDetail()
 )
 
+// UPDATED GantryCraneReportDetail to include 'id', 'subInspectionType', and 'documentType'
 data class GantryCraneReportDetail(
-    @SerializedName("id") val id: String = "", // Assuming an ID would be assigned by the backend for a fetched report
+    @SerializedName("id") val id: String = "",
     @SerializedName("examinationType") val examinationType: String = "",
     @SerializedName("inspectionType") val inspectionType: String = "",
     @SerializedName("createdAt") val createdAt: String = "",
@@ -65,7 +66,9 @@ data class GantryCraneReportDetail(
     @SerializedName("dynamicTesting") val dynamicTesting: GantryCraneReportDynamicTesting = GantryCraneReportDynamicTesting(),
     @SerializedName("staticTesting") val staticTesting: GantryCraneReportStaticTesting = GantryCraneReportStaticTesting(),
     @SerializedName("conclusion") val conclusion: String = "",
-    @SerializedName("recomendation") val recommendation: String = ""
+    @SerializedName("recomendation") val recommendation: String = "", // Note: JSON uses "recomendation"
+    @SerializedName("subInspectionType") val subInspectionType: String = "", // Added based on response JSON
+    @SerializedName("documentType") val documentType: String = "" // Added based on response JSON
 )
 
 // --- General Data DTO (from PAA - Gantry Crane.json) ---

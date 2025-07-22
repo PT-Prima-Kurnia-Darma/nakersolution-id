@@ -50,8 +50,9 @@ data class GondolaReportData(
     @SerializedName("laporan") val laporan: GondolaReportDetail = GondolaReportDetail()
 )
 
+// UPDATED GondolaReportDetail to include 'id', 'subInspectionType', and 'documentType'
 data class GondolaReportDetail(
-    @SerializedName("id") val id: String = "", // Assuming an ID would be assigned by the backend for a fetched report
+    @SerializedName("id") val id: String = "",
     @SerializedName("inspectionType") val inspectionType: String = "",
     @SerializedName("examinationType") val examinationType: String = "",
     @SerializedName("inspectionDate") val inspectionDate: String = "",
@@ -63,7 +64,9 @@ data class GondolaReportDetail(
     @SerializedName("nonDestructiveTesting") val nonDestructiveTesting: GondolaReportNonDestructiveTesting = GondolaReportNonDestructiveTesting(),
     @SerializedName("testing") val testing: GondolaReportTesting = GondolaReportTesting(),
     @SerializedName("conclusion") val conclusion: String = "",
-    @SerializedName("recommendation") val recommendation: String = ""
+    @SerializedName("recommendation") val recommendation: String = "",
+    @SerializedName("subInspectionType") val subInspectionType: String = "", // Added based on response JSON
+    @SerializedName("documentType") val documentType: String = "" // Added based on response JSON
 )
 
 // --- General Data DTO (from PAA - Gondola.json) ---

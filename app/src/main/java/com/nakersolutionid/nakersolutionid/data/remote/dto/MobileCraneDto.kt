@@ -48,8 +48,9 @@ data class MobileCraneReportData(
     @SerializedName("laporan") val laporan: MobileCraneReportDetail = MobileCraneReportDetail()
 )
 
+// UPDATED MobileCraneReportDetail to include 'id', 'subInspectionType', and 'documentType'
 data class MobileCraneReportDetail(
-    @SerializedName("id") val id: String = "", // Assuming an ID would be assigned by the backend for a fetched report
+    @SerializedName("id") val id: String = "",
     @SerializedName("inspectionType") val inspectionType: String = "",
     @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("extraId") val extraId: Int = 0,
@@ -59,7 +60,9 @@ data class MobileCraneReportDetail(
     @SerializedName("technicalData") val technicalData: MobileCraneReportTechnicalData = MobileCraneReportTechnicalData(),
     @SerializedName("inspectionAndTesting") val inspectionAndTesting: MobileCraneReportInspectionAndTesting = MobileCraneReportInspectionAndTesting(),
     @SerializedName("conclusion") val conclusion: String = "",
-    @SerializedName("recommendation") val recommendation: String = ""
+    @SerializedName("recommendation") val recommendation: String = "",
+    @SerializedName("subInspectionType") val subInspectionType: String = "", // Added based on response JSON
+    @SerializedName("documentType") val documentType: String = "" // Added based on response JSON
 )
 
 // --- General Data DTO (from PAA - Mobile Crane.json) ---

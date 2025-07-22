@@ -14,10 +14,30 @@ data class CreateElevatorReportBody(
     @SerializedName("conclusion") val conclusion: String = ""
 )
 
+data class CreateElevatorBapBody(
+    @SerializedName("laporanId") val laporanId: String = "",
+    @SerializedName("inspectionDate") val inspectionDate: String = "",
+    @SerializedName("examinationType") val examinationType: String = "",
+    @SerializedName("equipmentType") val equipmentType: String = "",
+    @SerializedName("extraId") val extraId: Long = 0,
+    @SerializedName("createdAt") val createdAt: String = "",
+    @SerializedName("inspectionType") val inspectionType: String = "",
+    @SerializedName("generalData") val generalData: ElevatorReportGeneralData = ElevatorReportGeneralData(),
+    @SerializedName("technicalData") val technicalData: ElevatorBapTechnicalData = ElevatorBapTechnicalData(),
+    @SerializedName("visualInspection") val visualInspection: ElevatorBapVisualInspection = ElevatorBapVisualInspection(),
+    @SerializedName("testing") val testing: ElevatorBapTesting = ElevatorBapTesting()
+)
+
 data class CreateElevatorReportResponse(
     @SerializedName("status") val status: String = "",
     @SerializedName("message") val message: String = "",
     @SerializedName("data") val data: ElevatorReportData = ElevatorReportData()
+)
+
+data class CreateElevatorBapResponse(
+    @SerializedName("status") val status: String = "",
+    @SerializedName("message") val message: String = "",
+    @SerializedName("data") val data: ElevatorBapDataWrapper = ElevatorBapDataWrapper()
 )
 
 data class DeleteElevatorReportResponse(
@@ -50,6 +70,58 @@ data class ElevatorReportGeneralData( // Renamed from ElevatorReportGeneralDataD
     @SerializedName("floorsServed") val floorsServed: String = "",
     @SerializedName("permitNumber") val permitNumber: String = "",
     @SerializedName("inspectionDate") val inspectionDate: String = ""
+)
+
+data class ElevatorBapTechnicalData(
+    @SerializedName("elevatorType") val elevatorType: String = "",
+    @SerializedName("manufacturerOrInstaller") val manufacturerOrInstaller: String = "",
+    @SerializedName("brandOrType") val brandOrType: String = "",
+    @SerializedName("countryAndYear") val countryAndYear: String = "",
+    @SerializedName("serialNumber") val serialNumber: String = "",
+    @SerializedName("capacity") val capacity: String = "",
+    @SerializedName("speed") val speed: String = "",
+    @SerializedName("floorsServed") val floorsServed: String = ""
+)
+
+data class ElevatorBapVisualInspection(
+    @SerializedName("isMachineRoomConditionAcceptable") val isMachineRoomConditionAcceptable: Boolean = false,
+    @SerializedName("isPanelGoodCondition") val isPanelGoodCondition: Boolean = false,
+    @SerializedName("isAparAvailableInPanelRoom") val isAparAvailableInPanelRoom: Boolean = false,
+    @SerializedName("lightingCondition") val lightingCondition: Boolean = false,
+    @SerializedName("isPitLadderAvailable") val isPitLadderAvailable: Boolean = false
+)
+
+data class ElevatorBapTesting(
+    @SerializedName("isNdtThermographPanelOk") val isNdtThermographPanelOk: Boolean = false,
+    @SerializedName("isArdFunctional") val isArdFunctional: Boolean = false,
+    @SerializedName("isGovernorFunctional") val isGovernorFunctional: Boolean = false,
+    @SerializedName("isSlingConditionOkByTester") val isSlingConditionOkByTester: Boolean = false,
+    @SerializedName("limitSwitchTest") val limitSwitchTest: Boolean = false,
+    @SerializedName("isDoorSwitchFunctional") val isDoorSwitchFunctional: Boolean = false,
+    @SerializedName("pitEmergencyStopStatus") val pitEmergencyStopStatus: Boolean = false,
+    @SerializedName("isIntercomFunctional") val isIntercomFunctional: Boolean = false,
+    @SerializedName("isFiremanSwitchFunctional") val isFiremanSwitchFunctional: Boolean = false
+)
+
+data class ElevatorBapDataWrapper(
+    @SerializedName("bap") val bap: ElevatorBapDetail = ElevatorBapDetail()
+)
+
+data class ElevatorBapDetail(
+    @SerializedName("id") val id: String = "",
+    @SerializedName("laporanId") val laporanId: String = "",
+    @SerializedName("inspectionDate") val inspectionDate: String = "",
+    @SerializedName("examinationType") val examinationType: String = "",
+    @SerializedName("equipmentType") val equipmentType: String = "",
+    @SerializedName("extraId") val extraId: Long = 0,
+    @SerializedName("createdAt") val createdAt: String = "",
+    @SerializedName("inspectionType") val inspectionType: String = "",
+    @SerializedName("generalData") val generalData: ElevatorReportGeneralData = ElevatorReportGeneralData(),
+    @SerializedName("technicalData") val technicalData: ElevatorBapTechnicalData = ElevatorBapTechnicalData(),
+    @SerializedName("visualInspection") val visualInspection: ElevatorBapVisualInspection = ElevatorBapVisualInspection(),
+    @SerializedName("testing") val testing: ElevatorBapTesting = ElevatorBapTesting(),
+    @SerializedName("subInspectionType") val subInspectionType: String = "",
+    @SerializedName("documentType") val documentType: String = ""
 )
 
 data class ElevatorReportTechnicalDocumentInspection( // Renamed from ElevatorReportTechnicalDocumentInspectionDto

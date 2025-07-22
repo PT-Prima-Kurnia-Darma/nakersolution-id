@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CreateEscalatorReportBody(
     @SerializedName("inspectionType") val inspectionType: String = "",
-    @SerializedName("examinationType") val examinationType: String = "", // From Escalator JSON generalData
+    @SerializedName("examinationType") val examinationType: String = "",
     @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("equipmentType") val equipmentType: String = "",
     @SerializedName("extraId") val extraId: Int = 0,
@@ -48,20 +48,24 @@ data class EscalatorReportData(
     @SerializedName("laporan") val laporan: EscalatorReportDetail = EscalatorReportDetail()
 )
 
+// UPDATED EscalatorReportDetail to include 'id', 'subInspectionType', and 'documentType'
 data class EscalatorReportDetail(
-    @SerializedName("id") val id: String = "", // Assuming an ID would be assigned by the backend for a fetched report
+    @SerializedName("id") val id: String = "",
     @SerializedName("inspectionType") val inspectionType: String = "",
+    @SerializedName("examinationType") val examinationType: String = "",
+    @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("equipmentType") val equipmentType: String = "",
     @SerializedName("extraId") val extraId: Int = 0,
-    @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("generalData") val generalData: EscalatorReportGeneralData = EscalatorReportGeneralData(),
     @SerializedName("technicalData") val technicalData: EscalatorReportTechnicalData = EscalatorReportTechnicalData(),
     @SerializedName("inspectionAndTesting") val inspectionAndTesting: EscalatorReportInspectionAndTesting = EscalatorReportInspectionAndTesting(),
     @SerializedName("testingEscalator") val testingEscalator: String = "",
-    @SerializedName("conclusion") val conclusion: String = ""
+    @SerializedName("conclusion") val conclusion: String = "",
+    @SerializedName("subInspectionType") val subInspectionType: String = "", // Added based on response JSON
+    @SerializedName("documentType") val documentType: String = "" // Added based on response JSON
 )
 
-// --- General and Technical Data DTOs (Strictly from Escalator JSON) ---
+// --- General and Technical Data DTOs (from original Escalator JSON) ---
 
 data class EscalatorReportGeneralData(
     @SerializedName("ownerName") val ownerName: String = "",
@@ -74,21 +78,21 @@ data class EscalatorReportGeneralData(
 )
 
 data class EscalatorReportTechnicalData(
-    @SerializedName("technicalDatamanufacturer") val manufacturer: String = "",
-    @SerializedName("technicalDatabrand") val brand: String = "",
-    @SerializedName("technicalDatacountryAndYear") val countryAndYear: String = "",
-    @SerializedName("technicalDataserialNumber") val serialNumber: String = "",
-    @SerializedName("technicalDatatransports") val transports: String = "",
-    @SerializedName("technicalDatacapacity") val capacity: String = "",
-    @SerializedName("technicalDataliftHeight") val liftHeight: String = "",
-    @SerializedName("technicalDataspeed") val speed: String = "",
-    @SerializedName("technicalDatadriveType") val driveType: String = "",
-    @SerializedName("technicalDatamotorCurrent") val motorCurrent: String = "",
-    @SerializedName("technicalDatamotorPower") val motorPower: String = "",
-    @SerializedName("technicalDatasafetyDevices") val safetyDevices: String = ""
+    @SerializedName("technicalDatamanufacturer") val technicalDatamanufacturer: String = "",
+    @SerializedName("technicalDatabrand") val technicalDatabrand: String = "",
+    @SerializedName("technicalDatacountryAndYear") val technicalDatacountryAndYear: String = "",
+    @SerializedName("technicalDataserialNumber") val technicalDataserialNumber: String = "",
+    @SerializedName("technicalDatatransports") val technicalDatatransports: String = "",
+    @SerializedName("technicalDatacapacity") val technicalDatacapacity: String = "",
+    @SerializedName("technicalDataliftHeight") val technicalDataliftHeight: String = "",
+    @SerializedName("technicalDataspeed") val technicalDataspeed: String = "",
+    @SerializedName("technicalDatadriveType") val technicalDatadriveType: String = "",
+    @SerializedName("technicalDatamotorCurrent") val technicalDatamotorCurrent: String = "",
+    @SerializedName("technicalDatamotorPower") val technicalDatamotorPower: String = "",
+    @SerializedName("technicalDatasafetyDevices") val technicalDatasafetyDevices: String = ""
 )
 
-// --- Inspection and Testing DTOs (Strictly from Escalator JSON) ---
+// --- Inspection and Testing DTOs (from original Escalator JSON) ---
 
 data class EscalatorReportInspectionAndTesting(
     @SerializedName("inspectionAndTestingframeAndMachineRoom") val frameAndMachineRoom: EscalatorReportFrameAndMachineRoom = EscalatorReportFrameAndMachineRoom(),
