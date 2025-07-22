@@ -113,7 +113,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Eskalator" -> SubInspectionType.Escalator
 
         "Forklift" -> SubInspectionType.Forklift
-        "Mobil Crane" -> SubInspectionType.Mobile_Crane
+        "Mobile Crane" -> SubInspectionType.Mobile_Crane
         "Overhead Crane" -> SubInspectionType.Overhead_Crane
         "Gantry Crane" -> SubInspectionType.Gantry_Crane
         "Gondola" -> SubInspectionType.Gondola
