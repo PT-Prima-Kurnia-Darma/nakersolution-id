@@ -2,8 +2,12 @@ package com.nakersolutionid.nakersolutionid.data.remote.network
 
 import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateElevatorReportBody
 import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateElevatorReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateEscalatorReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.dto.CreateEscalatorReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.dto.DeleteElevatorReportResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.DeleteEscalatorReportResponse
 import com.nakersolutionid.nakersolutionid.data.remote.dto.GetElevatorReportsResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.GetEscalatorReportsResponse
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
@@ -97,5 +101,87 @@ interface ApiServices {
         @Header("Authorization") token: String,
         @Path("id") id: String
     ) : Response<ResponseBody>
+    // endregion
+
+    // region Escalator
+    @POST("elevatorEskalator/elevator/laporan")
+    suspend fun createEscalatorReport(
+        @Header("Authorization") token: String,
+        @Body request: CreateEscalatorReportBody
+    ) : CreateEscalatorReportResponse
+
+    @GET("elevatorEskalator/elevator/laporan")
+    suspend fun getEscalatorReports(
+        @Header("Authorization") token: String
+    ) : GetEscalatorReportsResponse
+
+    @GET("elevatorEskalator/elevator/laporan/{id}")
+    suspend fun getEscalatorReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : CreateEscalatorReportResponse
+
+    @PUT("elevatorEskalator/elevator/laporan/{id}")
+    suspend fun updateEscalatorReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body request: CreateElevatorReportBody
+    ) : CreateEscalatorReportResponse
+
+    @DELETE("elevatorEskalator/elevator/laporan/{id}")
+    suspend fun deleteEscalatorReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : DeleteEscalatorReportResponse
+    @POST("elevatorEskalator/elevator/laporan/{id}/download")
+    @Streaming
+    suspend fun downloadEscalatorReport(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ) : Response<ResponseBody>
+    // endregion
+
+    // region Electrical
+
+    // endregion
+
+    // region Lightning
+
+    // endregion
+
+    // region Fire Protection
+
+    // endregion
+
+    // region Forklift
+
+    // endregion
+
+    // region Gantry Crane
+
+    // endregion
+
+    // region Gondola
+
+    // endregion
+
+    // region Mobile Crane
+
+    // endregion
+
+    // region Overhead Crane
+
+    // endregion
+
+    // region Machine
+
+    // endregion
+
+    // region Motor Diesel
+
+    // endregion
+
+    // region General
+
     // endregion
 }
