@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.report.ptp
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -226,6 +227,14 @@ class PTPViewModel(
     }
 
     fun startSync() {
-        syncManager.startSync()
+        if (_ptpUiState.value.loadedEquipmentType != null) {
+            Log.d("PTPViewModel", "Starting sync update")
+            syncManager.startSyncUpdate()
+            _ptpUiState.update { it.copy(loadedEquipmentType = null) }
+        } else {
+            Log.d("PTPViewModel", "Starting sync")
+            syncManager.startSync()
+            _ptpUiState.update { it.copy(loadedEquipmentType = null) }
+        }
     }
 }

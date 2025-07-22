@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.report.ipk
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -151,6 +152,14 @@ class IPKViewModel(
     }
 
     fun startSync() {
-        syncManager.startSync()
+        if (_ipkUiState.value.loadedEquipmentType != null) {
+            Log.d("IPKViewModel", "Starting sync update")
+            syncManager.startSyncUpdate()
+            _ipkUiState.update { it.copy(loadedEquipmentType = null) }
+        } else {
+            Log.d("IPKViewModel", "Starting sync")
+            syncManager.startSync()
+            _ipkUiState.update { it.copy(loadedEquipmentType = null) }
+        }
     }
 }
