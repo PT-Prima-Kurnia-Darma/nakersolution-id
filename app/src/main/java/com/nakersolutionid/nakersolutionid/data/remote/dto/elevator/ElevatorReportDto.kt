@@ -3,6 +3,19 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.elevator
 import com.google.gson.annotations.SerializedName
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
 
+data class ElevatorReportRequest(
+    @SerializedName("inspectionType") val inspectionType: String,
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("equipmentType") val equipmentType: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("generalData") val generalData: ElevatorGeneralData,
+    @SerializedName("technicalDocumentInspection") val technicalDocumentInspection: ElevatorTechnicalDocumentInspection,
+    @SerializedName("inspectionAndTesting") val inspectionAndTesting: ElevatorInspectionAndTesting,
+    @SerializedName("conclusion") val conclusion: String,
+    @SerializedName("recomendations") val recomendations: String,
+)
+
 // Data DTO for single Elevator Report response
 data class ElevatorSingleReportResponseData(
     @SerializedName("laporan") val laporan: ElevatorReportData

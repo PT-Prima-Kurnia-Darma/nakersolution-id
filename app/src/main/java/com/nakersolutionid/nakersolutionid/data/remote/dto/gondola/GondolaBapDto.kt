@@ -2,6 +2,19 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.gondola
 
 import com.google.gson.annotations.SerializedName
 
+data class GondolaBapRequest(
+    @SerializedName("laporanId") val laporanId: String,
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("inspectionType") val inspectionType: String,
+    @SerializedName("inspectionDate") val inspectionDate: String,
+    @SerializedName("equipmentType") val equipmentType: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("generalData") val generalData: GondolaBapGeneralData,
+    @SerializedName("technicalData") val technicalData: GondolaBapTechnicalData,
+    @SerializedName("inspectionResult") val inspectionResult: GondolaBapInspectionResult,
+)
+
 // Data DTO for single Gondola BAP response
 data class GondolaBapSingleReportResponseData(
     @SerializedName("bap") val bap: GondolaBapReportData

@@ -2,6 +2,22 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane
 
 import com.google.gson.annotations.SerializedName
 
+data class GantryCraneReportRequest(
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("inspectionType") val inspectionType: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("equipmentType") val equipmentType: String,
+    @SerializedName("generalData") val generalData: GantryCraneGeneralData,
+    @SerializedName("technicalData") val technicalData: GantryCraneTechnicalData,
+    @SerializedName("visualInspection") val visualInspection: GantryCraneVisualInspection,
+    @SerializedName("ndt") val ndt: GantryCraneNdt,
+    @SerializedName("dynamicTesting") val dynamicTesting: GantryCraneDynamicTesting,
+    @SerializedName("staticTesting") val staticTesting: GantryCraneStaticTesting,
+    @SerializedName("conclusion") val conclusion: String,
+    @SerializedName("recomendation") val recomendation: String,
+)
+
 // Data DTO for single Gantry Crane Report response
 data class GantryCraneSingleReportResponseData(
     @SerializedName("laporan") val laporan: GantryCraneReportData

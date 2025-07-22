@@ -3,9 +3,20 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.gondola
 import com.google.gson.annotations.SerializedName
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
 
-// Assuming CommonDtos.kt is in the same package or imported
-// import com.your_package_name.CommonDtos.ResultStatus
-
+data class GondolaReportRequest(
+    @SerializedName("inspectionType") val inspectionType: String,
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("inspectionDate") val inspectionDate: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("generalData") val generalData: GondolaGeneralData,
+    @SerializedName("technicalData") val technicalData: GondolaTechnicalData,
+    @SerializedName("visualInspection") val visualInspection: GondolaVisualInspection,
+    @SerializedName("nonDestructiveTesting") val nonDestructiveTesting: GondolaNonDestructiveTesting,
+    @SerializedName("testing") val testing: GondolaTesting,
+    @SerializedName("conclusion") val conclusion: String,
+    @SerializedName("recommendation") val recommendation: String,
+)
 // Data DTO for single Gondola Report response
 data class GondolaSingleReportResponseData(
     @SerializedName("laporan") val laporan: GondolaReportData

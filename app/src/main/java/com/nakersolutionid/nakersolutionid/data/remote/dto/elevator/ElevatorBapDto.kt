@@ -2,6 +2,20 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.elevator
 
 import com.google.gson.annotations.SerializedName
 
+data class ElevatorBapRequest(
+    @SerializedName("laporanId") val laporanId: String,
+    @SerializedName("inspectionDate") val inspectionDate: String,
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("equipmentType") val equipmentType: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("inspectionType") val inspectionType: String,
+    @SerializedName("generalData") val generalData: ElevatorBapGeneralData,
+    @SerializedName("technicalData") val technicalData: ElevatorBapTechnicalData,
+    @SerializedName("visualInspection") val visualInspection: ElevatorBapVisualInspection,
+    @SerializedName("testing") val testing: ElevatorBapTesting
+)
+
 // Data DTO for single BAP response
 data class ElevatorBapSingleReportResponseData(
     @SerializedName("bap") val bap: ElevatorBapReportData

@@ -2,6 +2,17 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.forklift
 
 import com.google.gson.annotations.SerializedName
 
+data class ForkliftBapRequest(
+    @SerializedName("laporanId") val laporanId: String,
+    @SerializedName("examinationType") val examinationType: String,
+    @SerializedName("inspectionDate") val inspectionDate: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("generalData") val generalData: ForkliftBapGeneralData,
+    @SerializedName("technicalData") val technicalData: ForkliftBapTechnicalData,
+    @SerializedName("inspectionResult") val inspectionResult: ForkliftBapInspectionResult,
+)
+
 // Data DTO for single Forklift BAP response
 data class ForkliftBapSingleReportResponseData(
     @SerializedName("bap") val bap: ForkliftBapReportData
