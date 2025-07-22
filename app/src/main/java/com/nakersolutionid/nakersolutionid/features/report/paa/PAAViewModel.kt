@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -782,6 +783,14 @@ class PAAViewModel(
     }
 
     fun startSync() {
-        syncManager.startSync()
+        if (_paaUiState.value.loadedEquipmentType != null) {
+            Log.d("PAAViewModel", "Starting sync update")
+            syncManager.startSyncUpdate()
+            _paaUiState.update { it.copy(loadedEquipmentType = null) }
+        } else {
+            Log.d("PAAViewModel", "Starting sync")
+            syncManager.startSync()
+            _paaUiState.update { it.copy(loadedEquipmentType = null) }
+        }
     }
 }

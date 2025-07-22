@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.report.ee
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -94,6 +95,7 @@ class EEViewModel(
     }
 
     fun onUpdateState(updater: (EEUiState) -> EEUiState) {
+
         _eeUiState.update(updater)
     }
 
@@ -147,6 +149,14 @@ class EEViewModel(
     }
 
     fun startSync() {
-        syncManager.startSync()
+        if (_eeUiState.value.loadedEquipmentType != null) {
+            Log.d("EEViewModel", "Starting sync update")
+            syncManager.startSyncUpdate()
+            _eeUiState.update { it.copy(loadedEquipmentType = null) }
+        } else {
+            Log.d("EEViewModel", "Starting sync")
+            syncManager.startSync()
+            _eeUiState.update { it.copy(loadedEquipmentType = null) }
+        }
     }
 }

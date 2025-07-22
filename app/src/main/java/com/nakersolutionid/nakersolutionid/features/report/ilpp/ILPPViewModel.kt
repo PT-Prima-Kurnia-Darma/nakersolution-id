@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.report.ilpp
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -251,6 +252,14 @@ class ILPPViewModel(
     }
 
     fun startSync() {
-        syncManager.startSync()
+        if (_ilppUiState.value.loadedEquipmentType != null) {
+            Log.d("ILPPViewModel", "Starting sync update")
+            syncManager.startSyncUpdate()
+            _ilppUiState.update { it.copy(loadedEquipmentType = null) }
+        } else {
+            Log.d("ILPPViewModel", "Starting sync")
+            syncManager.startSync()
+            _ilppUiState.update { it.copy(loadedEquipmentType = null) }
+        }
     }
 }

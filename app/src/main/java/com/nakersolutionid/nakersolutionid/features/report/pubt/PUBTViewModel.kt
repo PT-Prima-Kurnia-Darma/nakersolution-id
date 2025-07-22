@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.report.pubt
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -154,6 +155,14 @@ class PUBTViewModel(
     }
 
     fun startSync() {
-        syncManager.startSync()
+        if (_pubtUiState.value.loadedEquipmentType != null) {
+            Log.d("PUBTViewModel", "Starting sync update")
+            syncManager.startSyncUpdate()
+            _pubtUiState.update { it.copy(loadedEquipmentType = null) }
+        } else {
+            Log.d("PUBTViewModel", "Starting sync")
+            syncManager.startSync()
+            _pubtUiState.update { it.copy(loadedEquipmentType = null) }
+        }
     }
 }
