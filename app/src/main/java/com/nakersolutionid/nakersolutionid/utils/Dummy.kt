@@ -188,10 +188,8 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.Mobil
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneLoadTestType
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeBoomSection
-import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeDrumSection
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeHookSection
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeMeasurement
-import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdePulleySection
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNdeWireRopeSection
 import com.nakersolutionid.nakersolutionid.features.report.paa.mobilecrane.MobileCraneNonDestructiveExamination
@@ -497,8 +495,7 @@ object Dummy {
                 )
             ),
             conclusion = "Elevator in good working condition, minor recommendations for future maintenance.",
-            createdAt = "2025-07-16T10:00:00Z",
-            isLoading = false
+            createdAt = "2025-07-16T10:00:00Z"
         )
     }
 
