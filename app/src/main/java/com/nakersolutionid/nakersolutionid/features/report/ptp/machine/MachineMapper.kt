@@ -36,7 +36,7 @@ fun ProductionMachineUiState.toInspectionWithDetailsDomain(
     // 1. Map main and general data to InspectionDomain
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = report.extraId,
         documentType = documentType,
         inspectionType = inspectionType,
         subInspectionType = subInspectionType,
@@ -415,6 +415,7 @@ fun InspectionWithDetailsDomain.toMachineUiState(): ProductionMachineUiState {
     )
 
     val report = ProductionMachineInspectionReport(
+        extraId = inspection.extraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         generalData = generalData,

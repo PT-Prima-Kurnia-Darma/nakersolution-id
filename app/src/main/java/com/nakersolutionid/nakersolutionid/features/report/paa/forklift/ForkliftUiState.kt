@@ -15,6 +15,7 @@ data class ForkliftUiState(
 
 @Immutable
 data class ForkliftInspectionReport(
+    val extraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: ForkliftGeneralData = ForkliftGeneralData(),

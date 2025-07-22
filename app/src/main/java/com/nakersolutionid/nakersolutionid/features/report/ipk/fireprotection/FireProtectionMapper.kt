@@ -29,7 +29,7 @@ fun FireProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, rep
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = report.extraId,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.IPK,
         subInspectionType = SubInspectionType.Fire_Protection,
@@ -208,6 +208,7 @@ fun InspectionWithDetailsDomain.toFireProtectionUiState(): FireProtectionUiState
     return FireProtectionUiState(
         isLoading = false,
         inspectionReport = FireProtectionInspectionReport(
+            extraId = this.inspection.extraId,
             documentChecklist = checklist,
             companyData = companyData,
             buildingData = buildingData,

@@ -19,6 +19,7 @@ data class DieselMotorUiState(
 
 @Immutable
 data class DieselMotorInspectionReport(
+    val extraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: DieselMotorGeneralData = DieselMotorGeneralData(),

@@ -244,5 +244,6 @@ data class ElevatorUiState(
     val inspectionAndTesting: InspectionAndTestingUiState = InspectionAndTestingUiState(),
     val conclusion: String = "",
     val createdAt: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val extraId: String = ""
 )

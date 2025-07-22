@@ -18,6 +18,7 @@ data class MobileCraneUiState(
 
 @Immutable
 data class MobileCraneInspectionReport(
+    val extraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: MobileCraneGeneralData = MobileCraneGeneralData(),

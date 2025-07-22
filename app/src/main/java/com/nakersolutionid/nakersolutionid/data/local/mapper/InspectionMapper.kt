@@ -59,7 +59,8 @@ fun InspectionEntity.toDomain(): InspectionDomain {
         reportDate = this.reportDate,
         nextInspectionDate = this.nextInspectionDate,
         inspectorName = this.inspectorName,
-        status = this.status
+        status = this.status,
+        isSynced = this.isSynced
     )
 }
 
