@@ -18,6 +18,7 @@ data class GantryCraneUiState(
 
 @Immutable
 data class GantryCraneInspectionReport(
+    val extraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: GantryCraneGeneralData = GantryCraneGeneralData(),

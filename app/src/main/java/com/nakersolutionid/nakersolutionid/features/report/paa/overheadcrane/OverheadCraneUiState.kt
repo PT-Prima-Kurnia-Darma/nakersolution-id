@@ -18,6 +18,7 @@ data class OverheadCraneUiState(
 
 @Immutable
 data class OverheadCraneInspectionReport(
+    val extraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: OverheadCraneGeneralData = OverheadCraneGeneralData(),

@@ -37,7 +37,7 @@ fun ElectricalUiState.toInspectionWithDetailsDomain(currentTime: String, reportI
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = report.extraId,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.ILPP,
         subInspectionType = SubInspectionType.Electrical,
@@ -449,6 +449,7 @@ fun InspectionWithDetailsDomain.toElectricalUiState(): ElectricalUiState {
     return ElectricalUiState(
         isLoading = false,
         electricalInspectionReport = ElectricalInspectionReport(
+            extraId = this.inspection.extraId,
             generalData = generalData,
             technicalData = technicalData,
             initialDocumentVerification = initialDocs,

@@ -19,6 +19,7 @@ data class ProductionMachineUiState(
 
 @Immutable
 data class ProductionMachineInspectionReport(
+    val extraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: ProductionMachineGeneralData = ProductionMachineGeneralData(),

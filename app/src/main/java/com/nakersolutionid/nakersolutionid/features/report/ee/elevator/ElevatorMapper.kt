@@ -7,7 +7,6 @@ import com.nakersolutionid.nakersolutionid.domain.model.FindingType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionFindingDomain
-import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
 
@@ -45,7 +44,7 @@ fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId:
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = this.extraId,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.EE,
         subInspectionType = SubInspectionType.Elevator,
@@ -497,6 +496,7 @@ fun InspectionWithDetailsDomain.toElevatorUiState(): ElevatorUiState {
     )
 
     return ElevatorUiState(
+        extraId = this.inspection.extraId,
         typeInspection = this.inspection.examinationType,
         eskOrElevType = this.inspection.equipmentType,
         generalData = generalData,

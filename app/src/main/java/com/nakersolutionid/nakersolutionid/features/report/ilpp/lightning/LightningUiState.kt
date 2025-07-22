@@ -16,6 +16,7 @@ data class LightningProtectionUiState(
 
 @Immutable
 data class LightningProtectionInspectionReport(
+    val extraId: String = "",
     val serviceProviderData: LightningProtectionServiceProviderData = LightningProtectionServiceProviderData(),
     val clientData: LightningProtectionClientData = LightningProtectionClientData(),
     val technicalData: LightningProtectionTechnicalData = LightningProtectionTechnicalData(),

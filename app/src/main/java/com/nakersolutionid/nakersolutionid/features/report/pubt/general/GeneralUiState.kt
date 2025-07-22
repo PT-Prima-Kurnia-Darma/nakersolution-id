@@ -19,6 +19,7 @@ data class GeneralUiState(
 
 @Immutable
 data class GeneralInspectionReport(
+    val extraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: GeneralData = GeneralData(),

@@ -36,7 +36,7 @@ fun OverheadCraneUiState.toInspectionWithDetailsDomain(
     // 1. Map main and general data to InspectionDomain
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = report.extraId,
         documentType = documentType,
         inspectionType = inspectionType,
         subInspectionType = subInspectionType,
@@ -895,6 +895,7 @@ fun InspectionWithDetailsDomain.toOverheadCraneUiState(): OverheadCraneUiState {
     )
 
     val report = OverheadCraneInspectionReport(
+        extraId = inspection.extraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         generalData = generalData,
