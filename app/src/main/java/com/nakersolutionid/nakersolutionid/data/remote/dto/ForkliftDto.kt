@@ -49,19 +49,22 @@ data class ForkliftReportData(
     @SerializedName("laporan") val laporan: ForkliftReportDetail = ForkliftReportDetail()
 )
 
+// UPDATED ForkliftReportDetail to include 'id', 'subInspectionType', and 'documentType'
 data class ForkliftReportDetail(
-    @SerializedName("id") val id: String = "", // Assuming an ID would be assigned by the backend for a fetched report
+    @SerializedName("id") val id: String = "",
     @SerializedName("inspectionType") val inspectionType: String = "",
     @SerializedName("examinationType") val examinationType: String = "",
     @SerializedName("inspectionDate") val inspectionDate: String = "",
     @SerializedName("extraId") val extraId: Int = 0,
-    @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("generalData") val generalData: ForkliftReportGeneralData = ForkliftReportGeneralData(),
     @SerializedName("technicalData") val technicalData: ForkliftReportTechnicalData = ForkliftReportTechnicalData(),
     @SerializedName("inspectionAndTesting") val inspectionAndTesting: ForkliftReportInspectionAndTesting = ForkliftReportInspectionAndTesting(),
     @SerializedName("testingForklift") val testingForklift: ForkliftReportTestingForklift = ForkliftReportTestingForklift(),
     @SerializedName("conclusion") val conclusion: String = "",
-    @SerializedName("recommendation") val recommendation: String = ""
+    @SerializedName("recommendation") val recommendation: String = "",
+    @SerializedName("subInspectionType") val subInspectionType: String = "", // Added based on response JSON
+    @SerializedName("documentType") val documentType: String = "", // Added based on response JSON
+    @SerializedName("createdAt") val createdAt: String = "" // Added based on response JSON (appears here as well as root)
 )
 
 // --- General Data DTO (from PAA - Forklift.json) ---
@@ -97,9 +100,9 @@ data class ForkliftReportTechnicalData(
     @SerializedName("primeMoverBrandType") val primeMoverBrandType: String = "",
     @SerializedName("primeMoverSerialNumber") val primeMoverSerialNumber: String = "",
     @SerializedName("primeMoverYearOfManufacture") val primeMoverYearOfManufacture: String = "",
-    @SerializedName("primeMoverRevolution") val primeMoverRevolution: String = "", // Corrected to String as per JSON
-    @SerializedName("primeMoverPower") val primeMoverPower: String = "", // Corrected to String as per JSON
-    @SerializedName("primeMoverNumberOfCylinders") val primeMoverNumberOfCylinders: String = "", // Corrected to String as per JSON
+    @SerializedName("primeMoverRevolution") val primeMoverRevolution: String = "",
+    @SerializedName("primeMoverPower") val primeMoverPower: String = "",
+    @SerializedName("primeMoverNumberOfCylinders") val primeMoverNumberOfCylinders: String = "",
     @SerializedName("dimensionLength") val dimensionLength: String = "",
     @SerializedName("dimensionWidth") val dimensionWidth: String = "",
     @SerializedName("dimensionHeight") val dimensionHeight: String = "",
@@ -112,9 +115,9 @@ data class ForkliftReportTechnicalData(
     @SerializedName("steeringWheelType") val steeringWheelType: String = "",
     @SerializedName("travellingBrakeSize") val travellingBrakeSize: String = "",
     @SerializedName("travellingBrakeType") val travellingBrakeType: String = "",
-    @SerializedName("hydraulicPumpPressure") val hydraulicPumpPressure: String = "", // Corrected to String as per JSON
+    @SerializedName("hydraulicPumpPressure") val hydraulicPumpPressure: String = "",
     @SerializedName("hydraulicPumpType") val hydraulicPumpType: String = "",
-    @SerializedName("hydraulicPumpReliefValve") val hydraulicPumpReliefValve: String = "" // Corrected to String as per JSON
+    @SerializedName("hydraulicPumpReliefValve") val hydraulicPumpReliefValve: String = ""
 )
 
 // --- Inspection and Testing DTOs (from PAA - Forklift.json) ---
@@ -311,10 +314,10 @@ data class ForkliftReportTestingForklift(
 data class ForkliftReportLiftingChainInspection(
     @SerializedName("inspectedPart") val inspectedPart: String = "",
     @SerializedName("constructionType") val constructionType: String = "",
-    @SerializedName("standardPitch") val standardPitch: String = "", // Corrected to String as per JSON
-    @SerializedName("measuredPitch") val measuredPitch: String = "", // Corrected to String as per JSON
-    @SerializedName("standardPin") val standardPin: String = "",     // Corrected to String as per JSON
-    @SerializedName("measuredPin") val measuredPin: String = "",     // Corrected to String as per JSON
+    @SerializedName("standardPitch") val standardPitch: String = "",
+    @SerializedName("measuredPitch") val measuredPitch: String = "",
+    @SerializedName("standardPin") val standardPin: String = "",
+    @SerializedName("measuredPin") val measuredPin: String = "",
     @SerializedName("result") val result: String = ""
 )
 
@@ -332,9 +335,9 @@ data class ForkliftReportNdtResult(
 )
 
 data class ForkliftReportLoadTesting(
-    @SerializedName("liftingHeight") val liftingHeight: String = "", // Corrected to String as per JSON
+    @SerializedName("liftingHeight") val liftingHeight: String = "",
     @SerializedName("testLoad") val testLoad: String = "",
-    @SerializedName("speed") val speed: String = "", // Corrected to String as per JSON (was "18")
+    @SerializedName("speed") val speed: String = "",
     @SerializedName("movement") val movement: String = "",
     @SerializedName("remarks") val remarks: String = "",
     @SerializedName("result") val result: String = ""

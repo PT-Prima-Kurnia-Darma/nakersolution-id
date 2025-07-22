@@ -50,8 +50,9 @@ data class OverheadCraneReportData(
     @SerializedName("laporan") val laporan: OverheadCraneReportDetail = OverheadCraneReportDetail()
 )
 
+// UPDATED OverheadCraneReportDetail to include 'id', 'subInspectionType', and 'documentType'
 data class OverheadCraneReportDetail(
-    @SerializedName("id") val id: String = "", // Assuming an ID would be assigned by the backend for a fetched report
+    @SerializedName("id") val id: String = "",
     @SerializedName("examinationType") val examinationType: String = "",
     @SerializedName("inspectionType") val inspectionType: String = "",
     @SerializedName("inspectionDate") val inspectionDate: String = "",
@@ -63,7 +64,9 @@ data class OverheadCraneReportDetail(
     @SerializedName("nonDestructiveExamination") val nonDestructiveExamination: OverheadCraneReportNonDestructiveExamination = OverheadCraneReportNonDestructiveExamination(),
     @SerializedName("testing") val testing: OverheadCraneReportTesting = OverheadCraneReportTesting(),
     @SerializedName("conclusion") val conclusion: String = "",
-    @SerializedName("recommendations") val recommendations: String = ""
+    @SerializedName("recommendations") val recommendations: String = "",
+    @SerializedName("subInspectionType") val subInspectionType: String = "", // Added based on response JSON
+    @SerializedName("documentType") val documentType: String = "" // Added based on response JSON
 )
 
 // --- General Data DTO (from PAA - Overhead Crane.json) ---
