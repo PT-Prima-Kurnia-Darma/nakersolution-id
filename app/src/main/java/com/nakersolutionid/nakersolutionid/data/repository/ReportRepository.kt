@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
+import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
@@ -9,6 +10,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toCreateElevatorReportBody
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
@@ -23,8 +25,8 @@ class ReportRepository(
     private val remoteDataSource: RemoteDataSource,
     private val userPreference: UserPreference
 ) : IReportRepository {
-    override suspend fun saveReport(request: InspectionWithDetailsDomain) {
-        val inspectionWithDetails = request.toEntity("", request.inspection.id)
+    override suspend fun saveReport(request: InspectionWithDetailsDomain, extraId: String?) {
+        val inspectionWithDetails = request.toEntity(extraId ?: "", request.inspection.id)
         localDataSource.insertInspection(
             inspectionEntity = inspectionWithDetails.inspectionEntity,
             checkItems = inspectionWithDetails.checkItems,
@@ -49,7 +51,9 @@ class ReportRepository(
         val token = userPreference.getUserToken() ?: ""
         val listReports = localDataSource.getPendingSyncReports()
         var fail = 0
-
+        if (listReports.isEmpty()) {
+            return false
+        }
         listReports.map {
             it.toDomain()
         }.forEach { report ->
@@ -71,6 +75,48 @@ class ReportRepository(
 
                 is ApiResponse.Success -> {
                     try {
+                        val extraId = apiResponse.data.data.laporan.id
+                        saveReport(apiResponse.data.data.laporan.toInspectionWithDetailsDomain(), extraId)
+                        localDataSource.updateSyncStatus(report.inspection.id, true)
+                    } catch (_: Exception) {
+                        fail++
+                    }
+                }
+            }
+        }
+        return fail == 0
+    }
+
+    override suspend fun syncUpdateInspection(): Boolean {
+        val token = userPreference.getUserToken() ?: ""
+        val listReports = localDataSource.getPendingSyncReports()
+        var fail = 0
+        if (listReports.isEmpty()) {
+            return false
+        }
+        listReports.map {
+            it.toDomain()
+        }.forEach { report ->
+            val apiResponse = when (report.inspection.documentType) {
+                DocumentType.LAPORAN -> when (report.inspection.subInspectionType) {
+                    SubInspectionType.Elevator -> remoteDataSource.updateElevatorReport(token, report.inspection.extraId, report.toCreateElevatorReportBody()).first()
+                    else -> ApiResponse.Empty
+                }
+
+                DocumentType.BAP -> ApiResponse.Empty
+                else -> ApiResponse.Empty
+            }
+
+            when (apiResponse) {
+                is ApiResponse.Empty -> null
+                is ApiResponse.Error -> {
+                    fail++
+                }
+
+                is ApiResponse.Success -> {
+                    try {
+                        val extraId = apiResponse.data.data.laporan.id
+                        saveReport(apiResponse.data.data.laporan.toInspectionWithDetailsDomain(), extraId)
                         localDataSource.updateSyncStatus(report.inspection.id, true)
                     } catch (_: Exception) {
                         fail++
