@@ -21,7 +21,8 @@ fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: S
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.EE,
         subInspectionType = SubInspectionType.Electrical, // Mengganti dari ElectricalInstallation
@@ -141,6 +142,8 @@ fun InspectionWithDetailsDomain.toElectricalInstallationBAPReport(): ElectricalI
     )
 
     return ElectricalInstallationBAPReport(
+        extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         examinationType = this.inspection.examinationType,
         equipmentType = this.inspection.equipmentType,
         inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),

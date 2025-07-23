@@ -9,6 +9,8 @@ data class GantryCraneBAPUiState(
 
 @Immutable
 data class GantryCraneBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val inspectionDate: String = "",

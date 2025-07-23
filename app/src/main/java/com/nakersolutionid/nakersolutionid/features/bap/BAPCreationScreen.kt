@@ -84,8 +84,10 @@ fun BAPCreationScreen(
                 onBackClick = onBackClick,
                 onSaveClick = {
                     if (documentType == DocumentType.BAP) {
+                        // Edit
                         viewModel.onSaveClick(subInspectionType, id)
                     } else {
+                        // Create
                         viewModel.onSaveClick(subInspectionType)
                     }
                 },

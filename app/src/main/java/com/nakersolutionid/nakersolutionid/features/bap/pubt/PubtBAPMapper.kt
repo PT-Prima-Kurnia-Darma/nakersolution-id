@@ -27,7 +27,8 @@ fun PubtBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?):
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.PUBT,
         subInspectionType = SubInspectionType.General_PUBT,
@@ -159,6 +160,8 @@ fun InspectionWithDetailsDomain.toPubtBAPReport(): PubtBAPReport {
     )
 
     return PubtBAPReport(
+        extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         examinationType = this.inspection.examinationType,
         inspectionType = this.inspection.equipmentType,
         inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),

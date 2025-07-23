@@ -25,7 +25,8 @@ fun FireProtectionBAPReport.toInspectionWithDetailsDomain(currentTime: String, i
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.IPK,
         subInspectionType = SubInspectionType.Fire_Protection,
@@ -173,6 +174,8 @@ fun InspectionWithDetailsDomain.toFireProtectionBAPReport(): FireProtectionBAPRe
     )
 
     return FireProtectionBAPReport(
+        extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         equipmentType = this.inspection.equipmentType,
         examinationType = this.inspection.examinationType,
         inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),

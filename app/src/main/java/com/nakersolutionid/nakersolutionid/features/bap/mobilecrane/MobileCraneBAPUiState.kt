@@ -9,6 +9,8 @@ data class MobileCraneBAPUiState(
 
 @Immutable
 data class MobileCraneBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val inspectionDate: String = "",

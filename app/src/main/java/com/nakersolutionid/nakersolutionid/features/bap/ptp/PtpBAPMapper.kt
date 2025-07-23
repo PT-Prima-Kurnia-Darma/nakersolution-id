@@ -27,7 +27,8 @@ fun PtpBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): 
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.PTP,
         subInspectionType = if (this.equipmentType.contains("diesel", ignoreCase = true)) SubInspectionType.Motor_Diesel else SubInspectionType.Machine,
@@ -326,6 +327,8 @@ fun InspectionWithDetailsDomain.toPtpBAPCreationReport(): PtpBAPUiState {
 
     // --- Assemble the final report ---
     val report = PtpBAPReport(
+        extraId = inspection.extraId,
+        moreExtraId = inspection.moreExtraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         inspectionDate = Utils.formatDateToIndonesian(inspection.createdAt ?: inspection.reportDate ?: ""),

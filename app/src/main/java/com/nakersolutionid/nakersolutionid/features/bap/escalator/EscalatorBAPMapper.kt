@@ -32,7 +32,8 @@ fun EscalatorBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Lo
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "", // Assuming no extraId for BAP, adjust if needed
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.EE,
         subInspectionType = SubInspectionType.Escalator,
@@ -145,6 +146,8 @@ fun InspectionWithDetailsDomain.toEscalatorBAPReport(): EscalatorBAPReport {
     )
 
     return EscalatorBAPReport(
+        extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         equipmentType = this.inspection.equipmentType,
         examinationType = this.inspection.examinationType,
         inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),
