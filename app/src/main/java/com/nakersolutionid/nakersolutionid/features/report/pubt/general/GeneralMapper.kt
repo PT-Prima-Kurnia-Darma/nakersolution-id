@@ -34,6 +34,7 @@ fun GeneralUiState.toInspectionWithDetailsDomain(
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = report.extraId,
+        moreExtraId = report.moreExtraId,
         documentType = documentType,
         inspectionType = inspectionType,
         subInspectionType = subInspectionType,
@@ -628,6 +629,7 @@ fun InspectionWithDetailsDomain.toGeneralUiState(): GeneralUiState {
 
     val report = GeneralInspectionReport(
         extraId = inspection.extraId,
+        moreExtraId = inspection.moreExtraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         generalData = generalData,

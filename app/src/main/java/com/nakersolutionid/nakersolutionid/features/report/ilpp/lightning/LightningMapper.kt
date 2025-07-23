@@ -34,6 +34,7 @@ fun LightningProtectionUiState.toInspectionWithDetailsDomain(currentTime: String
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = report.extraId,
+        moreExtraId = report.moreExtraId,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.ILPP,
         subInspectionType = SubInspectionType.Lightning_Conductor,
@@ -274,6 +275,7 @@ fun InspectionWithDetailsDomain.toLightningProtectionUiState(): LightningProtect
         isLoading = false,
         inspectionReport = LightningProtectionInspectionReport(
             extraId = this.inspection.extraId,
+            moreExtraId = this.inspection.moreExtraId,
             serviceProviderData = serviceProvider,
             clientData = client,
             technicalData = technical,

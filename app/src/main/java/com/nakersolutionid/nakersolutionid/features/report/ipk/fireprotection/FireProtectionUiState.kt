@@ -20,6 +20,7 @@ data class FireProtectionUiState(
 @Immutable
 data class FireProtectionInspectionReport(
     val extraId: String = "",
+    val moreExtraId: String = "",
     val documentChecklist: FireProtectionDocumentChecklist = FireProtectionDocumentChecklist(),
     val companyData: FireProtectionCompanyData = FireProtectionCompanyData(),
     val buildingData: FireProtectionBuildingData = FireProtectionBuildingData(),

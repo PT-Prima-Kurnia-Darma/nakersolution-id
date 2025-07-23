@@ -7,6 +7,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 data class History(
     val id: Long,
     val extraId: String,
+    val moreExtraId: String,
     val documentType: DocumentType,
     val inspectionType: InspectionType,
     val subInspectionType: SubInspectionType,

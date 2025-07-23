@@ -37,6 +37,7 @@ fun OverheadCraneUiState.toInspectionWithDetailsDomain(
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = report.extraId,
+        moreExtraId = report.moreExtraId,
         documentType = documentType,
         inspectionType = inspectionType,
         subInspectionType = subInspectionType,
@@ -896,6 +897,7 @@ fun InspectionWithDetailsDomain.toOverheadCraneUiState(): OverheadCraneUiState {
 
     val report = OverheadCraneInspectionReport(
         extraId = inspection.extraId,
+        moreExtraId = inspection.moreExtraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         generalData = generalData,

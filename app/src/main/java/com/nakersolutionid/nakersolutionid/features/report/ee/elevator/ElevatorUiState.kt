@@ -246,5 +246,6 @@ data class ElevatorUiState(
     val recommendation: String = "",
     val createdAt: String = "",
     val isLoading: Boolean = false,
-    val extraId: String = ""
+    val extraId: String = "",
+    val moreExtraId: String = ""
 )

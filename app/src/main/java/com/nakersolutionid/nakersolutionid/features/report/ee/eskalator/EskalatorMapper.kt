@@ -51,6 +51,7 @@ fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = uiData.extraId,
+        moreExtraId = uiData.moreExtraId,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.EE,
         subInspectionType = SubInspectionType.Escalator,
@@ -391,6 +392,7 @@ fun InspectionWithDetailsDomain.toEskalatorUiState(): EskalatorUiState {
 
     val generalData = EskalatorGeneralData(
         extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         equipmentType = this.inspection.equipmentType,
         examinationType = this.inspection.examinationType,
         conclusion = this.findings.find { it.type == FindingType.RECOMMENDATION }?.description ?: "",

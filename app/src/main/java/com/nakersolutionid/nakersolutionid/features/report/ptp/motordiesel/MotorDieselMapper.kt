@@ -38,6 +38,7 @@ fun DieselMotorUiState.toInspectionWithDetailsDomain(
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = report.extraId,
+        moreExtraId = report.moreExtraId,
         documentType = documentType,
         inspectionType = inspectionType,
         subInspectionType = subInspectionType,
@@ -604,6 +605,7 @@ fun InspectionWithDetailsDomain.toDieselMotorUiState(): DieselMotorUiState {
 
     val report = DieselMotorInspectionReport(
         extraId = inspection.extraId,
+        moreExtraId = inspection.moreExtraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         generalData = generalData,
