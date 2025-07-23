@@ -94,10 +94,11 @@ fun InspectionWithDetailsDomain.toElevatorBapRequest(): ElevatorBapRequest {
 }
 
 fun ElevatorBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    val inspectionId = this.extraId
+    val inspectionId = this.extraId // BAP ID from local to cloud
     val inspectionDomain = InspectionDomain(
-        id = inspectionId,
-        extraId = this.id,
+        id = inspectionId, // BAP ID from local
+        extraId = this.laporanId, // REPORT ID from local and cloud
+        moreExtraId = this.id, // BAP ID from cloud
         documentType = this.documentType.toDocumentType() ?: DocumentType.BAP,
         inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
         subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Elevator,
@@ -109,7 +110,7 @@ fun ElevatorBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         addressUsageLocation = this.generalData.addressUsageLocation,
         driveType = this.technicalData.elevatorType,
         serialNumber = this.technicalData.serialNumber,
-        permitNumber = this.laporanId,
+        permitNumber = null,
         capacity = this.technicalData.capacity,
         speed = this.technicalData.speed,
         floorServed = this.technicalData.floorsServed,
@@ -463,6 +464,7 @@ fun ElevatorReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDom
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = this.id,
+        moreExtraId = "", // report response does not include moreExtraId
         documentType = this.documentType.toDocumentType() ?: DocumentType.LAPORAN,
         inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
         subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Elevator,
