@@ -76,7 +76,7 @@ fun InspectionType.toDisplayString(): String {
 fun DocumentType.toDisplayString(): String {
     return when (this) {
         DocumentType.LAPORAN -> "Laporan"
-        DocumentType.BAP -> "Berita Acara"
+        DocumentType.BAP -> "Berita Acara dan Pemeriksaan Pengujian"
         DocumentType.SURAT_KETERANGAN_SEMENTARA -> "Surat Keterangan Sementara"
         DocumentType.SERTIFIKAT_SEMENTARA -> "Sertifikat Sementara"
     }
@@ -86,7 +86,7 @@ fun String.toDocumentType(): DocumentType? {
     // Membandingkan langsung dengan string display yang tepat, peka huruf besar/kecil
     return when (this) {
         "Laporan" -> DocumentType.LAPORAN
-        "Berita Acara" -> DocumentType.BAP
+        "Berita Acara dan Pemeriksaan Pengujian" -> DocumentType.BAP
         "Surat Keterangan Sementara" -> DocumentType.SURAT_KETERANGAN_SEMENTARA
         "Sertifikat Sementara" -> DocumentType.SERTIFIKAT_SEMENTARA
         else -> null

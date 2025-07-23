@@ -1,6 +1,8 @@
 package com.nakersolutionid.nakersolutionid.data.remote.network
 
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.BaseApiResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
@@ -11,6 +13,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.response.logout.LogoutRes
 import com.nakersolutionid.nakersolutionid.data.remote.response.register.RegisterResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.updateuser.UpdateUserResponse
 import com.nakersolutionid.nakersolutionid.data.remote.response.validatetoken.ValidateTokenResponse
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -58,32 +61,32 @@ interface ApiServices {
 
     // region Generic Endpoint
     @POST("{path}")
-    suspend fun <Req, Res> createReport(
+    suspend fun createReport(
         @Header("Authorization") token: String,
         @Path("path", encoded = true) path: String,
-        @Body payload: Req
-    ): Response<BaseApiResponse<Res>>
+        @Body payload: RequestBody
+    ): Response<ResponseBody>
 
     @GET("{path}")
-    suspend fun <T> getAllReport(
+    suspend fun getAllReport(
         @Header("Authorization") token: String,
         @Path("path", encoded = true) path: String
-    ): Response<BaseApiResponse<T>>
+    ): Response<ResponseBody>
 
     @GET("{path}/{extraId}")
-    suspend fun <T> getReportById(
+    suspend fun getReportById(
         @Header("Authorization") token: String,
         @Path("path", encoded = true) path: String,
         @Path("extraId") extraId: String
-    ): Response<BaseApiResponse<T>>
+    ): Response<ResponseBody>
 
     @PUT("{path}/{extraId}")
-    suspend fun <Req, Res> updateReport(
+    suspend fun updateReport(
         @Header("Authorization") token: String,
         @Path("path", encoded = true) path: String,
         @Path("extraId") extraId: String,
-        @Body payload: Req
-    ): Response<BaseApiResponse<Res>>
+        @Body payload: RequestBody
+    ): Response<ResponseBody>
 
     @DELETE("{path}/{extraId}")
     suspend fun deleteReport(

@@ -48,6 +48,7 @@ fun BAPCreationScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: BAPCreationViewModel = koinViewModel(),
+    editMode: Boolean = false,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -55,6 +56,7 @@ fun BAPCreationScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(id) {
+        viewModel.onUpdateState { it.copy(editMode = editMode) }
         viewModel.getInspectionDetail(id)
     }
 
@@ -239,7 +241,11 @@ fun BAPCreationScreen(
 private fun BAPCreationScreenPreview() {
     KoinApplicationPreview(application = { modules(previewModule) }) {
         NakersolutionidTheme {
-            BAPCreationScreen(id = 0, subInspectionType = SubInspectionType.Elevator, DocumentType.LAPORAN, onBackClick = {})
+            BAPCreationScreen(
+                id = 0,
+                subInspectionType = SubInspectionType.Elevator,
+                DocumentType.LAPORAN,
+                onBackClick = {})
         }
     }
 }

@@ -131,7 +131,7 @@ val viewModelModule = module {
     viewModel { SettingsViewModel(get(), get()) }
     viewModel { HistoryViewModel(get(), get()) }
     viewModel { BAPViewModel(get()) }
-    viewModel { BAPCreationViewModel(get()) }
+    viewModel { BAPCreationViewModel(get(), get()) }
     viewModel { EEViewModel(get(), get()) }
     viewModel { PAAViewModel(get(), get()) }
     viewModel { ILPPViewModel(get(), get()) }

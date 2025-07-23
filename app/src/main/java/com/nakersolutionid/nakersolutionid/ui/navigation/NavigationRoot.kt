@@ -43,7 +43,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object Home : NavKey
 @Serializable data object Report : NavKey
 @Serializable data object BAP : NavKey
-@Serializable data class BAPCreation(val id: Long, val subInspectionType: SubInspectionType, val documentType: DocumentType) : NavKey
+@Serializable data class BAPCreation(val id: Long, val subInspectionType: SubInspectionType, val documentType: DocumentType, val editMode: Boolean = true) : NavKey
 @Serializable data object History : NavKey
 @Serializable data object Settings : NavKey
 
@@ -187,10 +187,16 @@ fun NavigationRoot(
             entry<BAP> {
                 BAPScreen(
                     onBackClick = { backStack.removeLastOrNull() },
-                    onItemClick = { id, subInspectionType, documentType -> backStack.add(BAPCreation(id, subInspectionType, documentType)) })
+                    onItemClick = { id, subInspectionType, documentType -> backStack.add(BAPCreation(id, subInspectionType, documentType, false)) })
             }
             entry<BAPCreation> { key ->
-                BAPCreationScreen(key.id, key.subInspectionType, key.documentType, onBackClick = { backStack.removeLastOrNull() })
+                BAPCreationScreen(
+                    key.id,
+                    key.subInspectionType,
+                    key.documentType,
+                    onBackClick = { backStack.removeLastOrNull() },
+                    editMode = key.editMode
+                )
             }
         },
         transitionSpec = {
