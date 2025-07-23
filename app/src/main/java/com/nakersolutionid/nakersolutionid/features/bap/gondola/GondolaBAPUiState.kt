@@ -9,6 +9,8 @@ data class GondolaBAPUiState(
 
 @Immutable
 data class GondolaBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val inspectionDate: String = "",

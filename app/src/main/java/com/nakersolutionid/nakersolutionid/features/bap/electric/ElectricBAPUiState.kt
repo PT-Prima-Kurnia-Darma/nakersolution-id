@@ -9,6 +9,8 @@ data class ElectricalInstallationBAPUiState(
 
 @Immutable
 data class ElectricalInstallationBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val examinationType: String = "",
     val equipmentType: String = "",
     val inspectionDate: String = "",

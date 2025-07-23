@@ -9,6 +9,8 @@ data class OverheadCraneBAPUiState(
 
 @Immutable
 data class OverheadCraneBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val examinationType: String = "",
     val subInspectionType: String = "",
     val inspectionDate: String = "",

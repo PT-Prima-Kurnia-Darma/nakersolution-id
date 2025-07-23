@@ -9,6 +9,8 @@ data class FireProtectionBAPUiState(
 
 @Immutable
 data class FireProtectionBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val inspectionDate: String = "",

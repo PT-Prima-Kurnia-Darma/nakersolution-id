@@ -9,6 +9,8 @@ data class PubtBAPUiState(
 
 @Immutable
 data class PubtBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val examinationType: String = "",
     val inspectionType: String = "",
     val inspectionDate: String = "",

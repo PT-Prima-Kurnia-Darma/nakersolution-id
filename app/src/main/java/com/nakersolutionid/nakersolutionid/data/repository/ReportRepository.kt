@@ -34,8 +34,8 @@ class ReportRepository(
     private val remoteDataSource: RemoteDataSource,
     private val userPreference: UserPreference
 ) : IReportRepository {
-    override suspend fun saveReport(request: InspectionWithDetailsDomain, extraId: String?) {
-        val inspectionWithDetails = request.toEntity(extraId ?: "", request.inspection.id)
+    override suspend fun saveReport(request: InspectionWithDetailsDomain) {
+        val inspectionWithDetails = request.toEntity()
         localDataSource.insertInspection(
             inspectionEntity = inspectionWithDetails.inspectionEntity,
             checkItems = inspectionWithDetails.checkItems,
@@ -117,7 +117,7 @@ class ReportRepository(
                 else -> ApiResponse.Empty
             }
 
-            when (apiResponse) {
+            /*when (apiResponse) {
                 is ApiResponse.Empty -> null
                 is ApiResponse.Error -> {
                     fail++
@@ -131,11 +131,11 @@ class ReportRepository(
                             val a = when (data) {
                                 // Laporan
                                 is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
-//                                is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
+                                // is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
 
                                 // Bap
                                 is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
-//                                is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
+                                // is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
                                 else -> null
                             }
                             Log.d("ReportRepository", "saveReport: ${a?.inspection?.documentType?.toDisplayString()}")
@@ -148,7 +148,7 @@ class ReportRepository(
                         fail++
                     }
                 }
-            }
+            }*/
         }
         return fail == 0
     }
@@ -217,7 +217,7 @@ class ReportRepository(
                 else -> ApiResponse.Empty
             }
 
-            when (apiResponse) {
+            /*when (apiResponse) {
                 is ApiResponse.Empty -> null
                 is ApiResponse.Error -> {
                     fail++
@@ -230,11 +230,11 @@ class ReportRepository(
                             val a = when (data) {
                                 // Laporan
                                 is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
-//                                is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
+                                // is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
 
                                 // Bap
                                 is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
-//                                is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
+                                // is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
                                 else -> null
                             }
                             val dummyDomain = InspectionDomain(0, "", DocumentType.LAPORAN, InspectionType.EE, SubInspectionType.Gantry_Crane, "", "")
@@ -246,7 +246,7 @@ class ReportRepository(
                         fail++
                     }
                 }
-            }
+            }*/
         }
         return fail == 0
     }

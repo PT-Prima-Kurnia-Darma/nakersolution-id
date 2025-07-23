@@ -9,6 +9,8 @@ data class LightningBAPUiState(
 
 @Immutable
 data class LightningBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val inspectionDate: String = "",

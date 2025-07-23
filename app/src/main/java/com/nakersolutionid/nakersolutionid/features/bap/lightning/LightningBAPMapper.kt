@@ -26,7 +26,8 @@ fun LightningBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Lo
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.ILPP,
         subInspectionType = SubInspectionType.Lightning_Conductor,
@@ -137,6 +138,8 @@ fun InspectionWithDetailsDomain.toLightningBAPReport(): LightningBAPReport {
     )
 
     return LightningBAPReport(
+        extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         equipmentType = this.inspection.equipmentType,
         examinationType = this.inspection.examinationType,
         inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),

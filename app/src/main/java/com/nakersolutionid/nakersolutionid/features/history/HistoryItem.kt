@@ -173,6 +173,7 @@ private fun HistoryItemPreview() {
     val sampleHistory = History(
         id = 1L,
         extraId = "ext-001",
+        moreExtraId = "Wakawe",
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.EE,
         subInspectionType = SubInspectionType.Elevator,

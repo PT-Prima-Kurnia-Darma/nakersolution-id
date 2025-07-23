@@ -107,11 +107,16 @@ class BAPCreationViewModel(
     private val _overheadCraneBAPUiState = MutableStateFlow(OverheadCraneBAPUiState())
     val overheadCraneBAPUiState: StateFlow<OverheadCraneBAPUiState> = _overheadCraneBAPUiState.asStateFlow()
 
+    private var currentReportId: Long? = null
+    private var cloudReportId: String? = null
+
     fun getInspectionDetail(id: Long) {
         viewModelScope.launch {
             onUpdateState { it.copy(isLoading = true) }
             val inspection = reportUseCase.getInspection(id)
             if (inspection != null) {
+                currentReportId = id
+                cloudReportId = inspection.inspection.extraId
                 // Load appropriate data based on subInspectionType
                 when (inspection.inspection.subInspectionType) {
                     SubInspectionType.Elevator -> {

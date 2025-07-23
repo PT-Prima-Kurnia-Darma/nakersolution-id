@@ -27,7 +27,8 @@ fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = "",
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.PAA,
         subInspectionType = SubInspectionType.Overhead_Crane,
@@ -147,6 +148,8 @@ fun InspectionWithDetailsDomain.toOverheadCraneBAPReport(): OverheadCraneBAPRepo
     )
 
     return OverheadCraneBAPReport(
+        extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         examinationType = this.inspection.examinationType,
         subInspectionType = this.inspection.equipmentType,
         inspectionDate = Utils.formatDateToIndonesian(this.inspection.createdAt ?: this.inspection.reportDate ?: ""),

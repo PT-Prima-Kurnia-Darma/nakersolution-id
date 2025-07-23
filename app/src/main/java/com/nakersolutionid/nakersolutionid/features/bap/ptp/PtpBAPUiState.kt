@@ -9,6 +9,8 @@ data class PtpBAPUiState(
 
 @Immutable
 data class PtpBAPReport(
+    val extraId: String = "",
+    val moreExtraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val inspectionDate: String = "",
