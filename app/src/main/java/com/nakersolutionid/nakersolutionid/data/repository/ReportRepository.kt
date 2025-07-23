@@ -1,14 +1,11 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
-import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
-import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapRequest
@@ -17,11 +14,9 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorRepo
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorReportRequest
-import com.nakersolutionid.nakersolutionid.data.remote.mapper.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiPaths
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.History
-import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
 import kotlinx.coroutines.flow.Flow
