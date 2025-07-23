@@ -103,11 +103,12 @@ fun ElevatorScreen(
             }
         }
         item {
-            ExpandableSection(title = "Kesimpulan") {
-                ConclusionSection(
+            ExpandableSection(title = "Kesimpulan dan Rekomendasi") {
+                ConclusionAndRecommendationSection(
                     conclusion = uiState.conclusion,
-                    onDataChange = { newConclusion ->
-                        onDataChange(uiState.copy(conclusion = newConclusion))
+                    recommendation = uiState.recommendation,
+                    onDataChange = { newConclusion, newRecommendation ->
+                        onDataChange(uiState.copy(conclusion = newConclusion, recommendation = newRecommendation))
                     }
                 )
             }
@@ -646,12 +647,25 @@ fun ElectricalInstallationSection(
 }
 
 @Composable
-fun ConclusionSection(conclusion: String, onDataChange: (String) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+fun ConclusionAndRecommendationSection(
+    conclusion: String,
+    recommendation: String,
+    onDataChange: (String, String) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedTextField(
             value = conclusion,
-            onValueChange = onDataChange,
+            onValueChange = { onDataChange(it, recommendation) },
             label = { Text("Kesimpulan Hasil Pemeriksaan & Pengujian") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp),
+            shape = MaterialTheme.shapes.medium,
+        )
+        OutlinedTextField(
+            value = recommendation,
+            onValueChange = { onDataChange(conclusion, it) },
+            label = { Text("Rekomendasi") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp),
