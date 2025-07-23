@@ -17,6 +17,7 @@ data class ElectricalUiState(
 @Immutable
 data class ElectricalInspectionReport(
     val extraId: String = "",
+    val moreExtraId: String = "",
     val generalData: ElectricalGeneralData = ElectricalGeneralData(),
     val technicalData: ElectricalTechnicalData = ElectricalTechnicalData(),
     val initialDocumentVerification: ElectricalInitialDocumentVerification = ElectricalInitialDocumentVerification(),

@@ -13,6 +13,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 data class InspectionDomain(
     val id: Long,
     val extraId: String,
+    val moreExtraId: String,
     val documentType: DocumentType,
     val inspectionType: InspectionType,
     val subInspectionType: SubInspectionType,

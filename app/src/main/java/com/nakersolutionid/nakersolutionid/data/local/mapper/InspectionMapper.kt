@@ -39,6 +39,7 @@ fun InspectionEntity.toDomain(): InspectionDomain {
     return InspectionDomain(
         id = this.id,
         extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = this.documentType,
         inspectionType = this.inspectionType,
         subInspectionType = this.subInspectionType,
@@ -74,6 +75,7 @@ fun InspectionEntity.toHistory(): History {
     return History(
         id = this.id,
         extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = this.documentType,
         inspectionType = this.inspectionType,
         subInspectionType = this.subInspectionType,
@@ -148,8 +150,8 @@ fun InspectionTestResult.toDomain(): InspectionTestResultDomain {
  * @param extraId ID dari backend yang perlu disimpan.
  * @param inspectionId ID dari inspeksi yang sudah ada (jika update), default 0 untuk data baru.
  */
-fun InspectionWithDetailsDomain.toEntity(extraId: String, inspectionId: Long = 0): InspectionWithDetails {
-    val entityInspection = this.inspection.toEntity(extraId, inspectionId)
+fun InspectionWithDetailsDomain.toEntity(): InspectionWithDetails {
+    val entityInspection = this.inspection.toEntity()
     // Gunakan ID dari entity utama (bisa 0 untuk data baru, atau id yang sudah ada)
     val currentInspectionId = entityInspection.id
 
@@ -164,10 +166,11 @@ fun InspectionWithDetailsDomain.toEntity(extraId: String, inspectionId: Long = 0
 /**
  * Mengubah [InspectionDomain] menjadi [InspectionEntity].
  */
-fun InspectionDomain.toEntity(extraId: String, id: Long): InspectionEntity {
+fun InspectionDomain.toEntity(): InspectionEntity {
     return InspectionEntity(
-        id = id, // 0 untuk data baru, akan di-generate otomatis oleh Room
-        extraId = extraId,
+        id = this.id, // 0 untuk data baru, akan di-generate otomatis oleh Room
+        extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = this.documentType,
         inspectionType = this.inspectionType,
         subInspectionType = this.subInspectionType,

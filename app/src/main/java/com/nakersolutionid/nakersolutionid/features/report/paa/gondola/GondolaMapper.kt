@@ -37,6 +37,7 @@ fun GondolaUiState.toInspectionWithDetailsDomain(
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = report.extraId,
+        moreExtraId = report.moreExtraId,
         documentType = documentType,
         inspectionType = inspectionType,
         subInspectionType = subInspectionType,
@@ -534,6 +535,7 @@ fun InspectionWithDetailsDomain.toGondolaUiState(): GondolaUiState {
     // 7. Assemble the final report
     val report = GondolaInspectionReport(
         extraId = inspection.extraId,
+        moreExtraId = inspection.moreExtraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         generalData = generalData,

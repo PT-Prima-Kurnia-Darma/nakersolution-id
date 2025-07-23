@@ -40,6 +40,7 @@ fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, reportId:
     val inspection = InspectionDomain(
         id = inspectionId,
         extraId = report.extraId,
+        moreExtraId = report.moreExtraId,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.PAA,
         subInspectionType = SubInspectionType.Forklift,
@@ -212,6 +213,7 @@ fun InspectionWithDetailsDomain.toForkliftUiState(): ForkliftUiState {
     return ForkliftUiState(
         forkliftInspectionReport = ForkliftInspectionReport(
             extraId = this.inspection.extraId,
+            moreExtraId = this.inspection.moreExtraId,
             equipmentType = this.inspection.equipmentType, examinationType = this.inspection.examinationType, generalData = generalData, technicalData = technicalData, visualInspection = visualInspection,
             nonDestructiveExamination = ForkliftNde(ForkliftNdeChainInspection(ndeChains), ForkliftNdeFork(findTest("Jenis NDT"), ndeForks)),
             testing = ForkliftTesting(engineOnInspection = engineOnInspection, loadTest = ForkliftLoadTest(loadTests)),

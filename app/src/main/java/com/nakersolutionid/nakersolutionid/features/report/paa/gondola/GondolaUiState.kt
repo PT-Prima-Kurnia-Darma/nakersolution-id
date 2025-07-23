@@ -19,6 +19,7 @@ data class GondolaUiState(
 @Immutable
 data class GondolaInspectionReport(
     val extraId: String = "",
+    val moreExtraId: String = "",
     val equipmentType: String = "",
     val examinationType: String = "",
     val generalData: GondolaGeneralData = GondolaGeneralData(),

@@ -37,6 +37,7 @@ fun MobileCraneUiState.toInspectionWithDetailsDomain(
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = report.extraId,
+        moreExtraId = report.moreExtraId,
         documentType = documentType,
         inspectionType = inspectionType,
         subInspectionType = subInspectionType,
@@ -1203,6 +1204,7 @@ fun InspectionWithDetailsDomain.toMobileCraneUiState(): MobileCraneUiState {
     // 7. Assemble the final report
     val report = MobileCraneInspectionReport(
         extraId = inspection.extraId,
+        moreExtraId = inspection.moreExtraId,
         equipmentType = inspection.equipmentType,
         examinationType = inspection.examinationType,
         generalData = generalData,

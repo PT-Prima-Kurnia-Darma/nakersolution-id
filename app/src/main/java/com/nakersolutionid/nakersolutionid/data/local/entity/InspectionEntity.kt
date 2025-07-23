@@ -28,6 +28,9 @@ data class InspectionEntity(
     @ColumnInfo(name= "extra_id")
     val extraId: String, // Taken from backend
 
+    @ColumnInfo(name= "more_extra_id")
+    val moreExtraId: String, // Taken from backend
+
     /**
      * e.g., "Laporan, BAP, Surat Keterangan Sementara, Sertifikat Sementara"
      */

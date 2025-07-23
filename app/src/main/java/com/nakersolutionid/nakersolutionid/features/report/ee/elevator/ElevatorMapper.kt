@@ -45,6 +45,7 @@ fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId:
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = this.extraId,
+        moreExtraId = this.moreExtraId,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.EE,
         subInspectionType = SubInspectionType.Elevator,
@@ -515,6 +516,7 @@ fun InspectionWithDetailsDomain.toElevatorUiState(): ElevatorUiState {
 
     return ElevatorUiState(
         extraId = this.inspection.extraId,
+        moreExtraId = this.inspection.moreExtraId,
         typeInspection = this.inspection.examinationType,
         eskOrElevType = this.inspection.equipmentType,
         generalData = generalData,
