@@ -38,7 +38,7 @@ data class OverheadCraneBapReportData(
 data class OverheadCraneBapReportHeader(
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
-    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("equipmentType") val equipmentType: String

@@ -6,7 +6,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
 data class EscalatorReportRequest(
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("equipmentType") val equipmentType: String,
-    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("generalData") val generalData: EscalatorGeneralData,
     @SerializedName("technicalData") val technicalData: EscalatorTechnicalData,
@@ -30,7 +30,7 @@ data class EscalatorReportData(
     @SerializedName("id") val id: String, // From response JSON
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("equipmentType") val equipmentType: String,
-    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("generalData") val generalData: EscalatorGeneralData,
     @SerializedName("technicalData") val technicalData: EscalatorTechnicalData,

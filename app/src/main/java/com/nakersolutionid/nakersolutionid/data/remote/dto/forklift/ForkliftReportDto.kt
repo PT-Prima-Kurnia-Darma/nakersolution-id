@@ -7,7 +7,7 @@ data class ForkliftReportRequest(
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
-    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("generalData") val generalData: ForkliftGeneralData,
     @SerializedName("technicalData") val technicalData: ForkliftTechnicalData,
@@ -34,7 +34,7 @@ data class ForkliftReportData(
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("createdAt") val createdAt: String, // From response JSON
-    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("generalData") val generalData: ForkliftGeneralData,
     @SerializedName("technicalData") val technicalData: ForkliftTechnicalData,
     @SerializedName("inspectionAndTesting") val inspectionAndTesting: ForkliftInspectionAndTesting,
