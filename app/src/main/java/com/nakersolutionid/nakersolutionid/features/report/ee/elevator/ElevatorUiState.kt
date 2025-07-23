@@ -243,6 +243,7 @@ data class ElevatorUiState(
     val technicalDocumentInspection: TechnicalDocumentInspectionUiState = TechnicalDocumentInspectionUiState(),
     val inspectionAndTesting: InspectionAndTestingUiState = InspectionAndTestingUiState(),
     val conclusion: String = "",
+    val recommendation: String = "",
     val createdAt: String = "",
     val isLoading: Boolean = false,
     val extraId: String = ""

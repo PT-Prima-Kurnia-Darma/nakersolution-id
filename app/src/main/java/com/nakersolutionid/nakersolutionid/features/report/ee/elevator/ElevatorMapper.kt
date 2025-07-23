@@ -75,16 +75,27 @@ fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId:
     checkItems.addAll(mapTechnicalDocsToDomain(this.technicalDocumentInspection, inspectionId))
     checkItems.addAll(mapInspectionAndTestingToDomain(this.inspectionAndTesting, inspectionId))
 
-    val findings = if (this.conclusion.isNotBlank()) {
-        listOf(InspectionFindingDomain(inspectionId = inspectionId, description = this.conclusion, type = FindingType.RECOMMENDATION))
-    } else {
-        emptyList()
+    // --- LOGIKA BARU DITAMBAHKAN DI SINI ---
+    val findings = mutableListOf<InspectionFindingDomain>()
+    // 1. Tambahkan "conclusion" sebagai FindingType.RECOMMENDATION
+    if (this.conclusion.isNotBlank()) {
+        findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = this.conclusion, type = FindingType.RECOMMENDATION))
     }
+    // 2. Tambahkan "recommendation" sebagai FindingType.FINDING
+    if (this.recommendation.isNotBlank()) {
+        // Pisahkan setiap baris rekomendasi menjadi objek terpisah
+        this.recommendation.split("\n").forEach { desc ->
+            if (desc.isNotBlank()) {
+                findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = desc, type = FindingType.FINDING))
+            }
+        }
+    }
+    // --- AKHIR LOGIKA BARU ---
 
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
         checkItems = checkItems,
-        findings = findings,
+        findings = findings, // Gunakan list findings yang sudah lengkap
         testResults = emptyList() // ElevatorUiState tidak memiliki test results
     )
 }
@@ -495,6 +506,13 @@ fun InspectionWithDetailsDomain.toElevatorUiState(): ElevatorUiState {
         )
     )
 
+    // --- LOGIKA BARU DITAMBAHKAN DI SINI ---
+    // 1. Ambil semua temuan (findings) yang bertipe FINDING
+    val recommendationsText = this.findings
+        .filter { it.type == FindingType.FINDING }
+        .joinToString("\n") { it.description }
+    // --- AKHIR LOGIKA BARU ---
+
     return ElevatorUiState(
         extraId = this.inspection.extraId,
         typeInspection = this.inspection.examinationType,
@@ -503,6 +521,7 @@ fun InspectionWithDetailsDomain.toElevatorUiState(): ElevatorUiState {
         technicalDocumentInspection = technicalDocs,
         inspectionAndTesting = inspectionAndTesting,
         conclusion = this.inspection.status ?: "",
+        recommendation = recommendationsText, // Isi kolom recommendation yang baru
         createdAt = this.inspection.createdAt ?: ""
     )
 }
