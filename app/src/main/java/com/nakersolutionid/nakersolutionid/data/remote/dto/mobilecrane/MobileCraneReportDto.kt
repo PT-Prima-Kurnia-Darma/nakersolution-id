@@ -6,7 +6,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
 data class MobileCraneReportRequest(
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("createdAt") val createdAt: String,
-    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("equipmentType") val equipmentType: String,
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("generalData") val generalData: MobileCraneGeneralData,
@@ -31,7 +31,7 @@ data class MobileCraneReportData(
     @SerializedName("id") val id: String, // From response JSON
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("createdAt") val createdAt: String,
-    @SerializedName("extraId") val extraId: Int,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("equipmentType") val equipmentType: String,
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("generalData") val generalData: MobileCraneGeneralData,
