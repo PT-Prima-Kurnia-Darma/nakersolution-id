@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.bap
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -55,13 +56,17 @@ import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.toPubtBAPReport
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
+import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
+class BAPCreationViewModel(
+    private val reportUseCase: ReportUseCase,
+    private val syncManager: SyncManager
+) : ViewModel() {
     private val _uiState = MutableStateFlow(BAPCreationUiState())
     val uiState: StateFlow<BAPCreationUiState> = _uiState.asStateFlow()
 
@@ -231,6 +236,7 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
         try {
             reportUseCase.saveReport(inspection)
             _uiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+            startSync()
         } catch(_: SQLiteConstraintException) {
             _uiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         } catch (_: Exception) {
@@ -289,5 +295,15 @@ class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel
 
     fun onUpdateState(updater: (BAPCreationUiState) -> BAPCreationUiState) {
         _uiState.update(updater)
+    }
+
+    fun startSync() {
+        if (_uiState.value.editMode) {
+            syncManager.startSyncUpdate()
+            onUpdateState { it.copy(editMode = false) }
+        } else {
+            syncManager.startSync()
+            onUpdateState { it.copy(editMode = false) }
+        }
     }
 }

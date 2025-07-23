@@ -3,6 +3,10 @@ package com.nakersolutionid.nakersolutionid.data.remote.mapper
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toSubInspectionType
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.*
 import com.nakersolutionid.nakersolutionid.domain.model.*
@@ -23,6 +27,223 @@ private object ElevatorCategory {
     const val FIRE_SERVICE = "$ELECTRICAL - Lift Kebakaran"
     const val ACCESSIBILITY = "$ELECTRICAL - Lift Aksesibilitas"
     const val SEISMIC = "$ELECTRICAL - Sensor Gempa"
+}
+
+private object BAPCategory {
+    const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
+    const val TESTING = "PENGUJIAN"
+}
+
+fun InspectionWithDetailsDomain.toElevatorBapRequest(): ElevatorBapRequest {
+    val checkItems = this.checkItems
+    fun findBoolItem(category: String, itemName: String): Boolean {
+        return checkItems.find { it.category == category && it.itemName == itemName }?.status ?: false
+    }
+
+    val generalData = ElevatorBapGeneralData(
+        ownerName = this.inspection.ownerName ?: "",
+        ownerAddress = this.inspection.ownerAddress ?: "",
+        nameUsageLocation = this.inspection.usageLocation ?: "",
+        addressUsageLocation = this.inspection.addressUsageLocation ?: ""
+    )
+
+    val technicalData = ElevatorBapTechnicalData(
+        elevatorType = this.inspection.driveType ?: "",
+        manufacturerOrInstaller = this.inspection.manufacturer?.name ?: "",
+        brandOrType = this.inspection.manufacturer?.brandOrType ?: "",
+        countryAndYear = this.inspection.manufacturer?.year ?: "",
+        serialNumber = this.inspection.serialNumber ?: "",
+        capacity = this.inspection.capacity ?: "",
+        speed = this.inspection.speed ?: "",
+        floorsServed = this.inspection.floorServed ?: ""
+    )
+
+    val visualInspection = ElevatorBapVisualInspection(
+        isMachineRoomConditionAcceptable = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Kondisi Ruang Mesin Memenuhi Syarat"),
+        isPanelGoodCondition = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Kondisi Panel Baik"),
+        isAparAvailableInPanelRoom = findBoolItem(BAPCategory.VISUAL_INSPECTION, "APAR Tersedia di Ruang Panel"),
+        lightingCondition = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Kondisi Penerangan Baik"),
+        isPitLadderAvailable = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Tangga 'Pit' Tersedia")
+    )
+
+    val testing = ElevatorBapTesting(
+        isNdtThermographPanelOk = findBoolItem(BAPCategory.TESTING, "NDT Thermograph Panel OK"),
+        isArdFunctional = findBoolItem(BAPCategory.TESTING, "ARD Berfungsi"),
+        isGovernorFunctional = findBoolItem(BAPCategory.TESTING, "Governor Berfungsi"),
+        isSlingConditionOkByTester = findBoolItem(BAPCategory.TESTING, "Kondisi Sling OK (oleh Tester)"),
+        limitSwitchTest = findBoolItem(BAPCategory.TESTING, "Tes Limit Switch OK"),
+        isDoorSwitchFunctional = findBoolItem(BAPCategory.TESTING, "Saklar Pintu Berfungsi"),
+        pitEmergencyStopStatus = findBoolItem(BAPCategory.TESTING, "Status Stop Darurat 'Pit' OK"),
+        isIntercomFunctional = findBoolItem(BAPCategory.TESTING, "Interkom Berfungsi"),
+        isFiremanSwitchFunctional = findBoolItem(BAPCategory.TESTING, "Saklar Pemadam Kebakaran Berfungsi")
+    )
+
+    return ElevatorBapRequest(
+        laporanId = this.inspection.extraId,
+        inspectionDate = this.inspection.reportDate ?: "",
+        examinationType = this.inspection.examinationType,
+        equipmentType = this.inspection.equipmentType,
+        extraId = this.inspection.id,
+        createdAt = this.inspection.createdAt ?: "",
+        inspectionType = this.inspection.inspectionType.toDisplayString(),
+        generalData = generalData,
+        technicalData = technicalData,
+        visualInspection = visualInspection,
+        testing = testing
+    )
+}
+
+fun ElevatorBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
+    val inspectionId = this.extraId
+    val inspectionDomain = InspectionDomain(
+        id = inspectionId,
+        extraId = this.id,
+        documentType = this.documentType.toDocumentType() ?: DocumentType.BAP,
+        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
+        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Elevator,
+        equipmentType = this.equipmentType,
+        examinationType = this.examinationType,
+        ownerName = this.generalData.ownerName,
+        ownerAddress = this.generalData.ownerAddress,
+        usageLocation = this.generalData.nameUsageLocation,
+        addressUsageLocation = this.generalData.addressUsageLocation,
+        driveType = this.technicalData.elevatorType,
+        serialNumber = this.technicalData.serialNumber,
+        permitNumber = this.laporanId,
+        capacity = this.technicalData.capacity,
+        speed = this.technicalData.speed,
+        floorServed = this.technicalData.floorsServed,
+        manufacturer = ManufacturerDomain(
+            name = this.technicalData.manufacturerOrInstaller,
+            brandOrType = this.technicalData.brandOrType,
+            year = this.technicalData.countryAndYear
+        ),
+        createdAt = this.createdAt,
+        reportDate = this.inspectionDate,
+        status = null, // BAP does not have a final conclusion/status field
+        isSynced = true
+    )
+
+    val checkItems = mutableListOf<InspectionCheckItemDomain>()
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.VISUAL_INSPECTION,
+            itemName = "Kondisi Ruang Mesin Memenuhi Syarat",
+            status = this.visualInspection.isMachineRoomConditionAcceptable
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.VISUAL_INSPECTION,
+            itemName = "Kondisi Panel Baik",
+            status = this.visualInspection.isPanelGoodCondition
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.VISUAL_INSPECTION,
+            itemName = "APAR Tersedia di Ruang Panel",
+            status = this.visualInspection.isAparAvailableInPanelRoom
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.VISUAL_INSPECTION,
+            itemName = "Kondisi Penerangan Baik",
+            status = this.visualInspection.lightingCondition
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.VISUAL_INSPECTION,
+            itemName = "Tangga 'Pit' Tersedia",
+            status = this.visualInspection.isPitLadderAvailable
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "NDT Thermograph Panel OK",
+            status = this.testing.isNdtThermographPanelOk
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "ARD Berfungsi",
+            status = this.testing.isArdFunctional
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "Governor Berfungsi",
+            status = this.testing.isGovernorFunctional
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "Kondisi Sling OK (oleh Tester)",
+            status = this.testing.isSlingConditionOkByTester
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "Tes Limit Switch OK",
+            status = this.testing.limitSwitchTest
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "Saklar Pintu Berfungsi",
+            status = this.testing.isDoorSwitchFunctional
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "Status Stop Darurat 'Pit' OK",
+            status = this.testing.pitEmergencyStopStatus
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "Interkom Berfungsi",
+            status = this.testing.isIntercomFunctional
+        )
+    )
+    checkItems.add(
+        InspectionCheckItemDomain(
+            inspectionId = inspectionId,
+            category = BAPCategory.TESTING,
+            itemName = "Saklar Pemadam Kebakaran Berfungsi",
+            status = this.testing.isFiremanSwitchFunctional
+        )
+    )
+
+    return InspectionWithDetailsDomain(
+        inspection = inspectionDomain,
+        checkItems = checkItems,
+        findings = emptyList(), // BAP UI state does not include findings
+        testResults = emptyList() // BAP UI state does not include test results
+    )
 }
 
 fun InspectionWithDetailsDomain.toElevatorReportRequest(): ElevatorReportRequest {
@@ -222,13 +443,12 @@ fun InspectionWithDetailsDomain.toElevatorReportRequest(): ElevatorReportRequest
     val conclusion = findings.firstOrNull { it.type == FindingType.RECOMMENDATION }?.description ?: ""
     val recommendations = findings.filter { it.type == FindingType.FINDING }.joinToString("\n") { it.description }
 
-
     return ElevatorReportRequest(
-        inspectionType = inspection.inspectionType.name,
+        inspectionType = inspection.inspectionType.toDisplayString(),
         examinationType = inspection.examinationType,
         createdAt = inspection.createdAt ?: "",
         equipmentType = inspection.equipmentType,
-        extraId = inspection.extraId.toIntOrNull() ?: 0,
+        extraId = inspection.id,
         generalData = generalData,
         technicalDocumentInspection = technicalDocumentInspection,
         inspectionAndTesting = inspectionAndTesting,
@@ -238,14 +458,14 @@ fun InspectionWithDetailsDomain.toElevatorReportRequest(): ElevatorReportRequest
 }
 
 fun ElevatorReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    val inspectionId = this.id.toLongOrNull() ?: 0L
+    val inspectionId = this.extraId
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = this.extraId.toString(),
-        documentType = DocumentType.valueOf(this.documentType),
-        inspectionType = InspectionType.valueOf(this.inspectionType),
-        subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
+        extraId = this.id,
+        documentType = this.documentType.toDocumentType() ?: DocumentType.LAPORAN,
+        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
+        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Elevator,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.ownerName,

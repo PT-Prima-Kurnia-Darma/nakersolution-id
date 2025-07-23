@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.data.remote
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.BaseApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ErrorResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
@@ -21,12 +22,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
+import java.lang.reflect.Type
 import java.net.SocketTimeoutException
 
-class RemoteDataSource(private val apiServices: ApiServices) {
+class RemoteDataSource(val apiServices: ApiServices) {
     // region Auth
     fun register(name: String, username: String, password: String): Flow<ApiResponse<RegisterResponse>> {
         return flow {
@@ -209,18 +213,30 @@ class RemoteDataSource(private val apiServices: ApiServices) {
     // endregion
 
     // region Generic Endpoint
-    fun <Req, Res> createReport(
+    inline fun <reified Req : Any, reified Res : Any> createReport(
         token: String,
         path: String,
         payload: Req
     ): Flow<ApiResponse<BaseApiResponse<Res>>> {
         return flow {
             val result: ApiResponse<BaseApiResponse<Res>> = try {
-                val response = apiServices.createReport<Req, Res>("Bearer $token", path, payload)
+                val requestJson = Gson().toJson(payload)
+                val requestBody = requestJson.toRequestBody("application/json".toMediaTypeOrNull())
+
+                val response: Response<ResponseBody> =
+                    apiServices.createReport(token, path, requestBody)
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        ApiResponse.Success(it)
-                    } ?: ApiResponse.Error("Response body is null")
+                    val responseBody: ResponseBody? = response.body()
+                    if (responseBody != null) {
+                        val jsonString = responseBody.string()
+
+                        val type: Type = object : TypeToken<BaseApiResponse<Res>>() {}.type
+                        val baseApiResponse: BaseApiResponse<Res> = Gson().fromJson(jsonString, type)
+
+                        ApiResponse.Success(baseApiResponse)
+                    } else {
+                        ApiResponse.Error("Response body is null")
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val parsedError = Gson().fromJson(errorBody, ErrorResponse::class.java)
@@ -236,7 +252,7 @@ class RemoteDataSource(private val apiServices: ApiServices) {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun <T> getAllReport(
+    /*fun <T> getAllReport(
         token: String,
         path: String
     ): Flow<ApiResponse<BaseApiResponse<T>>> {
@@ -260,9 +276,9 @@ class RemoteDataSource(private val apiServices: ApiServices) {
             }
             emit(result)
         }.flowOn(Dispatchers.IO)
-    }
+    }*/
 
-    fun <T> getReportById(
+    /*fun <T> getReportById(
         token: String,
         path: String,
         extraId: String
@@ -287,9 +303,9 @@ class RemoteDataSource(private val apiServices: ApiServices) {
             }
             emit(result)
         }.flowOn(Dispatchers.IO)
-    }
+    }*/
 
-    fun <Req, Res> updateReport(
+    inline fun <reified Req : Any, reified Res : Any> updateReport(
         token: String,
         path: String,
         extraId: String,
@@ -297,12 +313,23 @@ class RemoteDataSource(private val apiServices: ApiServices) {
     ): Flow<ApiResponse<BaseApiResponse<Res>>> {
         return flow {
             val result: ApiResponse<BaseApiResponse<Res>> = try {
-                val response =
-                    apiServices.updateReport<Req, Res>("Bearer $token", path, extraId, payload)
+                val requestJson = Gson().toJson(payload)
+                val requestBody = requestJson.toRequestBody("application/json".toMediaTypeOrNull())
+
+                val response: Response<ResponseBody> =
+                    apiServices.updateReport(token, path, extraId, requestBody)
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        ApiResponse.Success(it)
-                    } ?: ApiResponse.Error("Response body is null")
+                    val responseBody: ResponseBody? = response.body()
+                    if (responseBody != null) {
+                        val jsonString = responseBody.string()
+
+                        val type: Type = object : TypeToken<BaseApiResponse<Res>>() {}.type
+                        val baseApiResponse: BaseApiResponse<Res> = Gson().fromJson(jsonString, type)
+
+                        ApiResponse.Success(baseApiResponse)
+                    } else {
+                        ApiResponse.Error("Response body is null")
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val parsedError = Gson().fromJson(errorBody, ErrorResponse::class.java)

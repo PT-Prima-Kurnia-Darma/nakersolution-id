@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class BaseApiResponse<T>(
     @SerializedName("status") val status: String,
     @SerializedName("message") val message: String,
-    @SerializedName("data") val data: T? // Kept nullable because delete_report.json does not contain a 'data' field
+    @SerializedName("data") val data: T // Kept nullable because delete_report.json does not contain a 'data' field
 )
 
 // Generic DTO for result and status pairs
