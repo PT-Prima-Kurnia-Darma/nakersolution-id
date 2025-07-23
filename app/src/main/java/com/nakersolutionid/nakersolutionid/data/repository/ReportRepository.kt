@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
+import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
@@ -14,6 +15,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorRepo
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiPaths
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.History
@@ -112,38 +114,41 @@ class ReportRepository(
                 else -> ApiResponse.Empty
             }
 
-            /*when (apiResponse) {
+            when (apiResponse) {
                 is ApiResponse.Empty -> null
                 is ApiResponse.Error -> {
                     fail++
                 }
                 is ApiResponse.Success -> {
                     try {
-                        val ddd = apiResponse.data.data
                         apiResponse.data.data.let { data ->
-                            var id: Long = 0
-                            var extraId: String = ""
-                            val a = when (data) {
+                            var id = 0L
+                            var extraId  = ""
+                            var moreExtraId = ""
+                            val responseType = when (data) {
                                 // Laporan
-                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
+                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id;data.laporan.toInspectionWithDetailsDomain() }
                                 // is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
 
                                 // Bap
-                                is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
+                                is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.laporanId; moreExtraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
                                 // is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
                                 else -> null
                             }
-                            Log.d("ReportRepository", "saveReport: ${a?.inspection?.documentType?.toDisplayString()}")
-                            val dummyDomain = InspectionDomain(0, "", DocumentType.LAPORAN, InspectionType.EE, SubInspectionType.Gantry_Crane, "", "")
-                            val dummyInspectionWithDetails = InspectionWithDetailsDomain(dummyDomain, emptyList(), emptyList(), emptyList())
-                            saveReport(a ?: dummyInspectionWithDetails, extraId)
-                            localDataSource.updateSyncStatus(id, true)
+
+                            responseType?.let {
+                                val modified = it.copy(inspection = it.inspection.copy(id = id, extraId = extraId, moreExtraId = moreExtraId))
+                                saveReport(modified)
+                            }
+
+                            /*saveReport(a ?: dummyInspectionWithDetails, extraId)
+                            localDataSource.updateSyncStatus(id, true)*/
                         }
                     } catch (_: Exception) {
                         fail++
                     }
                 }
-            }*/
+            }
         }
         return fail == 0
     }
