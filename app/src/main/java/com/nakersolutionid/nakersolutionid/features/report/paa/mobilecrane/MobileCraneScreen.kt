@@ -179,7 +179,7 @@ fun MobileCraneScreen(
                 FormTextField(label = "Jenis Pesawat", value = data.driveType, onValueChange = { onDataChange(report.copy(generalData = data.copy(driveType = it))) })
                 FormTextField(label = "Pabrik Pembuat", value = data.manufacturer, onValueChange = { onDataChange(report.copy(generalData = data.copy(manufacturer = it))) })
                 FormTextField(label = "Merek / Tipe", value = data.brandType, onValueChange = { onDataChange(report.copy(generalData = data.copy(brandType = it))) })
-                FormTextField(label = "Tahun Pembuatan", value = data.yearOfManufacture, onValueChange = { onDataChange(report.copy(generalData = data.copy(yearOfManufacture = it))) })
+                FormTextField(label = "Lokasi dan Tahun Pembuatan", value = data.yearOfManufacture, onValueChange = { onDataChange(report.copy(generalData = data.copy(yearOfManufacture = it))) })
                 FormTextField(label = "No. Seri / No. Unit", value = data.serialNumber, onValueChange = { onDataChange(report.copy(generalData = data.copy(serialNumber = it))) })
                 FormTextField(label = "Kapasitas Angkat", value = data.liftingCapacity, onValueChange = { onDataChange(report.copy(generalData = data.copy(liftingCapacity = it))) })
                 FormTextField(label = "Digunakan Untuk", value = data.intendedUse, onValueChange = { onDataChange(report.copy(generalData = data.copy(intendedUse = it))) })

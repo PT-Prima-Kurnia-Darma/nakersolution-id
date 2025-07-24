@@ -22,6 +22,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+enum class MeasurementResultType {
+    TOP_HEAD,
+    SHELL,
+    BUTTON_HEAD
+}
+
 class PUBTViewModel(
     private val reportUseCase: ReportUseCase,
     private val syncManager: SyncManager
@@ -64,18 +70,17 @@ class PUBTViewModel(
         _generalUiState.update { it.copy(inspectionReport = newReport) }
     }
 
-    fun addMeasurementResultItem(item: GeneralMeasurementResultItem) = viewModelScope.launch {
-        val report = _generalUiState.value.inspectionReport
-        val inspection = report.inspectionAndMeasurement
-        val newItems = (inspection.measurementResultsTable + item).toImmutableList()
-        onGeneralReportChange(report.copy(inspectionAndMeasurement = inspection.copy(measurementResultsTable = newItems)))
-    }
+    fun updateMeasurementResultItem(item: GeneralMeasurementResultItem, type: MeasurementResultType) {
+        val currentReport = _generalUiState.value.inspectionReport
+        val currentInspection = currentReport.inspectionAndMeasurement
 
-    fun deleteMeasurementResultItem(index: Int) = viewModelScope.launch {
-        val report = _generalUiState.value.inspectionReport
-        val inspection = report.inspectionAndMeasurement
-        val newItems = inspection.measurementResultsTable.toMutableList().apply { removeAt(index) }.toImmutableList()
-        onGeneralReportChange(report.copy(inspectionAndMeasurement = inspection.copy(measurementResultsTable = newItems)))
+        val updatedInspection = when (type) {
+            MeasurementResultType.TOP_HEAD -> currentInspection.copy(measurementResultsTopHead = item)
+            MeasurementResultType.SHELL -> currentInspection.copy(measurementResultsShell = item)
+            MeasurementResultType.BUTTON_HEAD -> currentInspection.copy(measurementResultsButtonHead = item)
+        }
+
+        onGeneralReportChange(currentReport.copy(inspectionAndMeasurement = updatedInspection))
     }
 
     fun addConclusionSummary(item: String) = viewModelScope.launch {
