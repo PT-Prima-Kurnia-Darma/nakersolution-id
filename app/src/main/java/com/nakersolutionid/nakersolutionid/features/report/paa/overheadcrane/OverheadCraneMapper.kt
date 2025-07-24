@@ -282,6 +282,11 @@ fun OverheadCraneUiState.toInspectionWithDetailsDomain(
     addResultCheckItem(visualCategory, "idleWheelOnTrolleyCracks", v.idleWheelOnTrolleyCracks)
     addResultCheckItem(visualCategory, "idleWheelOnTrolleyDeformation", v.idleWheelOnTrolleyDeformation)
     addResultCheckItem(visualCategory, "idleWheelOnTrolleyFlangeCondition", v.idleWheelOnTrolleyFlangeCondition)
+    addResultCheckItem(visualCategory, "wheelConnectorBogieAxleOnTrolleyStraightness", v.wheelConnectorBogieAxleOnTrolleyStraightness)
+    addResultCheckItem(visualCategory, "wheelConnectorBogieAxleOnTrolleyCrossJoint", v.wheelConnectorBogieAxleOnTrolleyCrossJoint)
+    addResultCheckItem(visualCategory, "wheelConnectorBogieAxleOnTrolleyLubrication", v.wheelConnectorBogieAxleOnTrolleyLubrication)
+    addResultCheckItem(visualCategory, "stopperBumperOnGirderOnTrolleyCondition", v.stopperBumperOnGirderOnTrolleyCondition)
+    addResultCheckItem(visualCategory, "stopperBumperOnGirderOnTrolleyReinforcement", v.stopperBumperOnGirderOnTrolleyReinforcement)
     addResultCheckItem(visualCategory, "windingDrumGroove", v.windingDrumGroove)
     addResultCheckItem(visualCategory, "windingDrumGrooveFlange", v.windingDrumGrooveFlange)
     addResultCheckItem(visualCategory, "windingDrumFlanges", v.windingDrumFlanges)
@@ -745,6 +750,11 @@ fun InspectionWithDetailsDomain.toOverheadCraneUiState(): OverheadCraneUiState {
         idleWheelOnTrolleyCracks = getResultCheckItem("visual_inspection", "idleWheelOnTrolleyCracks"),
         idleWheelOnTrolleyDeformation = getResultCheckItem("visual_inspection", "idleWheelOnTrolleyDeformation"),
         idleWheelOnTrolleyFlangeCondition = getResultCheckItem("visual_inspection", "idleWheelOnTrolleyFlangeCondition"),
+        wheelConnectorBogieAxleOnTrolleyStraightness = getResultCheckItem("visual_inspection", "wheelConnectorBogieAxleOnTrolleyStraightness"),
+        wheelConnectorBogieAxleOnTrolleyCrossJoint = getResultCheckItem("visual_inspection", "wheelConnectorBogieAxleOnTrolleyCrossJoint"),
+        wheelConnectorBogieAxleOnTrolleyLubrication = getResultCheckItem("visual_inspection", "wheelConnectorBogieAxleOnTrolleyLubrication"),
+        stopperBumperOnGirderOnTrolleyCondition = getResultCheckItem("visual_inspection", "stopperBumperOnGirderOnTrolleyCondition"),
+        stopperBumperOnGirderOnTrolleyReinforcement = getResultCheckItem("visual_inspection", "stopperBumperOnGirderOnTrolleyReinforcement"),
         windingDrumGroove = getResultCheckItem("visual_inspection", "windingDrumGroove"),
         windingDrumGrooveFlange = getResultCheckItem("visual_inspection", "windingDrumGrooveFlange"),
         windingDrumFlanges = getResultCheckItem("visual_inspection", "windingDrumFlanges"),
