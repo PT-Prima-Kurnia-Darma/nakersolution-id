@@ -204,7 +204,7 @@ fun EskalatorScreen(
                     ExpandableSubSection(title = "Pagar Pelindung") {
                         val d = inspection.balustrade
                         val p = d.balustradePanel
-                        ExpandableSubSection(title = "Panel Balustrade", modifier = Modifier.padding(horizontal = 12.dp)) {
+                        ExpandableSubSection(title = "Panel Balustrade", modifier = Modifier.padding(horizontal = 12.dp), initiallyExpanded = true) {
                             ResultStatusInput(label = "Material", provision = "Dari baja dan kuat", value = p.material, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(balustrade = d.copy(balustradePanel = p.copy(material = it))))) })
                             ResultStatusInput(label = "Tinggi", provision = "750 < tinggi < 1100mm", value = p.height, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(balustrade = d.copy(balustradePanel = p.copy(height = it))))) })
                             ResultStatusInput(label = "Tekanan Samping", provision = "> 58,5 kg/m²", value = p.sidePressure, onValueChange = { onDataChange(data.copy(inspectionAndTesting = inspection.copy(balustrade = d.copy(balustradePanel = p.copy(sidePressure = it))))) })
@@ -383,6 +383,52 @@ private fun ExpandableSubSection(
     content: @Composable () -> Unit,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .clickable { expanded = !expanded }
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = if (expanded) "Collapse" else "Expand"
+            )
+        }
+        AnimatedVisibility(visible = expanded) {
+            Column(modifier = Modifier.padding(top = 8.dp)) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExpandableSubSection(
+    modifier: Modifier = Modifier,
+    title: String,
+    initiallyExpanded: Boolean,
+    content: @Composable () -> Unit,
+) {
+    var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
     Column(
         modifier = modifier
             .fillMaxWidth()
