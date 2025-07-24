@@ -289,11 +289,17 @@ fun EskalatorScreen(
 
         // Testing Summary Section
         item {
-            val summary = data.testingSummary
+            val summary = data.testingEscalator
             ExpandableSection(title = "Ringkasan Pengujian") {
-                FormTextField(label = "Alat Pengaman", value = summary.safetyDevices, onValueChange = { onDataChange(data.copy(testingSummary = summary.copy(safetyDevices = it))) })
-                FormTextField(label = "Uji Tanpa Beban", value = summary.noLoadTest, onValueChange = { onDataChange(data.copy(testingSummary = summary.copy(noLoadTest = it))) })
-                FormTextField(label = "Uji Rem", value = summary.brakeTest, onValueChange = { onDataChange(data.copy(testingSummary = summary.copy(brakeTest = it))) })
+                OutlinedTextField(
+                    value = summary,
+                    onValueChange = { onDataChange(data.copy(conclusion = it)) },
+                    label = { Text("Kesimpulan / Rekomendasi") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    shape = MaterialTheme.shapes.medium,
+                )
             }
         }
 
