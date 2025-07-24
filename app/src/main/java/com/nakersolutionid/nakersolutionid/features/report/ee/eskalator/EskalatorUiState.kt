@@ -21,7 +21,7 @@ data class EskalatorGeneralData(
     val companyData: EskalatorCompanyData = EskalatorCompanyData(),
     val technicalData: EskalatorTechnicalData = EskalatorTechnicalData(),
     val inspectionAndTesting: EskalatorInspectionAndTesting = EskalatorInspectionAndTesting(),
-    val testingSummary: EskalatorTestingSummary = EskalatorTestingSummary()
+    val testingEscalator: String = ""
 )
 
 @Immutable
@@ -222,13 +222,6 @@ data class UserSafetySignage(
     val softSoleFootwearWarning: EskalatorResultStatus = EskalatorResultStatus(),
     val noSittingOnSteps: EskalatorResultStatus = EskalatorResultStatus(),
     val holdHandrail: EskalatorResultStatus = EskalatorResultStatus()
-)
-
-@Immutable
-data class EskalatorTestingSummary(
-    val safetyDevices: String = "",
-    val noLoadTest: String = "",
-    val brakeTest: String = ""
 )
 
 @Immutable

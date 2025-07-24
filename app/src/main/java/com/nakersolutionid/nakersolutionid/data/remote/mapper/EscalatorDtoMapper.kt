@@ -297,12 +297,6 @@ fun InspectionWithDetailsDomain.toEscalatorReportRequest(): EscalatorReportReque
         )
     )
 
-    val testingSummary = listOfNotNull(
-        findTestResult("Alat Pengaman"),
-        findTestResult("Uji Tanpa Beban"),
-        findTestResult("Uji Rem")
-    ).joinToString("\n")
-
     val conclusion = findings.firstOrNull { it.type == FindingType.RECOMMENDATION }?.description ?: ""
 
     return EscalatorReportRequest(
@@ -313,7 +307,7 @@ fun InspectionWithDetailsDomain.toEscalatorReportRequest(): EscalatorReportReque
         generalData = generalData,
         technicalData = technicalData,
         inspectionAndTesting = inspectionAndTesting,
-        testingEscalator = testingSummary,
+        testingEscalator = findTestResult("Testing Escalator"),
         conclusion = conclusion
     )
 }

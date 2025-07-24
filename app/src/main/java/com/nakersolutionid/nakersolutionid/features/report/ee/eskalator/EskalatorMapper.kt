@@ -82,10 +82,8 @@ fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId
     }
 
     val testResults = mutableListOf<InspectionTestResultDomain>()
-    uiData.testingSummary.let {
-        if (it.safetyDevices.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Alat Pengaman", it.safetyDevices, null))
-        if (it.noLoadTest.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Uji Tanpa Beban", it.noLoadTest, null))
-        if (it.brakeTest.isNotBlank()) testResults.add(InspectionTestResultDomain(0, inspectionId, "Uji Rem", it.brakeTest, null))
+    if (uiData.testingEscalator.isNotBlank()) {
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Testing Escalator", uiData.testingEscalator, null))
     }
 
     // Menyimpan data yang tidak punya kolom langsung di `InspectionTestResultDomain`
@@ -384,12 +382,6 @@ fun InspectionWithDetailsDomain.toEskalatorUiState(): EskalatorUiState {
         )
     )
 
-    val testingSummary = EskalatorTestingSummary(
-        safetyDevices = findTestResult("Alat Pengaman"),
-        noLoadTest = findTestResult("Uji Tanpa Beban"),
-        brakeTest = findTestResult("Uji Rem")
-    )
-
     val generalData = EskalatorGeneralData(
         extraId = this.inspection.extraId,
         moreExtraId = this.inspection.moreExtraId,
@@ -399,7 +391,7 @@ fun InspectionWithDetailsDomain.toEskalatorUiState(): EskalatorUiState {
         companyData = companyData,
         technicalData = technicalData,
         inspectionAndTesting = inspectionAndTesting,
-        testingSummary = testingSummary
+        testingEscalator = findTestResult("Testing Escalator")
     )
 
     return EskalatorUiState(
