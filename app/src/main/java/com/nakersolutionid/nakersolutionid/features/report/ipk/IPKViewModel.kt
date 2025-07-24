@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
+import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionAlarmInstallationItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionHydrantOperationalTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionPumpFunctionTestItem
@@ -87,6 +88,18 @@ class IPKViewModel(
         val report = _fireProtectionUiState.value.inspectionReport
         val newItems = report.hydrantOperationalTest.toMutableList().apply { removeAt(index) }.toImmutableList()
         onFireProtectionReportChange(report.copy(hydrantOperationalTest = newItems))
+    }
+
+    fun addAlarmInstallationItem(item: FireProtectionAlarmInstallationItem) = viewModelScope.launch {
+        val report = _fireProtectionUiState.value.inspectionReport
+        val newItems = (report.alarmInstallationItems + item).toImmutableList()
+        onFireProtectionReportChange(report.copy(alarmInstallationItems = newItems))
+    }
+
+    fun deleteAlarmInstallationItem(index: Int) = viewModelScope.launch {
+        val report = _fireProtectionUiState.value.inspectionReport
+        val newItems = report.alarmInstallationItems.toMutableList().apply { removeAt(index) }.toImmutableList()
+        onFireProtectionReportChange(report.copy(alarmInstallationItems = newItems))
     }
 
     fun addConclusionRecommendation(item: String) = viewModelScope.launch {

@@ -113,6 +113,13 @@ private fun createTestResultsFromUiState(report: FireProtectionInspectionReport,
         addTest("Uji Alarm - Fungsi Kerja Panel", it.panelFunction); addTest("Uji Alarm - Test Alarm", it.alarmTest); addTest("Uji Alarm - Test Fault", it.faultTest); addTest("Uji Alarm - Test Interkoneksi", it.interconnectionTest); addTest("Uji Alarm - Catatan", it.notes)
     }
 
+    report.alarmInstallationItems.forEachIndexed { i, item ->
+        val notes = listOf(item.zone, item.ror, item.fixed, item.smoke, item.tpm, item.flsw, item.bell, item.lamp, item.status).joinToString("|")
+        results.add(InspectionTestResultDomain(0, id, "Pemasangan Alarm #${i + 1}", item.location, notes))
+    }
+    addTest("Total Pemeriksaan Alarm", report.totalAlarmInstallation)
+    addTest("Hasil Pemeriksaan Alarm", report.resultAlarmInstallation)
+
     report.hydrantSystemInstallation.let { h ->
         fun addSysComp(name: String, comp: FireProtectionSystemComponent) { addTest("Hydran - $name - Spec", comp.specification); addTest("Hydran - $name - Status", comp.status); addTest("Hydran - $name - Ket", comp.remarks) }
         addSysComp("Sumber Air Baku", h.waterSource)
@@ -175,6 +182,27 @@ fun InspectionWithDetailsDomain.toFireProtectionUiState(): FireProtectionUiState
 
     val alarmTesting = FireProtectionAlarmInstallationTesting(panelFunction = findTest("Uji Alarm - Fungsi Kerja Panel"), alarmTest = findTest("Uji Alarm - Test Alarm"), faultTest = findTest("Uji Alarm - Test Fault"), interconnectionTest = findTest("Uji Alarm - Test Interkoneksi"), notes = findTest("Uji Alarm - Catatan"))
 
+    val alarmItems = this.testResults.filter { it.testName.startsWith("Pemasangan Alarm #") }.map {
+        val notes = it.notes?.split('|') ?: emptyList()
+        fun getNote(index: Int) = notes.getOrNull(index) ?: ""
+
+        FireProtectionAlarmInstallationItem(
+            location = it.result,
+            zone = getNote(0),
+            ror = getNote(1),
+            fixed = getNote(2),
+            smoke = getNote(3),
+            tpm = getNote(4),
+            flsw = getNote(5),
+            bell = getNote(6),
+            lamp = getNote(7),
+            status = getNote(8)
+        )
+    }.toImmutableList()
+
+    val totalAlarm = findTest("Total Pemeriksaan Alarm")
+    val resultAlarm = findTest("Hasil Pemeriksaan Alarm")
+
     fun findSysComp(name: String) = FireProtectionSystemComponent(findTest("Hydran - $name - Spec"), findTest("Hydran - $name - Status"), findTest("Hydran - $name - Ket"))
     val hydrantSystem = FireProtectionHydrantSystemInstallation(
         waterSource = findSysComp("Sumber Air Baku"),
@@ -216,6 +244,9 @@ fun InspectionWithDetailsDomain.toFireProtectionUiState(): FireProtectionUiState
             buildingData = buildingData,
             automaticFireAlarmSpecifications = alarmSpecs,
             alarmInstallationTesting = alarmTesting,
+            alarmInstallationItems = alarmItems,
+            totalAlarmInstallation = totalAlarm,
+            resultAlarmInstallation = resultAlarm,
             hydrantSystemInstallation = hydrantSystem,
             pumpFunctionTest = pumpTests,
             hydrantOperationalTest = hydrantTests,
