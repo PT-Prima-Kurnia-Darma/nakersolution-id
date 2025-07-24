@@ -28,7 +28,6 @@ import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.Eskalato
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorInspectionAndTesting
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorResultStatus
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorTechnicalData
-import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorTestingSummary
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.FrameAndMachineRoom
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.Handrail
@@ -506,6 +505,7 @@ object Dummy {
                 equipmentType = "Eskalator",
                 examinationType = "Routine Inspection",
                 conclusion = "Eskalator is in good condition and operating normally.",
+                testingEscalator = "Everything is good",
                 companyData = EskalatorCompanyData(
                     companyOrBuildingName = "Plaza Serpong",
                     usageAddress = "Jl. MH Thamrin No. 1, Tangerang Selatan",
@@ -628,11 +628,6 @@ object Dummy {
                         noSittingOnSteps = EskalatorResultStatus("Visible", true),
                         holdHandrail = EskalatorResultStatus("Visible", true)
                     )
-                ),
-                testingSummary = EskalatorTestingSummary(
-                    safetyDevices = "All safety devices tested and functional.",
-                    noLoadTest = "Passed",
-                    brakeTest = "Passed"
                 )
             )
         )
