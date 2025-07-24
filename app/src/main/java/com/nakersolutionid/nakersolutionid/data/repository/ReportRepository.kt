@@ -114,8 +114,6 @@ class ReportRepository(
                 else -> null
             }
 
-            Log.d("ReportRepository", "DDDDDDDDDDDDDDDDDDDD: ${innerData?.javaClass}")
-
             responseType?.let {
                 saveReport(it)
             } ?: failCounter()
