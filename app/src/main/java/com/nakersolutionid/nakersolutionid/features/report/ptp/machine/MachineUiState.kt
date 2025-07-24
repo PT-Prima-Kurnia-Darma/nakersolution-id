@@ -28,7 +28,8 @@ data class ProductionMachineInspectionReport(
     val visualInspection: ProductionMachineVisualInspection = ProductionMachineVisualInspection(),
     val testingAndMeasurement: ProductionMachineTestingAndMeasurement = ProductionMachineTestingAndMeasurement(),
     val foundationAnalysis: ProductionMachineFoundationAnalysis = ProductionMachineFoundationAnalysis(),
-    val noiseAndLightingMeasurement: ProductionMachineNoiseAndLightingMeasurement = ProductionMachineNoiseAndLightingMeasurement(),
+    val noiseMeasurement: ProductionMachineNoiseMeasurement = ProductionMachineNoiseMeasurement(),
+    val lightingMeasurement: ProductionMachineLightingMeasurement = ProductionMachineLightingMeasurement(),
     val conclusion: ProductionMachineConclusion = ProductionMachineConclusion()
 )
 
@@ -210,18 +211,35 @@ data class ProductionMachineNoiseAndLightingMeasurement(
     val regulationBasis: String = "Permenaker No. 5 Tahun 2018"
 )
 
+/**
+ * Mewakili satu titik pengukuran untuk mesin produksi dengan hasil dan analisanya.
+ */
 @Immutable
-data class ProductionMachineNoiseMeasurement(
-    val measurementPointA_db: String = "",
-    val standard: String = "< 85 db",
-    val result: String = ""
+data class ProductionMachineMeasurementPoint(
+    val result: String = "",
+    val analysis: String = ""
 )
 
+/**
+ * Kelas data baru untuk Pengukuran Kebisingan Mesin Produksi.
+ */
+@Immutable
+data class ProductionMachineNoiseMeasurement(
+    val pointA: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint(),
+    val pointB: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint(),
+    val pointC: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint(),
+    val pointD: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint()
+)
+
+/**
+ * Kelas data baru untuk Pengukuran Pencahayaan Mesin Produksi.
+ */
 @Immutable
 data class ProductionMachineLightingMeasurement(
-    val measurementPointA_lux: String = "",
-    val standard: String = "> 100 lux",
-    val result: String = ""
+    val pointA: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint(),
+    val pointB: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint(),
+    val pointC: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint(),
+    val pointD: ProductionMachineMeasurementPoint = ProductionMachineMeasurementPoint()
 )
 
 @Immutable
