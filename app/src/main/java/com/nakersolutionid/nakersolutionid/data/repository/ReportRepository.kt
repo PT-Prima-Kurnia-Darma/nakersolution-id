@@ -1,6 +1,5 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
-import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
@@ -125,7 +124,7 @@ class ReportRepository(
     private suspend fun processReports(
         reports: List<InspectionWithDetailsDomain>,
         token: String,
-        action: suspend (String, String, String, InspectionWithDetailsDomain) -> ApiResponse<out Any>
+        action: suspend (String, String, String, InspectionWithDetailsDomain) -> ApiResponse<Any>
     ): Boolean {
         var fail = 0
         reports.forEach { report ->
