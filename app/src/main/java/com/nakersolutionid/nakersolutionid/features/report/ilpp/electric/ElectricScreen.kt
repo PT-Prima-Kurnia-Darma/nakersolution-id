@@ -145,8 +145,8 @@ fun ElectricScreen(
                 Spacer(Modifier.height(8.dp))
                 HorizontalDivider()
                 Spacer(Modifier.height(8.dp))
-                Text("Jenis Arus / Tegangan", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                ElectricFormTextField(label = "Jenis Arus / Tegangan", value = data.currentVoltageType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(currentVoltageType = it))) })
+//                Text("Jenis Arus / Tegangan", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+//                ElectricFormTextField(label = "Jenis Arus / Tegangan", value = data.currentVoltageType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(currentVoltageType = it))) })
             }
         }
 
@@ -218,14 +218,18 @@ fun ElectricScreen(
                     TestResultInput(label = "Pemasangan Pintu Panel", value = part2.panelDoorInstallation, onValueChange = { onPart2Change(part2.copy(panelDoorInstallation = it)) })
                     TestResultInput(label = "Suku Cadang Sesuai Spesifikasi", value = part2.sparepartsSpecificationCompliance, onValueChange = { onPart2Change(part2.copy(sparepartsSpecificationCompliance = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
                     TestResultInput(label = "Fasilitas Keselamatan & Tanda Bahaya", value = part2.safetyFacilitiesAndDangerSigns, onValueChange = { onPart2Change(part2.copy(safetyFacilitiesAndDangerSigns = it)) })
-                    TestResultInput(label = "Pemeriksaaan Data Pemutus Daya", value = part2.circuitBreakerDataCheck, onValueChange = { onPart2Change(part2.copy(circuitBreakerDataCheck = it)) })
-                    TestResultInput(label = "Rating Arus CB", value = part2.circuitBreakerCurrentRating, onValueChange = { onPart2Change(part2.copy(circuitBreakerCurrentRating = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
-                    TestResultInput(label = "Rating Tegangan CB", value = part2.circuitBreakerVoltageRating, onValueChange = { onPart2Change(part2.copy(circuitBreakerVoltageRating = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
-                    TestResultInput(label = "Rating Arus Pemutusan CB", value = part2.circuitBreakerInterruptingRating, onValueChange = { onPart2Change(part2.copy(circuitBreakerInterruptingRating = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
-                    TestResultInput(label = "Tegangan Kontrol CB", value = part2.circuitBreakerControlVoltage, onValueChange = { onPart2Change(part2.copy(circuitBreakerControlVoltage = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
-                    TestResultInput(label = "Pabrik Pembuat CB", value = part2.circuitBreakerManufacturer, onValueChange = { onPart2Change(part2.copy(circuitBreakerManufacturer = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
-                    TestResultInput(label = "Tipe CB", value = part2.circuitBreakerType, onValueChange = { onPart2Change(part2.copy(circuitBreakerType = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
-                    TestResultInput(label = "No. Seri CB", value = part2.circuitBreakerSerialNumber, onValueChange = { onPart2Change(part2.copy(circuitBreakerSerialNumber = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                    Spacer(Modifier.height(4.dp))
+                    HorizontalDivider()
+                    ElectricExpandableSubSection(title = "Pemeriksaaan Data Pemutus Daya") {
+//                        TestResultInput(label = "Pemeriksaaan Data Pemutus Daya", value = part2.circuitBreakerDataCheck, onValueChange = { onPart2Change(part2.copy(circuitBreakerDataCheck = it)) })
+                        TestResultInput(label = "Rating Arus CB", value = part2.circuitBreakerCurrentRating, onValueChange = { onPart2Change(part2.copy(circuitBreakerCurrentRating = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                        TestResultInput(label = "Rating Tegangan CB", value = part2.circuitBreakerVoltageRating, onValueChange = { onPart2Change(part2.copy(circuitBreakerVoltageRating = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                        TestResultInput(label = "Rating Arus Pemutusan CB", value = part2.circuitBreakerInterruptingRating, onValueChange = { onPart2Change(part2.copy(circuitBreakerInterruptingRating = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                        TestResultInput(label = "Tegangan Kontrol CB", value = part2.circuitBreakerControlVoltage, onValueChange = { onPart2Change(part2.copy(circuitBreakerControlVoltage = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                        TestResultInput(label = "Pabrik Pembuat CB", value = part2.circuitBreakerManufacturer, onValueChange = { onPart2Change(part2.copy(circuitBreakerManufacturer = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                        TestResultInput(label = "Tipe CB", value = part2.circuitBreakerType, onValueChange = { onPart2Change(part2.copy(circuitBreakerType = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                        TestResultInput(label = "No. Seri CB", value = part2.circuitBreakerSerialNumber, onValueChange = { onPart2Change(part2.copy(circuitBreakerSerialNumber = it)) }, positiveLabel = "Sesuai", negativeLabel = "Tidak Sesuai")
+                    }
                 }
                 //endregion
                 HorizontalDivider()
@@ -236,17 +240,25 @@ fun ElectricScreen(
 
                     TestResultInput(label = "Pengujian Tahanan Isolasi", value = main.insulationResistance, onValueChange = { onMainChange(main.copy(insulationResistance = it)) })
                     TestResultInput(label = "Pengukuran Tahanan Pentanahan", value = main.groundingResistance, onValueChange = { onMainChange(main.copy(groundingResistance = it)) })
-                    TestResultInput(label = "Pengujian Perlengkapan Pemutus Daya", value = main.circuitBreakerEquipment, onValueChange = { onMainChange(main.copy(circuitBreakerEquipment = it)) })
-                    TestResultInput(label = "Trafo Arus (CT)", value = main.currentTransformer, onValueChange = { onMainChange(main.copy(currentTransformer = it)) })
-                    TestResultInput(label = "Trafo Tegangan (PT)", value = main.voltageTransformer, onValueChange = { onMainChange(main.copy(voltageTransformer = it)) })
-                    TestResultInput(label = "Instrumen / Meter Pengukur", value = main.measuringInstrument, onValueChange = { onMainChange(main.copy(measuringInstrument = it)) })
-                    TestResultInput(label = "Rating Sekring", value = main.fuseRating, onValueChange = { onMainChange(main.copy(fuseRating = it)) })
-                    TestResultInput(label = "Pemutus Daya Mekanikal", value = main.mechanicalBreaker, onValueChange = { onMainChange(main.copy(mechanicalBreaker = it)) })
-                    TestResultInput(label = "Terminal Kabel", value = main.cableTerminal, onValueChange = { onMainChange(main.copy(cableTerminal = it)) })
-                    TestResultInput(label = "Penandaan Terminal", value = main.terminalMarking, onValueChange = { onMainChange(main.copy(terminalMarking = it)) })
-                    TestResultInput(label = "System Interlock", value = main.interlockSystem, onValueChange = { onMainChange(main.copy(interlockSystem = it)) })
-                    TestResultInput(label = "Saklar Bantu", value = main.auxiliarySwitch, onValueChange = { onMainChange(main.copy(auxiliarySwitch = it)) })
-                    TestResultInput(label = "Kerja Trip Mekanis", value = main.mechanicalTripFunction, onValueChange = { onMainChange(main.copy(mechanicalTripFunction = it)) })
+
+                    Spacer(Modifier.height(4.dp))
+                    HorizontalDivider()
+                    ElectricExpandableSubSection(title = "Pengujian Perlengkapan Pemutus Daya") {
+//                        TestResultInput(label = "Pengujian Perlengkapan Pemutus Daya", value = main.circuitBreakerEquipment, onValueChange = { onMainChange(main.copy(circuitBreakerEquipment = it)) })
+                        TestResultInput(label = "Trafo Arus (CT)", value = main.currentTransformer, onValueChange = { onMainChange(main.copy(currentTransformer = it)) })
+                        TestResultInput(label = "Trafo Tegangan (PT)", value = main.voltageTransformer, onValueChange = { onMainChange(main.copy(voltageTransformer = it)) })
+                        TestResultInput(label = "Instrumen / Meter Pengukur", value = main.measuringInstrument, onValueChange = { onMainChange(main.copy(measuringInstrument = it)) })
+                        TestResultInput(label = "Rating Sekring", value = main.fuseRating, onValueChange = { onMainChange(main.copy(fuseRating = it)) })
+                        TestResultInput(label = "Pemutus Daya Mekanikal", value = main.mechanicalBreaker, onValueChange = { onMainChange(main.copy(mechanicalBreaker = it)) })
+                        TestResultInput(label = "Terminal Kabel", value = main.cableTerminal, onValueChange = { onMainChange(main.copy(cableTerminal = it)) })
+                        TestResultInput(label = "Penandaan Terminal", value = main.terminalMarking, onValueChange = { onMainChange(main.copy(terminalMarking = it)) })
+                        TestResultInput(label = "System Interlock", value = main.interlockSystem, onValueChange = { onMainChange(main.copy(interlockSystem = it)) })
+                        TestResultInput(label = "Saklar Bantu", value = main.auxiliarySwitch, onValueChange = { onMainChange(main.copy(auxiliarySwitch = it)) })
+                        TestResultInput(label = "Kerja Trip Mekanis", value = main.mechanicalTripFunction, onValueChange = { onMainChange(main.copy(mechanicalTripFunction = it)) })
+                    }
+                    HorizontalDivider()
+                    Spacer(Modifier.height(4.dp))
+
                     TestResultInput(label = "Uji Trip Tegangan Jatuh (Over Load)", value = main.overloadTripTest, onValueChange = { onMainChange(main.copy(overloadTripTest = it)) })
                     TestResultInput(label = "Uji Relay Daya Balik", value = main.reversePowerRelayTest, onValueChange = { onMainChange(main.copy(reversePowerRelayTest = it)) })
                     TestResultInput(label = "Uji Relay Arus Balik", value = main.reverseCurrentRelayTest, onValueChange = { onMainChange(main.copy(reverseCurrentRelayTest = it)) })
@@ -272,13 +284,17 @@ fun ElectricScreen(
                         val onFrontViewChange: (ElectricalSdpFrontView) -> Unit = { onSdpVisualChange(sdpVisual.copy(frontView = it)) }
                         TestResultInput(label = "Lampu Indikator Pada Panel", value = frontView.panelIndicatorLights, onValueChange = { onFrontViewChange(frontView.copy(panelIndicatorLights = it)) })
                         TestResultInput(label = "Bebas Buka Pintu Panel", value = frontView.panelDoorClearance, onValueChange = { onFrontViewChange(frontView.copy(panelDoorClearance = it)) })
-                        TestResultInput(label = "Pencahayaan", value = frontView.lighting, onValueChange = { onFrontViewChange(frontView.copy(lighting = it)) })
+
+                        HorizontalDivider()
+                        Spacer(Modifier.height(4.dp))
+                        ElectricExpandableSubSection(title = "Pencahayaan") {
                         TestResultInput(label = "Pencahayaan Ruang Produksi", value = frontView.lightingProductionRoom, onValueChange = { onFrontViewChange(frontView.copy(lightingProductionRoom = it)) })
                         TestResultInput(label = "Pencahayaan Kantor", value = frontView.lightingOffice, onValueChange = { onFrontViewChange(frontView.copy(lightingOffice = it)) })
                         TestResultInput(label = "Pencahayaan Panel Utama", value = frontView.lightingMainPanel, onValueChange = { onFrontViewChange(frontView.copy(lightingMainPanel = it)) })
                         TestResultInput(label = "Pencahayaan Gudang", value = frontView.lightingWarehouse, onValueChange = { onFrontViewChange(frontView.copy(lightingWarehouse = it)) })
                         TestResultInput(label = "Barang-Barang Tidak Terpakai", value = frontView.unusedItemsClearance, onValueChange = { onFrontViewChange(frontView.copy(unusedItemsClearance = it)) })
                         TestResultInput(label = "Tanda Bahaya Pintu Panel", value = frontView.dangerSignOnMainPanelDoor, onValueChange = { onFrontViewChange(frontView.copy(dangerSignOnMainPanelDoor = it)) }, positiveLabel = "Terpasang", negativeLabel = "Tidak Terpasang")
+                        }
                     }
                     HorizontalDivider()
                     ElectricExpandableSubSection(title = "Tampak Dalam") {
