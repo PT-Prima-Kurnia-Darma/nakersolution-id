@@ -141,8 +141,6 @@ class ReportRepository(
                                 saveReport(modified)
                             }
 
-                            /*saveReport(a ?: dummyInspectionWithDetails, extraId)
-                            localDataSource.updateSyncStatus(id, true)*/
                         }
                     } catch (_: Exception) {
                         fail++
@@ -215,6 +213,39 @@ class ReportRepository(
                     else -> ApiResponse.Empty
                 }
                 else -> ApiResponse.Empty
+            }
+
+            when (apiResponse) {
+                is ApiResponse.Empty -> null
+                is ApiResponse.Error -> {
+                    fail++
+                }
+                is ApiResponse.Success -> {
+                    try {
+                        apiResponse.data.data.let { data ->
+                            var id = 0L
+                            var extraId  = ""
+                            var moreExtraId = ""
+                            val responseType = when (data) {
+                                // Laporan
+                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id;data.laporan.toInspectionWithDetailsDomain() }
+                                // is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
+
+                                // Bap
+                                is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.laporanId; moreExtraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
+                                // is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
+                                else -> null
+                            }
+
+                            responseType?.let {
+                                val modified = it.copy(inspection = it.inspection.copy(id = id, extraId = extraId, moreExtraId = moreExtraId))
+                                saveReport(modified)
+                            }
+                        }
+                    } catch (_: Exception) {
+                        fail++
+                    }
+                }
             }
 
             /*when (apiResponse) {
