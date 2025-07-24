@@ -24,7 +24,8 @@ fun ProductionMachineUiState.toInspectionWithDetailsDomain(
     val visualInspection = report.visualInspection
     val testing = report.testingAndMeasurement
     val foundation = report.foundationAnalysis
-    val measurements = report.noiseAndLightingMeasurement
+    val noise = report.noiseMeasurement
+    val lighting = report.lightingMeasurement
     val conclusion = report.conclusion
 
     // Hardcoded values as requested
@@ -207,14 +208,26 @@ fun ProductionMachineUiState.toInspectionWithDetailsDomain(
     addCheckItem(foundCategory, "summary", foundation.summary)
 
     // 7. Map Noise and Lighting to CheckItems
-    val measureCategory = "measurements"
-    addCheckItem(measureCategory, "regulationBasis", measurements.regulationBasis)
-    addCheckItem(measureCategory, "noise_point_a", measurements.noise.measurementPointA_db)
-    addCheckItem(measureCategory, "noise_standard", measurements.noise.standard)
-    addCheckItem(measureCategory, "noise_result", measurements.noise.result)
-    addCheckItem(measureCategory, "lighting_point_a", measurements.lighting.measurementPointA_lux)
-    addCheckItem(measureCategory, "lighting_standard", measurements.lighting.standard)
-    addCheckItem(measureCategory, "lighting_result", measurements.lighting.result)
+    val noiseCategory = "noise_measurement"
+    addCheckItem(noiseCategory, "pointA_result", noise.pointA.result)
+    addCheckItem(noiseCategory, "pointA_analysis", noise.pointA.analysis)
+    addCheckItem(noiseCategory, "pointB_result", noise.pointB.result)
+    addCheckItem(noiseCategory, "pointB_analysis", noise.pointB.analysis)
+    addCheckItem(noiseCategory, "pointC_result", noise.pointC.result)
+    addCheckItem(noiseCategory, "pointC_analysis", noise.pointC.analysis)
+    addCheckItem(noiseCategory, "pointD_result", noise.pointD.result)
+    addCheckItem(noiseCategory, "pointD_analysis", noise.pointD.analysis)
+
+    val lightingCategory = "lighting_measurement"
+    addCheckItem(lightingCategory, "pointA_result", lighting.pointA.result)
+    addCheckItem(lightingCategory, "pointA_analysis", lighting.pointA.analysis)
+    addCheckItem(lightingCategory, "pointB_result", lighting.pointB.result)
+    addCheckItem(lightingCategory, "pointB_analysis", lighting.pointB.analysis)
+    addCheckItem(lightingCategory, "pointC_result", lighting.pointC.result)
+    addCheckItem(lightingCategory, "pointC_analysis", lighting.pointC.analysis)
+    addCheckItem(lightingCategory, "pointD_result", lighting.pointD.result)
+    addCheckItem(lightingCategory, "pointD_analysis", lighting.pointD.analysis)
+
 
     // 8. Map Conclusion to Findings
     val findings = mutableListOf<InspectionFindingDomain>()
@@ -393,18 +406,43 @@ fun InspectionWithDetailsDomain.toMachineUiState(): ProductionMachineUiState {
         summary = getCheckItemValue(foundCategory, "summary")
     )
 
-    val measureCategory = "measurements"
-    val noiseAndLightingMeasurement = ProductionMachineNoiseAndLightingMeasurement(
-        regulationBasis = getCheckItemValue(measureCategory, "regulationBasis"),
-        noise = ProductionMachineNoiseMeasurement(
-            measurementPointA_db = getCheckItemValue(measureCategory, "noise_point_a"),
-            standard = getCheckItemValue(measureCategory, "noise_standard"),
-            result = getCheckItemValue(measureCategory, "noise_result")
+    val noiseCategory = "noise_measurement"
+    val noiseMeasurement = ProductionMachineNoiseMeasurement(
+        pointA = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(noiseCategory, "pointA_result"),
+            analysis = getCheckItemValue(noiseCategory, "pointA_analysis")
         ),
-        lighting = ProductionMachineLightingMeasurement(
-            measurementPointA_lux = getCheckItemValue(measureCategory, "lighting_point_a"),
-            standard = getCheckItemValue(measureCategory, "lighting_standard"),
-            result = getCheckItemValue(measureCategory, "lighting_result")
+        pointB = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(noiseCategory, "pointB_result"),
+            analysis = getCheckItemValue(noiseCategory, "pointB_analysis")
+        ),
+        pointC = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(noiseCategory, "pointC_result"),
+            analysis = getCheckItemValue(noiseCategory, "pointC_analysis")
+        ),
+        pointD = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(noiseCategory, "pointD_result"),
+            analysis = getCheckItemValue(noiseCategory, "pointD_analysis")
+        )
+    )
+
+    val lightingCategory = "lighting_measurement"
+    val lightingMeasurement = ProductionMachineLightingMeasurement(
+        pointA = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(lightingCategory, "pointA_result"),
+            analysis = getCheckItemValue(lightingCategory, "pointA_analysis")
+        ),
+        pointB = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(lightingCategory, "pointB_result"),
+            analysis = getCheckItemValue(lightingCategory, "pointB_analysis")
+        ),
+        pointC = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(lightingCategory, "pointC_result"),
+            analysis = getCheckItemValue(lightingCategory, "pointC_analysis")
+        ),
+        pointD = ProductionMachineMeasurementPoint(
+            result = getCheckItemValue(lightingCategory, "pointD_result"),
+            analysis = getCheckItemValue(lightingCategory, "pointD_analysis")
         )
     )
 
@@ -425,7 +463,8 @@ fun InspectionWithDetailsDomain.toMachineUiState(): ProductionMachineUiState {
         visualInspection = visualInspection,
         testingAndMeasurement = testingAndMeasurement,
         foundationAnalysis = foundationAnalysis,
-        noiseAndLightingMeasurement = noiseAndLightingMeasurement,
+        noiseMeasurement = noiseMeasurement,
+        lightingMeasurement = lightingMeasurement,
         conclusion = conclusion
     )
 

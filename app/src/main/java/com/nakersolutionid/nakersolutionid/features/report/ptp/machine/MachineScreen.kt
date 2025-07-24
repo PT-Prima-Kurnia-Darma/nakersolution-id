@@ -259,24 +259,60 @@ fun MachineScreen(
         }
 
         item {
-            val data = report.noiseAndLightingMeasurement
-            val onDataChanged: (ProductionMachineNoiseAndLightingMeasurement) -> Unit = { onDataChange(report.copy(noiseAndLightingMeasurement = it)) }
-            MachineExpandableSection("PENGUKURAN KEBISINGAN & PENCAHAYAAN") {
-                Text("Dasar Aturan: ${data.regulationBasis}", style = MaterialTheme.typography.bodySmall)
+            val data = report.noiseMeasurement
+            val onDataChanged = { updated: ProductionMachineNoiseMeasurement -> onDataChange(report.copy(noiseMeasurement = updated)) }
+            MachineExpandableSection("PENGUKURAN KEBISINGAN") {
+                // Titik A
+                Text("Titik A", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (dB)", data.pointA.result) { onDataChanged(data.copy(pointA = data.pointA.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointA.analysis) { onDataChanged(data.copy(pointA = data.pointA.copy(analysis = it))) }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                Text("Kebisingan", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                val noise = data.noise
-                MachineFormTextField("Titik A (dB)", noise.measurementPointA_db) { onDataChanged(data.copy(noise = noise.copy(measurementPointA_db = it))) }
-                Text("Standar: ${noise.standard}", style = MaterialTheme.typography.bodyMedium)
-                MachineFormTextField("Hasil Kebisingan", noise.result) { onDataChanged(data.copy(noise = noise.copy(result = it))) }
+                // Titik B
+                Text("Titik B", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (dB)", data.pointB.result) { onDataChanged(data.copy(pointB = data.pointB.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointB.analysis) { onDataChanged(data.copy(pointB = data.pointB.copy(analysis = it))) }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                Text("Penerangan", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                val lighting = data.lighting
-                MachineFormTextField("Titik A (lux)", lighting.measurementPointA_lux) { onDataChanged(data.copy(lighting = lighting.copy(measurementPointA_lux = it))) }
-                Text("Standar: ${lighting.standard}", style = MaterialTheme.typography.bodyMedium)
-                MachineFormTextField("Hasil Penerangan", lighting.result) { onDataChanged(data.copy(lighting = lighting.copy(result = it))) }
+                // Titik C
+                Text("Titik C", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (dB)", data.pointC.result) { onDataChanged(data.copy(pointC = data.pointC.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointC.analysis) { onDataChanged(data.copy(pointC = data.pointC.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                // Titik D
+                Text("Titik D", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (dB)", data.pointD.result) { onDataChanged(data.copy(pointD = data.pointD.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointD.analysis) { onDataChanged(data.copy(pointD = data.pointD.copy(analysis = it))) }
+            }
+        }
+
+        item {
+            val data = report.lightingMeasurement
+            val onDataChanged = { updated: ProductionMachineLightingMeasurement -> onDataChange(report.copy(lightingMeasurement = updated)) }
+            MachineExpandableSection("PENGUKURAN PENCAHAYAAN") {
+                // Titik A
+                Text("Titik A", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (Lux)", data.pointA.result) { onDataChanged(data.copy(pointA = data.pointA.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointA.analysis) { onDataChanged(data.copy(pointA = data.pointA.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                // Titik B
+                Text("Titik B", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (Lux)", data.pointB.result) { onDataChanged(data.copy(pointB = data.pointB.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointB.analysis) { onDataChanged(data.copy(pointB = data.pointB.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                // Titik C
+                Text("Titik C", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (Lux)", data.pointC.result) { onDataChanged(data.copy(pointC = data.pointC.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointC.analysis) { onDataChanged(data.copy(pointC = data.pointC.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                // Titik D
+                Text("Titik D", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MachineFormTextField("Hasil Pengukuran (Lux)", data.pointD.result) { onDataChanged(data.copy(pointD = data.pointD.copy(result = it))) }
+                MachineFormTextField("Analisa", data.pointD.analysis) { onDataChanged(data.copy(pointD = data.pointD.copy(analysis = it))) }
             }
         }
 
