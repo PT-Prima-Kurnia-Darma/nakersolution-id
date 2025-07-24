@@ -167,6 +167,7 @@ fun GantryCraneScreen(
             val data = report.technicalData
             ExpandableSection(title = "DATA TEKNIK") {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.End) {
+                    Text("", modifier = Modifier.weight(2f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     Text("Hoisting", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     Text("Traveling", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     Text("Traversing", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
@@ -374,6 +375,15 @@ fun GantryCraneScreen(
                     GantryCraneResultStatusInput(label = "Keretakan", value = data.idleWheelOnTrolleyCracks, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(idleWheelOnTrolleyCracks = it))) })
                     GantryCraneResultStatusInput(label = "Perubahan Bentuk", value = data.idleWheelOnTrolleyDeformation, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(idleWheelOnTrolleyDeformation = it))) })
                     GantryCraneResultStatusInput(label = "Kondisi Flensa", value = data.idleWheelOnTrolleyFlangeCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(idleWheelOnTrolleyFlangeCondition = it))) })
+
+                    Text("Penghubung Roda Trolley / Gardan", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
+                    GantryCraneResultStatusInput(label = "Kelurusan", value = data.wheelConnectorBogieAxleOnTrolleyStraightness, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(wheelConnectorBogieAxleOnTrolleyStraightness = it))) })
+                    GantryCraneResultStatusInput(label = "Cross Joint", value = data.wheelConnectorBogieAxleOnTrolleyCrossJoint, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(wheelConnectorBogieAxleOnTrolleyCrossJoint = it))) })
+                    GantryCraneResultStatusInput(label = "Pelumasan", value = data.wheelConnectorBogieAxleOnTrolleyLubrication, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(wheelConnectorBogieAxleOnTrolleyLubrication = it))) })
+
+                    Text("Stoper Bumper pada Girder (Trolley)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
+                    GantryCraneResultStatusInput(label = "Kondisi", value = data.stopperBumperOnGirderOnTrolleyCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(stopperBumperOnGirderOnTrolleyCondition = it))) })
+                    GantryCraneResultStatusInput(label = "Penguat", value = data.stopperBumperOnGirderOnTrolleyReinforcement, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(stopperBumperOnGirderOnTrolleyReinforcement = it))) })
                 }
                 HorizontalDivider()
 
@@ -795,7 +805,36 @@ fun GantryCraneResultStatusInput(
                 checked = value.status,
                 onCheckedChange = { onCheckedChange -> onValueChange(value.copy(status = onCheckedChange)) }
             )
-            Text("Memenuhi")
+            Text("Cacat")
+        }
+    }
+}
+
+@Composable
+fun GantryCraneResultStatusInput(
+    label: String,
+    value: GantryCraneInspectionResult,
+    onValueChange: (GantryCraneInspectionResult) -> Unit,
+    checkboxLabel: String
+) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        OutlinedTextField(
+            value = value.result,
+            onValueChange = { onValueChange(value.copy(result = it)) },
+            label = { Text(label) },
+            modifier = Modifier.weight(1f),
+            shape = MaterialTheme.shapes.medium,
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clip(MaterialTheme.shapes.small).clickable { onValueChange(value.copy(status = !value.status)) }.padding(end = 8.dp)
+        ) {
+            Checkbox(
+                checked = value.status,
+                onCheckedChange = { onCheckedChange -> onValueChange(value.copy(status = onCheckedChange)) }
+            )
+            Text(checkboxLabel)
         }
     }
 }
@@ -808,7 +847,7 @@ fun DynamicTestItemInput(
 ) {
     Column(modifier = Modifier.padding(vertical = 4.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
-        FormTextField(label = "Seharusnya", value = item.shouldBe, onValueChange = { onValueChange(item.copy(shouldBe = it)) })
+//        FormTextField(label = "Seharusnya", value = item.shouldBe, onValueChange = { onValueChange(item.copy(shouldBe = it)) })
         FormTextField(label = "Dicoba / Diukur", value = item.testedMeasured, onValueChange = { onValueChange(item.copy(testedMeasured = it)) })
         FormTextField(label = "Keterangan", value = item.remarks, onValueChange = { onValueChange(item.copy(remarks = it)) })
     }
@@ -863,7 +902,7 @@ fun NdeHookMeasurementInput(
                 }
             }
         }
-        GantryCraneResultStatusInput(label = "Keterangan Hasil", value = result.finding, onValueChange = { onResultChange(result.copy(finding = it)) })
+        GantryCraneResultStatusInput(label = "Keterangan Hasil", value = result.finding, onValueChange = { onResultChange(result.copy(finding = it)) }, checkboxLabel = "Baik")
         HorizontalDivider()
 
         // --- SPESIFIKASI ---

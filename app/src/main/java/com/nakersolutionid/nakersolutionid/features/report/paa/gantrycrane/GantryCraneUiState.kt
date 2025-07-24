@@ -1,9 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa.gantrycrane
 
 import androidx.compose.runtime.Immutable
-import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
-import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -229,6 +226,12 @@ data class GantryCraneVisualInspection(
     val idleWheelOnTrolleyCracks: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelOnTrolleyDeformation: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val idleWheelOnTrolleyFlangeCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    // Penghubung Roda Trolley
+    val wheelConnectorBogieAxleOnTrolleyStraightness: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    val wheelConnectorBogieAxleOnTrolleyCrossJoint: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    val wheelConnectorBogieAxleOnTrolleyLubrication: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    val stopperBumperOnGirderOnTrolleyCondition: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    val stopperBumperOnGirderOnTrolleyReinforcement: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     // Hoist
     val windingDrumGroove: GantryCraneInspectionResult = GantryCraneInspectionResult(),
     val windingDrumGrooveFlange: GantryCraneInspectionResult = GantryCraneInspectionResult(),
