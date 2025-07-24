@@ -229,8 +229,8 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.Ove
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneVisualInspection
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneWireRope
-import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineConditionResult
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineConclusion
+import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineConditionResult
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineDimensions
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineElectricalMeasurements
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineFoundationAnalysis
@@ -258,14 +258,9 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.Diese
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorGeneratorInfo
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorInfo
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorInspectionReport
-import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurement
-import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMcbCalculation
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMcbCalculationResult
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMcbKnownData
-import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorMeasurementAnalysis
-import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurement
-import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNdtTests
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorPanelControl
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorPowerInfo
@@ -286,7 +281,6 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralH
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionAndMeasurement
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMaterialThickness
-import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMeasurementResultItem
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralNdtResult
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralNdtTestComponent
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralNdtTestFireTubes
@@ -3220,28 +3214,6 @@ object Dummy {
                         requiredAmps = "800 A (Rounded up for safety factor)"
                     ),
                     conclusion = "The calculated MCB rating of 800A is appropriate for the generator's capacity, providing adequate protection."
-                ),
-                noiseMeasurement = DieselMotorNoiseMeasurement(
-                    location = "Operator Station",
-                    measurements = persistentListOf(
-                        DieselMotorNoiseMeasurementPoint("Point A", "82 dB"),
-                        DieselMotorNoiseMeasurementPoint("Point B", "80 dB")
-                    ),
-                    analysis = DieselMotorMeasurementAnalysis(
-                        standard = "< 85 dB",
-                        result = "Compliant, noise levels are within acceptable limits."
-                    )
-                ),
-                lightingMeasurement = DieselMotorLightingMeasurement(
-                    location = "Control Panel Area",
-                    measurements = persistentListOf(
-                        DieselMotorLightingMeasurementPoint("Point X", "400 Lux"),
-                        DieselMotorLightingMeasurementPoint("Point Y", "380 Lux")
-                    ),
-                    analysis = DieselMotorMeasurementAnalysis(
-                        standard = "> 200 Lux",
-                        result = "Compliant, lighting levels are sufficient for safe operation."
-                    )
                 ),
                 conclusion = DieselMotorConclusion(
                     summary = persistentListOf(
