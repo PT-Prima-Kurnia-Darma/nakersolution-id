@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -288,12 +287,12 @@ fun ElectricScreen(
                         HorizontalDivider()
                         Spacer(Modifier.height(4.dp))
                         ElectricExpandableSubSection(title = "Pencahayaan") {
-                        TestResultInput(label = "Pencahayaan Ruang Produksi", value = frontView.lightingProductionRoom, onValueChange = { onFrontViewChange(frontView.copy(lightingProductionRoom = it)) })
-                        TestResultInput(label = "Pencahayaan Kantor", value = frontView.lightingOffice, onValueChange = { onFrontViewChange(frontView.copy(lightingOffice = it)) })
-                        TestResultInput(label = "Pencahayaan Panel Utama", value = frontView.lightingMainPanel, onValueChange = { onFrontViewChange(frontView.copy(lightingMainPanel = it)) })
-                        TestResultInput(label = "Pencahayaan Gudang", value = frontView.lightingWarehouse, onValueChange = { onFrontViewChange(frontView.copy(lightingWarehouse = it)) })
-                        TestResultInput(label = "Barang-Barang Tidak Terpakai", value = frontView.unusedItemsClearance, onValueChange = { onFrontViewChange(frontView.copy(unusedItemsClearance = it)) })
-                        TestResultInput(label = "Tanda Bahaya Pintu Panel", value = frontView.dangerSignOnMainPanelDoor, onValueChange = { onFrontViewChange(frontView.copy(dangerSignOnMainPanelDoor = it)) }, positiveLabel = "Terpasang", negativeLabel = "Tidak Terpasang")
+                            TestResultInput(label = "Pencahayaan Ruang Produksi", value = frontView.lightingProductionRoom, onValueChange = { onFrontViewChange(frontView.copy(lightingProductionRoom = it)) })
+                            TestResultInput(label = "Pencahayaan Kantor", value = frontView.lightingOffice, onValueChange = { onFrontViewChange(frontView.copy(lightingOffice = it)) })
+                            TestResultInput(label = "Pencahayaan Panel Utama", value = frontView.lightingMainPanel, onValueChange = { onFrontViewChange(frontView.copy(lightingMainPanel = it)) })
+                            TestResultInput(label = "Pencahayaan Gudang", value = frontView.lightingWarehouse, onValueChange = { onFrontViewChange(frontView.copy(lightingWarehouse = it)) })
+                            TestResultInput(label = "Barang-Barang Tidak Terpakai", value = frontView.unusedItemsClearance, onValueChange = { onFrontViewChange(frontView.copy(unusedItemsClearance = it)) })
+                            TestResultInput(label = "Tanda Bahaya Pintu Panel", value = frontView.dangerSignOnMainPanelDoor, onValueChange = { onFrontViewChange(frontView.copy(dangerSignOnMainPanelDoor = it)) }, positiveLabel = "Terpasang", negativeLabel = "Tidak Terpasang")
                         }
                     }
                     HorizontalDivider()
@@ -576,10 +575,22 @@ private fun TestResultInput(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(label, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onValueChange(value.copy(result = !value.result)) }) {
-            Checkbox(checked = value.result, onCheckedChange = null)
-            Spacer(Modifier.width(4.dp))
-            Text(if(value.result) positiveLabel else negativeLabel)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.clickable { onValueChange(value.copy(result = true)) },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(selected = value.result, onClick = null)
+                Text(positiveLabel)
+            }
+            Spacer(Modifier.width(16.dp))
+            Row(
+                modifier = Modifier.clickable { onValueChange(value.copy(result = false)) },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(selected = !value.result, onClick = null)
+                Text(negativeLabel)
+            }
         }
         ElectricFormTextField(
             label = "Metode / Keterangan",
