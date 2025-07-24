@@ -293,8 +293,8 @@ fun EskalatorScreen(
             ExpandableSection(title = "Ringkasan Pengujian") {
                 OutlinedTextField(
                     value = summary,
-                    onValueChange = { onDataChange(data.copy(conclusion = it)) },
-                    label = { Text("Kesimpulan / Rekomendasi") },
+                    onValueChange = { onDataChange(data.copy(testingEscalator = it)) },
+                    label = { Text("Pengujian Eskalator") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp),
