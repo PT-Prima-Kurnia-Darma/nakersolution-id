@@ -1,6 +1,5 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
-import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
