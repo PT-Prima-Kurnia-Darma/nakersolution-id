@@ -64,7 +64,8 @@ fun AddNdeWireRopeItemDialog(
                 FormTextField(label = "Konstruksi", value = item.construction, onValueChange = { item = item.copy(construction = it) })
                 FormTextField(label = "Type", value = item.type, onValueChange = { item = item.copy(type = it) })
                 FormTextField(label = "Panjang", value = item.length, onValueChange = { item = item.copy(length = it) })
-                GantryCraneResultStatusInput(label = "Temuan", value = item.finding, onValueChange = { item = item.copy(finding = it) })
+                FormTextField(label = "Umur", value = item.age, onValueChange = { item = item.copy(age = it) })
+                GantryCraneResultStatusInput(label = "Keterangan", value = item.finding, onValueChange = { item = item.copy(finding = it) })
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = onDismissRequest) { Text("Batal") }
                     Spacer(Modifier.width(8.dp))
@@ -86,7 +87,7 @@ fun AddNdeGirderItemDialog(
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("Tambah Data Girder", style = MaterialTheme.typography.titleLarge)
                 FormTextField(label = "Lokasi", value = item.location, onValueChange = { item = item.copy(location = it) })
-                GantryCraneResultStatusInput(label = "Temuan", value = item.finding, onValueChange = { item = item.copy(finding = it) })
+                GantryCraneResultStatusInput(label = "Keterangan", value = item.finding, onValueChange = { item = item.copy(finding = it) }, checkboxLabel = "Cacat Permukaan")
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = onDismissRequest) { Text("Batal") }
                     Spacer(Modifier.width(8.dp))
