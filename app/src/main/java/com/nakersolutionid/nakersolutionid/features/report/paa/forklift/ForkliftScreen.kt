@@ -311,12 +311,25 @@ fun ForkliftScreen(
                     ForkliftResultStatusInput(label = "Poros Penghubung", value = data.powerTrainClutchConnectingShaft, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainClutchConnectingShaft = it))) })
                     ForkliftResultStatusInput(label = "Perlengkapan Mekanis", value = data.powerTrainClutchMechanicalEquipment, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainClutchMechanicalEquipment = it))) })
                     Spacer(Modifier.height(4.dp))
+                    Text("Gardan (Differential)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Rumah Gardan", value = data.powerTrainDifferentialHousing, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainDifferentialHousing = it))) })
+                    ForkliftResultStatusInput(label = "Kondisi Gardan", value = data.powerTrainDifferentialCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainDifferentialCondition = it))) })
+                    ForkliftResultStatusInput(label = "Oli Gardan", value = data.powerTrainDifferentialOil, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainDifferentialOil = it))) })
+                    ForkliftResultStatusInput(label = "Kebocoran Gardan", value = data.powerTrainDifferentialLeakage, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainDifferentialLeakage = it))) })
+                    ForkliftResultStatusInput(label = "Poros Penghubung", value = data.powerTrainDifferentialConnectingShaft, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainDifferentialConnectingShaft = it))) })
+                    Spacer(Modifier.height(4.dp))
                     Text("Rem (Brake)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                     ForkliftResultStatusInput(label = "Kondisi Rem Utama", value = data.powerTrainBrakeMainCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainBrakeMainCondition = it))) })
                     ForkliftResultStatusInput(label = "Kondisi Rem Tangan", value = data.powerTrainBrakeHandbrakeCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainBrakeHandbrakeCondition = it))) })
                     ForkliftResultStatusInput(label = "Kondisi Rem Darurat", value = data.powerTrainBrakeEmergencyCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainBrakeEmergencyCondition = it))) })
                     ForkliftResultStatusInput(label = "Kebocoran", value = data.powerTrainBrakeLeakage, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainBrakeLeakage = it))) })
                     ForkliftResultStatusInput(label = "Komponen Mekanis", value = data.powerTrainBrakeMechanicalComponents, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainBrakeMechanicalComponents = it))) })
+                    Spacer(Modifier.height(4.dp))
+                    Text("Transmisi (Transmission)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Rumah Transmisi", value = data.powerTrainTransmissionHousing, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainTransmissionHousing = it))) })
+                    ForkliftResultStatusInput(label = "Oli Transmisi", value = data.powerTrainTransmissionOil, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainTransmissionOil = it))) })
+                    ForkliftResultStatusInput(label = "Kebocoran Transmisi", value = data.powerTrainTransmissionLeakage, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainTransmissionLeakage = it))) })
+                    ForkliftResultStatusInput(label = "Perlengkapan Mekanis", value = data.powerTrainTransmissionMechanicalEquipment, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(powerTrainTransmissionMechanicalEquipment = it))) })
                 }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 ExpandableSubSection("Attachment / Perlengkapan") {
@@ -333,6 +346,43 @@ fun ForkliftScreen(
                     ForkliftResultStatusInput(label = "Pelumasan Rantai", value = data.attachmentLiftChainLubrication, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(attachmentLiftChainLubrication = it))) })
                 }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                ExpandableSubSection("Keranjang Manusia (Personal Basket)") {
+                    Text("Lantai Kerja", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Korosi", value = data.personalBasketWorkFloorCorrosion, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketWorkFloorCorrosion = it))) })
+                    ForkliftResultStatusInput(label = "Keretakan", value = data.personalBasketWorkFloorCracks, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketWorkFloorCracks = it))) })
+                    ForkliftResultStatusInput(label = "Perubahan Bentuk", value = data.personalBasketWorkFloorDeformation, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketWorkFloorDeformation = it))) })
+                    ForkliftResultStatusInput(label = "Pengikat", value = data.personalBasketWorkFloorBinding, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketWorkFloorBinding = it))) })
+                    Spacer(Modifier.height(4.dp))
+                    Text("Rangka", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Korosi", value = data.personalBasketFrameCorrosion, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketFrameCorrosion = it))) })
+                    ForkliftResultStatusInput(label = "Keretakan", value = data.personalBasketFrameCracks, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketFrameCracks = it))) })
+                    ForkliftResultStatusInput(label = "Perubahan Bentuk", value = data.personalBasketFrameDeformation, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketFrameDeformation = it))) })
+                    ForkliftResultStatusInput(label = "Penguat Melintang", value = data.personalBasketFrameCrossBracing, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketFrameCrossBracing = it))) })
+                    ForkliftResultStatusInput(label = "Penguat Diagonal", value = data.personalBasketFrameDiagonalBracing, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketFrameDiagonalBracing = it))) })
+                    Spacer(Modifier.height(4.dp))
+                    Text("Baut Pengikat", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Korosi", value = data.personalBasketBindingBoltCorrosion, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketBindingBoltCorrosion = it))) })
+                    ForkliftResultStatusInput(label = "Keretakan", value = data.personalBasketBindingBoltCracks, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketBindingBoltCracks = it))) })
+                    ForkliftResultStatusInput(label = "Perubahan Bentuk", value = data.personalBasketBindingBoltDeformation, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketBindingBoltDeformation = it))) })
+                    ForkliftResultStatusInput(label = "Pengikat", value = data.personalBasketBindingBoltBinding, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketBindingBoltBinding = it))) })
+                    Spacer(Modifier.height(4.dp))
+                    Text("Pintu", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Korosi", value = data.personalBasketDoorCorrosion, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketDoorCorrosion = it))) })
+                    ForkliftResultStatusInput(label = "Keretakan", value = data.personalBasketDoorCracks, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketDoorCracks = it))) })
+                    ForkliftResultStatusInput(label = "Perubahan Bentuk", value = data.personalBasketDoorDeformation, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketDoorDeformation = it))) })
+                    ForkliftResultStatusInput(label = "Pengikat", value = data.personalBasketDoorBinding, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketDoorBinding = it))) })
+                    Spacer(Modifier.height(4.dp))
+                    Text("HandRail", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Keretakan", value = data.personalBasketHandrailCracks, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailCracks = it))) })
+                    ForkliftResultStatusInput(label = "Keausan", value = data.personalBasketHandrailWear, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailWear = it))) })
+                    ForkliftResultStatusInput(label = "Kelurusan Rel", value = data.personalBasketHandrailRailStraightness, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailRailStraightness = it))) })
+                    ForkliftResultStatusInput(label = "Sambungan Rel", value = data.personalBasketHandrailRailJoint, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailRailJoint = it))) })
+                    ForkliftResultStatusInput(label = "Alignment Antar Rel", value = data.personalBasketHandrailAlignmentBetweenRails, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailAlignmentBetweenRails = it))) })
+                    ForkliftResultStatusInput(label = "Celah Sambungan Rel", value = data.personalBasketHandrailGapBetweenRailJoints, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailGapBetweenRailJoints = it))) })
+                    ForkliftResultStatusInput(label = "Pengikat Rel", value = data.personalBasketHandrailRailFastener, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailRailFastener = it))) })
+                    ForkliftResultStatusInput(label = "Stopper Rel", value = data.personalBasketHandrailRailStopper, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(personalBasketHandrailRailStopper = it))) })
+                }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 ExpandableSubSection("Komponen Hidraulik") {
                     Text("Tangki (Tank)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                     ForkliftResultStatusInput(label = "Kebocoran", value = data.hydraulicTankLeakage, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(hydraulicTankLeakage = it))) })
@@ -347,6 +397,20 @@ fun ForkliftScreen(
                     ForkliftResultStatusInput(label = "Kondisi Saluran Tekan", value = data.hydraulicPumpPressureLineCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(hydraulicPumpPressureLineCondition = it))) })
                     ForkliftResultStatusInput(label = "Fungsi", value = data.hydraulicPumpFunction, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(hydraulicPumpFunction = it))) })
                     ForkliftResultStatusInput(label = "Kelainan Suara", value = data.hydraulicPumpAbnormalNoise, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(hydraulicPumpAbnormalNoise = it))) })
+                    Spacer(Modifier.height(4.dp))
+                    Text("Katup Kontrol (Control Valve)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Kebocoran", value = data.controlValveLeakage, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(controlValveLeakage = it))) })
+                    ForkliftResultStatusInput(label = "Kondisi Saluran", value = data.controlValveLineCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(controlValveLineCondition = it))) })
+                    ForkliftResultStatusInput(label = "Fungsi Relief Valve", value = data.controlValveReliefValveFunction, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(controlValveReliefValveFunction = it))) })
+                    ForkliftResultStatusInput(label = "Kelainan Suara", value = data.controlValveAbnormalNoise, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(controlValveAbnormalNoise = it))) })
+                    ForkliftResultStatusInput(label = "Fungsi Silinder Angkat", value = data.controlValveLiftCylinderFunction, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(controlValveLiftCylinderFunction = it))) })
+                    ForkliftResultStatusInput(label = "Fungsi Silinder Ungkit", value = data.controlValveTiltCylinderFunction, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(controlValveTiltCylinderFunction = it))) })
+                    ForkliftResultStatusInput(label = "Fungsi Silinder Kemudi", value = data.controlValveSteeringCylinderFunction, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(controlValveSteeringCylinderFunction = it))) })
+                    Spacer(Modifier.height(4.dp))
+                    Text("Aktuator (Actuator)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    ForkliftResultStatusInput(label = "Kebocoran", value = data.actuatorLeakage, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(actuatorLeakage = it))) })
+                    ForkliftResultStatusInput(label = "Kondisi Saluran", value = data.actuatorLineCondition, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(actuatorLineCondition = it))) })
+                    ForkliftResultStatusInput(label = "Kelainan Suara", value = data.actuatorAbnormalNoise, onValueChange = { onDataChange(report.copy(visualInspection = data.copy(actuatorAbnormalNoise = it))) })
                 }
             }
         }
@@ -686,9 +750,6 @@ fun ForkliftResultStatusInput(
                 .padding(end = 8.dp)
         ) {
             Checkbox(
-                // Di laporan, centang berarti "Memenuhi Syarat".
-                // Di data class, 'status = false' bisa kita artikan "Memenuhi Syarat" (tidak ada masalah).
-                // Jadi, `checked` adalah kebalikan dari `status`.
                 checked = value.status,
                 onCheckedChange = { onValueChange(value.copy(status = it)) }
             )
