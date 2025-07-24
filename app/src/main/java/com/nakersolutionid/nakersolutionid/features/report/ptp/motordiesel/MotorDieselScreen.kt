@@ -58,8 +58,6 @@ fun MotorDieselScreen(
 
     var showSummaryDialog by remember { mutableStateOf(false) }
     var showRequirementDialog by remember { mutableStateOf(false) }
-    var showNoiseDialog by remember { mutableStateOf(false) }
-    var showLightingDialog by remember { mutableStateOf(false) }
 
     if (showSummaryDialog) {
         AddMotorDieselStringDialog(
@@ -76,20 +74,6 @@ fun MotorDieselScreen(
             label = "Poin Persyaratan",
             onDismissRequest = { showRequirementDialog = false },
             onConfirm = { viewModel.addMotorDieselConclusionRequirement(it); showRequirementDialog = false }
-        )
-    }
-
-    if (showNoiseDialog) {
-        AddNoisePointDialog(
-            onDismissRequest = { showNoiseDialog = false },
-            onConfirm = { viewModel.addMotorDieselNoisePoint(it); showNoiseDialog = false }
-        )
-    }
-
-    if (showLightingDialog) {
-        AddLightingPointDialog(
-            onDismissRequest = { showLightingDialog = false },
-            onConfirm = { viewModel.addMotorDieselLightingPoint(it); showLightingDialog = false }
         )
     }
 
@@ -381,20 +365,28 @@ fun MotorDieselScreen(
             val data = report.noiseMeasurement
             val onDataChanged : (DieselMotorNoiseMeasurement) -> Unit = { onDataChange(report.copy(noiseMeasurement = it)) }
             MotorDieselExpandableSection("PENGUKURAN KEBISINGAN") {
-                MotorDieselFormTextField("Lokasi Pengukuran", data.location) { onDataChanged(data.copy(location = it)) }
-                MotorDieselFormTextField("Standar (NAB)", data.analysis.standard) { onDataChanged(data.copy(analysis = data.analysis.copy(standard = it))) }
-                MotorDieselFormTextField("Hasil Analisa", data.analysis.result) { onDataChanged(data.copy(analysis = data.analysis.copy(result = it))) }
+                // Titik A
+                Text("Titik A", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (dB)", data.pointA.result) { onDataChanged(data.copy(pointA = data.pointA.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointA.analysis) { onDataChanged(data.copy(pointA = data.pointA.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                FilledTonalButton(onClick = { showNoiseDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
-                    Text("Tambah Titik Pengukuran")
-                }
+                // Titik B
+                Text("Titik B", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (dB)", data.pointB.result) { onDataChanged(data.copy(pointB = data.pointB.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointB.analysis) { onDataChanged(data.copy(pointB = data.pointB.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                data.measurements.forEachIndexed { index, point ->
-                    MotorDieselListItemWithDelete(onDelete = { viewModel.deleteMotorDieselNoisePoint(index) }) {
-                        Text("Titik ${point.point}: ${point.valueDb} dB", modifier = Modifier.padding(8.dp))
-                    }
-                }
+                // Titik C
+                Text("Titik C", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (dB)", data.pointC.result) { onDataChanged(data.copy(pointC = data.pointC.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointC.analysis) { onDataChanged(data.copy(pointC = data.pointC.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                // Titik D
+                Text("Titik D", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (dB)", data.pointD.result) { onDataChanged(data.copy(pointD = data.pointD.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointD.analysis) { onDataChanged(data.copy(pointD = data.pointD.copy(analysis = it))) }
             }
         }
 
@@ -402,20 +394,28 @@ fun MotorDieselScreen(
             val data = report.lightingMeasurement
             val onDataChanged: (DieselMotorLightingMeasurement) -> Unit = { onDataChange(report.copy(lightingMeasurement = it)) }
             MotorDieselExpandableSection("PENGUKURAN PENCAHAYAAN") {
-                MotorDieselFormTextField("Lokasi Pengukuran", data.location) { onDataChanged(data.copy(location = it)) }
-                MotorDieselFormTextField("Standar (NAB)", data.analysis.standard) { onDataChanged(data.copy(analysis = data.analysis.copy(standard = it))) }
-                MotorDieselFormTextField("Hasil Analisa", data.analysis.result) { onDataChanged(data.copy(analysis = data.analysis.copy(result = it))) }
+                // Titik A
+                Text("Titik A", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (Lux)", data.pointA.result) { onDataChanged(data.copy(pointA = data.pointA.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointA.analysis) { onDataChanged(data.copy(pointA = data.pointA.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                FilledTonalButton(onClick = { showLightingDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
-                    Text("Tambah Titik Pengukuran")
-                }
+                // Titik B
+                Text("Titik B", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (Lux)", data.pointB.result) { onDataChanged(data.copy(pointB = data.pointB.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointB.analysis) { onDataChanged(data.copy(pointB = data.pointB.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                data.measurements.forEachIndexed { index, point ->
-                    MotorDieselListItemWithDelete(onDelete = { viewModel.deleteMotorDieselLightingPoint(index) }) {
-                        Text("Titik ${point.point}: ${point.valueLux} Lux", modifier = Modifier.padding(8.dp))
-                    }
-                }
+                // Titik C
+                Text("Titik C", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (Lux)", data.pointC.result) { onDataChanged(data.copy(pointC = data.pointC.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointC.analysis) { onDataChanged(data.copy(pointC = data.pointC.copy(analysis = it))) }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                // Titik D
+                Text("Titik D", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                MotorDieselFormTextField("Hasil Pengukuran (Lux)", data.pointD.result) { onDataChanged(data.copy(pointD = data.pointD.copy(result = it))) }
+                MotorDieselFormTextField("Analisa", data.pointD.analysis) { onDataChanged(data.copy(pointD = data.pointD.copy(analysis = it))) }
             }
         }
 

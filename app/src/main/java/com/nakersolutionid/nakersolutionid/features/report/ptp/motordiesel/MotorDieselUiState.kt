@@ -1,9 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel
 
 import androidx.compose.runtime.Immutable
-import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
-import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -278,33 +275,36 @@ data class DieselMotorMcbCalculationResult(
     val requiredAmps: String = ""
 )
 
+/**
+ * Mewakili satu titik pengukuran dengan hasil dan analisanya.
+ */
 @Immutable
-data class DieselMotorMeasurement<T>(
-    val location: String = "",
-    val measurements: ImmutableList<T> = persistentListOf(),
-    val analysis: DieselMotorMeasurementAnalysis = DieselMotorMeasurementAnalysis()
+data class DieselMotorMeasurementPoint(
+    val result: String = "",
+    val analysis: String = ""
 )
 
+/**
+ * Kelas data statis baru untuk Pengukuran Kebisingan.
+ */
 @Immutable
-data class DieselMotorNoiseMeasurementPoint(
-    val point: String = "",
-    val valueDb: String = ""
+data class DieselMotorNoiseMeasurement(
+    val pointA: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint(),
+    val pointB: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint(),
+    val pointC: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint(),
+    val pointD: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint()
 )
 
+/**
+ * Kelas data statis baru untuk Pengukuran Pencahayaan.
+ */
 @Immutable
-data class DieselMotorLightingMeasurementPoint(
-    val point: String = "",
-    val valueLux: String = ""
+data class DieselMotorLightingMeasurement(
+    val pointA: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint(),
+    val pointB: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint(),
+    val pointC: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint(),
+    val pointD: DieselMotorMeasurementPoint = DieselMotorMeasurementPoint()
 )
-
-@Immutable
-data class DieselMotorMeasurementAnalysis(
-    val standard: String = "",
-    val result: String = ""
-)
-
-typealias DieselMotorNoiseMeasurement = DieselMotorMeasurement<DieselMotorNoiseMeasurementPoint>
-typealias DieselMotorLightingMeasurement = DieselMotorMeasurement<DieselMotorLightingMeasurementPoint>
 
 @Immutable
 data class DieselMotorConclusion(

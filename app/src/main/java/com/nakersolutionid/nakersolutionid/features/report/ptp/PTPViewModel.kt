@@ -12,8 +12,6 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.Productio
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.toMachineUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorInspectionReport
-import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorLightingMeasurementPoint
-import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorNoiseMeasurementPoint
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toDieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toInspectionWithDetailsDomain
@@ -120,33 +118,7 @@ class PTPViewModel(
         _motorDieselUiState.update { it.copy(inspectionReport = newReport) }
     }
 
-    fun addMotorDieselNoisePoint(point: DieselMotorNoiseMeasurementPoint) = viewModelScope.launch {
-        val report = _motorDieselUiState.value.inspectionReport
-        val measurement = report.noiseMeasurement
-        val newPoints = (measurement.measurements + point).toImmutableList()
-        onMotorDieselReportChange(report.copy(noiseMeasurement = measurement.copy(measurements = newPoints)))
-    }
 
-    fun deleteMotorDieselNoisePoint(index: Int) = viewModelScope.launch {
-        val report = _motorDieselUiState.value.inspectionReport
-        val measurement = report.noiseMeasurement
-        val newPoints = measurement.measurements.toMutableList().apply { removeAt(index) }.toImmutableList()
-        onMotorDieselReportChange(report.copy(noiseMeasurement = measurement.copy(measurements = newPoints)))
-    }
-
-    fun addMotorDieselLightingPoint(point: DieselMotorLightingMeasurementPoint) = viewModelScope.launch {
-        val report = _motorDieselUiState.value.inspectionReport
-        val measurement = report.lightingMeasurement
-        val newPoints = (measurement.measurements + point).toImmutableList()
-        onMotorDieselReportChange(report.copy(lightingMeasurement = measurement.copy(measurements = newPoints)))
-    }
-
-    fun deleteMotorDieselLightingPoint(index: Int) = viewModelScope.launch {
-        val report = _motorDieselUiState.value.inspectionReport
-        val measurement = report.lightingMeasurement
-        val newPoints = measurement.measurements.toMutableList().apply { removeAt(index) }.toImmutableList()
-        onMotorDieselReportChange(report.copy(lightingMeasurement = measurement.copy(measurements = newPoints)))
-    }
 
     fun addMotorDieselConclusionSummary(item: String) = viewModelScope.launch {
         val report = _motorDieselUiState.value.inspectionReport

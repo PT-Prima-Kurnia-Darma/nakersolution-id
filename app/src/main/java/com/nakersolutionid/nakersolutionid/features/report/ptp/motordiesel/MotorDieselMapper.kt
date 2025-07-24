@@ -287,24 +287,24 @@ fun DieselMotorUiState.toInspectionWithDetailsDomain(
     addCheckItem(mcbCategory, "calc_requiredAmps", mcb.calculation.requiredAmps)
     addCheckItem(mcbCategory, "conclusion", mcb.conclusion)
 
-    // 7. Map Noise and Lighting to CheckItems
-    addCheckItem("noise_measurement", "location", noise.location)
-    addCheckItem("noise_measurement", "standard", noise.analysis.standard)
-    addCheckItem("noise_measurement", "result", noise.analysis.result)
-    noise.measurements.forEachIndexed { index, item ->
-        val cat = "noise_measurement_item_$index"
-        addCheckItem(cat, "point", item.point)
-        addCheckItem(cat, "valueDb", item.valueDb)
-    }
+    // 7. Petakan Noise dan Lighting ke CheckItems
+    addCheckItem("noise_measurement", "pointA_result", noise.pointA.result)
+    addCheckItem("noise_measurement", "pointA_analysis", noise.pointA.analysis)
+    addCheckItem("noise_measurement", "pointB_result", noise.pointB.result)
+    addCheckItem("noise_measurement", "pointB_analysis", noise.pointB.analysis)
+    addCheckItem("noise_measurement", "pointC_result", noise.pointC.result)
+    addCheckItem("noise_measurement", "pointC_analysis", noise.pointC.analysis)
+    addCheckItem("noise_measurement", "pointD_result", noise.pointD.result)
+    addCheckItem("noise_measurement", "pointD_analysis", noise.pointD.analysis)
 
-    addCheckItem("lighting_measurement", "location", lighting.location)
-    addCheckItem("lighting_measurement", "standard", lighting.analysis.standard)
-    addCheckItem("lighting_measurement", "result", lighting.analysis.result)
-    lighting.measurements.forEachIndexed { index, item ->
-        val cat = "lighting_measurement_item_$index"
-        addCheckItem(cat, "point", item.point)
-        addCheckItem(cat, "valueLux", item.valueLux)
-    }
+    addCheckItem("lighting_measurement", "pointA_result", lighting.pointA.result)
+    addCheckItem("lighting_measurement", "pointA_analysis", lighting.pointA.analysis)
+    addCheckItem("lighting_measurement", "pointB_result", lighting.pointB.result)
+    addCheckItem("lighting_measurement", "pointB_analysis", lighting.pointB.analysis)
+    addCheckItem("lighting_measurement", "pointC_result", lighting.pointC.result)
+    addCheckItem("lighting_measurement", "pointC_analysis", lighting.pointC.analysis)
+    addCheckItem("lighting_measurement", "pointD_result", lighting.pointD.result)
+    addCheckItem("lighting_measurement", "pointD_analysis", lighting.pointD.analysis)
 
     // 8. Map Conclusion to Findings
     val findings = mutableListOf<InspectionFindingDomain>()
@@ -562,38 +562,42 @@ fun InspectionWithDetailsDomain.toDieselMotorUiState(): DieselMotorUiState {
         conclusion = getCheckItemValue(mcbCategory, "conclusion")
     )
 
-    val noisePoints = mutableListOf<DieselMotorNoiseMeasurementPoint>()
-    val noiseItemCategories = this.checkItems.map { it.category }.filter { it.startsWith("noise_measurement_item_") }.mapNotNull { it.substringAfterLast('_').toIntOrNull() }.distinct()
-    noiseItemCategories.forEach { index ->
-        noisePoints.add(DieselMotorNoiseMeasurementPoint(
-            point = getCheckItemValueForIndexed("noise_measurement_item", index, "point"),
-            valueDb = getCheckItemValueForIndexed("noise_measurement_item", index, "valueDb")
-        ))
-    }
     val noiseMeasurement = DieselMotorNoiseMeasurement(
-        location = getCheckItemValue("noise_measurement", "location"),
-        analysis = DieselMotorMeasurementAnalysis(
-            standard = getCheckItemValue("noise_measurement", "standard"),
-            result = getCheckItemValue("noise_measurement", "result")
+        pointA = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("noise_measurement", "pointA_result"),
+            analysis = getCheckItemValue("noise_measurement", "pointA_analysis")
         ),
-        measurements = noisePoints.toImmutableList()
+        pointB = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("noise_measurement", "pointB_result"),
+            analysis = getCheckItemValue("noise_measurement", "pointB_analysis")
+        ),
+        pointC = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("noise_measurement", "pointC_result"),
+            analysis = getCheckItemValue("noise_measurement", "pointC_analysis")
+        ),
+        pointD = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("noise_measurement", "pointD_result"),
+            analysis = getCheckItemValue("noise_measurement", "pointD_analysis")
+        )
     )
 
-    val lightingPoints = mutableListOf<DieselMotorLightingMeasurementPoint>()
-    val lightingItemCategories = this.checkItems.map { it.category }.filter { it.startsWith("lighting_measurement_item_") }.mapNotNull { it.substringAfterLast('_').toIntOrNull() }.distinct()
-    lightingItemCategories.forEach { index ->
-        lightingPoints.add(DieselMotorLightingMeasurementPoint(
-            point = getCheckItemValueForIndexed("lighting_measurement_item", index, "point"),
-            valueLux = getCheckItemValueForIndexed("lighting_measurement_item", index, "valueLux")
-        ))
-    }
     val lightingMeasurement = DieselMotorLightingMeasurement(
-        location = getCheckItemValue("lighting_measurement", "location"),
-        analysis = DieselMotorMeasurementAnalysis(
-            standard = getCheckItemValue("lighting_measurement", "standard"),
-            result = getCheckItemValue("lighting_measurement", "result")
+        pointA = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("lighting_measurement", "pointA_result"),
+            analysis = getCheckItemValue("lighting_measurement", "pointA_analysis")
         ),
-        measurements = lightingPoints.toImmutableList()
+        pointB = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("lighting_measurement", "pointB_result"),
+            analysis = getCheckItemValue("lighting_measurement", "pointB_analysis")
+        ),
+        pointC = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("lighting_measurement", "pointC_result"),
+            analysis = getCheckItemValue("lighting_measurement", "pointC_analysis")
+        ),
+        pointD = DieselMotorMeasurementPoint(
+            result = getCheckItemValue("lighting_measurement", "pointD_result"),
+            analysis = getCheckItemValue("lighting_measurement", "pointD_analysis")
+        )
     )
 
     val summary = this.findings.filter { it.type == FindingType.FINDING }.map { it.description }
