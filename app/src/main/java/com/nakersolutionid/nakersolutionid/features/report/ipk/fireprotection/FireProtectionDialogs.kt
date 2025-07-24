@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -97,6 +99,40 @@ fun AddHydrantTestDialog(
                         Spacer(Modifier.width(8.dp))
                         Button(onClick = { onConfirm(item) }) { Text("Simpan") }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AddAlarmInstallationDialog(
+    onDismissRequest: () -> Unit,
+    onConfirm: (FireProtectionAlarmInstallationItem) -> Unit
+) {
+    var item by remember { mutableStateOf(FireProtectionAlarmInstallationItem()) }
+    Dialog(onDismissRequest = onDismissRequest) {
+        Card {
+            Column(modifier = Modifier.padding(24.dp)) {
+                Text("Tambah Data Pemasangan Alarm", style = MaterialTheme.typography.titleLarge)
+                Spacer(Modifier.height(8.dp))
+                LazyColumn(modifier = Modifier.heightIn(max = 400.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    item { OutlinedTextField(label = { Text("Lokasi") }, value = item.location, onValueChange = { item = item.copy(location = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("Zone") }, value = item.zone, onValueChange = { item = item.copy(zone = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("ROR") }, value = item.ror, onValueChange = { item = item.copy(ror = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("Fixed") }, value = item.fixed, onValueChange = { item = item.copy(fixed = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("Smoke") }, value = item.smoke, onValueChange = { item = item.copy(smoke = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("TPM") }, value = item.tpm, onValueChange = { item = item.copy(tpm = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("FLSw") }, value = item.flsw, onValueChange = { item = item.copy(flsw = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("Alarm Bell") }, value = item.bell, onValueChange = { item = item.copy(bell = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("Alarm Lamp") }, value = item.lamp, onValueChange = { item = item.copy(lamp = it) }, modifier = Modifier.fillMaxWidth()) }
+                    item { OutlinedTextField(label = { Text("Status") }, value = item.status, onValueChange = { item = item.copy(status = it) }, modifier = Modifier.fillMaxWidth()) }
+                }
+                Spacer(Modifier.height(8.dp))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(onClick = onDismissRequest) { Text("Batal") }
+                    Spacer(Modifier.width(8.dp))
+                    Button(onClick = { onConfirm(item) }) { Text("Simpan") }
                 }
             }
         }

@@ -35,6 +35,7 @@ fun FireProtectionScreen(
     var showPumpTestDialog by remember { mutableStateOf(false) }
     var showHydrantTestDialog by remember { mutableStateOf(false) }
     var showRecommendationDialog by remember { mutableStateOf(false) }
+    var showAlarmInstallationDialog by remember { mutableStateOf(false) }
 
     if (showPumpTestDialog) {
         AddPumpTestDialog(
@@ -54,6 +55,16 @@ fun FireProtectionScreen(
             label = "Poin Syarat",
             onDismissRequest = { showRecommendationDialog = false },
             onConfirm = { viewModel.addConclusionRecommendation(it); showRecommendationDialog = false }
+        )
+    }
+
+    if (showAlarmInstallationDialog) {
+        AddAlarmInstallationDialog(
+            onDismissRequest = { showAlarmInstallationDialog = false },
+            onConfirm = {
+                viewModel.addAlarmInstallationItem(it) // Assumes ViewModel has this method
+                showAlarmInstallationDialog = false
+            }
         )
     }
 
@@ -173,6 +184,33 @@ fun FireProtectionScreen(
 //                    FireProtectionFormTextField("Hasil", apar.result) { onAparChanged(apar.copy(result = it)) }
                     FireProtectionFormTextField("Keterangan", apar.remarks) { onAparChanged(apar.copy(remarks = it)) }
                 }
+            }
+        }
+
+        item {
+            FireProtectionExpandableSection("DATA PEMASANGAN INSTALASI ALARM") {
+                FilledTonalButton(onClick = { showAlarmInstallationDialog = true }, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
+                    Text("Tambah Data Pemasangan")
+                }
+                report.alarmInstallationItems.forEachIndexed { index, item ->
+                    FireProtectionListItemWithDelete(onDelete = { viewModel.deleteAlarmInstallationItem(index) }) { // Assumes ViewModel has this method
+                        Column(Modifier.padding(8.dp)) {
+                            Text("Lokasi: ${item.location} | Zone: ${item.zone}", fontWeight = FontWeight.SemiBold)
+                            Text("Status: ${item.status}")
+                        }
+                    }
+                }
+                HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                FireProtectionFormTextField(
+                    "Total Pemeriksaan",
+                    report.totalAlarmInstallation
+                ) { onDataChange(report.copy(totalAlarmInstallation = it)) }
+
+                FireProtectionFormTextField(
+                    "Hasil (%)",
+                    report.resultAlarmInstallation
+                ) { onDataChange(report.copy(resultAlarmInstallation = it)) }
             }
         }
 

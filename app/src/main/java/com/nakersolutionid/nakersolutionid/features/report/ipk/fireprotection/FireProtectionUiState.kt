@@ -26,6 +26,9 @@ data class FireProtectionInspectionReport(
     val buildingData: FireProtectionBuildingData = FireProtectionBuildingData(),
     val automaticFireAlarmSpecifications: FireProtectionAutomaticFireAlarmSpecifications = FireProtectionAutomaticFireAlarmSpecifications(),
     val alarmInstallationTesting: FireProtectionAlarmInstallationTesting = FireProtectionAlarmInstallationTesting(),
+    val alarmInstallationItems: ImmutableList<FireProtectionAlarmInstallationItem> = persistentListOf(),
+    val totalAlarmInstallation: String = "",
+    val resultAlarmInstallation: String = "",
     val hydrantSystemInstallation: FireProtectionHydrantSystemInstallation = FireProtectionHydrantSystemInstallation(),
     val pumpFunctionTest: ImmutableList<FireProtectionPumpFunctionTestItem> = persistentListOf(),
     val hydrantOperationalTest: ImmutableList<FireProtectionHydrantOperationalTestItem> = persistentListOf(),
@@ -44,6 +47,20 @@ data class FireProtectionDocumentChecklist(
     val previousTestDocumentation: FireProtectionChecklistResult = FireProtectionChecklistResult(),
     val requestLetter: FireProtectionChecklistResult = FireProtectionChecklistResult(),
     val specificationDocument: FireProtectionChecklistResult = FireProtectionChecklistResult()
+)
+
+@Immutable
+data class FireProtectionAlarmInstallationItem(
+    val location: String = "",
+    val zone: String = "",
+    val ror: String = "",
+    val fixed: String = "",
+    val smoke: String = "",
+    val tpm: String = "",
+    val flsw: String = "",
+    val bell: String = "",
+    val lamp: String = "",
+    val status: String = ""
 )
 
 @Immutable
