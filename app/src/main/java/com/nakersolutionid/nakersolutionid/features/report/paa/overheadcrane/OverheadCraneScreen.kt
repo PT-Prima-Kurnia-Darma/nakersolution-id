@@ -142,6 +142,7 @@ fun OverheadCraneScreen(
             val data = report.technicalData
             ExpandableSection(title = "DATA TEKNIK") {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.End) {
+                    Text("", modifier = Modifier.weight(2f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     Text("Hoisting", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     Text("Traveling", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     Text("Traversing", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
@@ -342,6 +343,15 @@ fun OverheadCraneScreen(
                     InspectionResultInput(label = "Keretakan", value = v.idleWheelOnTrolleyCracks, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(idleWheelOnTrolleyCracks = it))) })
                     InspectionResultInput(label = "Perubahan Bentuk", value = v.idleWheelOnTrolleyDeformation, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(idleWheelOnTrolleyDeformation = it))) })
                     InspectionResultInput(label = "Kondisi Flensa", value = v.idleWheelOnTrolleyFlangeCondition, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(idleWheelOnTrolleyFlangeCondition = it))) })
+
+                    Text("Penghubung Roda Trolley / Gardan", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
+                    InspectionResultInput(label = "Kelurusan", value = v.wheelConnectorBogieAxleOnTrolleyStraightness, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(wheelConnectorBogieAxleOnTrolleyStraightness = it))) })
+                    InspectionResultInput(label = "Cross Joint", value = v.wheelConnectorBogieAxleOnTrolleyCrossJoint, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(wheelConnectorBogieAxleOnTrolleyCrossJoint = it))) })
+                    InspectionResultInput(label = "Pelumasan", value = v.wheelConnectorBogieAxleOnTrolleyLubrication, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(wheelConnectorBogieAxleOnTrolleyLubrication = it))) })
+
+                    Text("Stoper Bumper pada Girder (Trolley)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
+                    InspectionResultInput(label = "Kondisi", value = v.stopperBumperOnGirderOnTrolleyCondition, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(stopperBumperOnGirderOnTrolleyCondition = it))) })
+                    InspectionResultInput(label = "Penguat", value = v.stopperBumperOnGirderOnTrolleyReinforcement, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(stopperBumperOnGirderOnTrolleyReinforcement = it))) })
                 }
                 HorizontalDivider()
                 ExpandableSubSection("Mekanisme Angkat (Hoist)") {
