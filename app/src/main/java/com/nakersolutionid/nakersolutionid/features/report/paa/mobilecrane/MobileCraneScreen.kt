@@ -402,6 +402,11 @@ fun MobileCraneScreen(
                     VisualInspectionInput(label = "Keausan", value = v.auxiliaryWireRopeVisualWear, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(auxiliaryWireRopeVisualWear = it))) })
                     VisualInspectionInput(label = "Putus", value = v.auxiliaryWireRopeVisualBreakage, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(auxiliaryWireRopeVisualBreakage = it))) })
                     VisualInspectionInput(label = "Perubahan Bentuk", value = v.auxiliaryWireRopeVisualDeformation, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(auxiliaryWireRopeVisualDeformation = it))) })
+
+                    Text("Limit Switch (LS)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
+                    VisualInspectionInput(label = "Limit Switch Long Travel", value = v.limitSwitchLsLongTravel, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(limitSwitchLsLongTravel = it))) })
+                    VisualInspectionInput(label = "Limit Switch Cross Travel", value = v.limitSwitchLsCrossTravel, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(limitSwitchLsCrossTravel = it))) })
+                    VisualInspectionInput(label = "Limit Switch Hoisting", value = v.limitSwitchLsHoisting, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(limitSwitchLsHoisting = it))) })
                 }
                 HorizontalDivider()
                 ExpandableSubSection("Sistem Mesin, Hidrolik & Pneumatik") {
@@ -481,11 +486,20 @@ fun MobileCraneScreen(
                     VisualInspectionInput(label = "Instalasi", value = v.electricalComponentsInstallation, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(electricalComponentsInstallation = it))) })
 
                     Text("Alat Pengaman", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
-                    VisualInspectionInput(label = "Limit Switch Long Travel", value = v.limitSwitchLsLongTravel, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(limitSwitchLsLongTravel = it))) })
-                    VisualInspectionInput(label = "Limit Switch Cross Travel", value = v.limitSwitchLsCrossTravel, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(limitSwitchLsCrossTravel = it))) })
-                    VisualInspectionInput(label = "Limit Switch Hoisting", value = v.limitSwitchLsHoisting, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(limitSwitchLsHoisting = it))) })
                     VisualInspectionInput(label = "Pegangan Tangan", value = v.safetyDevicesLadderHandrail, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesLadderHandrail = it))) })
                     VisualInspectionInput(label = "Tekanan Oli Mesin", value = v.safetyDevicesEngineOilLubricantPressure, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesEngineOilLubricantPressure = it))) })
+                    VisualInspectionInput(label = "Tekanan Oli Hidrolik", value = v.safetyDevicesHydraulicOilPressure, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesHydraulicOilPressure = it))) })
+                    VisualInspectionInput(label = "Tekanan Udara", value = v.safetyDevicesAirPressure, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesAirPressure = it))) })
+                    VisualInspectionInput(label = "Amperemeter", value = v.safetyDevicesAmperemeter, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesAmperemeter = it))) })
+                    VisualInspectionInput(label = "Voltage", value = v.safetyDevicesVoltage, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesVoltage = it))) })
+                    VisualInspectionInput(label = "Suhu Mesin", value = v.safetyDevicesEngineTemperature, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesEngineTemperature = it))) })
+                    VisualInspectionInput(label = "Suhu Transmisi", value = v.safetyDevicesTransmissionTemperature, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesTransmissionTemperature = it))) })
+                    VisualInspectionInput(label = "Suhu/Tekanan Minyak Konventor", value = v.safetyDevicesConverterOilTemperaturePressure, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesConverterOilTemperaturePressure = it))) })
+                    VisualInspectionInput(label = "Indikator Kecepatan/Speedometer", value = v.safetyDevicesSpeedometerIndicator, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesSpeedometerIndicator = it))) })
+                    VisualInspectionInput(label = "Lampu Rotari", value = v.safetyDevicesRotaryLamp, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesRotaryLamp = it))) })
+                    VisualInspectionInput(label = "Pembatas Gerak Naik/Turun Tali Utama", value = v.safetyDevicesMainHoistRopeUpDownLimit, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesMainHoistRopeUpDownLimit = it))) })
+                    VisualInspectionInput(label = "Pembatas Gerak Naik/Turun Tali Bantu", value = v.safetyDevicesAuxiliaryHoistRopeUpDownLimit, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesAuxiliaryHoistRopeUpDownLimit = it))) })
+                    VisualInspectionInput(label = "Pembatas Gerak Putar/Swing", value = v.safetyDevicesSwingMotionLimit, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesSwingMotionLimit = it))) })
                     VisualInspectionInput(label = "Level Indikator", value = v.safetyDevicesLevelIndicator, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesLevelIndicator = it))) })
                     VisualInspectionInput(label = "Indikator Berat Beban", value = v.safetyDevicesLoadWeightIndicator, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesLoadWeightIndicator = it))) })
                     VisualInspectionInput(label = "Daftar Beban (Load Chart)", value = v.safetyDevicesLoadChart, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesLoadChart = it))) })
@@ -493,6 +507,12 @@ fun MobileCraneScreen(
                     VisualInspectionInput(label = "Indikator Sudut Boom", value = v.safetyDevicesBoomAngleIndicator, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesBoomAngleIndicator = it))) })
                     VisualInspectionInput(label = "Indikator Tekanan Udara", value = v.safetyDevicesAirPressureIndicator, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesAirPressureIndicator = it))) })
                     VisualInspectionInput(label = "Indikator Tekanan Hidrolik", value = v.safetyDevicesHydraulicPressureIndicator, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesHydraulicPressureIndicator = it))) })
+                    VisualInspectionInput(label = "Katup-katup Pengaman", value = v.safetyDevicesSafetyValves, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesSafetyValves = it))) })
+                    VisualInspectionInput(label = "Kunci Pengaman Tromol Gulung Utama", value = v.safetyDevicesMainWindingDrumSafetyLock, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesMainWindingDrumSafetyLock = it))) })
+                    VisualInspectionInput(label = "Kunci Pengaman Tromol Gulung Bantu", value = v.safetyDevicesAuxiliaryWindingDrumSafetyLock, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesAuxiliaryWindingDrumSafetyLock = it))) })
+                    VisualInspectionInput(label = "Pembatas Gerak Teleskopik", value = v.safetyDevicesTelescopicMotionLimit, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesTelescopicMotionLimit = it))) })
+                    VisualInspectionInput(label = "Penangkal Petir", value = v.safetyDevicesLightningArrester, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesLightningArrester = it))) })
+                    VisualInspectionInput(label = "Indikator Ketinggian Angkat", value = v.safetyDevicesLiftingHeightIndicator, onValueChange = { onDataChange(report.copy(visualInspection = v.copy(safetyDevicesLiftingHeightIndicator = it))) })
                 }
             }
         }

@@ -270,6 +270,7 @@ data class MobileCraneVisualInspection(
     val electricalComponentsInstallation: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesLadderHandrail: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesEngineOilLubricantPressure: MobileCraneInspectionResult = MobileCraneInspectionResult(),
+
     val safetyDevicesHydraulicOilPressure: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesAirPressure: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesAmperemeter: MobileCraneInspectionResult = MobileCraneInspectionResult(),
@@ -282,6 +283,7 @@ data class MobileCraneVisualInspection(
     val safetyDevicesMainHoistRopeUpDownLimit: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesAuxiliaryHoistRopeUpDownLimit: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesSwingMotionLimit: MobileCraneInspectionResult = MobileCraneInspectionResult(),
+
     val safetyDevicesLevelIndicator: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesLoadWeightIndicator: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesLoadChart: MobileCraneInspectionResult = MobileCraneInspectionResult(),
@@ -289,6 +291,7 @@ data class MobileCraneVisualInspection(
     val safetyDevicesBoomAngleIndicator: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesAirPressureIndicator: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesHydraulicPressureIndicator: MobileCraneInspectionResult = MobileCraneInspectionResult(),
+
     val safetyDevicesSafetyValves: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesMainWindingDrumSafetyLock: MobileCraneInspectionResult = MobileCraneInspectionResult(),
     val safetyDevicesAuxiliaryWindingDrumSafetyLock: MobileCraneInspectionResult = MobileCraneInspectionResult(),
