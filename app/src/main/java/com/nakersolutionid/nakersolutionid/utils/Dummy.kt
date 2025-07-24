@@ -2985,19 +2985,6 @@ object Dummy {
                     ),
                     summary = "Foundation weight (24 Ton) is sufficient for the machine's total weight (9.0 Ton), exceeding the minimum required by a factor of 2.6. This ensures stability and minimizes vibration."
                 ),
-                noiseAndLightingMeasurement = ProductionMachineNoiseAndLightingMeasurement(
-                    noise = ProductionMachineNoiseMeasurement(
-                        measurementPointA_db = "78",
-                        standard = "< 85 db",
-                        result = "Compliant"
-                    ),
-                    lighting = ProductionMachineLightingMeasurement(
-                        measurementPointA_lux = "350",
-                        standard = "> 100 lux",
-                        result = "Compliant"
-                    ),
-                    regulationBasis = "Permenaker No. 5 Tahun 2018"
-                ),
                 conclusion = ProductionMachineConclusion(
                     summary = persistentListOf(
                         "The shearing machine is in good operational condition and meets most safety and technical specifications.",
