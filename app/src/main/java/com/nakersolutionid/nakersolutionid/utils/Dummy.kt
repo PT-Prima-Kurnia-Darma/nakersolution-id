@@ -3334,7 +3334,12 @@ object Dummy {
                             lengthMm = "4000 mm",
                             quantity = "8"
                         ),
-                        material = "STB 340",
+                        material = GeneralTubePass(
+                            diameterMm = "63.5 mm",
+                            thicknessMm = "4.0 mm",
+                            lengthMm = "4000 mm",
+                            quantity = "8"
+                        ),
                         connectionMethod = "Expanded & Beaded"
                     )
                 ),
@@ -3390,35 +3395,6 @@ object Dummy {
                         materialType = "Carbon Steel",
                         surfaceCondition = "Painted, Good",
                         couplantUsed = "Glycerin"
-                    ),
-                    measurementResultsTable = persistentListOf(
-                        GeneralMeasurementResultItem(
-                            "Shell Top",
-                            "14",
-                            "13.9",
-                            "13.8",
-                            "13.9",
-                            "13.8",
-                            "13.9"
-                        ),
-                        GeneralMeasurementResultItem(
-                            "Shell Bottom",
-                            "14",
-                            "13.8",
-                            "13.8",
-                            "13.9",
-                            "13.8",
-                            "13.9"
-                        ),
-                        GeneralMeasurementResultItem(
-                            "Front Head",
-                            "16",
-                            "15.8",
-                            "15.7",
-                            "15.8",
-                            "15.7",
-                            "15.8"
-                        )
                     ),
                     ndtTests = GeneralNdtTests(
                         shell = GeneralNdtTestComponent(
