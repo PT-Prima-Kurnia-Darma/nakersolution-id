@@ -12,8 +12,14 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapR
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toEscalatorBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toEscalatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiPaths
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
@@ -24,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlin.collections.forEach
 
 class ReportRepository(
     private val localDataSource: LocalDataSource,
@@ -93,7 +100,11 @@ class ReportRepository(
                         reportPath,
                         report.toElevatorReportRequest()
                     ).first()
-                    SubInspectionType.Escalator,
+                    SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(
+                        token,
+                        reportPath,
+                        report.toEscalatorReportRequest()
+                    ).first()
                     SubInspectionType.Forklift,
                     SubInspectionType.Mobile_Crane,
                     SubInspectionType.Overhead_Crane,
@@ -108,6 +119,16 @@ class ReportRepository(
                         bapPath,
                         report.toElevatorBapRequest()
                     ).first()
+                    SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(
+                        token,
+                        bapPath,
+                        report.toEscalatorBapRequest()
+                    ).first()
+                    SubInspectionType.Forklift,
+                    SubInspectionType.Mobile_Crane,
+                    SubInspectionType.Overhead_Crane,
+                    SubInspectionType.Gantry_Crane,
+                    SubInspectionType.Gondola -> ApiResponse.Empty
                     else -> ApiResponse.Empty
                 }
                 else -> ApiResponse.Empty
@@ -126,12 +147,12 @@ class ReportRepository(
                             var moreExtraId = ""
                             val responseType = when (data) {
                                 // Laporan
-                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id;data.laporan.toInspectionWithDetailsDomain() }
-                                // is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
+                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
+                                is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
 
                                 // Bap
                                 is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.laporanId; moreExtraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
-                                // is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
+                                is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.laporanId; moreExtraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
                                 else -> null
                             }
 
