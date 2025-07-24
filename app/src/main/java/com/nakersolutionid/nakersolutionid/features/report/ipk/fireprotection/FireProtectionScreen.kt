@@ -256,6 +256,36 @@ fun FireProtectionScreen(
                     FireProtectionFormTextField("Penempatan", hydrant.placement) { onHydrantChanged(hydrant.copy(placement = it)) }
                 }
 
+                FireProtectionExpandableSubSection("Landing Valve") {
+                    val valve = data.landingValve
+                    val onValveChanged: (FireProtectionLandingValve) -> Unit = { onDataChanged(data.copy(landingValve = it)) }
+                    FireProtectionFormTextField("Jumlah Titik", valve.points) { onValveChanged(valve.copy(points = it)) }
+                    FireProtectionFormTextField("Diameter Keluaran (Inch)", valve.outletDiameterInch) { onValveChanged(valve.copy(outletDiameterInch = it)) }
+                    FireProtectionFormTextField("Jenis Kopling", valve.couplingType) { onValveChanged(valve.copy(couplingType = it)) }
+                    FireProtectionFormTextField("Penempatan", valve.placement) { onValveChanged(valve.copy(placement = it)) }
+                }
+
+                FireProtectionExpandableSubSection("Hydrant Halaman") {
+                    val hydrant = data.yardHydrant
+                    val onHydrantChanged: (FireProtectionYardHydrant) -> Unit = { onDataChanged(data.copy(yardHydrant = it)) }
+                    FireProtectionFormTextField("Jumlah Titik", hydrant.points) { onHydrantChanged(hydrant.copy(points = it)) }
+                    FireProtectionFormTextField("Diameter Keluaran (Inch)", hydrant.outletDiameterInch) { onHydrantChanged(hydrant.copy(outletDiameterInch = it)) }
+                    FireProtectionFormTextField("Panjang Selang (m)", hydrant.hoseLengthM) { onHydrantChanged(hydrant.copy(hoseLengthM = it)) }
+                    FireProtectionFormTextField("Diameter Nozzle (Inch)", hydrant.nozzleDiameterInch) { onHydrantChanged(hydrant.copy(nozzleDiameterInch = it)) }
+                    FireProtectionFormTextField("Penempatan", hydrant.placement) { onHydrantChanged(hydrant.copy(placement = it)) }
+                }
+
+                FireProtectionExpandableSubSection("Sambungan Dinas Kebakaran") {
+                    val conn = data.fireServiceConnection
+                    val onConnChanged: (FireProtectionFireServiceConnection) -> Unit = { onDataChanged(data.copy(fireServiceConnection = it)) }
+                    FireProtectionFormTextField("Jumlah Titik", conn.points) { onConnChanged(conn.copy(points = it)) }
+                    FireProtectionFormTextField("Diameter Inlet (Inch)", conn.inletDiameterInch) { onConnChanged(conn.copy(inletDiameterInch = it)) }
+                    FireProtectionFormTextField("Diameter Keluaran (Inch)", conn.outletDiameterInch) { onConnChanged(conn.copy(outletDiameterInch = it)) }
+                    FireProtectionFormTextField("Jenis Kopling", conn.couplingType) { onConnChanged(conn.copy(couplingType = it)) }
+                    FireProtectionFormTextField("Kondisi", conn.condition) { onConnChanged(conn.copy(condition = it)) }
+                    FireProtectionFormTextField("Penempatan", conn.placement) { onConnChanged(conn.copy(placement = it)) }
+                }
+
                 SystemComponentInput("Pipa Hisap", data.suctionPipe) { onDataChanged(data.copy(suctionPipe = it)) }
                 SystemComponentInput("Pipa Penyalur Utama", data.mainPipe) { onDataChanged(data.copy(mainPipe = it)) }
                 SystemComponentInput("Pipa Tegak", data.standPipe) { onDataChanged(data.copy(standPipe = it)) }
