@@ -352,7 +352,7 @@ class RemoteDataSource(val apiServices: ApiServices) {
     ): Flow<ApiResponse<BaseApiResponse<Unit>>> {
         return flow {
             val result: ApiResponse<BaseApiResponse<Unit>> = try {
-                val response = apiServices.deleteReport("Bearer $token", path, extraId)
+                val response = apiServices.deleteReport(token, path, extraId)
                 if (response.isSuccessful) {
                     response.body()?.let {
                         ApiResponse.Success(it)
