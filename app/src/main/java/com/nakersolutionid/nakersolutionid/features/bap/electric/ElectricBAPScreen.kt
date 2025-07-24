@@ -98,7 +98,7 @@ fun ElectricalBAPScreen(
                 FormTextField(label = "Tenaga (KVA)", value = data.powerUsage.powerKva, onValueChange = { onDataChange(report.copy(technicalData = data.copy(powerUsage = data.powerUsage.copy(powerKva = it)))) })
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                FormTextField(label = "Jenis Arus Listrik", value = data.electricCurrentType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(electricCurrentType = it))) })
+//                FormTextField(label = "Jenis Arus Listrik", value = data.electricCurrentType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(electricCurrentType = it))) })
                 FormTextField(label = "Nomor Seri", value = data.serialNumber, onValueChange = { onDataChange(report.copy(technicalData = data.copy(serialNumber = it))) })
             }
         }
