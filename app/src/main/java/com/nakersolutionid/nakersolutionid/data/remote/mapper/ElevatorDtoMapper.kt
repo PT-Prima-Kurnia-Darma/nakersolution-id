@@ -29,11 +29,6 @@ private object ElevatorCategory {
     const val SEISMIC = "$ELECTRICAL - Sensor Gempa"
 }
 
-private object BAPCategory {
-    const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
-    const val TESTING = "PENGUJIAN"
-}
-
 fun InspectionWithDetailsDomain.toElevatorBapRequest(): ElevatorBapRequest {
     val checkItems = this.checkItems
     fun findBoolItem(category: String, itemName: String): Boolean {
