@@ -104,7 +104,7 @@ data class GeneralWaterTubes(
     val firstPass: GeneralTubePass = GeneralTubePass(),
     val secondPass: GeneralTubePass = GeneralTubePass(),
     val stayTube: GeneralTubePass = GeneralTubePass(),
-    val material: String = "",
+    val material: GeneralTubePass = GeneralTubePass(),
     val connectionMethod: String = ""
 )
 
@@ -121,7 +121,9 @@ data class GeneralInspectionAndMeasurement(
     val visualInspection: GeneralVisualInspection = GeneralVisualInspection(),
     val materialThickness: GeneralMaterialThickness = GeneralMaterialThickness(),
     val thicknessMeasurementSetup: GeneralThicknessMeasurementSetup = GeneralThicknessMeasurementSetup(),
-    val measurementResultsTable: ImmutableList<GeneralMeasurementResultItem> = persistentListOf(),
+    val measurementResultsTopHead: GeneralMeasurementResultItem = GeneralMeasurementResultItem(),
+    val measurementResultsShell: GeneralMeasurementResultItem = GeneralMeasurementResultItem(),
+    val measurementResultsButtonHead: GeneralMeasurementResultItem = GeneralMeasurementResultItem(),
     val ndtTests: GeneralNdtTests = GeneralNdtTests(),
     val hydrotest: GeneralHydrotest = GeneralHydrotest(),
     val appendagesInspection: GeneralAppendagesInspection = GeneralAppendagesInspection(),

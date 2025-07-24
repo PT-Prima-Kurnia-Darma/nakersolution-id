@@ -180,7 +180,11 @@ fun GeneralUiState.toInspectionWithDetailsDomain(
         addCheckItem(techCategory, "tubes_stay_thickness", it.stayTube.thicknessMm)
         addCheckItem(techCategory, "tubes_stay_length", it.stayTube.lengthMm)
         addCheckItem(techCategory, "tubes_stay_quantity", it.stayTube.quantity)
-        addCheckItem(techCategory, "tubes_material", it.material)
+        addCheckItem(techCategory, "tubes_material_diameter", it.material.diameterMm)
+        addCheckItem(techCategory, "tubes_material_thickness", it.material.thicknessMm)
+        addCheckItem(techCategory, "tubes_material_length", it.material.lengthMm)
+        addCheckItem(techCategory, "tubes_material_quantity", it.material.quantity)
+        addCheckItem(techCategory, "tubes_connectionMethod", it.connectionMethod)
         addCheckItem(techCategory, "tubes_connectionMethod", it.connectionMethod)
     }
 
@@ -269,16 +273,18 @@ fun GeneralUiState.toInspectionWithDetailsDomain(
         addCheckItem(setupCategory, "couplantUsed", s.couplantUsed)
     }
 
-    inspection.measurementResultsTable.forEachIndexed { index, item ->
-        val cat = "measurement_results_$index"
-        addCheckItem(cat, "position", item.position)
-        addCheckItem(cat, "nominalMm", item.nominalMm)
-        addCheckItem(cat, "point1", item.point1)
-        addCheckItem(cat, "point2", item.point2)
-        addCheckItem(cat, "point3", item.point3)
-        addCheckItem(cat, "minimum", item.minimum)
-        addCheckItem(cat, "maximum", item.maximum)
+    fun addMeasurementResultItem(category: String, item: GeneralMeasurementResultItem) {
+        addCheckItem(category, "nominalMm", item.nominalMm)
+        addCheckItem(category, "point1", item.point1)
+        addCheckItem(category, "point2", item.point2)
+        addCheckItem(category, "point3", item.point3)
+        addCheckItem(category, "minimum", item.minimum)
+        addCheckItem(category, "maximum", item.maximum)
     }
+
+    addMeasurementResultItem("measurement_top_head", inspection.measurementResultsTopHead)
+    addMeasurementResultItem("measurement_shell", inspection.measurementResultsShell)
+    addMeasurementResultItem("measurement_button_head", inspection.measurementResultsButtonHead)
 
     val ndtCategory = "ndt_tests"
     inspection.ndtTests.shell.let {
@@ -473,7 +479,12 @@ fun InspectionWithDetailsDomain.toGeneralUiState(): GeneralUiState {
                 lengthMm = getCheckItemValue(techCategory, "tubes_stay_length"),
                 quantity = getCheckItemValue(techCategory, "tubes_stay_quantity")
             ),
-            material = getCheckItemValue(techCategory, "tubes_material"),
+            material = GeneralTubePass(
+                diameterMm = getCheckItemValue(techCategory, "tubes_material_diameter"),
+                thicknessMm = getCheckItemValue(techCategory, "tubes_material_thickness"),
+                lengthMm = getCheckItemValue(techCategory, "tubes_material_length"),
+                quantity = getCheckItemValue(techCategory, "tubes_material_quantity")
+            ),
             connectionMethod = getCheckItemValue(techCategory, "tubes_connectionMethod")
         )
     )
@@ -528,6 +539,18 @@ fun InspectionWithDetailsDomain.toGeneralUiState(): GeneralUiState {
         idMarkForm9Stamp = getCheckResult(visualCategory, "idMarkForm9Stamp")
     )
 
+    fun getMeasurementResultItem(category: String): GeneralMeasurementResultItem {
+        return GeneralMeasurementResultItem(
+            nominalMm = getCheckItemValue(category, "nominalMm"),
+            point1 = getCheckItemValue(category, "point1"),
+            point2 = getCheckItemValue(category, "point2"),
+            point3 = getCheckItemValue(category, "point3"),
+            minimum = getCheckItemValue(category, "minimum"),
+            maximum = getCheckItemValue(category, "maximum")
+        )
+    }
+
+
     val measurementItems = mutableListOf<GeneralMeasurementResultItem>()
     val measurementCategories = this.checkItems.map { it.category }.filter { it.startsWith("measurement_results_") }.mapNotNull { it.substringAfterLast('_').toIntOrNull() }.distinct()
     measurementCategories.forEach { index ->
@@ -574,7 +597,9 @@ fun InspectionWithDetailsDomain.toGeneralUiState(): GeneralUiState {
             laminatingCheck = getCheckItemValue("thickness_setup", "laminatingCheck"),
             couplantUsed = getCheckItemValue("thickness_setup", "couplantUsed")
         ),
-        measurementResultsTable = measurementItems.toImmutableList(),
+        measurementResultsTopHead = getMeasurementResultItem("measurement_top_head"),
+        measurementResultsShell = getMeasurementResultItem("measurement_shell"),
+        measurementResultsButtonHead = getMeasurementResultItem("measurement_button_head"),
         ndtTests = GeneralNdtTests(
             shell = GeneralNdtTestComponent(
                 method = getCheckItemValue("ndt_tests", "shell_method"),

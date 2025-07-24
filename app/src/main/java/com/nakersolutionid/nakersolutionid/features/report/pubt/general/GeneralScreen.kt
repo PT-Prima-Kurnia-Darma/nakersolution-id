@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nakersolutionid.nakersolutionid.features.report.pubt.MeasurementResultType
 import com.nakersolutionid.nakersolutionid.features.report.pubt.PUBTViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -35,13 +36,6 @@ fun GeneralScreen(
     var showMeasurementDialog by remember { mutableStateOf(false) }
     var showSummaryDialog by remember { mutableStateOf(false) }
     var showRecommendationDialog by remember { mutableStateOf(false) }
-
-    if (showMeasurementDialog) {
-        AddMeasurementResultDialog(
-            onDismissRequest = { showMeasurementDialog = false },
-            onConfirm = { viewModel.addMeasurementResultItem(it); showMeasurementDialog = false }
-        )
-    }
 
     if (showSummaryDialog) {
         AddGeneralStringDialog("Tambah Poin Kesimpulan", "Poin Kesimpulan", { showSummaryDialog = false }) {
@@ -159,7 +153,11 @@ fun GeneralScreen(
                     GeneralFormTextField("Panjang (mm)", tubes.stayTube.lengthMm) { onTubesChanged(tubes.copy(stayTube = tubes.stayTube.copy(lengthMm = it))) }
                     GeneralFormTextField("Jumlah", tubes.stayTube.quantity) { onTubesChanged(tubes.copy(stayTube = tubes.stayTube.copy(quantity = it))) }
                     HorizontalDivider(Modifier.padding(vertical = 4.dp))
-                    GeneralFormTextField("Material", tubes.material) { onTubesChanged(tubes.copy(material = it)) }
+                    Text("Material", fontWeight = FontWeight.SemiBold)
+                    GeneralFormTextField("Diameter (mm)", tubes.material.diameterMm) { onTubesChanged(tubes.copy(material = tubes.material.copy(diameterMm = it))) }
+                    GeneralFormTextField("Ketebalan (mm)", tubes.material.thicknessMm) { onTubesChanged(tubes.copy(material = tubes.material.copy(thicknessMm = it))) }
+                    GeneralFormTextField("Panjang (mm)", tubes.material.lengthMm) { onTubesChanged(tubes.copy(material = tubes.material.copy(lengthMm = it))) }
+                    GeneralFormTextField("Jumlah", tubes.material.quantity) { onTubesChanged(tubes.copy(material = tubes.material.copy(quantity = it))) }
                     GeneralFormTextField("Cara Penyambungan", tubes.connectionMethod) { onTubesChanged(tubes.copy(connectionMethod = it)) }
                 }
             }
@@ -262,15 +260,42 @@ fun GeneralScreen(
                 }
                 HorizontalDivider()
                 GeneralExpandableSubSection("Tabel Hasil Pengukuran") {
-                    FilledTonalButton(onClick = { showMeasurementDialog = true }, modifier = Modifier.fillMaxWidth()) {
-                        Icon(Icons.Default.Add, contentDescription = "Add")
-                        Text("Tambah Hasil Pengukuran")
-                    }
-                    data.measurementResultsTable.forEachIndexed { index, item ->
-                        GeneralListItemWithDelete(onDelete = { viewModel.deleteMeasurementResultItem(index) }) {
-                            Text("Posisi: ${item.position}, Nominal: ${item.nominalMm} mm", modifier = Modifier.padding(8.dp))
+                    val data = report.inspectionAndMeasurement
+
+                    // Top Head Measurement
+                    Text("Top Head", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    MeasurementResultItemInput(
+                        item = data.measurementResultsTopHead,
+                        onValueChange = { updatedItem ->
+                            viewModel.updateMeasurementResultItem(updatedItem, MeasurementResultType.TOP_HEAD)
                         }
-                    }
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    HorizontalDivider()
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Shell Measurement
+                    Text("Shell", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    MeasurementResultItemInput(
+                        item = data.measurementResultsShell,
+                        onValueChange = { updatedItem ->
+                            viewModel.updateMeasurementResultItem(updatedItem, MeasurementResultType.SHELL)
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    HorizontalDivider()
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Button Head Measurement
+                    Text("Button Head", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    MeasurementResultItemInput(
+                        item = data.measurementResultsButtonHead,
+                        onValueChange = { updatedItem ->
+                            viewModel.updateMeasurementResultItem(updatedItem, MeasurementResultType.BUTTON_HEAD)
+                        }
+                    )
                 }
                 HorizontalDivider()
                 GeneralExpandableSubSection("Pengujian NDT") {
@@ -362,6 +387,34 @@ fun GeneralScreen(
 
 
 //region Reusable Composables for GeneralScreen
+@Composable
+private fun MeasurementResultItemInput(
+    item: GeneralMeasurementResultItem,
+    onValueChange: (GeneralMeasurementResultItem) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        GeneralFormTextField("Nominal (mm)", item.nominalMm) { onValueChange(item.copy(nominalMm = it)) }
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Box(modifier = Modifier.weight(1f)) {
+                GeneralFormTextField("Titik 1", item.point1) { onValueChange(item.copy(point1 = it)) }
+            }
+            Box(modifier = Modifier.weight(1f)) {
+                GeneralFormTextField("Titik 2", item.point2) { onValueChange(item.copy(point2 = it)) }
+            }
+            Box(modifier = Modifier.weight(1f)) {
+                GeneralFormTextField("Titik 3", item.point3) { onValueChange(item.copy(point3 = it)) }
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Box(modifier = Modifier.weight(1f)) {
+                GeneralFormTextField("Minimum", item.minimum) { onValueChange(item.copy(minimum = it)) }
+            }
+            Box(modifier = Modifier.weight(1f)) {
+                GeneralFormTextField("Maximum", item.maximum) { onValueChange(item.copy(maximum = it)) }
+            }
+        }
+    }
+}
 
 @Composable
 private fun GeneralListItemWithDelete(
