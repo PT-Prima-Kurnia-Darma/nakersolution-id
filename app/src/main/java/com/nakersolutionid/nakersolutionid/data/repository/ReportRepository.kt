@@ -263,6 +263,7 @@ class ReportRepository(
         val data = localDataSource.getInspection(id).firstOrNull()
         data?.let { data ->
             val extraId = data.inspectionEntity.extraId
+            val moreExtraId = data.inspectionEntity.moreExtraId
             val token = userPreference.getUserToken() ?: ""
             val isSynced = data.inspectionEntity.isSynced
 
@@ -295,7 +296,7 @@ class ReportRepository(
 
             val apiResponse = when (data.inspectionEntity.documentType) {
                 DocumentType.LAPORAN -> remoteDataSource.deleteReport(token, reportPath, extraId).first()
-                DocumentType.BAP -> remoteDataSource.deleteReport(token, bapPath, extraId).first()
+                DocumentType.BAP -> remoteDataSource.deleteReport(token, bapPath, moreExtraId).first()
                 else -> ApiResponse.Empty
             }
 
