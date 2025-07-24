@@ -434,7 +434,7 @@ fun MachineRoomAndMachinerySection(
     onDataChange: (MachineRoomAndMachineryUiState) -> Unit
 ) {
     val roomlessData = machineRoom.machineRoomless
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Dudukan mesin", "Kuat", machineRoom.machineMounting) { onDataChange(machineRoom.copy(machineMounting = it)) }
         ResultStatusInput("Rem mekanik", "Ada, berfungsi, baik", machineRoom.mechanicalBrake) { onDataChange(machineRoom.copy(mechanicalBrake = it)) }
         ResultStatusInput("Rem elektrik (brake switch)", "Ada, berfungsi, baik", machineRoom.electricalBrake) { onDataChange(machineRoom.copy(electricalBrake = it)) }
@@ -465,7 +465,7 @@ fun SuspensionRopesAndBeltsSection(
     suspension: SuspensionRopesAndBeltsUiState,
     onDataChange: (SuspensionRopesAndBeltsUiState) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Kondisi tali/sabuk penggantung", "Tidak memiliki sambungan, kuat, luwes, spesifikasi seragam", suspension.condition) { onDataChange(suspension.copy(condition = it)) }
         ResultStatusInput("Penggunaan Rantai", "Tidak menggunakan rantai", suspension.chainUsage) { onDataChange(suspension.copy(chainUsage = it)) }
         ResultStatusInput("Faktor keamanan tali/sabuk", "Sesuai standar kecepatan (8-12x kapasitas angkut)", suspension.safetyFactor) { onDataChange(suspension.copy(safetyFactor = it)) }
@@ -481,7 +481,7 @@ fun DrumsAndSheavesSection(
     drums: DrumsAndSheavesUiState,
     onDataChange: (DrumsAndSheavesUiState) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Alur teromol", "Ada", drums.drumGrooves) { onDataChange(drums.copy(drumGrooves = it)) }
         ResultStatusInput("Diameter teromol penumpang/barang", "40 : 1", drums.passengerDrumDiameter) { onDataChange(drums.copy(passengerDrumDiameter = it)) }
         ResultStatusInput("Diameter teromol Governor", "25 : 1", drums.governorDrumDiameter) { onDataChange(drums.copy(governorDrumDiameter = it)) }
@@ -493,7 +493,7 @@ fun HoistwayAndPitSection(
     hoistway: HoistwayAndPitUiState,
     onDataChange: (HoistwayAndPitUiState) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Konstruksi", "Kuat, kokoh, tahan api, dan tertutup rapat", hoistway.construction) { onDataChange(hoistway.copy(construction = it)) }
         ResultStatusInput("Dinding", "Dapat dilalui orang dengan tinggi ≥ 2000 mm", hoistway.walls) { onDataChange(hoistway.copy(walls = it)) }
         ResultStatusInput("Landasan jalur (elevator miring)", "Kuat dan tahan cuaca", hoistway.inclinedElevatorTrackBed) { onDataChange(hoistway.copy(inclinedElevatorTrackBed = it)) }
@@ -524,7 +524,7 @@ fun CarSection(
 ) {
     val carDoorSpecs = car.carDoorSpecs
     val carSignage = car.carSignage
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Kerangka", "Dari baja dan kuat", car.frame) { onDataChange(car.copy(frame = it)) }
         ResultStatusInput("Badan Kereta", "Tertutup dan ada pintu", car.body) { onDataChange(car.copy(body = it)) }
         ResultStatusInput("Tinggi dinding", "≥ 2000 mm", car.wallHeight) { onDataChange(car.copy(wallHeight = it)) }
@@ -575,7 +575,7 @@ fun GovernorAndSafetyBrakeSection(
     gsb: GovernorAndSafetyBrakeUiState,
     onDataChange: (GovernorAndSafetyBrakeUiState) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Penjepit Tali / Sabuk Governor", "Bekerja", gsb.governorRopeClamp) { onDataChange(gsb.copy(governorRopeClamp = it)) }
         ResultStatusInput("Saklar Governor", "Berfungsi", gsb.governorSwitch) { onDataChange(gsb.copy(governorSwitch = it)) }
         ResultStatusInput("Fungsi Kecepatan Rem Pengaman", "115% - 140%, berhenti bertahap", gsb.safetyBrakeSpeed) { onDataChange(gsb.copy(safetyBrakeSpeed = it)) }
@@ -595,7 +595,7 @@ fun CounterweightGuideRailsAndBuffersSection(
     cgb: CounterweightGuideRailsAndBuffersUiState,
     onDataChange: (CounterweightGuideRailsAndBuffersUiState) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Bahan Bobot Imbang", "Beton/steel block", cgb.counterweightMaterial) { onDataChange(cgb.copy(counterweightMaterial = it)) }
         ResultStatusInput("Sekat Pengaman Bobot Imbang", "Tinggi 2500 mm, > 300mm dari dasar pit", cgb.counterweightGuardScreen) { onDataChange(cgb.copy(counterweightGuardScreen = it)) }
         ResultStatusInput("Konstruksi Rel Pemandu", "Kuat memandu jalan, menahan tekanan saat rem bekerja", cgb.guideRailConstruction) { onDataChange(cgb.copy(guideRailConstruction = it)) }
@@ -613,7 +613,7 @@ fun ElectricalInstallationSection(
     val fireService = electrical.fireServiceElevator
     val accessibility = electrical.accessibilityElevator
     val seismic = electrical.seismicSensor
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ResultStatusInput("Standar Rangkaian Instalasi Listrik", "SNI dan standar Internasional", electrical.installationStandard) { onDataChange(electrical.copy(installationStandard = it)) }
         ResultStatusInput("Panel Listrik", "Panel khusus untuk elevator", electrical.electricalPanel) { onDataChange(electrical.copy(electricalPanel = it)) }
         ResultStatusInput("Catu Daya Pengganti (ARD)", "Tersedia", electrical.backupPowerARD) { onDataChange(electrical.copy(backupPowerARD = it)) }
