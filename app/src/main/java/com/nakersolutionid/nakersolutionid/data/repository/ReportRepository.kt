@@ -184,6 +184,7 @@ class ReportRepository(
             it.toDomain()
         }.forEach { report ->
             val extraId = report.inspection.extraId
+            val moreExtraId = report.inspection.moreExtraId
             val reportPath = when (report.inspection.subInspectionType) {
                 SubInspectionType.Elevator -> ApiPaths.LAPORAN_ELEVATOR
                 SubInspectionType.Escalator -> ApiPaths.LAPORAN_ESKALATOR
@@ -214,7 +215,12 @@ class ReportRepository(
                         extraId,
                         report.toElevatorReportRequest()
                     ).first()
-                    SubInspectionType.Escalator,
+                    SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(
+                        token,
+                        reportPath,
+                        extraId,
+                        report.toEscalatorReportRequest()
+                    ).first()
                     SubInspectionType.Forklift,
                     SubInspectionType.Mobile_Crane,
                     SubInspectionType.Overhead_Crane,
@@ -227,9 +233,20 @@ class ReportRepository(
                     SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(
                         token,
                         bapPath,
-                        extraId,
+                        moreExtraId,
                         report.toElevatorBapRequest()
                     ).first()
+                    SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(
+                        token,
+                        bapPath,
+                        moreExtraId,
+                        report.toEscalatorBapRequest()
+                    ).first()
+                    SubInspectionType.Forklift,
+                    SubInspectionType.Mobile_Crane,
+                    SubInspectionType.Overhead_Crane,
+                    SubInspectionType.Gantry_Crane,
+                    SubInspectionType.Gondola -> ApiResponse.Empty // Not yet implemented
                     else -> ApiResponse.Empty
                 }
                 else -> ApiResponse.Empty
@@ -248,12 +265,12 @@ class ReportRepository(
                             var moreExtraId = ""
                             val responseType = when (data) {
                                 // Laporan
-                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id;data.laporan.toInspectionWithDetailsDomain() }
-                                // is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
+                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
+                                is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
 
                                 // Bap
                                 is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.laporanId; moreExtraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
-                                // is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
+                                is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.laporanId; moreExtraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
                                 else -> null
                             }
 
@@ -267,37 +284,6 @@ class ReportRepository(
                     }
                 }
             }
-
-            /*when (apiResponse) {
-                is ApiResponse.Empty -> null
-                is ApiResponse.Error -> {
-                    fail++
-                }
-                is ApiResponse.Success -> {
-                    try {
-                        apiResponse.data.data?.let { data ->
-                            var id: Long = 0
-                            var extraId: String = ""
-                            val a = when (data) {
-                                // Laporan
-                                is ElevatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan.toInspectionWithDetailsDomain() }
-                                // is EscalatorSingleReportResponseData -> { id = data.laporan.extraId; extraId = data.laporan.id; data.laporan }
-
-                                // Bap
-                                is ElevatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id; data.bap.toInspectionWithDetailsDomain() }
-                                // is EscalatorBapSingleReportResponseData -> { id = data.bap.extraId; extraId = data.bap.id }
-                                else -> null
-                            }
-                            val dummyDomain = InspectionDomain(0, "", DocumentType.LAPORAN, InspectionType.EE, SubInspectionType.Gantry_Crane, "", "")
-                            val dummyInspectionWithDetails = InspectionWithDetailsDomain(dummyDomain, emptyList(), emptyList(), emptyList())
-                            saveReport(a ?: dummyInspectionWithDetails, extraId)
-                            localDataSource.updateSyncStatus(id, true)
-                        } ?: fail++
-                    } catch (_: Exception) {
-                        fail++
-                    }
-                }
-            }*/
         }
         return fail == 0
     }
