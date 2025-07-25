@@ -13,8 +13,8 @@ import com.nakersolutionid.nakersolutionid.utils.Utils
  * Stores all category names as constants to prevent typos and ensure consistency for BAP.
  */
 private object BAPCategory {
-    const val VISUAL_CHECK = "PEMERIKSAAN VISUAL"
-    const val FUNCTIONAL_TEST = "UJI FUNGSI"
+    const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
+    const val TESTING = "PENGUJIAN"
 }
 
 // =================================================================================================
@@ -73,7 +73,7 @@ fun ForkliftBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Lon
 }
 
 private fun mapVisualCheckToDomain(uiState: ForkliftBAPVisualCheck, inspectionId: Long): List<InspectionCheckItemDomain> {
-    val cat = BAPCategory.VISUAL_CHECK
+    val cat = BAPCategory.VISUAL_INSPECTION
     return listOf(
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Fork Mengalami Cacat", status = uiState.hasForkDefects),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Name Plate Terpasang", status = uiState.isNameplateAttached),
@@ -85,7 +85,7 @@ private fun mapVisualCheckToDomain(uiState: ForkliftBAPVisualCheck, inspectionId
 }
 
 private fun mapFunctionalTestToDomain(uiState: ForkliftBAPFunctionalTest, inspectionId: Long): List<InspectionCheckItemDomain> {
-    val cat = BAPCategory.FUNCTIONAL_TEST
+    val cat = BAPCategory.TESTING
     return listOf(
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Beban Uji (kg)", result = uiState.loadTestInKg, status = uiState.loadTestInKg.isNotEmpty()),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Tinggi Angkat Uji (meter)", result = uiState.loadTestLiftHeightInMeters, status = uiState.loadTestLiftHeightInMeters.isNotEmpty()),
@@ -134,22 +134,22 @@ fun InspectionWithDetailsDomain.toForkliftBAPReport(): ForkliftBAPReport {
     )
 
     val visualCheck = ForkliftBAPVisualCheck(
-        hasForkDefects = findBoolItem(BAPCategory.VISUAL_CHECK, "Fork Mengalami Cacat"),
-        isNameplateAttached = findBoolItem(BAPCategory.VISUAL_CHECK, "Name Plate Terpasang"),
-        isAparAvailable = findBoolItem(BAPCategory.VISUAL_CHECK, "APAR Tersedia"),
-        isCapacityMarkingDisplayed = findBoolItem(BAPCategory.VISUAL_CHECK, "Penandaan Kapasitas Terpasang"),
-        hasHydraulicLeak = findBoolItem(BAPCategory.VISUAL_CHECK, "Terdapat Kebocoran Hidrolik"),
-        isChainGoodCondition = findBoolItem(BAPCategory.VISUAL_CHECK, "Kondisi Rantai Baik")
+        hasForkDefects = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Fork Mengalami Cacat"),
+        isNameplateAttached = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Name Plate Terpasang"),
+        isAparAvailable = findBoolItem(BAPCategory.VISUAL_INSPECTION, "APAR Tersedia"),
+        isCapacityMarkingDisplayed = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Penandaan Kapasitas Terpasang"),
+        hasHydraulicLeak = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Terdapat Kebocoran Hidrolik"),
+        isChainGoodCondition = findBoolItem(BAPCategory.VISUAL_INSPECTION, "Kondisi Rantai Baik")
     )
 
     val functionalTest = ForkliftBAPFunctionalTest(
-        loadTestInKg = findStringItem(BAPCategory.FUNCTIONAL_TEST, "Beban Uji (kg)"),
-        loadTestLiftHeightInMeters = findStringItem(BAPCategory.FUNCTIONAL_TEST, "Tinggi Angkat Uji (meter)"),
-        isAbleToLiftAndHold = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Mampu Mengangkat dan Menahan"),
-        isFunctioningWell = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Berfungsi Dengan Baik"),
-        hasCrackIndication = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Ada Indikasi Retak"),
-        isEmergencyStopFunctional = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Stop Darurat Berfungsi"),
-        isWarningLampAndHornFunctional = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Lampu Peringatan dan Klakson Berfungsi")
+        loadTestInKg = findStringItem(BAPCategory.TESTING, "Beban Uji (kg)"),
+        loadTestLiftHeightInMeters = findStringItem(BAPCategory.TESTING, "Tinggi Angkat Uji (meter)"),
+        isAbleToLiftAndHold = findBoolItem(BAPCategory.TESTING, "Mampu Mengangkat dan Menahan"),
+        isFunctioningWell = findBoolItem(BAPCategory.TESTING, "Berfungsi Dengan Baik"),
+        hasCrackIndication = findBoolItem(BAPCategory.TESTING, "Ada Indikasi Retak"),
+        isEmergencyStopFunctional = findBoolItem(BAPCategory.TESTING, "Stop Darurat Berfungsi"),
+        isWarningLampAndHornFunctional = findBoolItem(BAPCategory.TESTING, "Lampu Peringatan dan Klakson Berfungsi")
     )
 
     val inspectionResult = ForkliftBAPInspectionResult(
