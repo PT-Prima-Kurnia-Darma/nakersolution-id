@@ -351,8 +351,13 @@ fun InspectionWithDetailsDomain.toForkliftReportRequest(): ForkliftReportRequest
     )
 
     // Conclusion and Recommendation
-    val conclusion = this.findings.firstOrNull { it.type == FindingType.RECOMMENDATION }?.description ?: ""
-    val recommendation = this.findings.filter { it.type == FindingType.FINDING }.joinToString("\n") { it.description }
+    val conclusion = this.findings
+        .filter { it.type == FindingType.RECOMMENDATION }
+        .joinToString("\n") { it.description }
+
+    val recommendation = this.findings
+        .filter { it.type == FindingType.FINDING }
+        .joinToString("\n") { it.description }
 
     return ForkliftReportRequest(
         inspectionType = this.inspection.inspectionType.toDisplayString(),
@@ -728,11 +733,12 @@ fun ForkliftReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDom
     }
 
     // Map Conclusion and Recommendation to Findings
-    if (this.conclusion.isNotBlank()) {
-        findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = this.conclusion, type = FindingType.RECOMMENDATION))
+    this.conclusion.split('\n').filter { it.isNotBlank() }.forEach { line ->
+        findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = line, type = FindingType.RECOMMENDATION))
     }
-    this.recommendation.split("\n").filter { it.isNotBlank() }.forEach {
-        findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING))
+
+    this.recommendation.split('\n').filter { it.isNotBlank() }.forEach { line ->
+        findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = line, type = FindingType.FINDING))
     }
 
     return InspectionWithDetailsDomain(
