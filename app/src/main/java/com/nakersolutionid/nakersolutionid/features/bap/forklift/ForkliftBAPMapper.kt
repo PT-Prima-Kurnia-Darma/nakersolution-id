@@ -87,8 +87,8 @@ private fun mapVisualCheckToDomain(uiState: ForkliftBAPVisualCheck, inspectionId
 private fun mapFunctionalTestToDomain(uiState: ForkliftBAPFunctionalTest, inspectionId: Long): List<InspectionCheckItemDomain> {
     val cat = BAPCategory.FUNCTIONAL_TEST
     return listOf(
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Beban Uji (kg)", status = uiState.loadTestInKg.isNotEmpty()),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Tinggi Angkat Uji (meter)", status = uiState.loadTestLiftHeightInMeters.isNotEmpty()),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Beban Uji (kg)", result = uiState.loadTestInKg, status = uiState.loadTestInKg.isNotEmpty()),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Tinggi Angkat Uji (meter)", result = uiState.loadTestLiftHeightInMeters, status = uiState.loadTestLiftHeightInMeters.isNotEmpty()),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Mampu Mengangkat dan Menahan", status = uiState.isAbleToLiftAndHold),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Berfungsi Dengan Baik", status = uiState.isFunctioningWell),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Ada Indikasi Retak", status = uiState.hasCrackIndication),
@@ -111,6 +111,11 @@ fun InspectionWithDetailsDomain.toForkliftBAPReport(): ForkliftBAPReport {
     // Helper to find a boolean check item's status by category and name.
     fun findBoolItem(category: String, itemName: String): Boolean {
         return this.checkItems.find { it.category == category && it.itemName == itemName }?.status ?: false
+    }
+
+    // Helper to find a string check item's result by category and name.
+    fun findStringItem(category: String, itemName: String): String {
+        return this.checkItems.find { it.category == category && it.itemName == itemName }?.result ?: ""
     }
 
     val generalData = ForkliftBAPGeneralData(
@@ -138,8 +143,8 @@ fun InspectionWithDetailsDomain.toForkliftBAPReport(): ForkliftBAPReport {
     )
 
     val functionalTest = ForkliftBAPFunctionalTest(
-        loadTestInKg = "", // Need to extract this from some field or keep empty
-        loadTestLiftHeightInMeters = "", // Need to extract this from some field or keep empty
+        loadTestInKg = findStringItem(BAPCategory.FUNCTIONAL_TEST, "Beban Uji (kg)"),
+        loadTestLiftHeightInMeters = findStringItem(BAPCategory.FUNCTIONAL_TEST, "Tinggi Angkat Uji (meter)"),
         isAbleToLiftAndHold = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Mampu Mengangkat dan Menahan"),
         isFunctioningWell = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Berfungsi Dengan Baik"),
         hasCrackIndication = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Ada Indikasi Retak"),

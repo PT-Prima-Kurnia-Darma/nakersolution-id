@@ -33,6 +33,7 @@ data class ForkliftReportData(
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
+    @SerializedName("documentType") val documentType: String, // From response JSON
     @SerializedName("createdAt") val createdAt: String, // From response JSON
     @SerializedName("extraId") val extraId: Long,
     @SerializedName("generalData") val generalData: ForkliftGeneralData,

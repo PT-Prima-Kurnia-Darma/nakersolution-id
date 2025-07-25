@@ -33,6 +33,7 @@ data class ForkliftBapReportData(
     @SerializedName("generalData") val generalData: ForkliftBapGeneralData,
     @SerializedName("technicalData") val technicalData: ForkliftBapTechnicalData,
     @SerializedName("inspectionResult") val inspectionResult: ForkliftBapInspectionResult,
+    @SerializedName("equipmentType") val equipmentType: String, // From response JSON
     @SerializedName("id") val id: String // From response JSON
 )
 
