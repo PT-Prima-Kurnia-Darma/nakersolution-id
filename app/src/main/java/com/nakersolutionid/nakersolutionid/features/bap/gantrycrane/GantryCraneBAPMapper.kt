@@ -103,7 +103,7 @@ private fun mapFunctionalTestToDomain(uiState: GantryCraneBAPFunctionalTest, ins
 private fun mapNdtTestToDomain(uiState: GantryCraneBAPNdtTest, inspectionId: Long): List<InspectionCheckItemDomain> {
     val cat = BAPCategory.NDT_TEST
     return listOf(
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Metode", status = uiState.method.isNotEmpty()),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Metode", status = uiState.method.isNotEmpty(), result = uiState.method),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Hasil Baik", status = uiState.isResultGood)
     )
 }
@@ -111,9 +111,9 @@ private fun mapNdtTestToDomain(uiState: GantryCraneBAPNdtTest, inspectionId: Lon
 private fun mapLoadTestToDomain(uiState: GantryCraneBAPLoadTest, inspectionId: Long): List<InspectionCheckItemDomain> {
     val cat = BAPCategory.LOAD_TEST
     return listOf(
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Beban (kg)", status = uiState.loadInKg.isNotEmpty()),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Tinggi Angkat (meter)", status = uiState.liftHeightInMeters.isNotEmpty()),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Waktu Tahan (detik)", status = uiState.holdTimeInSeconds.isNotEmpty()),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Beban (kg)", status = uiState.loadInKg.isNotEmpty(), result = uiState.loadInKg),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Tinggi Angkat (meter)", status = uiState.liftHeightInMeters.isNotEmpty(), result = uiState.liftHeightInMeters),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Waktu Tahan (detik)", status = uiState.holdTimeInSeconds.isNotEmpty(), result = uiState.holdTimeInSeconds),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Hasil Baik", status = uiState.isResultGood)
     )
 }
@@ -132,6 +132,10 @@ fun InspectionWithDetailsDomain.toGantryCraneBAPReport(): GantryCraneBAPReport {
     // Helper to find a boolean check item's status by category and name.
     fun findBoolItem(category: String, itemName: String): Boolean {
         return this.checkItems.find { it.category == category && it.itemName == itemName }?.status ?: false
+    }
+
+    fun findStringItem(category: String, itemName: String): String {
+        return this.checkItems.find { it.category == category && it.itemName == itemName }?.result ?: ""
     }
 
     val generalData = GantryCraneBAPGeneralData(
@@ -170,14 +174,14 @@ fun InspectionWithDetailsDomain.toGantryCraneBAPReport(): GantryCraneBAPReport {
     )
 
     val ndtTest = GantryCraneBAPNdtTest(
-        method = "", // Need to extract this from some field or keep empty
+        method = findStringItem(BAPCategory.NDT_TEST, "Metode"), // Gunakan helper
         isResultGood = findBoolItem(BAPCategory.NDT_TEST, "Hasil Baik")
     )
 
     val loadTest = GantryCraneBAPLoadTest(
-        loadInKg = "", // Need to extract this from some field or keep empty
-        liftHeightInMeters = "", // Need to extract this from some field or keep empty
-        holdTimeInSeconds = "", // Need to extract this from some field or keep empty
+        loadInKg = findStringItem(BAPCategory.LOAD_TEST, "Beban (kg)"), // Gunakan helper
+        liftHeightInMeters = findStringItem(BAPCategory.LOAD_TEST, "Tinggi Angkat (meter)"), // Gunakan helper
+        holdTimeInSeconds = findStringItem(BAPCategory.LOAD_TEST, "Waktu Tahan (detik)"), // Gunakan helper
         isResultGood = findBoolItem(BAPCategory.LOAD_TEST, "Hasil Baik")
     )
 
