@@ -186,6 +186,7 @@ fun MobileCraneScreen(
                 FormTextField(label = "Nomor Izin Pemakaian", value = data.permitNumber, onValueChange = { onDataChange(report.copy(generalData = data.copy(permitNumber = it))) })
                 FormTextField(label = "Sertifikat Operator", value = data.operatorCertificate, onValueChange = { onDataChange(report.copy(generalData = data.copy(operatorCertificate = it))) })
                 FormTextField(label = "Data Riwayat Pesawat", value = data.equipmentHistory, onValueChange = { onDataChange(report.copy(generalData = data.copy(equipmentHistory = it))) })
+                FormTextField(label = "Tanggal Pemeriksaan", value = data.inspectionDate, onValueChange = { onDataChange(report.copy(generalData = data.copy(inspectionDate = it))) })
             }
         }
 

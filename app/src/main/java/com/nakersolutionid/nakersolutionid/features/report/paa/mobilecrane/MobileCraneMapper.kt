@@ -60,7 +60,7 @@ fun MobileCraneUiState.toInspectionWithDetailsDomain(
         // Fields not in UI State are set to empty string
         speed = "",
         floorServed = "",
-        reportDate = "",
+        reportDate = generalData.inspectionDate,
         nextInspectionDate = "",
         inspectorName = "",
         status = "",
@@ -685,7 +685,8 @@ fun InspectionWithDetailsDomain.toMobileCraneUiState(): MobileCraneUiState {
         operatorName = getCheckItemValue("general_data", "operatorName"),
         intendedUse = getCheckItemValue("general_data", "intendedUse"),
         operatorCertificate = getCheckItemValue("general_data", "operatorCertificate"),
-        equipmentHistory = getCheckItemValue("general_data", "equipmentHistory")
+        equipmentHistory = getCheckItemValue("general_data", "equipmentHistory"),
+        inspectionDate = inspection.reportDate ?: ""
     )
 
     // 2. Reconstruct Technical Data
