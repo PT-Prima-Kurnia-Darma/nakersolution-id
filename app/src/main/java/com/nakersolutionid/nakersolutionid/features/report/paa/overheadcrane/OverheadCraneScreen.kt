@@ -134,6 +134,7 @@ fun OverheadCraneScreen(
                 FormTextField(label = "Ijin pemakaian No.", value = data.permitNumber, onValueChange = { onDataChange(report.copy(generalData = data.copy(permitNumber = it))) })
                 FormTextField(label = "Sertifikat operator", value = data.operatorCertificate, onValueChange = { onDataChange(report.copy(generalData = data.copy(operatorCertificate = it))) })
                 FormTextField(label = "Data teknik / Manual", value = data.technicalDataManual, onValueChange = { onDataChange(report.copy(generalData = data.copy(technicalDataManual = it))) })
+                FormTextField(label = "Data teknik / Manual", value = data.inspectionDate, onValueChange = { onDataChange(report.copy(generalData = data.copy(inspectionDate = it))) })
             }
         }
 

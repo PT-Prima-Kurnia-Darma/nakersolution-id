@@ -57,7 +57,6 @@ data class OverheadCraneGeneralData(
     @SerializedName("yearOfManufacture") val yearOfManufacture: String,
     @SerializedName("serialNumberUnitNumber") val serialNumberUnitNumber: String,
     @SerializedName("capacityWorkingLoadKg") val capacityWorkingLoadKg: String,
-    @SerializedName("legalBasis") val legalBasis: String,
     @SerializedName("intendedUse") val intendedUse: String,
     @SerializedName("usagePermitNumber") val usagePermitNumber: String,
     @SerializedName("operatorCertificate") val operatorCertificate: String,

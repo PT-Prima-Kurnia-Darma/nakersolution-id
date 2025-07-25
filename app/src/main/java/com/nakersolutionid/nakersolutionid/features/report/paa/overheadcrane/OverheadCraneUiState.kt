@@ -46,7 +46,8 @@ data class OverheadCraneGeneralData(
     val intendedUse: String = "",
     val permitNumber: String = "",
     val operatorCertificate: String = "",
-    val technicalDataManual: String = ""
+    val technicalDataManual: String = "",
+    val inspectionDate: String = ""
 )
 
 @Immutable
