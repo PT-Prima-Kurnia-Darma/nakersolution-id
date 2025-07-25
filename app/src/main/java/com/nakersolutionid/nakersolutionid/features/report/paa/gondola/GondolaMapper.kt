@@ -60,7 +60,7 @@ fun GondolaUiState.toInspectionWithDetailsDomain(
         // Fields not in UI State are set to empty string
         speed = "",
         floorServed = "",
-        reportDate = "",
+        reportDate = generalData.inspectionDate,
         nextInspectionDate = "",
         inspectorName = "",
         status = "",
@@ -320,7 +320,8 @@ fun InspectionWithDetailsDomain.toGondolaUiState(): GondolaUiState {
         operatorName = getCheckItemValue("general_data", "operatorName"),
         standardUsed = getCheckItemValue("general_data", "standardUsed"),
         usedFor = getCheckItemValue("general_data", "usedFor"),
-        operatorCertificate = getCheckItemValue("general_data", "operatorCertificate")
+        operatorCertificate = getCheckItemValue("general_data", "operatorCertificate"),
+        inspectionDate = inspection.reportDate ?: ""
     )
 
     // 2. Reconstruct Technical Data

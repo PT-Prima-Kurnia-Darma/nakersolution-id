@@ -198,6 +198,7 @@ fun GondolaScreen(
                 FormTextField(label = "Digunakan Untuk", value = data.usedFor, onValueChange = { onDataChange(report.copy(generalData = data.copy(usedFor = it))) })
                 FormTextField(label = "Ijin Pemakaian No.", value = data.usagePermitNumber, onValueChange = { onDataChange(report.copy(generalData = data.copy(usagePermitNumber = it))) })
                 FormTextField(label = "Sertifikat Operator", value = data.operatorCertificate, onValueChange = { onDataChange(report.copy(generalData = data.copy(operatorCertificate = it))) })
+                FormTextField(label = "Tanggal Pemeriksaan", value = data.inspectionDate, onValueChange = { onDataChange(report.copy(generalData = data.copy(inspectionDate = it))) })
             }
         }
 
@@ -390,8 +391,8 @@ fun GondolaScreen(
                 HorizontalDivider()
                 ExpandableSubSection(title = "CLAMPS") {
                     val ndt = data.clamps
-                    FormTextField(label = "Jenis NDT", value = ndt.ndtType, onValueChange = { onDataChange(report.copy(nonDestructiveTesting = data.copy(clamps = ndt.copy(ndtType = it)))) })
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    FormTextField(label = "Jenis NDT", value = ndt.ndtType, onValueChange = { onDataChange(report.copy(nonDestructiveTesting = data.copy(clamps = ndt.copy(ndtType = it)))) })
+//                    Spacer(modifier = Modifier.height(8.dp))
                     FilledTonalButton(onClick = { showNdeClampsDialog = true }, modifier = Modifier.fillMaxWidth()) {
                         Icon(Icons.Default.Add, contentDescription = "Add")
                         Spacer(modifier = Modifier.width(8.dp))

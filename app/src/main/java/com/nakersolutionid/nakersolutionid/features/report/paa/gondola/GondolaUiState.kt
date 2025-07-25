@@ -47,7 +47,8 @@ data class GondolaGeneralData(
     val standardUsed: String = "",
     val usedFor: String = "",
     val usagePermitNumber: String = "",
-    val operatorCertificate: String = ""
+    val operatorCertificate: String = "",
+    val inspectionDate: String = ""
 )
 
 @Immutable
