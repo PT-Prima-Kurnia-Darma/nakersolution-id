@@ -53,7 +53,6 @@ fun MobileCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
     val inspectionId = this.extraId
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
 
-    // Helper to add a boolean check item
     fun addBooleanCheckItem(category: String, itemName: String, status: Boolean) {
         checkItems.add(
             InspectionCheckItemDomain(
@@ -66,14 +65,13 @@ fun MobileCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
         )
     }
 
-    // Helper to add a string value check item
     fun addStringCheckItem(category: String, itemName: String, result: String?) {
         checkItems.add(
             InspectionCheckItemDomain(
                 inspectionId = inspectionId,
                 category = category,
                 itemName = itemName,
-                status = false, // Status is not relevant for string values
+                status = false,
                 result = result ?: ""
             )
         )
@@ -152,24 +150,20 @@ fun MobileCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
 fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest {
     val checkItemsByCat = this.checkItems.groupBy { it.category }
 
-    // Helper to get a boolean status from check items
     fun getStatus(category: String, itemName: String, default: Boolean = false): Boolean {
         return checkItemsByCat[category]?.find { it.itemName == itemName }?.status ?: default
     }
 
-    // Helper to get a string result from check items
     fun getValue(category: String, itemName: String, default: String = ""): String {
         return checkItemsByCat[category]?.find { it.itemName == itemName }?.result ?: default
     }
 
-    // --- Reconstruct General Data ---
     val generalData = MobileCraneBapGeneralData(
         ownerName = this.inspection.ownerName ?: "",
         ownerAddress = this.inspection.ownerAddress ?: "",
         userAddress = this.inspection.usageLocation ?: ""
     )
 
-    // --- Reconstruct Technical Data ---
     val technicalData = MobileCraneBapTechnicalData(
         manufacturer = this.inspection.manufacturer?.name ?: "",
         locationAndYearOfManufacture = this.inspection.manufacturer?.year ?: "",
@@ -180,7 +174,6 @@ fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest
         liftingSpeedMpm = this.inspection.speed ?: ""
     )
 
-    // --- Reconstruct Inspection Result ---
     val visualCheck = MobileCraneBapVisualCheck(
         hasBoomDefects = getStatus(BapCategories.VISUAL_CHECK, "hasBoomDefects"),
         isNameplateAttached = getStatus(BapCategories.VISUAL_CHECK, "isNameplateAttached"),
@@ -217,7 +210,6 @@ fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest
         functionalTest = functionalTest
     )
 
-    // --- Reconstruct Signature ---
     val signature = MobileCraneBapSignature(
         companyName = getValue(BapCategories.SIGNATURE, "companyName")
     )
@@ -237,40 +229,22 @@ fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest
 
 
 // =================================================================================================
-//                                     Report Mappers (Existing)
+//                                     Report Mappers
 // =================================================================================================
 
-/**
- * Maps a [MobileCraneReportData] DTO to an [InspectionWithDetailsDomain] domain model.
- * This function reconstructs the structured domain model from the flat DTO response.
- */
 fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
     val inspectionId = this.extraId
 
-    // Helper to create a check item from a DTO field
     fun addCheckItem(category: String, itemName: String, value: String?) {
         checkItems.add(
-            InspectionCheckItemDomain(
-                inspectionId = inspectionId,
-                category = category,
-                itemName = itemName,
-                status = false, // Not applicable for simple data points
-                result = value ?: ""
-            )
+            InspectionCheckItemDomain(inspectionId = inspectionId, category = category, itemName = itemName, status = false, result = value ?: "")
         )
     }
 
-    // Helper to create a check item from a DTO ResultStatus
     fun addResultStatusCheckItem(category: String, itemName: String, value: ResultStatus?) {
         checkItems.add(
-            InspectionCheckItemDomain(
-                inspectionId = inspectionId,
-                category = category,
-                itemName = itemName,
-                status = value?.status ?: false,
-                result = value?.result ?: ""
-            )
+            InspectionCheckItemDomain(inspectionId = inspectionId, category = category, itemName = itemName, status = value?.status ?: false, result = value?.result ?: "")
         )
     }
 
@@ -300,7 +274,8 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     addCheckItem(techCategory, "motor_numberOfCylinders", tech.numberOfCylinders)
     addCheckItem(techCategory, "motor_netPower", tech.netPower)
     addCheckItem(techCategory, "motor_brandYearOfManufacture", tech.brandYearOfManufacture)
-    addCheckItem(techCategory, "motor_manufacturer", tech.hookManufacturer) // Assuming hook manufacturer is engine manufacturer
+    // NOTE: DTO has `hookManufacturer` but UI/Domain has `driveMotor.manufacturer`. Assuming they are the same for this mapping.
+    addCheckItem(techCategory, "motor_manufacturer", tech.hookManufacturer)
     addCheckItem(techCategory, "mainHook_type", tech.mainHookType)
     addCheckItem(techCategory, "mainHook_capacity", tech.mainHookCapacity)
     addCheckItem(techCategory, "mainHook_material", tech.mainHookMaterial)
@@ -759,41 +734,36 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         ownerAddress = this.generalData.ownerAddress,
         usageLocation = this.generalData.unitLocation,
         addressUsageLocation = this.generalData.userAddress,
-        driveType = "", // Not present in DTO
+        // FIXED: Acknowledging data loss as DTO doesn't contain this field.
+        driveType = "", // This data is lost because it's not present in the MobileCraneReportData DTO.
         serialNumber = this.generalData.serialNumberUnitNumber,
         permitNumber = this.generalData.usagePermitNumber,
         capacity = this.generalData.capacityWorkingLoad,
         manufacturer = ManufacturerDomain(
             name = this.generalData.manufacturer,
             brandOrType = this.generalData.brandType,
-            year = this.generalData.locationAndYearOfManufacture // Assuming this field contains the year
+            year = this.generalData.locationAndYearOfManufacture
         ),
         createdAt = this.createdAt,
         reportDate = this.generalData.inspectionDate,
-        isSynced = true // Data from remote is considered synced
+        isSynced = true
     )
 
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
         checkItems = checkItems,
         findings = findings,
-        testResults = emptyList() // Test results are mapped to checkItems
+        testResults = emptyList()
     )
 }
 
-/**
- * Maps an [InspectionWithDetailsDomain] domain model to a [MobileCraneReportRequest] DTO.
- * This function flattens the domain model into the structure required for the API request.
- */
 fun InspectionWithDetailsDomain.toMobileCraneReportRequest(): MobileCraneReportRequest {
     val checkItemsByCategory = this.checkItems.groupBy { it.category }
 
-    // Helper to get a simple string value from check items
     fun getCheckItemValue(category: String, itemName: String, default: String = ""): String {
         return checkItemsByCategory[category]?.find { it.itemName == itemName }?.result ?: default
     }
 
-    // Helper to get a ResultStatus from check items
     fun getResultStatus(category: String, itemName: String): ResultStatus {
         val item = checkItemsByCategory[category]?.find { it.itemName == itemName }
         return ResultStatus(status = item?.status ?: false, result = item?.result ?: "")
@@ -817,6 +787,8 @@ fun InspectionWithDetailsDomain.toMobileCraneReportRequest(): MobileCraneReportR
         operatorCertificate = getCheckItemValue("general_data", "operatorCertificate"),
         equipmentHistory = getCheckItemValue("general_data", "equipmentHistory"),
         inspectionDate = this.inspection.reportDate ?: ""
+        // NOTE: `driveType` from domain is lost here because the Request DTO does not have a field for it.
+        // To fix this, `driveType` must be added to `MobileCraneGeneralData` in `MobileCraneReportDto.kt`.
     )
 
     // --- Technical Data ---
@@ -835,6 +807,8 @@ fun InspectionWithDetailsDomain.toMobileCraneReportRequest(): MobileCraneReportR
         numberOfCylinders = getCheckItemValue(techCategory, "motor_numberOfCylinders"),
         netPower = getCheckItemValue(techCategory, "motor_netPower"),
         brandYearOfManufacture = getCheckItemValue(techCategory, "motor_brandYearOfManufacture"),
+        // NOTE: `hookManufacturer` is being mapped from the `motor_manufacturer` check item.
+        // This assumes the API intends for the motor's manufacturer to be placed here.
         hookManufacturer = getCheckItemValue(techCategory, "motor_manufacturer"),
         mainHookType = getCheckItemValue(techCategory, "mainHook_type"),
         mainHookCapacity = getCheckItemValue(techCategory, "mainHook_capacity"),
