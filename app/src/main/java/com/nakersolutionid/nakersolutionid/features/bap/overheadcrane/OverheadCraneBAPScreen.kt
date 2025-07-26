@@ -120,7 +120,8 @@ fun OverheadCraneBAPScreen(
                 CheckboxWithLabel(label = "Tes Fungsi Baik", checked = data.testing.functionTest, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(functionTest = it)))) })
 
                 Text("Uji Beban", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top=8.dp))
-                CheckboxWithLabel(label = "Beban dalam Ton OK", checked = data.testing.loadTest.loadInTon, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(loadTest = data.testing.loadTest.copy(loadInTon = it))))) })
+                FormTextField(label = "Berat Beban (Ton)", value = data.testing.loadTest.loadInTon, onValueChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(loadTest = data.testing.loadTest.copy(loadInTon = it))))) }, keyboardType = KeyboardType.Number)
+//                CheckboxWithLabel(label = "Beban dalam Ton OK", checked = data.testing.loadTest.loadInTon, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(loadTest = data.testing.loadTest.copy(loadInTon = it))))) })
                 CheckboxWithLabel(label = "Mampu Mengangkat", checked = data.testing.loadTest.isAbleToLift, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(loadTest = data.testing.loadTest.copy(isAbleToLift = it))))) })
                 CheckboxWithLabel(label = "Ada Penurunan Beban", checked = data.testing.loadTest.hasLoadDrop, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(loadTest = data.testing.loadTest.copy(hasLoadDrop = it))))) })
 

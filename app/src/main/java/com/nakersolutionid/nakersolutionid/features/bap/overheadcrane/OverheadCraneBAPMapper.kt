@@ -95,8 +95,9 @@ private fun mapTestingToDomain(uiState: OverheadCraneBAPTesting, inspectionId: L
     return mutableListOf<InspectionCheckItemDomain>().apply {
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING, itemName = "functionTest", status = uiState.functionTest))
 
-        // Load Test - now storing loadInTon as a string result in a dedicated item
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.LOAD_TEST, itemName = "loadTon", status = uiState.loadTest.loadInTon))
+        // <-- PERUBAHAN DISINI
+        // Load Test - now storing loadInTon as a string result in a dedicated item.
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.LOAD_TEST, itemName = "loadTon", status = false, result = uiState.loadTest.loadInTon))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.LOAD_TEST, itemName = "isAbleToLift", status = uiState.loadTest.isAbleToLift))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.LOAD_TEST, itemName = "hasLoadDrop", status = uiState.loadTest.hasLoadDrop))
 
@@ -156,7 +157,8 @@ fun InspectionWithDetailsDomain.toOverheadCraneBAPReport(): OverheadCraneBAPRepo
     val testing = OverheadCraneBAPTesting(
         functionTest = findBoolItem(OverheadCraneBAPCategory.TESTING, "functionTest"),
         loadTest = OverheadCraneBAPLoadTest(
-            loadInTon = findBoolItem(OverheadCraneBAPCategory.LOAD_TEST, "loadTon"),
+            // <-- PERUBAHAN DISINI
+            loadInTon = findStringItem(OverheadCraneBAPCategory.LOAD_TEST, "loadTon"),
             isAbleToLift = findBoolItem(OverheadCraneBAPCategory.LOAD_TEST, "isAbleToLift"),
             hasLoadDrop = findBoolItem(OverheadCraneBAPCategory.LOAD_TEST, "hasLoadDrop")
         ),
