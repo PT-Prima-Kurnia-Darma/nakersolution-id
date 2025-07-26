@@ -3,20 +3,13 @@ package com.nakersolutionid.nakersolutionid.features.bap.pubt
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.PubtMappingKeys
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
 import com.nakersolutionid.nakersolutionid.utils.Utils
-
-private object PubtBAPCategory {
-    const val TECHNICAL_DATA = "DATA TEKNIK"
-    const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
-    const val VISUAL_SAFETY_VALVE = "$VISUAL_INSPECTION - Katup Pengaman"
-    const val VISUAL_APAR = "$VISUAL_INSPECTION - APAR"
-    const val TESTING = "PENGUJIAN"
-}
 
 // =================================================================================================
 //                                  UI State -> Domain Model
@@ -64,41 +57,41 @@ fun PubtBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?):
 }
 
 private fun mapTechnicalDataToDomain(uiState: PubtBAPTechnicalData, inspectionId: Long): List<InspectionTestResultDomain> {
-    val cat = PubtBAPCategory.TECHNICAL_DATA
+    val cat = PubtMappingKeys.BAP.Category.TECHNICAL_DATA
     return listOf(
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Negara Pembuat", result = uiState.manufactureCountry, notes = cat),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jenis Bahan Bakar", result = uiState.fuelType, notes = cat),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Isi Bejana Tekan", result = uiState.pressureVesselContent, notes = cat),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tekanan Desain (Kg/Cm2)", result = uiState.designPressureInKgCm2, notes = cat),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tekanan Kerja Maks (Kg/Cm2)", result = uiState.maxWorkingPressureInKgCm2, notes = cat),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jenis Bahan", result = uiState.materialType, notes = cat),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jenis Katup Pengaman", result = uiState.safetyValveType, notes = cat),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Volume (Liter)", result = uiState.volumeInLiters, notes = cat)
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.MANUFACTURE_COUNTRY, result = uiState.manufactureCountry, notes = cat),
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.FUEL_TYPE, result = uiState.fuelType, notes = cat),
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.PRESSURE_VESSEL_CONTENT, result = uiState.pressureVesselContent, notes = cat),
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE, result = uiState.designPressureInKgCm2, notes = cat),
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.MAX_WORKING_PRESSURE, result = uiState.maxWorkingPressureInKgCm2, notes = cat),
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.MATERIAL_TYPE, result = uiState.materialType, notes = cat),
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.SAFETY_VALVE_TYPE, result = uiState.safetyValveType, notes = cat),
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.VOLUME_LITERS, result = uiState.volumeInLiters, notes = cat)
     )
 }
 
 private fun mapVisualInspectionToDomain(uiState: PubtBAPVisualInspection, inspectionId: Long): List<InspectionCheckItemDomain> {
     return mutableListOf<InspectionCheckItemDomain>().apply {
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtBAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Pondasi Baik", status = uiState.fondationCondition))
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtBAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Roda Baik", status = uiState.wheelCondition))
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtBAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Pipa Baik", status = uiState.pipeCondition))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, itemName = PubtMappingKeys.BAP.ItemName.FOUNDATION_CONDITION, status = uiState.fondationCondition))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, itemName = PubtMappingKeys.BAP.ItemName.WHEEL_CONDITION, status = uiState.wheelCondition))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, itemName = PubtMappingKeys.BAP.ItemName.PIPE_CONDITION, status = uiState.pipeCondition))
         // Safety Valve
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtBAPCategory.VISUAL_SAFETY_VALVE, itemName = "Terpasang", status = uiState.safetyValve.isInstalled))
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtBAPCategory.VISUAL_SAFETY_VALVE, itemName = "Kondisi Baik", status = uiState.safetyValve.condition))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_SAFETY_VALVE, itemName = PubtMappingKeys.BAP.ItemName.SAFETY_VALVE_INSTALLED, status = uiState.safetyValve.isInstalled))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_SAFETY_VALVE, itemName = PubtMappingKeys.BAP.ItemName.SAFETY_VALVE_CONDITION, status = uiState.safetyValve.condition))
         // APAR
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtBAPCategory.VISUAL_APAR, itemName = "Tersedia", status = uiState.apar.isAvailable))
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtBAPCategory.VISUAL_APAR, itemName = "Kondisi Baik", status = uiState.apar.condition))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_APAR, itemName = PubtMappingKeys.BAP.ItemName.APAR_AVAILABLE, status = uiState.apar.isAvailable))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_APAR, itemName = PubtMappingKeys.BAP.ItemName.APAR_CONDITION, status = uiState.apar.condition))
     }
 }
 
 private fun mapTestingToDomain(uiState: PubtBAPTesting, inspectionId: Long): List<InspectionCheckItemDomain> {
-    val cat = PubtBAPCategory.TESTING
+    val cat = PubtMappingKeys.BAP.Category.TESTING
     return listOf(
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Pengujian NDT Terpenuhi", status = uiState.ndtTestingFulfilled),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Pengujian Ketebalan Sesuai", status = uiState.thicknessTestingComply),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Kondisi Pengujian Pneumatik Baik", status = uiState.pneumaticTestingCondition),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Pengujian Hidrostatik Terpenuhi", status = uiState.hydroTestingFullFilled),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Kondisi Pengujian Katup Pengaman Baik", status = uiState.safetyValveTestingCondition)
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = PubtMappingKeys.BAP.ItemName.NDT_FULFILLED, status = uiState.ndtTestingFulfilled),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = PubtMappingKeys.BAP.ItemName.THICKNESS_COMPLY, status = uiState.thicknessTestingComply),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = PubtMappingKeys.BAP.ItemName.PNEUMATIC_CONDITION, status = uiState.pneumaticTestingCondition),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = PubtMappingKeys.BAP.ItemName.HYDRO_TEST_FULFILLED, status = uiState.hydroTestingFullFilled),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = PubtMappingKeys.BAP.ItemName.SAFETY_VALVE_TEST_CONDITION, status = uiState.safetyValveTestingCondition)
     )
 }
 
@@ -127,36 +120,36 @@ fun InspectionWithDetailsDomain.toPubtBAPReport(): PubtBAPReport {
         manufacturer = this.inspection.manufacturer?.name ?: "",
         manufactureYear = this.inspection.manufacturer?.year ?: "",
         serialNumber = this.inspection.serialNumber ?: "",
-        manufactureCountry = findTestResult("Negara Pembuat"),
-        fuelType = findTestResult("Jenis Bahan Bakar"),
-        pressureVesselContent = findTestResult("Isi Bejana Tekan"),
-        designPressureInKgCm2 = findTestResult("Tekanan Desain (Kg/Cm2)"),
-        maxWorkingPressureInKgCm2 = findTestResult("Tekanan Kerja Maks (Kg/Cm2)"),
-        materialType = findTestResult("Jenis Bahan"),
-        safetyValveType = findTestResult("Jenis Katup Pengaman"),
-        volumeInLiters = findTestResult("Volume (Liter)")
+        manufactureCountry = findTestResult(PubtMappingKeys.BAP.TestName.MANUFACTURE_COUNTRY),
+        fuelType = findTestResult(PubtMappingKeys.BAP.TestName.FUEL_TYPE),
+        pressureVesselContent = findTestResult(PubtMappingKeys.BAP.TestName.PRESSURE_VESSEL_CONTENT),
+        designPressureInKgCm2 = findTestResult(PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE),
+        maxWorkingPressureInKgCm2 = findTestResult(PubtMappingKeys.BAP.TestName.MAX_WORKING_PRESSURE),
+        materialType = findTestResult(PubtMappingKeys.BAP.TestName.MATERIAL_TYPE),
+        safetyValveType = findTestResult(PubtMappingKeys.BAP.TestName.SAFETY_VALVE_TYPE),
+        volumeInLiters = findTestResult(PubtMappingKeys.BAP.TestName.VOLUME_LITERS)
     )
 
     val visualInspection = PubtBAPVisualInspection(
-        fondationCondition = findBoolItem(PubtBAPCategory.VISUAL_INSPECTION, "Kondisi Pondasi Baik"),
-        wheelCondition = findBoolItem(PubtBAPCategory.VISUAL_INSPECTION, "Kondisi Roda Baik"),
-        pipeCondition = findBoolItem(PubtBAPCategory.VISUAL_INSPECTION, "Kondisi Pipa Baik"),
+        fondationCondition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, PubtMappingKeys.BAP.ItemName.FOUNDATION_CONDITION),
+        wheelCondition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, PubtMappingKeys.BAP.ItemName.WHEEL_CONDITION),
+        pipeCondition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, PubtMappingKeys.BAP.ItemName.PIPE_CONDITION),
         safetyValve = PubtBAPSafetyValve(
-            isInstalled = findBoolItem(PubtBAPCategory.VISUAL_SAFETY_VALVE, "Terpasang"),
-            condition = findBoolItem(PubtBAPCategory.VISUAL_SAFETY_VALVE, "Kondisi Baik")
+            isInstalled = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_SAFETY_VALVE, PubtMappingKeys.BAP.ItemName.SAFETY_VALVE_INSTALLED),
+            condition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_SAFETY_VALVE, PubtMappingKeys.BAP.ItemName.SAFETY_VALVE_CONDITION)
         ),
         apar = PubtBAPApar(
-            isAvailable = findBoolItem(PubtBAPCategory.VISUAL_APAR, "Tersedia"),
-            condition = findBoolItem(PubtBAPCategory.VISUAL_APAR, "Kondisi Baik")
+            isAvailable = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_APAR, PubtMappingKeys.BAP.ItemName.APAR_AVAILABLE),
+            condition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_APAR, PubtMappingKeys.BAP.ItemName.APAR_CONDITION)
         )
     )
 
     val testing = PubtBAPTesting(
-        ndtTestingFulfilled = findBoolItem(PubtBAPCategory.TESTING, "Pengujian NDT Terpenuhi"),
-        thicknessTestingComply = findBoolItem(PubtBAPCategory.TESTING, "Pengujian Ketebalan Sesuai"),
-        pneumaticTestingCondition = findBoolItem(PubtBAPCategory.TESTING, "Kondisi Pengujian Pneumatik Baik"),
-        hydroTestingFullFilled = findBoolItem(PubtBAPCategory.TESTING, "Pengujian Hidrostatik Terpenuhi"),
-        safetyValveTestingCondition = findBoolItem(PubtBAPCategory.TESTING, "Kondisi Pengujian Katup Pengaman Baik")
+        ndtTestingFulfilled = findBoolItem(PubtMappingKeys.BAP.Category.TESTING, PubtMappingKeys.BAP.ItemName.NDT_FULFILLED),
+        thicknessTestingComply = findBoolItem(PubtMappingKeys.BAP.Category.TESTING, PubtMappingKeys.BAP.ItemName.THICKNESS_COMPLY),
+        pneumaticTestingCondition = findBoolItem(PubtMappingKeys.BAP.Category.TESTING, PubtMappingKeys.BAP.ItemName.PNEUMATIC_CONDITION),
+        hydroTestingFullFilled = findBoolItem(PubtMappingKeys.BAP.Category.TESTING, PubtMappingKeys.BAP.ItemName.HYDRO_TEST_FULFILLED),
+        safetyValveTestingCondition = findBoolItem(PubtMappingKeys.BAP.Category.TESTING, PubtMappingKeys.BAP.ItemName.SAFETY_VALVE_TEST_CONDITION)
     )
 
     return PubtBAPReport(
