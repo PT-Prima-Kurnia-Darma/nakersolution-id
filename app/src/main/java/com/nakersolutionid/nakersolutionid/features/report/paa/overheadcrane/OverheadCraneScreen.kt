@@ -200,16 +200,16 @@ fun OverheadCraneScreen(
                 }
                 HorizontalDivider()
 
-                ExpandableSubSection("TALI BAJA (WIRE ROPE)") {
+                /*ExpandableSubSection("TALI BAJA (WIRE ROPE)") {
                     val d = data.wireRope
                     MovementDataInput(label = "Jenis", data = d.type, onValueChange = { onDataChange(report.copy(technicalData = data.copy(wireRope = d.copy(type = it)))) })
                     MovementDataInput(label = "Konstruksi", data = d.construction, onValueChange = { onDataChange(report.copy(technicalData = data.copy(wireRope = d.copy(construction = it)))) })
                     MovementDataInput(label = "Diameter", data = d.diameter, onValueChange = { onDataChange(report.copy(technicalData = data.copy(wireRope = d.copy(diameter = it)))) })
                     MovementDataInput(label = "Panjang", data = d.length, onValueChange = { onDataChange(report.copy(technicalData = data.copy(wireRope = d.copy(length = it)))) })
                 }
-                HorizontalDivider()
+                HorizontalDivider()*/
 
-                ExpandableSubSection("RANTAI (CHAIN)") {
+                ExpandableSubSection("RANTAI (CHAIN) / TALI BAJA (WIRE ROPE)") {
                     val d = data.chain
                     MovementDataInput(label = "Jenis", data = d.type, onValueChange = { onDataChange(report.copy(technicalData = data.copy(chain = d.copy(type = it)))) })
                     MovementDataInput(label = "Konstruksi", data = d.construction, onValueChange = { onDataChange(report.copy(technicalData = data.copy(chain = d.copy(construction = it)))) })
