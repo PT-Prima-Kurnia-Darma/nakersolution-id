@@ -7,7 +7,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane.*
 import com.nakersolutionid.nakersolutionid.domain.model.*
 
 // FIXED: Centralized BAP category constants to ensure consistency across all mappers.
-private object BAPCategory {
+private object BAPCategoryGantryCrane {
     const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
     const val FUNCTIONAL_TEST = "UJI FUNGSI"
     const val NDT_TEST = "UJI NDT"
@@ -1101,35 +1101,35 @@ fun GantryCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
 
     // Map Visual Check
     this.inspectionResult.visualCheck.let {
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Struktur Utama Baik", status = it.isMainStructureGood))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Baut dan Mur Terpasang Kencang", status = it.areBoltsAndNutsSecure))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Wire Rope Baik", status = it.isWireRopeGoodCondition))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Hook Baik", status = it.isHookGoodCondition))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Gearbox Baik", status = it.isGearboxGoodCondition))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Terdapat Kebocoran Oli Gearbox", status = it.hasGearboxOilLeak))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Lampu Peringatan Baik", status = it.isWarningLampGoodCondition))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Penandaan Kapasitas Terpasang", status = it.isCapacityMarkingDisplayed))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Struktur Utama Baik", status = it.isMainStructureGood))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Baut dan Mur Terpasang Kencang", status = it.areBoltsAndNutsSecure))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Kondisi Wire Rope Baik", status = it.isWireRopeGoodCondition))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Kondisi Hook Baik", status = it.isHookGoodCondition))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Kondisi Gearbox Baik", status = it.isGearboxGoodCondition))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Terdapat Kebocoran Oli Gearbox", status = it.hasGearboxOilLeak))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Kondisi Lampu Peringatan Baik", status = it.isWarningLampGoodCondition))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.VISUAL_INSPECTION, itemName = "Penandaan Kapasitas Terpasang", status = it.isCapacityMarkingDisplayed))
     }
 
     // Map Functional Test
     this.inspectionResult.functionalTest.let {
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.FUNCTIONAL_TEST, itemName = "Fungsi Maju Mundur OK", status = it.isForwardReverseFunctionOk))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.FUNCTIONAL_TEST, itemName = "Fungsi Hoisting OK", status = it.isHoistingFunctionOk))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.FUNCTIONAL_TEST, itemName = "Limit Switch Berfungsi", status = it.isLimitSwitchFunctional))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.FUNCTIONAL_TEST, itemName = "Fungsi Maju Mundur OK", status = it.isForwardReverseFunctionOk))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.FUNCTIONAL_TEST, itemName = "Fungsi Hoisting OK", status = it.isHoistingFunctionOk))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.FUNCTIONAL_TEST, itemName = "Limit Switch Berfungsi", status = it.isLimitSwitchFunctional))
     }
 
     // Map NDT Test
     this.inspectionResult.ndtTest.let {
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.NDT_TEST, itemName = "Metode", status = true, result = it.method))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.NDT_TEST, itemName = "Hasil Baik", status = it.isNdtResultGood))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.NDT_TEST, itemName = "Metode", status = true, result = it.method))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.NDT_TEST, itemName = "Hasil Baik", status = it.isNdtResultGood))
     }
 
     // Map Load Test
     this.inspectionResult.loadTest.let {
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Beban (kg)", status = true, result = it.loadKg))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Tinggi Angkat (meter)", status = true, result = it.liftHeightMeters))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Waktu Tahan (detik)", status = true, result = it.holdTimeSeconds))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Hasil Baik", status = it.isLoadTestResultGood))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.LOAD_TEST, itemName = "Beban (kg)", status = true, result = it.loadKg))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.LOAD_TEST, itemName = "Tinggi Angkat (meter)", status = true, result = it.liftHeightMeters))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.LOAD_TEST, itemName = "Waktu Tahan (detik)", status = true, result = it.holdTimeSeconds))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategoryGantryCrane.LOAD_TEST, itemName = "Hasil Baik", status = it.isLoadTestResultGood))
     }
 
     return InspectionWithDetailsDomain(
@@ -1174,32 +1174,32 @@ fun InspectionWithDetailsDomain.toGantryCraneBapRequest(): GantryCraneBapRequest
     )
 
     val visualCheck = GantryCraneBapVisualCheck(
-        isMainStructureGood = findBool(BAPCategory.VISUAL_INSPECTION, "Struktur Utama Baik"),
-        areBoltsAndNutsSecure = findBool(BAPCategory.VISUAL_INSPECTION, "Baut dan Mur Terpasang Kencang"),
-        isWireRopeGoodCondition = findBool(BAPCategory.VISUAL_INSPECTION, "Kondisi Wire Rope Baik"),
-        isHookGoodCondition = findBool(BAPCategory.VISUAL_INSPECTION, "Kondisi Hook Baik"),
-        isGearboxGoodCondition = findBool(BAPCategory.VISUAL_INSPECTION, "Kondisi Gearbox Baik"),
-        hasGearboxOilLeak = findBool(BAPCategory.VISUAL_INSPECTION, "Terdapat Kebocoran Oli Gearbox"),
-        isWarningLampGoodCondition = findBool(BAPCategory.VISUAL_INSPECTION, "Kondisi Lampu Peringatan Baik"),
-        isCapacityMarkingDisplayed = findBool(BAPCategory.VISUAL_INSPECTION, "Penandaan Kapasitas Terpasang")
+        isMainStructureGood = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Struktur Utama Baik"),
+        areBoltsAndNutsSecure = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Baut dan Mur Terpasang Kencang"),
+        isWireRopeGoodCondition = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Kondisi Wire Rope Baik"),
+        isHookGoodCondition = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Kondisi Hook Baik"),
+        isGearboxGoodCondition = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Kondisi Gearbox Baik"),
+        hasGearboxOilLeak = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Terdapat Kebocoran Oli Gearbox"),
+        isWarningLampGoodCondition = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Kondisi Lampu Peringatan Baik"),
+        isCapacityMarkingDisplayed = findBool(BAPCategoryGantryCrane.VISUAL_INSPECTION, "Penandaan Kapasitas Terpasang")
     )
 
     val functionalTest = GantryCraneBapFunctionalTest(
-        isForwardReverseFunctionOk = findBool(BAPCategory.FUNCTIONAL_TEST, "Fungsi Maju Mundur OK"),
-        isHoistingFunctionOk = findBool(BAPCategory.FUNCTIONAL_TEST, "Fungsi Hoisting OK"),
-        isLimitSwitchFunctional = findBool(BAPCategory.FUNCTIONAL_TEST, "Limit Switch Berfungsi")
+        isForwardReverseFunctionOk = findBool(BAPCategoryGantryCrane.FUNCTIONAL_TEST, "Fungsi Maju Mundur OK"),
+        isHoistingFunctionOk = findBool(BAPCategoryGantryCrane.FUNCTIONAL_TEST, "Fungsi Hoisting OK"),
+        isLimitSwitchFunctional = findBool(BAPCategoryGantryCrane.FUNCTIONAL_TEST, "Limit Switch Berfungsi")
     )
 
     val ndtTest = GantryCraneBapNdtTest(
-        method = findString(BAPCategory.NDT_TEST, "Metode"),
-        isNdtResultGood = findBool(BAPCategory.NDT_TEST, "Hasil Baik")
+        method = findString(BAPCategoryGantryCrane.NDT_TEST, "Metode"),
+        isNdtResultGood = findBool(BAPCategoryGantryCrane.NDT_TEST, "Hasil Baik")
     )
 
     val loadTest = GantryCraneBapLoadTest(
-        loadKg = findString(BAPCategory.LOAD_TEST, "Beban (kg)"),
-        liftHeightMeters = findString(BAPCategory.LOAD_TEST, "Tinggi Angkat (meter)"),
-        holdTimeSeconds = findString(BAPCategory.LOAD_TEST, "Waktu Tahan (detik)"),
-        isLoadTestResultGood = findBool(BAPCategory.LOAD_TEST, "Hasil Baik")
+        loadKg = findString(BAPCategoryGantryCrane.LOAD_TEST, "Beban (kg)"),
+        liftHeightMeters = findString(BAPCategoryGantryCrane.LOAD_TEST, "Tinggi Angkat (meter)"),
+        holdTimeSeconds = findString(BAPCategoryGantryCrane.LOAD_TEST, "Waktu Tahan (detik)"),
+        isLoadTestResultGood = findBool(BAPCategoryGantryCrane.LOAD_TEST, "Hasil Baik")
     )
 
     val inspectionResult = GantryCraneBapInspectionResult(
