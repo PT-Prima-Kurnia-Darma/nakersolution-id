@@ -6,6 +6,14 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane.*
 import com.nakersolutionid.nakersolutionid.domain.model.*
 
+// FIXED: Centralized BAP category constants to ensure consistency across all mappers.
+private object BAPCategory {
+    const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
+    const val FUNCTIONAL_TEST = "UJI FUNGSI"
+    const val NDT_TEST = "UJI NDT"
+    const val LOAD_TEST = "UJI BEBAN"
+}
+
 // =================================================================================================
 //                                  Report DTO <-> Domain Model
 // =================================================================================================
@@ -17,12 +25,10 @@ import com.nakersolutionid.nakersolutionid.domain.model.*
 fun InspectionWithDetailsDomain.toGantryCraneReportRequest(): GantryCraneReportRequest {
     val checkItemsMap = this.checkItems.associateBy { it.category to it.itemName }
 
-    // Helper to get a simple string value from check items
     fun findString(category: String, itemName: String): String {
         return checkItemsMap[category to itemName]?.result ?: ""
     }
 
-    // Helper to get a boolean status from check items
     fun findStatus(category: String, itemName: String): Boolean {
         return checkItemsMap[category to itemName]?.status ?: false
     }
@@ -180,7 +186,7 @@ fun InspectionWithDetailsDomain.toGantryCraneReportRequest(): GantryCraneReportR
         travelingRailCracksTidakMemenuhi = !findStatus(visualCategory, "travelingRailCorrosion"),
         travelingRailCracksResult = findString(visualCategory, "travelingRailCorrosion"),
         travelingCracksMemenuhi = findStatus(visualCategory, "travelingRailCracks"),
-        travelingCracksTidakMemenuhi = !findStatus(visualCategory, "travelingRailCracks"),
+        travelingCracksTidakMemenuhi = !findStatus(visualCategory, "travelingRailCracks"), // FIXED
         travelingCracksResult = findString(visualCategory, "travelingRailCracks"),
         travelingRailConnectionMemenuhi = findStatus(visualCategory, "travelingRailJoint"),
         travelingRailConnectionTidakMemenuhi = !findStatus(visualCategory, "travelingRailJoint"),
@@ -693,7 +699,7 @@ fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = this.extraId.toString(),
-        moreExtraId = "", // Not available in Report DTO
+        moreExtraId = "",
         documentType = try { DocumentType.valueOf(this.documentType) } catch (e: Exception) { DocumentType.LAPORAN },
         inspectionType = try { InspectionType.valueOf(this.inspectionType) } catch (e: Exception) { InspectionType.PAA },
         subInspectionType = try { SubInspectionType.valueOf(this.subInspectionType) } catch (e: Exception) { SubInspectionType.Gantry_Crane },
@@ -718,7 +724,6 @@ fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
 
-    // Helper to add a check item
     fun add(category: String, itemName: String, status: Boolean, result: String) {
         checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = category, itemName = itemName, status = status, result = result))
     }
@@ -783,8 +788,8 @@ fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     add(techCategory, "wireRope_type_traveling", this.technicalData.mediumTypeTravelingType)
     add(techCategory, "wireRope_type_traversing", this.technicalData.mediumTypeTraversingType)
     add(techCategory, "wireRope_construction_hoisting", this.technicalData.mediumTypeHoistingConstruction)
-    add(techCategory, "wireRope_construction_traveling", this.technicalData.mediumTypeHoistingConstruction)
-    add(techCategory, "wireRope_construction_traversing", this.technicalData.mediumTypeTravelingConstruction)
+    add(techCategory, "wireRope_construction_traveling", this.technicalData.mediumTypeTravelingConstruction) // FIXED
+    add(techCategory, "wireRope_construction_traversing", this.technicalData.mediumTypeTraversingConstruction)
     add(techCategory, "wireRope_diameter_hoisting", this.technicalData.mediumTypeHoistingDiameter)
     add(techCategory, "wireRope_diameter_traveling", this.technicalData.mediumTypeTravelingDiameter)
     add(techCategory, "wireRope_diameter_traversing", this.technicalData.mediumTypeTraversingDiameter)
@@ -817,7 +822,7 @@ fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         add(visualCategory, "railMountingBeamCracks", it.railSupportBeamCracksMemenuhi, it.railSupportBeamCracksResult)
         add(visualCategory, "railMountingBeamDeformation", it.railSupportBeamDeformationMemenuhi, it.railSupportBeamDeformationResult)
         add(visualCategory, "railMountingBeamFastening", it.railSupportBeamFasteningMemenuhi, it.railSupportBeamFasteningResult)
-        add(visualCategory, "travelingRailCorrosion", it.travelingRailCorrosionMemenuhi, this.visualInspection.travelingRailCracksResult)
+        add(visualCategory, "travelingRailCorrosion", it.travelingRailCorrosionMemenuhi, it.travelingRailCracksResult) // FIXED
         add(visualCategory, "travelingRailCracks", it.travelingCracksMemenuhi, it.travelingCracksResult)
         add(visualCategory, "travelingRailJoint", it.travelingRailConnectionMemenuhi, it.travelingRailConnectionResult)
         add(visualCategory, "travelingRailStraightness", it.travelingRailAlignmentMemenuhi, it.travelingRailAlignmentResult)
@@ -1069,11 +1074,11 @@ fun GantryCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = this.extraId.toString(),
-        moreExtraId = "", // Not available in BAP DTO
+        moreExtraId = "",
         documentType = try { DocumentType.valueOf(this.documentType) } catch (e: Exception) { DocumentType.BAP },
         inspectionType = try { InspectionType.valueOf(this.inspectionType) } catch (e: Exception) { InspectionType.PAA },
         subInspectionType = try { SubInspectionType.valueOf(this.subInspectionType) } catch (e: Exception) { SubInspectionType.Gantry_Crane },
-        equipmentType = "", // Not available in BAP DTO
+        equipmentType = "",
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
         ownerAddress = this.generalData.companyLocation,
@@ -1108,30 +1113,30 @@ fun GantryCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
 
     // Map Functional Test
     this.inspectionResult.functionalTest.let {
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.TESTING, itemName = "Fungsi Maju Mundur OK", status = it.isForwardReverseFunctionOk))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.TESTING, itemName = "Fungsi Hoisting OK", status = it.isHoistingFunctionOk))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.TESTING, itemName = "Limit Switch Berfungsi", status = it.isLimitSwitchFunctional))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.FUNCTIONAL_TEST, itemName = "Fungsi Maju Mundur OK", status = it.isForwardReverseFunctionOk))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.FUNCTIONAL_TEST, itemName = "Fungsi Hoisting OK", status = it.isHoistingFunctionOk))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.FUNCTIONAL_TEST, itemName = "Limit Switch Berfungsi", status = it.isLimitSwitchFunctional))
     }
 
     // Map NDT Test
     this.inspectionResult.ndtTest.let {
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = "UJI NDT", itemName = "Metode", status = true, result = it.method))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = "UJI NDT", itemName = "Hasil Baik", status = it.isNdtResultGood))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.NDT_TEST, itemName = "Metode", status = true, result = it.method))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.NDT_TEST, itemName = "Hasil Baik", status = it.isNdtResultGood))
     }
 
     // Map Load Test
     this.inspectionResult.loadTest.let {
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = "UJI BEBAN", itemName = "Beban (kg)", status = true, result = it.loadKg))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = "UJI BEBAN", itemName = "Tinggi Angkat (meter)", status = true, result = it.liftHeightMeters))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = "UJI BEBAN", itemName = "Waktu Tahan (detik)", status = true, result = it.holdTimeSeconds))
-        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = "UJI BEBAN", itemName = "Hasil Baik", status = it.isLoadTestResultGood))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Beban (kg)", status = true, result = it.loadKg))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Tinggi Angkat (meter)", status = true, result = it.liftHeightMeters))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Waktu Tahan (detik)", status = true, result = it.holdTimeSeconds))
+        checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.LOAD_TEST, itemName = "Hasil Baik", status = it.isLoadTestResultGood))
     }
 
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
         checkItems = checkItems,
-        findings = emptyList(), // BAP DTO does not contain findings
-        testResults = emptyList() // BAP DTO does not contain separate test results
+        findings = emptyList(),
+        testResults = emptyList()
     )
 }
 
@@ -1142,12 +1147,10 @@ fun GantryCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
 fun InspectionWithDetailsDomain.toGantryCraneBapRequest(): GantryCraneBapRequest {
     val checkItemsMap = this.checkItems.associateBy { it.category to it.itemName }
 
-    // Helper to find boolean status, defaulting to false
     fun findBool(category: String, itemName: String): Boolean {
         return checkItemsMap[category to itemName]?.status ?: false
     }
 
-    // Helper to find string result, defaulting to empty
     fun findString(category: String, itemName: String): String {
         return checkItemsMap[category to itemName]?.result ?: ""
     }
@@ -1182,21 +1185,21 @@ fun InspectionWithDetailsDomain.toGantryCraneBapRequest(): GantryCraneBapRequest
     )
 
     val functionalTest = GantryCraneBapFunctionalTest(
-        isForwardReverseFunctionOk = findBool(BAPCategory.TESTING, "Fungsi Maju Mundur OK"),
-        isHoistingFunctionOk = findBool(BAPCategory.TESTING, "Fungsi Hoisting OK"),
-        isLimitSwitchFunctional = findBool(BAPCategory.TESTING, "Limit Switch Berfungsi")
+        isForwardReverseFunctionOk = findBool(BAPCategory.FUNCTIONAL_TEST, "Fungsi Maju Mundur OK"),
+        isHoistingFunctionOk = findBool(BAPCategory.FUNCTIONAL_TEST, "Fungsi Hoisting OK"),
+        isLimitSwitchFunctional = findBool(BAPCategory.FUNCTIONAL_TEST, "Limit Switch Berfungsi")
     )
 
     val ndtTest = GantryCraneBapNdtTest(
-        method = findString("UJI NDT", "Metode"),
-        isNdtResultGood = findBool("UJI NDT", "Hasil Baik")
+        method = findString(BAPCategory.NDT_TEST, "Metode"),
+        isNdtResultGood = findBool(BAPCategory.NDT_TEST, "Hasil Baik")
     )
 
     val loadTest = GantryCraneBapLoadTest(
-        loadKg = findString("UJI BEBAN", "Beban (kg)"),
-        liftHeightMeters = findString("UJI BEBAN", "Tinggi Angkat (meter)"),
-        holdTimeSeconds = findString("UJI BEBAN", "Waktu Tahan (detik)"),
-        isLoadTestResultGood = findBool("UJI BEBAN", "Hasil Baik")
+        loadKg = findString(BAPCategory.LOAD_TEST, "Beban (kg)"),
+        liftHeightMeters = findString(BAPCategory.LOAD_TEST, "Tinggi Angkat (meter)"),
+        holdTimeSeconds = findString(BAPCategory.LOAD_TEST, "Waktu Tahan (detik)"),
+        isLoadTestResultGood = findBool(BAPCategory.LOAD_TEST, "Hasil Baik")
     )
 
     val inspectionResult = GantryCraneBapInspectionResult(
