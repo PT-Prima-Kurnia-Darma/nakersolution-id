@@ -1,8 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.remote.dto.electrical
 
 import com.google.gson.annotations.SerializedName
-// Assuming CommonDtos.kt is in the same package or imported
-// import com.your_package_name.CommonDtos.ResultStatus
 
 data class ElectricalBapRequest(
     @SerializedName("laporanId") val laporanId: String,
