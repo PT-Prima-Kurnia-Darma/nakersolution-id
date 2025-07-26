@@ -8,7 +8,7 @@ data class LightningReportRequest(
     @SerializedName("equipmentType") val equipmentType: String,
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("createdAt") val createdAt: String,
-    @SerializedName("extraId") val extraId: Long, // Diubah menjadi Long
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("pjk3Data") val pjk3Data: LightningPjk3Data,
     @SerializedName("ownerData") val ownerData: LightningOwnerData,
     @SerializedName("technicalData") val technicalData: LightningTechnicalData,
@@ -38,7 +38,7 @@ data class LightningReportData(
     @SerializedName("equipmentType") val equipmentType: String,
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("createdAt") val createdAt: String,
-    @SerializedName("extraId") val extraId: Long, // Diubah menjadi Long
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("pjk3Data") val pjk3Data: LightningPjk3Data,
     @SerializedName("ownerData") val ownerData: LightningOwnerData,
     @SerializedName("technicalData") val technicalData: LightningTechnicalData,

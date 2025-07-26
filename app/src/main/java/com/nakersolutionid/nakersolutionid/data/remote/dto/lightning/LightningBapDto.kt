@@ -7,7 +7,7 @@ data class LightningBapRequest(
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("equipmentType") val equipmentType: String,
-    @SerializedName("extraId") val extraId: Long, // Dari JSON: 1 (angka murni)
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("generalData") val generalData: LightningBapGeneralData,
     @SerializedName("technicalData") val technicalData: LightningBapTechnicalData,
     @SerializedName("testResults") val testResults: LightningBapTestResults
@@ -30,7 +30,7 @@ data class LightningBapReportData(
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("equipmentType") val equipmentType: String,
-    @SerializedName("extraId") val extraId: Long, // Dari JSON: 1 (angka murni)
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("generalData") val generalData: LightningBapGeneralData,
     @SerializedName("technicalData") val technicalData: LightningBapTechnicalData,
     @SerializedName("testResults") val testResults: LightningBapTestResults,
