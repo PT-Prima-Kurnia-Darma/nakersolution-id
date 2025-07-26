@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class IpkReportRequest(
     @SerializedName("examinationType") val examinationType: String,
-    @SerializedName("extraid") val extraId: Int,
+    @SerializedName("extraid") val extraId: Long,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("equipmentType") val equipmentType: String,
@@ -37,7 +37,7 @@ data class IpkListReportResponseData(
 data class IpkReportData(
     @SerializedName("id") val id: String,
     @SerializedName("examinationType") val examinationType: String,
-    @SerializedName("extraid") val extraId: Int,
+    @SerializedName("extraid") val extraId: Long,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("equipmentType") val equipmentType: String,
