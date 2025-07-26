@@ -124,6 +124,7 @@ fun GondolaUiState.toInspectionWithDetailsDomain(
         addCheckItem(techCategory, "hoist_motor_type", hoist.electricMotor.type)
         addCheckItem(techCategory, "hoist_motor_power", hoist.electricMotor.power)
         addCheckItem(techCategory, "hoist_motor_voltage", hoist.electricMotor.voltage)
+        addCheckItem(techCategory, "hoist_motor_voltageHz", hoist.electricMotor.voltageHz)
     }
     addCheckItem(techCategory, "safetyLockType", technicalData.safetyLockType)
     technicalData.brake.let { brake ->
@@ -350,7 +351,8 @@ fun InspectionWithDetailsDomain.toGondolaUiState(): GondolaUiState {
             electricMotor = GondolaElectricMotor(
                 type = getCheckItemValue(techCategory, "hoist_motor_type"),
                 power = getCheckItemValue(techCategory, "hoist_motor_power"),
-                voltage = getCheckItemValue(techCategory, "hoist_motor_voltage")
+                voltage = getCheckItemValue(techCategory, "hoist_motor_voltage"),
+                voltageHz = getCheckItemValue(techCategory, "hoist_motor_voltageHz")
             )
         ),
         safetyLockType = getCheckItemValue(techCategory, "safetyLockType"),

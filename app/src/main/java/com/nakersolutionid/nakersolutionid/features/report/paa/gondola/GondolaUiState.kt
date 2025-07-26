@@ -97,7 +97,8 @@ data class GondolaHoist(
 data class GondolaElectricMotor(
     val type: String = "",
     val power: String = "",
-    val voltage: String = ""
+    val voltage: String = "",
+    val voltageHz: String = ""
 )
 
 @Immutable

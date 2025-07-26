@@ -229,7 +229,8 @@ fun GondolaScreen(
                     Text("Electric Motor", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
                     FormTextField(label = "Type", value = hoist.electricMotor.type, onValueChange = { onDataChange(report.copy(technicalData = data.copy(hoist = hoist.copy(electricMotor = hoist.electricMotor.copy(type = it))))) })
                     FormTextField(label = "Power", value = hoist.electricMotor.power, onValueChange = { onDataChange(report.copy(technicalData = data.copy(hoist = hoist.copy(electricMotor = hoist.electricMotor.copy(power = it))))) })
-                    FormTextField(label = "Voltage", value = hoist.electricMotor.voltage, onValueChange = { onDataChange(report.copy(technicalData = data.copy(hoist = hoist.copy(electricMotor = hoist.electricMotor.copy(voltage = it))))) })
+                    FormTextField(label = "Voltage (V)", value = hoist.electricMotor.voltage, onValueChange = { onDataChange(report.copy(technicalData = data.copy(hoist = hoist.copy(electricMotor = hoist.electricMotor.copy(voltage = it))))) })
+                    FormTextField(label = "Hertz (Hz)", value = hoist.electricMotor.voltageHz, onValueChange = { onDataChange(report.copy(technicalData = data.copy(hoist = hoist.copy(electricMotor = hoist.electricMotor.copy(voltageHz = it))))) })
                 }
                 HorizontalDivider()
                 FormTextField(label = "SAFETY LOCK TYPE", value = data.safetyLockType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(safetyLockType = it))) })
