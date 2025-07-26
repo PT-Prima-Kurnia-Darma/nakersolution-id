@@ -4,12 +4,51 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
-import com.nakersolutionid.nakersolutionid.data.local.utils.toDocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.toInspectionType
-import com.nakersolutionid.nakersolutionid.data.local.utils.toSubInspectionType
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
-import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.*
-import com.nakersolutionid.nakersolutionid.domain.model.*
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapFunctionalTest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapGeneralData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapInspectionResult
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapReportData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapTechnicalData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapVisualCheck
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBrake
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaCageNdt
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaCageNdtItem
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaClampsNdt
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaClampsNdtItem
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaDriveMotorCondition
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaDynamicLoadTest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaElectricMotor
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaElectricalSystem
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaGeneralData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaHoist
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaLoadTestItem
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaMachineWeight
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaNdtTest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaNonDestructiveTesting
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaPlatform
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaReportData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSafetyDevices
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSpecification
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaStaticLoadTest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSteelCableRopeNdt
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSteelCableRopeNdtItem
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSteelWireRope
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSuspensionMechanical
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSuspensionStructure
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSuspensionStructureNdt
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSuspensionStructureNdtItem
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaTechnicalData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaTesting
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaVisualInspection
+import com.nakersolutionid.nakersolutionid.domain.model.FindingType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionFindingDomain
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
 
 private object BAPCategoryGondola {
     const val VISUAL_CHECK = "PEMERIKSAAN VISUAL"
@@ -117,9 +156,9 @@ fun GondolaBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         id = inspectionId,
         extraId = this.laporanId,
         moreExtraId = this.id,
-        documentType = this.documentType.toDocumentType() ?: DocumentType.BAP,
-        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.PAA,
-        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Gondola,
+        documentType = DocumentType.BAP,
+        inspectionType = InspectionType.PAA,
+        subInspectionType = SubInspectionType.Gondola,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
@@ -462,9 +501,9 @@ fun GondolaReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         id = inspectionId,
         extraId = this.id, // cloud report id
         moreExtraId = "",
-        documentType = this.documentType.toDocumentType() ?: DocumentType.LAPORAN,
-        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.PAA,
-        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Gondola,
+        documentType = DocumentType.LAPORAN,
+        inspectionType = InspectionType.PAA,
+        subInspectionType = SubInspectionType.Gondola,
         equipmentType = this.generalData.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.ownerName,
