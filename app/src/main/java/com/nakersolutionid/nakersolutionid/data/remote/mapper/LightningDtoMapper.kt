@@ -226,10 +226,10 @@ fun InspectionWithDetailsDomain.toLightningReportRequest(): LightningReportReque
         receiverHeight = findTest("Teknis - Tinggi Penerima"),
         receiverCount = findTest("Teknis - Jumlah Penerima").toIntOrNull() ?: 0,
         testJointCount = findTest("Teknis - Jumlah sambungan ukur").toIntOrNull() ?: 0,
-        conductorDescription = findTest("Teknis - Jenis & Ukuran Hantaran"),
-        groundingResistance = findTest("Teknis - Tahanan Sebaran Tanah"),
-        spreadingResistance = "", // Data tidak ada di domain
-        installer = findTest("Teknis - Instalatir")
+        conductorDescription = findTest("Teknis - Jumlah hantaran penyalur"),
+        groundingResistance = findTest("Teknis - Jenis & Ukuran Hantaran"),
+        spreadingResistance = findTest("Teknis - Tahanan Sebaran Tanah"),
+        installer = "${findTest("Teknis - Tahun Pemasangan")} / ${findTest("Teknis - Instalatir")}"
     )
 
     val catPhysical = LightningCategory.PHYSICAL_INSPECTION
@@ -399,9 +399,12 @@ fun LightningReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jumlah Penerima", it.receiverCount.toString(), null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jumlah sambungan ukur", it.testJointCount.toString(), null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jenis & Ukuran Hantaran", it.conductorDescription, null))
-        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tahanan Sebaran Tanah", it.groundingResistance, null))
-        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Instalatir", it.installer, null))
-        // 'Teknis - Tahun Pemasangan' tidak ada di DTO, jadi tidak bisa dipetakan kembali
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Jenis & Ukuran Hantaran", it.groundingResistance, null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tahanan Sebaran Tanah", it.spreadingResistance, null))
+        val tahunPemasangan = it.installer.split("/").getOrNull(0) ?: it.installer
+        val installer = it.installer.split("/").getOrNull(1) ?: it.installer
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tahun Pemasangan", tahunPemasangan, null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Instalatir", installer, null))
     }
     this.visualInspection.let {
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Visual - Penerima (Air Terminal)", it.airTerminal, null))
