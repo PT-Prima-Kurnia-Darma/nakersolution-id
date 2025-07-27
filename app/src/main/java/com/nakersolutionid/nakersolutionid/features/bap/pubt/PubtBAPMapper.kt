@@ -35,7 +35,8 @@ fun PubtBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?):
         manufacturer = ManufacturerDomain(
             name = this.technicalData.manufacturer,
             brandOrType = this.technicalData.brandOrType,
-            year = this.technicalData.manufactureYear
+            // FIXED: Now correctly maps the combined field to the domain model.
+            year = this.technicalData.countryAndYearOfManufacture
         ),
         createdAt = currentTime,
         reportDate = this.inspectionDate,
@@ -59,7 +60,8 @@ fun PubtBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?):
 private fun mapTechnicalDataToDomain(uiState: PubtBAPTechnicalData, inspectionId: Long): List<InspectionTestResultDomain> {
     val cat = PubtMappingKeys.BAP.Category.TECHNICAL_DATA
     return listOf(
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.MANUFACTURE_COUNTRY, result = uiState.manufactureCountry, notes = cat),
+        // NOTE: 'manufactureCountry' is now part of 'countryAndYearOfManufacture' in the domain model via the ManufacturerDomain.
+        // It is not stored as a separate test result anymore.
         InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.FUEL_TYPE, result = uiState.fuelType, notes = cat),
         InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.PRESSURE_VESSEL_CONTENT, result = uiState.pressureVesselContent, notes = cat),
         InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE, result = uiState.designPressureInKgCm2, notes = cat),
@@ -72,7 +74,8 @@ private fun mapTechnicalDataToDomain(uiState: PubtBAPTechnicalData, inspectionId
 
 private fun mapVisualInspectionToDomain(uiState: PubtBAPVisualInspection, inspectionId: Long): List<InspectionCheckItemDomain> {
     return mutableListOf<InspectionCheckItemDomain>().apply {
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, itemName = PubtMappingKeys.BAP.ItemName.FOUNDATION_CONDITION, status = uiState.fondationCondition))
+        // FIXED: Using the corrected field name 'foundationCondition'.
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, itemName = PubtMappingKeys.BAP.ItemName.FOUNDATION_CONDITION, status = uiState.foundationCondition))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, itemName = PubtMappingKeys.BAP.ItemName.WHEEL_CONDITION, status = uiState.wheelCondition))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, itemName = PubtMappingKeys.BAP.ItemName.PIPE_CONDITION, status = uiState.pipeCondition))
         // Safety Valve
@@ -118,9 +121,9 @@ fun InspectionWithDetailsDomain.toPubtBAPReport(): PubtBAPReport {
     val technicalData = PubtBAPTechnicalData(
         brandOrType = this.inspection.manufacturer?.brandOrType ?: "",
         manufacturer = this.inspection.manufacturer?.name ?: "",
-        manufactureYear = this.inspection.manufacturer?.year ?: "",
+        // FIXED: No data loss. The 'year' field in domain (which holds combined data) is now mapped to the correct UI field.
+        countryAndYearOfManufacture = this.inspection.manufacturer?.year ?: "",
         serialNumber = this.inspection.serialNumber ?: "",
-        manufactureCountry = findTestResult(PubtMappingKeys.BAP.TestName.MANUFACTURE_COUNTRY),
         fuelType = findTestResult(PubtMappingKeys.BAP.TestName.FUEL_TYPE),
         pressureVesselContent = findTestResult(PubtMappingKeys.BAP.TestName.PRESSURE_VESSEL_CONTENT),
         designPressureInKgCm2 = findTestResult(PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE),
@@ -131,7 +134,8 @@ fun InspectionWithDetailsDomain.toPubtBAPReport(): PubtBAPReport {
     )
 
     val visualInspection = PubtBAPVisualInspection(
-        fondationCondition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, PubtMappingKeys.BAP.ItemName.FOUNDATION_CONDITION),
+        // FIXED: Mapping from domain to the corrected UI field name.
+        foundationCondition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, PubtMappingKeys.BAP.ItemName.FOUNDATION_CONDITION),
         wheelCondition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, PubtMappingKeys.BAP.ItemName.WHEEL_CONDITION),
         pipeCondition = findBoolItem(PubtMappingKeys.BAP.Category.VISUAL_INSPECTION, PubtMappingKeys.BAP.ItemName.PIPE_CONDITION),
         safetyValve = PubtBAPSafetyValve(

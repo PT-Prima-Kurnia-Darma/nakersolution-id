@@ -31,8 +31,8 @@ data class PubtBAPGeneralData(
 data class PubtBAPTechnicalData(
     val brandOrType: String = "",
     val manufacturer: String = "",
-    val manufactureYear: String = "",
-    val manufactureCountry: String = "",
+    // FIXED: Combined into a single field to match the DTO and prevent data loss.
+    val countryAndYearOfManufacture: String = "",
     val serialNumber: String = "",
     val fuelType: String = "",
     val pressureVesselContent: String = "",
@@ -51,7 +51,8 @@ data class PubtBAPTestResults(
 
 @Immutable
 data class PubtBAPVisualInspection(
-    val fondationCondition: Boolean = false,
+    // FIXED: Typo corrected from 'fondationCondition' to 'foundationCondition'
+    val foundationCondition: Boolean = false,
     val safetyValve: PubtBAPSafetyValve = PubtBAPSafetyValve(),
     val apar: PubtBAPApar = PubtBAPApar(),
     val wheelCondition: Boolean = false,
