@@ -67,7 +67,13 @@ class ReportRepository(
             SubInspectionType.Mobile_Crane to ApiPaths.LAPORAN_MOBILE_CRANE,
             SubInspectionType.Overhead_Crane to ApiPaths.LAPORAN_OVERHEAD_CRANE,
             SubInspectionType.Gantry_Crane to ApiPaths.LAPORAN_GANTRY_CRANE,
-            SubInspectionType.Gondola to ApiPaths.LAPORAN_GONDOLA
+            SubInspectionType.Gondola to ApiPaths.LAPORAN_GONDOLA,
+            SubInspectionType.Electrical to ApiPaths.LAPORAN_LISTRIK,
+            SubInspectionType.Lightning_Conductor to ApiPaths.LAPORAN_PETIR,
+            SubInspectionType.Fire_Protection to ApiPaths.LAPORAN_PROTEKSI_KEBAKARAN,
+            SubInspectionType.Machine to ApiPaths.LAPORAN_MESIN,
+            SubInspectionType.Motor_Diesel to ApiPaths.LAPORAN_MOTOR_DIESEL,
+            SubInspectionType.General_PUBT to ApiPaths.LAPORAN_PUBT,
         )
 
         val bapPathMap = mapOf(
@@ -77,7 +83,13 @@ class ReportRepository(
             SubInspectionType.Mobile_Crane to ApiPaths.BAP_MOBILE_CRANE,
             SubInspectionType.Overhead_Crane to ApiPaths.BAP_OVERHEAD_CRANE,
             SubInspectionType.Gantry_Crane to ApiPaths.BAP_GANTRY_CRANE,
-            SubInspectionType.Gondola to ApiPaths.BAP_GONDOLA
+            SubInspectionType.Gondola to ApiPaths.BAP_GONDOLA,
+            SubInspectionType.Electrical to ApiPaths.BAP_LISTRIK,
+            SubInspectionType.Lightning_Conductor to ApiPaths.BAP_PETIR,
+            SubInspectionType.Fire_Protection to ApiPaths.BAP_PROTEKSI_KEBAKARAN,
+            SubInspectionType.Machine to ApiPaths.BAP_MESIN,
+            SubInspectionType.Motor_Diesel to ApiPaths.BAP_MOTOR_DIESEL,
+            SubInspectionType.General_PUBT to ApiPaths.BAP_PUBT,
         )
 
         return when (documentType) {
