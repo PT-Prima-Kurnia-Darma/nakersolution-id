@@ -9,6 +9,14 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.BaseApiResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.electrical.ElectricalBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.electrical.ElectricalBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.electrical.ElectricalReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.electrical.ElectricalSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorReportRequest
@@ -17,11 +25,69 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBa
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.forklift.ForkliftBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.forklift.ForkliftBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.forklift.ForkliftReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.forklift.ForkliftSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane.GantryCraneBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane.GantryCraneBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane.GantryCraneReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane.GantryCraneSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.gondola.GondolaSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ipk.IpkBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ipk.IpkBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ipk.IpkReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ipk.IpkSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.lightning.LightningBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.lightning.LightningBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.lightning.LightningReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.lightning.LightningSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.overheadcrane.OverheadCraneBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.overheadcrane.OverheadCraneBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.overheadcrane.OverheadCraneReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.overheadcrane.OverheadCraneSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.pubt.PubtBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.pubt.PubtBapSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.pubt.PubtReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.pubt.PubtSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toDieselBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toDieselReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElectricalBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElectricalReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toElevatorReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toEscalatorBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toEscalatorReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toForkliftBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toForkliftReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toGantryCraneBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toGantryCraneReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toGondolaBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toGondolaReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toIpkBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toIpkReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toLightningBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toLightningReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toMachineBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toMachineReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toMobileCraneBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toMobileCraneReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toOverheadCraneBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toOverheadCraneReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toPubtBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.mapper.toPubtReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiPaths
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.domain.model.History
@@ -164,12 +230,32 @@ class ReportRepository(
                 DocumentType.LAPORAN -> when (r.inspection.subInspectionType) {
                     SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(t, p, r.toElevatorReportRequest()).first()
                     SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(t, p, r.toEscalatorReportRequest()).first()
-                    else -> ApiResponse.Empty
+                    SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftReportRequest, ForkliftSingleReportResponseData>(t, p, r.toForkliftReportRequest()).first()
+                    SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneReportRequest, MobileCraneSingleReportResponseData>(t, p, r.toMobileCraneReportRequest()).first()
+                    SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneReportRequest, OverheadCraneSingleReportResponseData>(t, p, r.toOverheadCraneReportRequest()).first()
+                    SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneReportRequest, GantryCraneSingleReportResponseData>(t, p, r.toGantryCraneReportRequest()).first()
+                    SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaReportRequest, GondolaSingleReportResponseData>(t, p, r.toGondolaReportRequest()).first()
+                    SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalReportRequest, ElectricalSingleReportResponseData>(t, p, r.toElectricalReportRequest()).first()
+                    SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningReportRequest, LightningSingleReportResponseData>(t, p, r.toLightningReportRequest()).first()
+                    SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtReportRequest, PubtSingleReportResponseData>(t, p, r.toPubtReportRequest()).first()
+                    SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkReportRequest, IpkSingleReportResponseData>(t, p, r.toIpkReportRequest()).first()
+                    SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselReportRequest, DieselSingleReportResponseData>(t, p, r.toDieselReportRequest()).first()
+                    SubInspectionType.Machine -> remoteDataSource.createReport<MachineReportRequest, MachineSingleReportResponseData>(t, p, r.toMachineReportRequest()).first()
                 }
                 DocumentType.BAP -> when (r.inspection.subInspectionType) {
                     SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(t, p, r.toElevatorBapRequest()).first()
                     SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(t, p, r.toEscalatorBapRequest()).first()
-                    else -> ApiResponse.Empty
+                    SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftBapRequest, ForkliftBapSingleReportResponseData>(t, p, r.toForkliftBapRequest()).first()
+                    SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneBapRequest, MobileCraneBapSingleReportResponseData>(t, p, r.toMobileCraneBapRequest()).first()
+                    SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneBapRequest, OverheadCraneBapSingleReportResponseData>(t, p, r.toOverheadCraneBapRequest()).first()
+                    SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneBapRequest, GantryCraneBapSingleReportResponseData>(t, p, r.toGantryCraneBapRequest()).first()
+                    SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaBapRequest, GondolaBapSingleReportResponseData>(t, p, r.toGondolaBapRequest()).first()
+                    SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalBapRequest, ElectricalBapSingleReportResponseData>(t, p, r.toElectricalBapRequest()).first()
+                    SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningBapRequest, LightningBapSingleReportResponseData>(t, p, r.toLightningBapRequest()).first()
+                    SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtBapRequest, PubtBapSingleReportResponseData>(t, p, r.toPubtBapRequest()).first()
+                    SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkBapRequest, IpkBapSingleReportResponseData>(t, p, r.toIpkBapRequest()).first()
+                    SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselBapRequest, DieselBapSingleReportResponseData>(t, p, r.toDieselBapRequest()).first()
+                    SubInspectionType.Machine -> remoteDataSource.createReport<MachineBapRequest, MachineBapSingleReportResponseData>(t, p, r.toMachineBapRequest()).first()
                 }
                 else -> ApiResponse.Empty
             }
