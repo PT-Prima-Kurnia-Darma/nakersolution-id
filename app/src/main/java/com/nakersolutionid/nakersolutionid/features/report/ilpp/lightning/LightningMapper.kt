@@ -130,6 +130,12 @@ private fun createTestResultsFromUiState(report: LightningProtectionInspectionRe
         results.add(InspectionTestResultDomain(0, id, "Visual - Penghantar Penurunan", it.downConductor, null))
         results.add(InspectionTestResultDomain(0, id, "Visual - Pembumian dan Sambungan Ukur", it.groundingAndTestJoint, null))
     }
+    // --- PERBAIKAN DI SINI ---
+    // Menyimpan catatan umum dari UI State ke domain model.
+    // Anda perlu menambahkan field `notes: String` di data class `LightningProtectionPhysicalInspection`.
+    report.physicalInspection.let {
+        results.add(InspectionTestResultDomain(0, id, "Pemeriksaan Fisik - Catatan", it.notes, null))
+    }
     report.testingResults.groundingResistanceMeasurement.forEachIndexed { index, item ->
         val notes = "EC: ${item.ecDistance}|EP: ${item.epDistance}|Remarks: ${item.remarks}"
         results.add(InspectionTestResultDomain(0, id, "Pengukuran Tahanan #${index + 1}", item.rValueOhm, notes))
@@ -138,8 +144,7 @@ private fun createTestResultsFromUiState(report: LightningProtectionInspectionRe
 }
 
 private fun LightningProtectionConditionResult.toCheckItem(id: Long, cat: String, name: String): InspectionCheckItemDomain {
-    val condition = when { good -> "Baik"; fair -> "Kurang Baik"; poor -> "Buruk"; else -> "" }
-    return InspectionCheckItemDomain(0, id, cat, name, good || fair || poor, if (remarks.isNotBlank()) "$condition|${remarks}" else condition)
+    return InspectionCheckItemDomain(0, id, cat, name, good || fair || poor)
 }
 
 private fun LightningProtectionCheckResult.toCheckItem(id: Long, cat: String, name: String) =
@@ -163,7 +168,6 @@ fun InspectionWithDetailsDomain.toLightningProtectionUiState(): LightningProtect
             good = condition == "Baik",
             fair = condition == "Kurang Baik",
             poor = condition == "Buruk",
-            remarks = remarks
         )
     }
 
@@ -215,7 +219,11 @@ fun InspectionWithDetailsDomain.toLightningProtectionUiState(): LightningProtect
         downConductorBoxAndGroundingTerminal = findConditionItem(catPhysical, "Kotak Down Conductor dan terminal grounding"),
         controlBox = findConditionItem(catPhysical, "Bak Kontrol"),
         groundingSystem = findConditionItem(catPhysical, "System Pentanahan"),
-        downConductorDirectConnection = findConditionItem(catPhysical, "Down conductor tersambung langsung ke permukaan")
+        downConductorDirectConnection = findConditionItem(catPhysical, "Down conductor tersambung langsung ke permukaan"),
+        // --- PERBAIKAN DI SINI ---
+        // Membaca catatan umum dari domain model ke UI State.
+        // Anda perlu menambahkan field `notes: String` di data class `LightningProtectionPhysicalInspection`.
+        notes = findTest("Pemeriksaan Fisik - Catatan")
     )
 
     val visual = LightningProtectionGroundingSystemVisualInspection(

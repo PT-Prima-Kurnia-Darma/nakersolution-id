@@ -47,7 +47,8 @@ data class MobileCraneGeneralData(
     val intendedUse: String = "",
     val permitNumber: String = "",
     val operatorCertificate: String = "",
-    val equipmentHistory: String = ""
+    val equipmentHistory: String = "",
+    val inspectionDate: String = "",
 )
 
 @Immutable

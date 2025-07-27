@@ -50,7 +50,7 @@ data class GantryCraneGeneralData(
 data class GantryCraneTechnicalData(
     val specifications: GantryCraneTechSpecs = GantryCraneTechSpecs(),
     val driveMotor: GantryCraneDriveMotor = GantryCraneDriveMotor(),
-    val startingResistor: GantryCraneStartingResistor = GantryCraneStartingResistor(), // ADDED
+    val startingResistor: GantryCraneStartingResistor = GantryCraneStartingResistor(), // FIXED: ADDED
     val brake: GantryCraneBrake = GantryCraneBrake(),
     val controllerBrake: GantryCraneControllerBrake = GantryCraneControllerBrake(),
     val hook: GantryCraneHook = GantryCraneHook(),
@@ -81,11 +81,11 @@ data class GantryCraneDriveMotor(
     val voltageV: GantryCraneMovementData = GantryCraneMovementData(),
     val currentA: GantryCraneMovementData = GantryCraneMovementData(),
     val frequencyHz: GantryCraneMovementData = GantryCraneMovementData(),
-    val phase: GantryCraneMovementData = GantryCraneMovementData(), // ADDED
-    val powerSupply: GantryCraneMovementData = GantryCraneMovementData() // ADDED
+    val phase: GantryCraneMovementData = GantryCraneMovementData(), // FIXED: ADDED
+    val powerSupply: GantryCraneMovementData = GantryCraneMovementData() // FIXED: ADDED
 )
 
-// ADDED a new data class for Starting Resistor
+// FIXED: ADDED a new data class for Starting Resistor
 @Immutable
 data class GantryCraneStartingResistor(
     val type: GantryCraneMovementData = GantryCraneMovementData(),
@@ -95,14 +95,14 @@ data class GantryCraneStartingResistor(
 
 @Immutable
 data class GantryCraneBrake(
-    val type: GantryCraneMovementData = GantryCraneMovementData(), // This is 'Jenis' in the report
-    val model: GantryCraneMovementData = GantryCraneMovementData() // This is 'Type' in the report
+    val type: GantryCraneMovementData = GantryCraneMovementData(),
+    val model: GantryCraneMovementData = GantryCraneMovementData()
 )
 
 @Immutable
 data class GantryCraneControllerBrake(
-    val type: GantryCraneMovementData = GantryCraneMovementData(), // This is 'Jenis' in the report
-    val model: GantryCraneMovementData = GantryCraneMovementData() // This is 'Type' in the report
+    val type: GantryCraneMovementData = GantryCraneMovementData(),
+    val model: GantryCraneMovementData = GantryCraneMovementData()
 )
 
 @Immutable
@@ -319,9 +319,9 @@ data class GantryCraneNdeWireRopeItem(
     val specDiameter: String = "",
     val actualDiameter: String = "",
     val construction: String = "",
-    val type: String = "", // 'Jenis' in report
+    val type: String = "",
     val length: String = "",
-    val age: String = "", // ADDED
+    val age: String = "", // FIXED: ADDED
     val finding: GantryCraneInspectionResult = GantryCraneInspectionResult()
 )
 
@@ -385,9 +385,9 @@ data class GantryCraneDynamicTestItem(
 @Immutable
 data class GantryCraneDynamicWithLoad(
     val noLoad: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
-    val swl25: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),    // ADDED
-    val swl50: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),    // ADDED
-    val swl75: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),    // ADDED
+    val swl25: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
+    val swl50: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
+    val swl75: GantryCraneLoadTestResult = GantryCraneLoadTestResult(),
     val swl100: GantryCraneLoadTestResult = GantryCraneLoadTestResult()
 )
 
@@ -403,7 +403,7 @@ data class GantryCraneLoadTestResult(
 @Immutable
 data class GantryCraneStaticTest(
     val load: String = "",
-    val deflectionResult: GantryCraneInspectionResult = GantryCraneInspectionResult(),
+    val deflectionResult: GantryCraneInspectionResult = GantryCraneInspectionResult(), // FIXED: ADDED
     val deflectionStandard: GantryCraneDeflectionStandard = GantryCraneDeflectionStandard(),
     val deflectionMeasurement: ImmutableList<GantryCraneDeflectionItem> = persistentListOf()
 )

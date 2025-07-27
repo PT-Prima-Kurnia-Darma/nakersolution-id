@@ -45,6 +45,30 @@ object ApiPaths {
     // --- Overhead Crane ---
     const val LAPORAN_OVERHEAD_CRANE = "paa/overHeadCrane/laporan"
     const val BAP_OVERHEAD_CRANE = "paa/overHeadCrane/bap"
+
+    // --- Lightning ---
+    const val LAPORAN_PETIR = "petirListrik/instalasiPetir/laporan"
+    const val BAP_PETIR = "petirListrik/instalasiPetir/bap"
+
+    // --- Electrical ---
+    const val LAPORAN_LISTRIK = "petirListrik/instalasiListrik/laporan"
+    const val BAP_LISTRIK = "petirListrik/instalasiListrik/bap"
+
+    // --- IPK - Fire ---
+    const val LAPORAN_PROTEKSI_KEBAKARAN = "proteksiKebakaran/laporan"
+    const val BAP_PROTEKSI_KEBAKARAN = "proteksiKebakaran/bap"
+
+    // --- PUBT - General ---
+    const val LAPORAN_PUBT = "pubt/laporan"
+    const val BAP_PUBT = "pubt/bap"
+
+    // --- Machine ---
+    const val LAPORAN_MESIN = "ptp/mesin/laporan"
+    const val BAP_MESIN = "ptp/mesin/bap"
+
+    // --- Motor Diesel ---
+    const val LAPORAN_MOTOR_DIESEL = "ptp/motorDiesel/laporan"
+    const val BAP_MOTOR_DIESEL = "ptp/motorDiesel/bap"
 }
 
 /*

@@ -131,7 +131,7 @@ fun LightningScreen(
                 LightningFormTextField("Luas Bangunan", data.buildingArea) { onDataChange(report.copy(technicalData = data.copy(buildingArea = it))) }
                 LightningFormTextField("Tinggi Penerima", data.receiverHeight) { onDataChange(report.copy(technicalData = data.copy(receiverHeight = it))) }
                 LightningFormTextField("Jumlah Penerima", data.receiverCount) { onDataChange(report.copy(technicalData = data.copy(receiverCount = it))) }
-                LightningFormTextField("Jumlah Sambungan Ukur", data.testJointCount) { onDataChange(report.copy(technicalData = data.copy(testJointCount = it))) }
+                LightningFormTextField("Jumlah Sambungan Ukur", data.testJointCount, keyboardType = KeyboardType.Number) { onDataChange(report.copy(technicalData = data.copy(testJointCount = it))) }
                 LightningFormTextField("Jumlah Hantaran Penyalur", data.conductorDescription) { onDataChange(report.copy(technicalData = data.copy(conductorDescription = it))) }
                 LightningFormTextField("Jenis & Ukuran Hantaran Penyalur", data.conductorTypeAndSize) { onDataChange(report.copy(technicalData = data.copy(conductorTypeAndSize = it))) }
                 LightningFormTextField("Tahanan Sebaran Tanah", data.groundingResistance) { onDataChange(report.copy(technicalData = data.copy(groundingResistance = it))) }
@@ -155,6 +155,7 @@ fun LightningScreen(
                 ConditionResultInput("Bak Kontrol", data.controlBox) { onDataChanged(data.copy(controlBox = it)) }
                 ConditionResultInput("Sistem Pentanahan", data.groundingSystem) { onDataChanged(data.copy(groundingSystem = it)) }
                 ConditionResultInput("Down Conductor Tersambung Langsung", data.downConductorDirectConnection) { onDataChanged(data.copy(downConductorDirectConnection = it)) }
+                LightningFormTextField("Catatan", data.notes) { onDataChange(report.copy(physicalInspection = data.copy(notes = it))) }
             }
         }
 
@@ -297,6 +298,25 @@ private fun LightningFormTextField(
 }
 
 @Composable
+private fun LightningFormTextField(
+    label: String,
+    value: String,
+    keyboardType: KeyboardType,
+    onValueChange: (String) -> Unit,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType
+        )
+    )
+}
+
+@Composable
 private fun ConditionResultInput(
     label: String,
     value: LightningProtectionConditionResult,
@@ -318,7 +338,6 @@ private fun ConditionResultInput(
                 Text("Buruk")
             }
         }
-        LightningFormTextField("Keterangan", value.remarks) { onValueChange(value.copy(remarks = it)) }
     }
 }
 

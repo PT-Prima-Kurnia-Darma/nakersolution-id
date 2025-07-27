@@ -10,18 +10,24 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDom
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
 import com.nakersolutionid.nakersolutionid.utils.Utils
 
+/**
+ * Defines the categories used for check items, aligned with the DTO mapper.
+ */
 private object OverheadCraneBAPCategory {
-    const val TECHNICAL_DATA = "DATA TEKNIK"
-    const val INSPECTION = "PEMERIKSAAN"
-    const val TESTING = "PENGUJIAN"
-    const val TESTING_LOAD_TEST = "$TESTING - Uji Beban"
-    const val TESTING_NDT_HOOK = "$TESTING - Uji NDT Hook"
+    const val VISUAL_INSPECTION = "BAP_VISUAL_INSPECTION"
+    const val TESTING = "BAP_TESTING"
+    const val LOAD_TEST = "BAP_LOAD_TEST"
+    const val NDT_TEST = "BAP_NDT_TEST"
 }
 
 // =================================================================================================
 //                                  UI State -> Domain Model
 // =================================================================================================
 
+/**
+ * Maps the UI state (OverheadCraneBAPReport) to the central domain model (InspectionWithDetailsDomain).
+ * This version uses the corrected, consistent keys for check items.
+ */
 fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
 
@@ -55,7 +61,16 @@ fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id
     checkItems.addAll(mapInspectionToDomain(this.testResults.inspection, inspectionId))
     checkItems.addAll(mapTestingToDomain(this.testResults.testing, inspectionId))
 
-    val testResults = mapTechnicalDataToDomain(this.technicalData, inspectionId)
+    // The 'manufactureCountry' is mapped to testResults as it's a simple key-value data point.
+    // This part remains unchanged as it was not causing data loss.
+    val testResults = listOf(
+        InspectionTestResultDomain(
+            inspectionId = inspectionId,
+            testName = "manufactureCountry",
+            result = this.technicalData.manufactureCountry,
+            notes = "DATA TEKNIK"
+        )
+    )
 
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
@@ -65,44 +80,49 @@ fun OverheadCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id
     )
 }
 
-private fun mapTechnicalDataToDomain(uiState: OverheadCraneBAPTechnicalData, inspectionId: Long): List<InspectionTestResultDomain> {
-    val cat = OverheadCraneBAPCategory.TECHNICAL_DATA
-    return listOf(
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Negara Pembuat", result = uiState.manufactureCountry, notes = cat)
-    )
-}
-
 private fun mapInspectionToDomain(uiState: OverheadCraneBAPInspection, inspectionId: Long): List<InspectionCheckItemDomain> {
-    val cat = OverheadCraneBAPCategory.INSPECTION
+    val cat = OverheadCraneBAPCategory.VISUAL_INSPECTION
     return listOf(
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Ada cacat konstruksi", status = uiState.hasConstructionDefects),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Hook memiliki safety latch", status = uiState.hookHasSafetyLatch),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Tombol darurat terpasang", status = uiState.isEmergencyStopInstalled),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Kondisi wirerope baik", status = uiState.isWireropeGoodCondition),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Operator memiliki lisensi K3", status = uiState.operatorHasK3License)
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "hasConstructionDefects", status = uiState.hasConstructionDefects),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "hookHasSafetyLatch", status = uiState.hookHasSafetyLatch),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "isEmergencyStopInstalled", status = uiState.isEmergencyStopInstalled),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "isWireropeGoodCondition", status = uiState.isWireropeGoodCondition),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "operatorHasK3License", status = uiState.operatorHasK3License)
     )
 }
 
 private fun mapTestingToDomain(uiState: OverheadCraneBAPTesting, inspectionId: Long): List<InspectionCheckItemDomain> {
     return mutableListOf<InspectionCheckItemDomain>().apply {
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING, itemName = "Uji Fungsi Baik", status = uiState.functionTest))
-        // Load Test
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING_LOAD_TEST, itemName = "Beban dalam Ton", status = uiState.loadTest.loadInTon))
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING_LOAD_TEST, itemName = "Mampu mengangkat", status = uiState.loadTest.isAbleToLift))
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING_LOAD_TEST, itemName = "Ada penurunan beban", status = uiState.loadTest.hasLoadDrop))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING, itemName = "functionTest", status = uiState.functionTest))
+
+        // <-- PERUBAHAN DISINI
+        // Load Test - now storing loadInTon as a string result in a dedicated item.
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.LOAD_TEST, itemName = "loadTon", status = false, result = uiState.loadTest.loadInTon))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.LOAD_TEST, itemName = "isAbleToLift", status = uiState.loadTest.isAbleToLift))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.LOAD_TEST, itemName = "hasLoadDrop", status = uiState.loadTest.hasLoadDrop))
+
         // NDT Hook Test
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING_NDT_HOOK, itemName = "Hasil NDT baik", status = uiState.ndtHookTest.isNdtResultGood))
-        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.TESTING_NDT_HOOK, itemName = "Ada indikasi retak", status = uiState.ndtHookTest.hasCrackIndication))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.NDT_TEST, itemName = "isNdtResultGood", status = uiState.ndtHookTest.isNdtResultGood))
+        add(InspectionCheckItemDomain(inspectionId = inspectionId, category = OverheadCraneBAPCategory.NDT_TEST, itemName = "hasCrackIndication", status = uiState.ndtHookTest.hasCrackIndication))
     }
 }
+
 
 // =================================================================================================
 //                                  Domain Model -> UI State
 // =================================================================================================
 
+/**
+ * Maps the central domain model (InspectionWithDetailsDomain) back to the UI state (OverheadCraneBAPReport).
+ * This version uses the corrected, consistent keys to find and display the data correctly.
+ */
 fun InspectionWithDetailsDomain.toOverheadCraneBAPReport(): OverheadCraneBAPReport {
     fun findBoolItem(category: String, itemName: String): Boolean {
         return this.checkItems.find { it.category == category && it.itemName == itemName }?.status ?: false
+    }
+
+    fun findStringItem(category: String, itemName: String): String {
+        return this.checkItems.find { it.category == category && it.itemName == itemName }?.result ?: ""
     }
 
     fun findTestResult(testName: String): String {
@@ -123,27 +143,28 @@ fun InspectionWithDetailsDomain.toOverheadCraneBAPReport(): OverheadCraneBAPRepo
         serialNumber = this.inspection.serialNumber ?: "",
         maxLiftingCapacityInKg = this.inspection.capacity ?: "",
         liftingSpeedInMpm = this.inspection.speed ?: "",
-        manufactureCountry = findTestResult("Negara Pembuat")
+        manufactureCountry = findTestResult("manufactureCountry")
     )
 
     val inspection = OverheadCraneBAPInspection(
-        hasConstructionDefects = findBoolItem(OverheadCraneBAPCategory.INSPECTION, "Ada cacat konstruksi"),
-        hookHasSafetyLatch = findBoolItem(OverheadCraneBAPCategory.INSPECTION, "Hook memiliki safety latch"),
-        isEmergencyStopInstalled = findBoolItem(OverheadCraneBAPCategory.INSPECTION, "Tombol darurat terpasang"),
-        isWireropeGoodCondition = findBoolItem(OverheadCraneBAPCategory.INSPECTION, "Kondisi wirerope baik"),
-        operatorHasK3License = findBoolItem(OverheadCraneBAPCategory.INSPECTION, "Operator memiliki lisensi K3")
+        hasConstructionDefects = findBoolItem(OverheadCraneBAPCategory.VISUAL_INSPECTION, "hasConstructionDefects"),
+        hookHasSafetyLatch = findBoolItem(OverheadCraneBAPCategory.VISUAL_INSPECTION, "hookHasSafetyLatch"),
+        isEmergencyStopInstalled = findBoolItem(OverheadCraneBAPCategory.VISUAL_INSPECTION, "isEmergencyStopInstalled"),
+        isWireropeGoodCondition = findBoolItem(OverheadCraneBAPCategory.VISUAL_INSPECTION, "isWireropeGoodCondition"),
+        operatorHasK3License = findBoolItem(OverheadCraneBAPCategory.VISUAL_INSPECTION, "operatorHasK3License")
     )
 
     val testing = OverheadCraneBAPTesting(
-        functionTest = findBoolItem(OverheadCraneBAPCategory.TESTING, "Uji Fungsi Baik"),
+        functionTest = findBoolItem(OverheadCraneBAPCategory.TESTING, "functionTest"),
         loadTest = OverheadCraneBAPLoadTest(
-            loadInTon = findBoolItem(OverheadCraneBAPCategory.TESTING_LOAD_TEST, "Beban dalam Ton"),
-            isAbleToLift = findBoolItem(OverheadCraneBAPCategory.TESTING_LOAD_TEST, "Mampu mengangkat"),
-            hasLoadDrop = findBoolItem(OverheadCraneBAPCategory.TESTING_LOAD_TEST, "Ada penurunan beban")
+            // <-- PERUBAHAN DISINI
+            loadInTon = findStringItem(OverheadCraneBAPCategory.LOAD_TEST, "loadTon"),
+            isAbleToLift = findBoolItem(OverheadCraneBAPCategory.LOAD_TEST, "isAbleToLift"),
+            hasLoadDrop = findBoolItem(OverheadCraneBAPCategory.LOAD_TEST, "hasLoadDrop")
         ),
         ndtHookTest = OverheadCraneBAPNdtHookTest(
-            isNdtResultGood = findBoolItem(OverheadCraneBAPCategory.TESTING_NDT_HOOK, "Hasil NDT baik"),
-            hasCrackIndication = findBoolItem(OverheadCraneBAPCategory.TESTING_NDT_HOOK, "Ada indikasi retak")
+            isNdtResultGood = findBoolItem(OverheadCraneBAPCategory.NDT_TEST, "isNdtResultGood"),
+            hasCrackIndication = findBoolItem(OverheadCraneBAPCategory.NDT_TEST, "hasCrackIndication")
         )
     )
 

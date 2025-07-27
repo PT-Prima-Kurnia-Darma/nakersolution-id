@@ -62,7 +62,7 @@ data class OverheadCraneBAPTesting(
 
 @Immutable
 data class OverheadCraneBAPLoadTest(
-    val loadInTon: Boolean = false,
+    val loadInTon: String = "", // <-- PERUBAHAN DISINI: Boolean -> String
     val isAbleToLift: Boolean = false,
     val hasLoadDrop: Boolean = false
 )

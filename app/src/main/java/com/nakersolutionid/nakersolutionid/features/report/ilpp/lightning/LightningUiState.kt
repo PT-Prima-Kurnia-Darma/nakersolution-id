@@ -69,7 +69,6 @@ data class LightningProtectionConditionResult(
     val good: Boolean = false,
     val fair: Boolean = false,
     val poor: Boolean = false,
-    val remarks: String = ""
 )
 
 @Immutable
@@ -84,7 +83,8 @@ data class LightningProtectionPhysicalInspection(
     val downConductorBoxAndGroundingTerminal: LightningProtectionConditionResult = LightningProtectionConditionResult(),
     val controlBox: LightningProtectionConditionResult = LightningProtectionConditionResult(),
     val groundingSystem: LightningProtectionConditionResult = LightningProtectionConditionResult(),
-    val downConductorDirectConnection: LightningProtectionConditionResult = LightningProtectionConditionResult()
+    val downConductorDirectConnection: LightningProtectionConditionResult = LightningProtectionConditionResult(),
+    val notes: String = ""
 )
 
 @Immutable

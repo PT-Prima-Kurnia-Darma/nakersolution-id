@@ -91,8 +91,7 @@ fun PubtBAPScreen(
             ExpandableSection(title = "DATA TEKNIK") {
                 FormTextField(label = "Merk / Tipe", value = data.brandOrType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(brandOrType = it))) })
                 FormTextField(label = "Pabrik Pembuat", value = data.manufacturer, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufacturer = it))) })
-                FormTextField(label = "Tahun Pembuatan", value = data.manufactureYear, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufactureYear = it))) })
-                FormTextField(label = "Negara Pembuat", value = data.manufactureCountry, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufactureCountry = it))) })
+                FormTextField(label = "Negara dan Tahun Pembuat", value = data.countryAndYearOfManufacture, onValueChange = { onDataChange(report.copy(technicalData = data.copy(countryAndYearOfManufacture = it))) })
                 FormTextField(label = "Nomor Seri", value = data.serialNumber, onValueChange = { onDataChange(report.copy(technicalData = data.copy(serialNumber = it))) })
                 FormTextField(label = "Jenis Bahan Bakar", value = data.fuelType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(fuelType = it))) })
                 FormTextField(label = "Isi Bejana Tekan", value = data.pressureVesselContent, onValueChange = { onDataChange(report.copy(technicalData = data.copy(pressureVesselContent = it))) })
@@ -110,7 +109,7 @@ fun PubtBAPScreen(
             ExpandableSection(title = "HASIL PEMERIKSAAN & PENGUJIAN") {
                 Text("Pemeriksaan Visual", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                CheckboxWithLabel(label = "Kondisi Pondasi Baik", checked = data.visualInspection.fondationCondition, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(visualInspection = data.visualInspection.copy(fondationCondition = it)))) })
+                CheckboxWithLabel(label = "Kondisi Pondasi Baik", checked = data.visualInspection.foundationCondition, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(visualInspection = data.visualInspection.copy(foundationCondition = it)))) })
 
                 Text("Katup Pengaman", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
                 CheckboxWithLabel(label = "Terpasang", checked = data.visualInspection.safetyValve.isInstalled, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(visualInspection = data.visualInspection.copy(safetyValve = data.visualInspection.safetyValve.copy(isInstalled = it))))) })

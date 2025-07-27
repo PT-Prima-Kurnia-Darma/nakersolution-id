@@ -46,8 +46,9 @@ data class FireProtectionBAPTechnicalData(
     val signalAlarmLamp: String = "",
     val emergencyExit: String = "",
     val apar: String = "",
-    val seriesNumber: String = "",
-    val usageLocation: String = ""
+    val seriesNumber: String = ""
+    // HAPUS: val usageLocation: String = "" --> Field ini duplikat dan menyebabkan data loss.
+    // Sumber data yang benar ada di FireProtectionBAPGeneralData.
 )
 
 @Immutable

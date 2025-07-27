@@ -25,7 +25,7 @@ fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: S
         moreExtraId = this.moreExtraId,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.EE,
-        subInspectionType = SubInspectionType.Electrical, // Mengganti dari ElectricalInstallation
+        subInspectionType = SubInspectionType.Electrical,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
@@ -33,6 +33,8 @@ fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: S
         usageLocation = this.generalData.usageLocation,
         addressUsageLocation = this.generalData.addressUsageLocation,
         serialNumber = this.technicalData.serialNumber,
+        // FIXED: Persist electricCurrentType to driveType to prevent local data loss.
+        driveType = this.technicalData.electricCurrentType,
         createdAt = currentTime,
         reportDate = this.inspectionDate,
         isSynced = false
@@ -54,13 +56,12 @@ fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: S
 }
 
 private fun mapTechnicalDataToDomain(uiState: ElectricalInstallationBAPTechnicalData, inspectionId: Long): List<InspectionTestResultDomain> {
-    val cat = ElectricBAPCategory.TECHNICAL_DATA
+    // FIXED: Removed electricCurrentType from here as it's now a direct domain property (driveType).
     return listOf(
         InspectionTestResultDomain(inspectionId = inspectionId, testName = "Sumber Listrik (PLN)", result = uiState.powerSource.plnKva, notes = "kVA"),
         InspectionTestResultDomain(inspectionId = inspectionId, testName = "Sumber Listrik (Generator)", result = uiState.powerSource.generatorKw, notes = "kW"),
         InspectionTestResultDomain(inspectionId = inspectionId, testName = "Penggunaan Daya (Penerangan)", result = uiState.powerUsage.lightingKva, notes = "kVA"),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Penggunaan Daya (Tenaga)", result = uiState.powerUsage.powerKva, notes = "kVA"),
-        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jenis Arus Listrik", result = uiState.electricCurrentType, notes = null)
+        InspectionTestResultDomain(inspectionId = inspectionId, testName = "Penggunaan Daya (Tenaga)", result = uiState.powerUsage.powerKva, notes = "kVA")
     )
 }
 
@@ -119,7 +120,8 @@ fun InspectionWithDetailsDomain.toElectricalInstallationBAPReport(): ElectricalI
             lightingKva = findTestResult("Penggunaan Daya (Penerangan)"),
             powerKva = findTestResult("Penggunaan Daya (Tenaga)")
         ),
-        electricCurrentType = findTestResult("Jenis Arus Listrik"),
+        // FIXED: Retrieve electricCurrentType from the correct domain property.
+        electricCurrentType = this.inspection.driveType ?: "",
         serialNumber = this.inspection.serialNumber ?: ""
     )
 

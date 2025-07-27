@@ -124,6 +124,7 @@ fun InspectionFinding.toDomain(): InspectionFindingDomain {
         type = when (this.type) {
             EntityFindingType.FINDING -> DomainFindingType.FINDING
             EntityFindingType.RECOMMENDATION -> DomainFindingType.RECOMMENDATION
+            EntityFindingType.SUMMARY -> DomainFindingType.SUMMARY
         }
     )
 }
@@ -232,6 +233,7 @@ fun InspectionFindingDomain.toEntity(inspectionId: Long): InspectionFinding {
         type = when (this.type) {
             DomainFindingType.FINDING -> EntityFindingType.FINDING
             DomainFindingType.RECOMMENDATION -> EntityFindingType.RECOMMENDATION
+            DomainFindingType.SUMMARY -> EntityFindingType.SUMMARY
         }
     )
 }

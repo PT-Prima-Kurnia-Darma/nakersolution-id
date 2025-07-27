@@ -852,47 +852,47 @@ object Dummy {
                 physicalInspection = LightningProtectionPhysicalInspection(
                     installationSystem = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Sesuai standar"
+//                        remarks = "Sesuai standar"
                     ),
                     receiverHead = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Tidak ada kerusakan"
+//                        remarks = "Tidak ada kerusakan"
                     ),
                     receiverPole = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Kokoh dan tidak berkarat"
+//                        remarks = "Kokoh dan tidak berkarat"
                     ),
                     poleReinforcementSystem = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Kuat dan terpasang baik"
+//                        remarks = "Kuat dan terpasang baik"
                     ),
                     downConductor = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Terpasang rapi di dinding"
+//                        remarks = "Terpasang rapi di dinding"
                     ),
                     conductorClamps = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Jarak antar klem sesuai"
+//                        remarks = "Jarak antar klem sesuai"
                     ),
                     jointConnections = LightningProtectionConditionResult(
                         fair = true,
-                        remarks = "Ada sedikit kelonggaran di satu titik"
+//                        remarks = "Ada sedikit kelonggaran di satu titik"
                     ),
                     downConductorBoxAndGroundingTerminal = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Bersih dan mudah diakses"
+//                        remarks = "Bersih dan mudah diakses"
                     ),
                     controlBox = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Tertutup rapat"
+//                        remarks = "Tertutup rapat"
                     ),
                     groundingSystem = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Terkubur dengan baik"
+//                        remarks = "Terkubur dengan baik"
                     ),
                     downConductorDirectConnection = LightningProtectionConditionResult(
                         good = true,
-                        remarks = "Koneksi langsung dan kencang"
+//                        remarks = "Koneksi langsung dan kencang"
                     )
                 ),
                 groundingSystemVisualInspection = LightningProtectionGroundingSystemVisualInspection(
@@ -1030,7 +1030,7 @@ object Dummy {
                         type = "Conventional",
                         serialNumber = "NTFR-MCFA-123",
                         result = "Operational",
-                        remarks = "Maintained regularly"
+//                        remarks = "Maintained regularly"
                     ),
                     heatDetector = FireProtectionDetector(
                         brandOrType = "Kidde",
@@ -1038,7 +1038,7 @@ object Dummy {
                         spacingM = "7.5",
                         operatingTemperatureC = "57",
                         result = "Functional",
-                        remarks = "All detectors respond correctly"
+//                        remarks = "All detectors respond correctly"
                     ),
                     smokeDetector = FireProtectionDetector(
                         brandOrType = "Siemens",
@@ -1046,7 +1046,7 @@ object Dummy {
                         spacingM = "9",
                         operatingTemperatureC = "N/A",
                         result = "Functional",
-                        remarks = "All detectors respond correctly"
+//                        remarks = "All detectors respond correctly"
                     ),
                     apar = FireProtectionApar(
                         brandOrType = "Servvo",
@@ -1054,7 +1054,7 @@ object Dummy {
                         spacingM = "20",
                         placement = "Strategically located near exits",
                         result = "Compliant",
-                        remarks = "All APARs are fully charged and inspected"
+//                        remarks = "All APARs are fully charged and inspected"
                     )
                 ),
                 alarmInstallationTesting = FireProtectionAlarmInstallationTesting(
@@ -1062,7 +1062,7 @@ object Dummy {
                     alarmTest = "Passed, audible and visual alarms activated",
                     faultTest = "Passed, system correctly identified simulated faults",
                     interconnectionTest = "Passed, all interconnected systems responded",
-                    notes = "System is fully compliant and operational."
+//                    notes = "System is fully compliant and operational."
                 ),
                 hydrantSystemInstallation = FireProtectionHydrantSystemInstallation(
                     waterSource = FireProtectionSystemComponent(

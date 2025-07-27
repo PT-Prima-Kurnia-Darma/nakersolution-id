@@ -71,7 +71,8 @@ data class InspectionFindingDomain(
 
 enum class FindingType {
     FINDING,
-    RECOMMENDATION
+    RECOMMENDATION,
+    SUMMARY // ADDED: To differentiate between findings and summary/conclusion
 }
 
 /**
@@ -94,4 +95,3 @@ data class InspectionWithDetailsDomain(
     val findings: List<InspectionFindingDomain>,
     val testResults: List<InspectionTestResultDomain>
 )
-

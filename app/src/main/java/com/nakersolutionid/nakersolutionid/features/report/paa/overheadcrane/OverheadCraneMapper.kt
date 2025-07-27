@@ -59,7 +59,7 @@ fun OverheadCraneUiState.toInspectionWithDetailsDomain(
         createdAt = currentTime,
         speed = "",
         floorServed = "",
-        reportDate = "",
+        reportDate = generalData.inspectionDate,
         nextInspectionDate = "",
         inspectorName = "",
         status = "",
@@ -508,7 +508,8 @@ fun InspectionWithDetailsDomain.toOverheadCraneUiState(): OverheadCraneUiState {
         personInCharge = getCheckItemValue("general_data", "personInCharge"),
         intendedUse = getCheckItemValue("general_data", "intendedUse"),
         operatorCertificate = getCheckItemValue("general_data", "operatorCertificate"),
-        technicalDataManual = getCheckItemValue("general_data", "technicalDataManual")
+        technicalDataManual = getCheckItemValue("general_data", "technicalDataManual"),
+        inspectionDate = inspection.reportDate ?: ""
     )
 
     val techCategory = "technical_data"

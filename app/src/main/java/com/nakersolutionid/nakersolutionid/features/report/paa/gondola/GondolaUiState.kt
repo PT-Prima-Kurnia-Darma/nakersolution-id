@@ -47,7 +47,8 @@ data class GondolaGeneralData(
     val standardUsed: String = "",
     val usedFor: String = "",
     val usagePermitNumber: String = "",
-    val operatorCertificate: String = ""
+    val operatorCertificate: String = "",
+    val inspectionDate: String = ""
 )
 
 @Immutable
@@ -96,7 +97,8 @@ data class GondolaHoist(
 data class GondolaElectricMotor(
     val type: String = "",
     val power: String = "",
-    val voltage: String = ""
+    val voltage: String = "",
+    val voltageHz: String = ""
 )
 
 @Immutable

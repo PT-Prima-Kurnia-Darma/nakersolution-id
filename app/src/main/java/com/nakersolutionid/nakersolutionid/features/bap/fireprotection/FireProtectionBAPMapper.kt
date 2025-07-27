@@ -34,7 +34,8 @@ fun FireProtectionBAPReport.toInspectionWithDetailsDomain(currentTime: String, i
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
         ownerAddress = this.generalData.companyLocation,
-        usageLocation = this.technicalData.usageLocation,
+        // PERBAIKAN: Ambil dari generalData, bukan technicalData.
+        usageLocation = this.generalData.usageLocation,
         addressUsageLocation = this.generalData.addressUsageLocation,
         serialNumber = this.technicalData.seriesNumber,
         createdAt = currentTime,
@@ -81,7 +82,6 @@ private fun mapTechnicalDataToDomain(uiState: FireProtectionBAPTechnicalData, in
 
 private fun mapVisualInspectionToDomain(uiState: FireProtectionBAPVisualInspection, inspectionId: Long): List<InspectionCheckItemDomain> {
     return mutableListOf<InspectionCheckItemDomain>().apply {
-        // --- PERBAIKAN DI SINI ---
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = FireProtectionBAPCategory.VISUAL_APAR, itemName = "Tersedia", status = uiState.aparStatus.isAvailable))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = FireProtectionBAPCategory.VISUAL_APAR, itemName = "Kondisi Baik", status = uiState.aparStatus.isGoodCondition))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = FireProtectionBAPCategory.VISUAL_INSPECTION, itemName = "Kondisi Panel Hidran Baik", status = uiState.isHydrantPanelGoodCondition))
@@ -96,7 +96,6 @@ private fun mapVisualInspectionToDomain(uiState: FireProtectionBAPVisualInspecti
 
 private fun mapTestingToDomain(uiState: FireProtectionBAPTesting, inspectionId: Long): List<InspectionCheckItemDomain> {
     return mutableListOf<InspectionCheckItemDomain>().apply {
-        // --- PERBAIKAN DI SINI ---
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = FireProtectionBAPCategory.TESTING, itemName = "APAR Berfungsi", status = uiState.isAparFunctional))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = FireProtectionBAPCategory.TESTING, itemName = "Hasil Tes Pompa Baik", status = uiState.pumpTestResults))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = FireProtectionBAPCategory.TESTING, itemName = "Sprinkler Berfungsi", status = uiState.isSprinklerFunctional))
@@ -139,8 +138,9 @@ fun InspectionWithDetailsDomain.toFireProtectionBAPReport(): FireProtectionBAPRe
         signalAlarmLamp = findTestResult("Lampu Indikator Alarm"),
         emergencyExit = findTestResult("Pintu Darurat"),
         apar = findTestResult("APAR"),
-        seriesNumber = this.inspection.serialNumber ?: "",
-        usageLocation = this.inspection.usageLocation ?: ""
+        seriesNumber = this.inspection.serialNumber ?: ""
+        // PERBAIKAN: Hapus mapping `usageLocation` dari sini karena sudah tidak ada di UI State
+        // dan untuk menghindari duplikasi.
     )
 
     val visualInspection = FireProtectionBAPVisualInspection(

@@ -60,7 +60,7 @@ fun GondolaUiState.toInspectionWithDetailsDomain(
         // Fields not in UI State are set to empty string
         speed = "",
         floorServed = "",
-        reportDate = "",
+        reportDate = generalData.inspectionDate,
         nextInspectionDate = "",
         inspectorName = "",
         status = "",
@@ -124,6 +124,7 @@ fun GondolaUiState.toInspectionWithDetailsDomain(
         addCheckItem(techCategory, "hoist_motor_type", hoist.electricMotor.type)
         addCheckItem(techCategory, "hoist_motor_power", hoist.electricMotor.power)
         addCheckItem(techCategory, "hoist_motor_voltage", hoist.electricMotor.voltage)
+        addCheckItem(techCategory, "hoist_motor_voltageHz", hoist.electricMotor.voltageHz)
     }
     addCheckItem(techCategory, "safetyLockType", technicalData.safetyLockType)
     technicalData.brake.let { brake ->
@@ -320,7 +321,8 @@ fun InspectionWithDetailsDomain.toGondolaUiState(): GondolaUiState {
         operatorName = getCheckItemValue("general_data", "operatorName"),
         standardUsed = getCheckItemValue("general_data", "standardUsed"),
         usedFor = getCheckItemValue("general_data", "usedFor"),
-        operatorCertificate = getCheckItemValue("general_data", "operatorCertificate")
+        operatorCertificate = getCheckItemValue("general_data", "operatorCertificate"),
+        inspectionDate = inspection.reportDate ?: ""
     )
 
     // 2. Reconstruct Technical Data
@@ -349,7 +351,8 @@ fun InspectionWithDetailsDomain.toGondolaUiState(): GondolaUiState {
             electricMotor = GondolaElectricMotor(
                 type = getCheckItemValue(techCategory, "hoist_motor_type"),
                 power = getCheckItemValue(techCategory, "hoist_motor_power"),
-                voltage = getCheckItemValue(techCategory, "hoist_motor_voltage")
+                voltage = getCheckItemValue(techCategory, "hoist_motor_voltage"),
+                voltageHz = getCheckItemValue(techCategory, "hoist_motor_voltageHz")
             )
         ),
         safetyLockType = getCheckItemValue(techCategory, "safetyLockType"),

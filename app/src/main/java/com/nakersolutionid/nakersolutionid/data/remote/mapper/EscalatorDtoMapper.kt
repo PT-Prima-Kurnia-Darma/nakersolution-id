@@ -8,13 +8,13 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.toDocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toSubInspectionType
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
+import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBalustrade
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapGeneralData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapReportData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapTechnicalData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapTesting
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBapVisualInspection
-import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorBalustrade
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorDriveEquipment
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorElectricalInstallation
 import com.nakersolutionid.nakersolutionid.data.remote.dto.escalator.EscalatorFrameAndMachineRoom
@@ -113,9 +113,9 @@ fun EscalatorBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetail
         id = inspectionId,
         extraId = this.laporanId,
         moreExtraId = this.id,
-        documentType = this.documentType.toDocumentType() ?: DocumentType.BAP,
-        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
-        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Escalator,
+        documentType = DocumentType.BAP,
+        inspectionType = InspectionType.EE,
+        subInspectionType = SubInspectionType.Escalator,
         equipmentType = this.technicalData.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.ownerName,
@@ -319,9 +319,9 @@ fun EscalatorReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         id = inspectionId,
         extraId = this.id,
         moreExtraId = "",
-        documentType = this.documentType.toDocumentType() ?: DocumentType.LAPORAN,
-        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
-        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Escalator,
+        documentType = DocumentType.LAPORAN,
+        inspectionType = InspectionType.EE,
+        subInspectionType = SubInspectionType.Escalator,
         equipmentType = this.equipmentType,
         examinationType = this.generalData.examinationType,
         ownerName = this.generalData.ownerName,

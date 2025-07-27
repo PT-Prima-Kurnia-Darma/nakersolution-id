@@ -96,7 +96,7 @@ private fun mapFunctionalTestToDomain(uiState: GondolaBAPFunctionalTest, inspect
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Fungsi Motor Penggerak OK", status = uiState.isDriveMotorFunctionOk),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Stop Darurat Berfungsi", status = uiState.isEmergencyStopFunctional),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Safety Lifeline Berfungsi", status = uiState.isSafetyLifelineFunctional),
-        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Metode NDT", status = uiState.ndtTest.method.isNotEmpty()),
+        InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Metode NDT", status = uiState.ndtTest.method.isNotEmpty(), result = uiState.ndtTest.method),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Hasil NDT Baik", status = uiState.ndtTest.isResultGood),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = cat, itemName = "Ada Indikasi Retak", status = uiState.ndtTest.hasCrackIndication)
     )
@@ -116,6 +116,10 @@ fun InspectionWithDetailsDomain.toGondolaBAPReport(): GondolaBAPReport {
     // Helper to find a boolean check item's status by category and name.
     fun findBoolItem(category: String, itemName: String): Boolean {
         return this.checkItems.find { it.category == category && it.itemName == itemName }?.status ?: false
+    }
+
+    fun findStringItem(category: String, itemName: String): String {
+        return this.checkItems.find { it.category == category && it.itemName == itemName }?.result ?: ""
     }
 
     val generalData = GondolaBAPGeneralData(
@@ -152,7 +156,7 @@ fun InspectionWithDetailsDomain.toGondolaBAPReport(): GondolaBAPReport {
     )
 
     val ndtTest = GondolaBAPNdtTest(
-        method = "", // Need to extract this from some field or keep empty
+        method = findStringItem(BAPCategory.FUNCTIONAL_TEST, "Metode NDT"),
         isResultGood = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Hasil NDT Baik"),
         hasCrackIndication = findBoolItem(BAPCategory.FUNCTIONAL_TEST, "Ada Indikasi Retak")
     )

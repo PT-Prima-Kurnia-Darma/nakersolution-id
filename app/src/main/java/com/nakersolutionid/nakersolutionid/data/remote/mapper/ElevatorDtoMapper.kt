@@ -8,8 +8,37 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.toDocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toSubInspectionType
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ResultStatus
-import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.*
-import com.nakersolutionid.nakersolutionid.domain.model.*
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorAccessibilityElevator
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapGeneralData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapReportData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapTechnicalData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapTesting
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorBapVisualInspection
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorCar
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorCarDoorSpecs
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorCarSignage
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorCounterweightGuideRailsAndBuffers
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorDrumsAndSheaves
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorElectricalInstallation
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorFireServiceElevator
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorGeneralData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorGovernorAndSafetyBrake
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorHoistwayAndPit
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorInspectionAndTesting
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorMachineRoomAndMachinery
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorMachineRoomless
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorReportData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorSeismicSensor
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorSuspensionRopesAndBelts
+import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorTechnicalDocumentInspection
+import com.nakersolutionid.nakersolutionid.domain.model.FindingType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionFindingDomain
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
 
 private object ElevatorCategory {
     const val TECHNICAL_DOC = "Pemeriksaan Dokumen Teknis"
@@ -94,9 +123,9 @@ fun ElevatorBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         id = inspectionId, // BAP ID from local
         extraId = this.laporanId, // REPORT ID from local and cloud
         moreExtraId = this.id, // BAP ID from cloud
-        documentType = this.documentType.toDocumentType() ?: DocumentType.BAP,
-        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
-        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Elevator,
+        documentType = DocumentType.BAP,
+        inspectionType = InspectionType.EE,
+        subInspectionType = SubInspectionType.Elevator,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.ownerName,
@@ -460,9 +489,9 @@ fun ElevatorReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDom
         id = inspectionId,
         extraId = this.id,
         moreExtraId = "", // report response does not include moreExtraId
-        documentType = this.documentType.toDocumentType() ?: DocumentType.LAPORAN,
-        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.EE,
-        subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Elevator,
+        documentType = DocumentType.LAPORAN,
+        inspectionType = InspectionType.EE,
+        subInspectionType = SubInspectionType.Elevator,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.ownerName,
