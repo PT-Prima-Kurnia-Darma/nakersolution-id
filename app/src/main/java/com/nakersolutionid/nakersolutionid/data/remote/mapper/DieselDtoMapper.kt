@@ -4,12 +4,8 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselAmpere
-import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapFunctionalTests
-import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapGeneralData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapReportData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapRequest
-import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapTechnicalData
-import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapVisualChecks
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBasicConstruction
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselAirCirculationSystem
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselCoolingSystem
@@ -49,27 +45,19 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionFindingDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
-import kotlin.math.abs
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.toDieselBapRequest
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.toPtpBAPCreationReport
 
 // =================================================================================================
 //                                  Domain -> DTO (Request)
 // =================================================================================================
 
-/**
- * Maps the domain layer's [InspectionWithDetailsDomain] to a [DieselReportRequest] for the API.
- * This function retrieves all detailed data from the domain model and packs it into the DTO.
- */
 fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
     val inspection = this.inspection
     val checkItemsByCategory = this.checkItems.groupBy { it.category }
 
-    // Helper functions to extract data safely
     fun getCheckItemValue(category: String, itemName: String, default: String = ""): String {
         return checkItemsByCategory[category]?.find { it.itemName == itemName }?.result ?: default
-    }
-
-    fun getCheckItemStatus(category: String, itemName: String, default: Boolean = false): Boolean {
-        return checkItemsByCategory[category]?.find { it.itemName == itemName }?.status ?: default
     }
 
     fun getStatusResult(category: String, itemName: String): DieselStatusResult {
@@ -95,8 +83,6 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
             status = getCheckItemValue(category, "${pointPrefix}_analysis")
         )
     }
-
-    // --- Building DTO Components ---
 
     val generalData = DieselGeneralData(
         companyName = inspection.ownerName ?: "",
@@ -344,10 +330,9 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
     val conclusionText = this.findings.filter { it.type == FindingType.FINDING }.joinToString("\n") { it.description }
     val recommendationsText = this.findings.filter { it.type == FindingType.RECOMMENDATION }.joinToString("\n") { it.description }
 
-    // --- Assemble the final DTO ---
     return DieselReportRequest(
         examinationType = inspection.examinationType,
-        extraId = inspection.extraId.toLongOrNull() ?: 0L,
+        extraId = inspection.id,
         inspectionType = inspection.inspectionType.name,
         createdAt = inspection.createdAt ?: "",
         inspectionDate = inspection.reportDate ?: "",
@@ -365,144 +350,29 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
 }
 
 /**
- * Maps the domain layer's [InspectionWithDetailsDomain] to a [DieselBapRequest] for the API.
- * This is a summary report and involves interpreting detailed data into boolean flags.
+ * REFACTORED: Now uses the centralized BAP logic from PtpBAPMapper.
  */
 fun InspectionWithDetailsDomain.toDieselBapRequest(): DieselBapRequest {
     val inspection = this.inspection
-    val checkItemsByCategory = this.checkItems.groupBy { it.category }
-
-    fun getCheckItemValue(category: String, itemName: String, default: String = ""): String {
-        return checkItemsByCategory[category]?.find { it.itemName == itemName }?.result ?: default
-    }
-
-    fun getCheckItemStatus(category: String, itemName: String, default: Boolean = false): Boolean {
-        return checkItemsByCategory[category]?.find { it.itemName == itemName }?.status ?: default
-    }
-
-    // --- BAP Specific Logic ---
-    val visualCategory = "visual_inspection"
-    val testCategory = "testing"
-
-    val isMachineGood = getCheckItemStatus(visualCategory, "baseConstructionFoundation") &&
-            getCheckItemStatus(visualCategory, "mainPartsSupport") &&
-            getCheckItemStatus(visualCategory, "mainPartsFlyWheel")
-
-    val areElectricalIndicatorsGood = getCheckItemStatus(visualCategory, "generatorVoltMeter") &&
-            getCheckItemStatus(visualCategory, "generatorAmpereMeter") &&
-            getCheckItemStatus(visualCategory, "generatorFrequencyMeter")
-
-    val isFoundationGood = getCheckItemStatus(visualCategory, "baseConstructionFoundation")
-    val hasLubeLeak = !getCheckItemStatus(visualCategory, "lubeSystemPacking") // Inverted logic
-    val hasHydraulicLeak = false // Diesel doesn't have hydraulic specific checks, default to false.
-
-    val isLightingCompliant = (getCheckItemValue("testing", "ndt_lighting").toDoubleOrNull() ?: 0.0) > 0
-    val isNoiseCompliant = (getCheckItemValue("testing", "ndt_noise").toDoubleOrNull() ?: 0.0) < 85.0
-    val isEmergencyStopOk = getCheckItemValue(testCategory, "safety_emergencyStop").contains("Berfungsi", ignoreCase = true)
-    val isMachineFunctional = getCheckItemValue(testCategory, "ndt_loadTest").contains("Berfungsi", ignoreCase = true)
-
-    val isVoltageNormal: Boolean by lazy {
-        val rs = getCheckItemValue(testCategory, "elec_panel_voltRS").toIntOrNull()
-        val rt = getCheckItemValue(testCategory, "elec_panel_voltRT").toIntOrNull()
-        val st = getCheckItemValue(testCategory, "elec_panel_voltST").toIntOrNull()
-        (rs != null && rs > 0) && (rt != null && rt > 0) && (st != null && st > 0)
-    }
-
-    val isPhaseBalanced: Boolean by lazy {
-        val r = getCheckItemValue(testCategory, "elec_power_ampR").toFloatOrNull()
-        val s = getCheckItemValue(testCategory, "elec_power_ampS").toFloatOrNull()
-        val t = getCheckItemValue(testCategory, "elec_power_ampT").toFloatOrNull()
-
-        if (r != null && s != null && t != null && r > 0 && s > 0 && t > 0) {
-            val avg = (r + s + t) / 3
-            val maxDeviation = 0.15 // 15% tolerance
-            abs(r - avg) / avg < maxDeviation &&
-                    abs(s - avg) / avg < maxDeviation &&
-                    abs(t - avg) / avg < maxDeviation
-        } else {
-            false
-        }
-    }
-
-
-    // --- Building DTO Components ---
-    val generalData = DieselBapGeneralData(
-        companyName = inspection.ownerName ?: "",
-        companyLocation = inspection.ownerAddress ?: "",
-        unitLocation = inspection.usageLocation ?: "",
-        userAddressInCharge = inspection.addressUsageLocation ?: ""
-    )
-
-    val technicalData = DieselBapTechnicalData(
-        brandType = inspection.manufacturer?.brandOrType ?: "",
-        manufacturer = inspection.manufacturer?.name ?: "",
-        locationAndYearOfManufacture = inspection.manufacturer?.year ?: "",
-        serialNumberUnitNumber = inspection.serialNumber ?: "",
-        capacityWorkingLoad = inspection.capacity ?: "",
-        technicalDataDieselMotorPowerRpm = getCheckItemValue("technical_data", "motor_powerRpm"),
-        specialSpecification = "", // Not available in Diesel Laporan
-        dimensionsDescription = "", // Not available in Diesel Laporan
-        rotationRpm = getCheckItemValue("technical_data", "gen_rpm"),
-        technicalDataGeneratorFrequency = getCheckItemValue("technical_data", "gen_frequency"),
-        technicalDataGeneratorCurrent = getCheckItemValue("technical_data", "gen_current"),
-        machineWeightKg = "", // Not available in Diesel Laporan
-        areSafetyFeaturesInstalled = getCheckItemStatus(visualCategory, "safetyGovernor") || getCheckItemStatus(visualCategory, "safetyEmergencyStop")
-    )
-
-    val visualChecks = DieselBapVisualChecks(
-        isMachineGoodCondition = isMachineGood,
-        areElectricalIndicatorsGood = areElectricalIndicatorsGood,
-        isAparAvailable = false, // Not available in Diesel Laporan, default to false
-        isPpeAvailable = false, // Not available in Diesel Laporan, default to false
-        isGroundingInstalled = getCheckItemStatus(visualCategory, "safetyGrounding"),
-        isBatteryGoodCondition = getCheckItemStatus(visualCategory, "startingSystemBatteryPoles"),
-        hasLubricationLeak = hasLubeLeak,
-        isFoundationGoodCondition = isFoundationGood,
-        hasHydraulicLeak = hasHydraulicLeak
-    )
-
-    val functionalTests = DieselBapFunctionalTests(
-        isLightingCompliant = isLightingCompliant,
-        isNoiseLevelCompliant = isNoiseCompliant,
-        isEmergencyStopFunctional = isEmergencyStopOk,
-        isMachineFunctional = isMachineFunctional,
-        isVibrationLevelCompliant = getCheckItemStatus(visualCategory, "mainPartsVibrationDamper"), // Best effort mapping
-        isInsulationResistanceOk = true, // Not available in Diesel Laporan, default to true
-        isShaftRotationCompliant = getCheckItemValue(testCategory, "ndt_shaftRpm").isNotBlank(),
-        isGroundingResistanceCompliant = getCheckItemValue(testCategory, "safety_grounding").isNotBlank(),
-        isNdtWeldTestOk = getCheckItemValue(testCategory, "ndt_weldJoint").contains("Baik", ignoreCase = true),
-        isVoltageBetweenPhasesNormal = isVoltageNormal,
-        isPhaseLoadBalanced = isPhaseBalanced
-    )
-
-    return DieselBapRequest(
-        laporanId = this.inspection.moreExtraId,
-        examinationType = inspection.examinationType,
-        inspectionDate = inspection.reportDate ?: "",
+    val ptpBAPReport = this.toPtpBAPCreationReport().report
+    return ptpBAPReport.toDieselBapRequest(
+        laporanId = inspection.extraId,
         createdAt = inspection.createdAt ?: "",
-        extraId = inspection.extraId.toLongOrNull() ?: 0L,
-        generalData = generalData,
-        technicalData = technicalData,
-        visualChecks = visualChecks,
-        functionalTests = functionalTests
+        extraId = inspection.id
     )
 }
 
 // =================================================================================================
 //                                  DTO (Response) -> Domain
 // =================================================================================================
-
-/**
- * Maps a [DieselReportData] from the API response to the domain layer's [InspectionWithDetailsDomain].
- * This function unpacks the DTO and reconstructs the detailed domain model.
- */
+// ... (rest of the file remains the same, no changes needed here)
 fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    val inspectionId = 0L // For new local inserts, ID is auto-generated by Room
+    val inspectionId = this.extraId
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = this.extraId.toString(),
-        moreExtraId = this.id, // Use API ID as moreExtraId
+        extraId = this.id,
+        moreExtraId = this.id,
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.PTP,
         subInspectionType = SubInspectionType.Motor_Diesel,
@@ -512,7 +382,7 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
         ownerAddress = this.generalData.companyLocation,
         usageLocation = this.generalData.unitLocation,
         addressUsageLocation = this.generalData.userAddressInCharge,
-        driveType = "", // Not explicitly in DTO, can be derived if needed
+        driveType = "",
         serialNumber = this.generalData.serialNumberUnitNumber,
         permitNumber = this.generalData.usagePermitNumber,
         capacity = this.generalData.capacityWorkingLoad,
@@ -540,9 +410,6 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
         checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = category, itemName = itemName, status = false, result = "${value.result}#${value.remarks}"))
     }
 
-    // --- Map All DTO fields back to CheckItems ---
-
-    // General Data
     val generalCategory = "general_data"
     addCheckItem(generalCategory, "userInCharge", this.generalData.userInCharge)
     addCheckItem(generalCategory, "subcontractorPersonInCharge", this.generalData.subcontractorPersonInCharge)
@@ -553,7 +420,6 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     addCheckItem(generalCategory, "operatorName", this.generalData.operatorName)
     addCheckItem(generalCategory, "equipmentHistory", this.generalData.equipmentHistory)
 
-    // Technical Data
     val techCategory = "technical_data"
     this.technicalData.dieselMotor.let { motor ->
         addCheckItem(techCategory, "motor_brandModel", motor.brandModel)
@@ -576,7 +442,6 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
         addCheckItem(techCategory, "gen_current", gen.current)
     }
 
-    // Visual Inspection
     val visualCategory = "visual_inspection"
     val v = this.visualChecks
     addConditionResultCheckItem(visualCategory, "baseConstructionFoundation", v.basicConstruction.foundation)
@@ -677,7 +542,6 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     addConditionResultCheckItem(visualCategory, "safetyCircuitBreaker", v.safetyDevice.circuitBreaker)
     addConditionResultCheckItem(visualCategory, "safetyAvr", v.safetyDevice.avr)
 
-    // Testing and Measurement
     val testCategory = "testing"
     val t = this.tests
     addTestResultCheckItem(testCategory, "ndt_shaftRpm", t.ndt.shaftRpm)
@@ -710,7 +574,6 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     addCheckItem(testCategory, "elec_power_ampT", elec.powerInfo.ampere.t.toString())
     addCheckItem(testCategory, "elec_power_remarks", elec.powerInfo.result)
 
-    // MCB Calculation
     val mcbCategory = "mcb_calculation"
     val mcb = this.mcbCalculation
     addCheckItem(mcbCategory, "known_phase", mcb.phase.toString())
@@ -718,12 +581,11 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     addCheckItem(mcbCategory, "known_cosQ", mcb.cosQ.toString())
     addCheckItem(mcbCategory, "known_powerKva", mcb.generatorPowerKva.toString())
     addCheckItem(mcbCategory, "known_powerKw", mcb.generatorPowerKw.toString())
-    addCheckItem(mcbCategory, "calc_formula", "I = P / (V * CosQ * sqrt(3))") // Formula is static
+    addCheckItem(mcbCategory, "calc_formula", "I = P / (V * CosQ * sqrt(3))")
     addCheckItem(mcbCategory, "calc_resultA", mcb.resultCalculation.toString())
     addCheckItem(mcbCategory, "calc_requiredAmps", mcb.requirementCalculation.toString())
     addCheckItem(mcbCategory, "conclusion", mcb.conclusion)
 
-    // Noise Measurement
     val noiseCategory = "noise_measurement"
     addCheckItem(noiseCategory, "pointA_result", this.noiseMeasurement.pointA.result.toString())
     addCheckItem(noiseCategory, "pointA_analysis", this.noiseMeasurement.pointA.status)
@@ -734,7 +596,6 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     addCheckItem(noiseCategory, "pointD_result", this.noiseMeasurement.pointD.result.toString())
     addCheckItem(noiseCategory, "pointD_analysis", this.noiseMeasurement.pointD.status)
 
-    // Lighting Measurement
     val lightCategory = "lighting_measurement"
     addCheckItem(lightCategory, "pointA_result", this.lightingMeasurement.pointA.result.toString())
     addCheckItem(lightCategory, "pointA_analysis", this.lightingMeasurement.pointA.status)
@@ -745,7 +606,6 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     addCheckItem(lightCategory, "pointD_result", this.lightingMeasurement.pointD.result.toString())
     addCheckItem(lightCategory, "pointD_analysis", this.lightingMeasurement.pointD.status)
 
-    // Findings
     val findings = mutableListOf<InspectionFindingDomain>()
     this.conclusion.split("\n").filter { it.isNotBlank() }.forEach {
         findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING))
@@ -758,25 +618,21 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
         inspection = inspectionDomain,
         checkItems = checkItems,
         findings = findings,
-        testResults = emptyList() // Laporan has no separate test results
+        testResults = emptyList()
     )
 }
 
-/**
- * Maps a [DieselBapReportData] from the API response to the domain layer's [InspectionWithDetailsDomain].
- * This function unpacks the summary DTO and reconstructs a simplified domain model.
- */
 fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    val inspectionId = 0L // For new local inserts
+    val inspectionId = this.extraId
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = this.extraId.toString(),
-        moreExtraId = this.id, // Use BAP ID as moreExtraId
+        extraId = this.laporanId,
+        moreExtraId = this.id,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.PTP,
-        subInspectionType = SubInspectionType.Motor_Diesel,
-        equipmentType = "Motor Diesel", // BAP doesn't specify, default
+        subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
+        equipmentType = "Motor Diesel",
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
         ownerAddress = this.generalData.companyLocation,
@@ -797,8 +653,7 @@ fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
     val testResults = mutableListOf<InspectionTestResultDomain>()
 
-    // Technical Data - Map to TestResults as they are not simple checks
-    val techCat = "DATA TEKNIK" // BAP Category
+    val techCat = "DATA TEKNIK"
     val td = this.technicalData
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Daya Motor Penggerak", result = td.technicalDataDieselMotorPowerRpm, notes = techCat))
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Spesifikasi Khusus", result = td.specialSpecification, notes = techCat))
@@ -809,7 +664,6 @@ fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Berat Mesin (Kg)", result = td.machineWeightKg, notes = techCat))
     checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = techCat, itemName = "Perlengkapan pengaman terpasang", status = td.areSafetyFeaturesInstalled))
 
-    // Visual Checks
     val visualCat = BAPCategory.VISUAL_INSPECTION
     val v = this.visualChecks
     checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = visualCat, itemName = "Kondisi mesin baik", status = v.isMachineGoodCondition))
@@ -822,7 +676,6 @@ fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
     checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = visualCat, itemName = "Kondisi pondasi baik", status = v.isFoundationGoodCondition))
     checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = visualCat, itemName = "Ada kebocoran hidrolik", status = v.hasHydraulicLeak))
 
-    // Functional Tests
     val testCat = BAPCategory.TESTING
     val t = this.functionalTests
     checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = testCat, itemName = "Penerangan memenuhi syarat", status = t.isLightingCompliant))
@@ -840,7 +693,7 @@ fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
         checkItems = checkItems,
-        findings = emptyList(), // BAP has no findings/recommendations
+        findings = emptyList(),
         testResults = testResults
     )
 }

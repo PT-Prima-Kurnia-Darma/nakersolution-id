@@ -3,13 +3,22 @@ package com.nakersolutionid.nakersolutionid.features.bap.ptp
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapFunctionalTests
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapGeneralData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapTechnicalData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapVisualChecks
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapFunctionalTests
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapGeneralData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapTechnicalData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapVisualChecks
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
 import com.nakersolutionid.nakersolutionid.utils.Utils
-import kotlin.math.abs
 
 private object PtpBAPCategory {
     const val TECHNICAL_DATA = "DATA TEKNIK"
@@ -88,7 +97,6 @@ private fun mapVisualInspectionToDomain(uiState: PtpBAPVisualInspection, inspect
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PtpBAPCategory.VISUAL_INSPECTION, itemName = "Ada kebocoran pelumasan", status = uiState.hasLubricationLeak))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PtpBAPCategory.VISUAL_INSPECTION, itemName = "Kondisi pondasi baik", status = uiState.isFoundationGoodCondition))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PtpBAPCategory.VISUAL_INSPECTION, itemName = "Ada kebocoran hidrolik", status = uiState.hasHydraulicLeak))
-        // PPE
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PtpBAPCategory.VISUAL_PPE, itemName = "APAR tersedia", status = uiState.personalProtectiveEquipment.isAparAvailable))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = PtpBAPCategory.VISUAL_PPE, itemName = "APD tersedia", status = uiState.personalProtectiveEquipment.isPpeAvailable))
     }
@@ -186,46 +194,30 @@ fun InspectionWithDetailsDomain.toPtpBAPReport(): PtpBAPReport {
     )
 }
 
-// CUSTOM
+// =================================================================================================
+//                                  NEW: Centralized BAP Logic
+// =================================================================================================
+
 /**
- * Maps an [InspectionWithDetailsDomain] to a [PtpBAPUiState].
+ * NEW: The single source of truth for creating a BAP from any Laporan type (Machine or Diesel).
+ * This function ensures consistency between UI and DTO.
  *
- * This function acts as a bridge between the detailed inspection data model and the
- * summary-level BAP (Berita Acara Pemeriksaan) UI state. It intelligently handles
- * both [SubInspectionType.Machine] and [SubInspectionType.Motor_Diesel] by inspecting
- * the `subInspectionType` property and extracting data from the appropriate checklist items.
- *
- * Since [PtpBAPUiState] requires simplified boolean flags (e.g., is the machine functional?),
- * this mapper makes reasonable assumptions to aggregate and interpret the detailed source data.
- * For instance, it might check multiple safety-related items to determine if
- * `areSafetyFeaturesInstalled` is true, or parse and compare electrical readings to
- * determine if the `isPhaseLoadBalanced`.
- *
- * @return A [PtpBAPUiState] populated with data from the inspection domain model.
+ * @return A [PtpBAPReport] object containing the summarized BAP data.
  */
-fun InspectionWithDetailsDomain.toPtpBAPCreationReport(): PtpBAPUiState {
+private fun InspectionWithDetailsDomain.toPtpBAPReportFromLaporan(): PtpBAPReport {
     val inspection = this.inspection
     val checkItemsByCategory = this.checkItems.groupBy { it.category }
 
-    // Helper function to safely retrieve a string value from the check items map.
     fun getCheckItemValue(category: String, itemName: String, defaultValue: String = ""): String {
         return checkItemsByCategory[category]?.find { it.itemName == itemName }?.result ?: defaultValue
     }
 
-    // Helper function to safely retrieve a boolean status from the check items map.
     fun getCheckItemStatus(category: String, itemName: String, defaultValue: Boolean = false): Boolean {
         return checkItemsByCategory[category]?.find { it.itemName == itemName }?.status ?: defaultValue
     }
 
-    // Helper to determine if any of a given list of safety features are marked as good.
     fun areAnySafetyFeaturesInstalled(vararg itemNames: String): Boolean {
         return itemNames.any { getCheckItemStatus("visual_inspection", it) }
-    }
-
-    // Helper to check if a functional test passed (isMet or isGood was true).
-    fun didFunctionalTestPass(itemName: String): Boolean {
-        // For functional tests, the status is stored in the 'testing' category.
-        return getCheckItemStatus("testing", itemName)
     }
 
     // --- General Data Mapping ---
@@ -241,92 +233,74 @@ fun InspectionWithDetailsDomain.toPtpBAPCreationReport(): PtpBAPUiState {
         brandOrType = inspection.manufacturer?.brandOrType ?: "",
         manufacturer = inspection.manufacturer?.name ?: "",
         manufactureYear = inspection.manufacturer?.year ?: "",
-        manufactureCountry = "", // This information is not available in the source domain model.
         serialNumber = inspection.serialNumber ?: "",
         capacityDescription = inspection.capacity ?: "",
         driveMotorPowerKw = when (inspection.subInspectionType) {
             SubInspectionType.Machine -> getCheckItemValue("general_data", "motorPower")
-            SubInspectionType.Motor_Diesel -> getCheckItemValue("technical_data", "gen_power")
+            SubInspectionType.Motor_Diesel -> getCheckItemValue("technical_data", "motor_powerRpm")
             else -> ""
         },
-        specialSpecification = "", // This information is not available in the source domain model.
         dimensionsDescription = if (inspection.subInspectionType == SubInspectionType.Machine) {
             getCheckItemValue("technical_data", "machineDim_overall")
-        } else {
-            "" // No direct equivalent for Motor Diesel.
-        },
-        rotationRpm = when (inspection.subInspectionType) {
-            SubInspectionType.Motor_Diesel -> inspection.capacity ?: ""
-            else -> ""
-        },
+        } else "",
+        rotationRpm = inspection.speed ?: getCheckItemValue("technical_data", "gen_rpm"),
         frequencyHz = getCheckItemValue("testing", "elec_power_freq"),
-        currentAmperes = getCheckItemValue("testing", "elec_power_ampR"), // Simplified to R phase.
+        currentAmperes = getCheckItemValue("testing", "elec_power_ampR"), // Simplified
         machineWeightKg = if (inspection.subInspectionType == SubInspectionType.Machine) {
             getCheckItemValue("technical_data", "machineDim_weightKg")
-        } else {
-            "" // No direct equivalent for Motor Diesel.
-        },
-        areSafetyFeaturesInstalled = areAnySafetyFeaturesInstalled(
-            "safetyGuard", "safetyEmergencyStop", "safetyLimitSwitchUp", "safetyStampLock"
-        )
+        } else "",
+        areSafetyFeaturesInstalled = areAnySafetyFeaturesInstalled("safetyEmergencyStop", "safetyGovernor", "safetyGuard")
     )
 
-    // --- Test Results: Visual Inspection Mapping ---
+    // --- Test Results: Visual Inspection ---
     val visualInspection = PtpBAPVisualInspection(
-        isMachineGoodCondition = getCheckItemStatus("visual_inspection", "mainFrameCondition", true),
-        areElectricalIndicatorsGood = getCheckItemStatus("visual_inspection", "displayCondition")
-                || getCheckItemStatus("visual_inspection", "generatorVoltMeter"),
-        personalProtectiveEquipment = PtpBAPPersonalProtectiveEquipment(
-            isAparAvailable = false, // This information is not in the source data.
-            isPpeAvailable = false  // This information is not in the source data.
-        ),
+        isMachineGoodCondition = getCheckItemStatus("visual_inspection", "mainFrameCondition") || getCheckItemStatus("visual_inspection", "baseConstructionFoundation"),
+        areElectricalIndicatorsGood = getCheckItemStatus("visual_inspection", "displayCondition") || getCheckItemStatus("visual_inspection", "generatorVoltMeter"),
         isGroundingInstalled = getCheckItemStatus("visual_inspection", "safetyGrounding"),
-        isBatteryGoodCondition = getCheckItemStatus("visual_inspection", "startingSystemBatteryPoles"),
-        hasLubricationLeak = !getCheckItemStatus("visual_inspection", "lubeSystemOil", true),
-        isFoundationGoodCondition = getCheckItemStatus("visual_inspection", "foundationCondition"),
-        hasHydraulicLeak = if (inspection.subInspectionType == SubInspectionType.Machine) {
-            !getCheckItemStatus("visual_inspection", "hydraulicHoseCondition", true)
-        } else {
-            false
-        }
+        isFoundationGoodCondition = getCheckItemStatus("visual_inspection", "foundationCondition") || getCheckItemStatus("visual_inspection", "baseConstructionFoundation"),
+        isBatteryGoodCondition = if (inspection.subInspectionType == SubInspectionType.Motor_Diesel) getCheckItemStatus("visual_inspection", "startingSystemBatteryPoles") else false,
+        hasLubricationLeak = if (inspection.subInspectionType == SubInspectionType.Motor_Diesel) !getCheckItemStatus("visual_inspection", "lubeSystemPacking", true) else false,
+        hasHydraulicLeak = if (inspection.subInspectionType == SubInspectionType.Machine) !getCheckItemStatus("visual_inspection", "hydraulicHoseCondition", true) else false,
+        personalProtectiveEquipment = PtpBAPPersonalProtectiveEquipment(isAparAvailable = false, isPpeAvailable = false) // Not available from Laporan
     )
 
-    // --- Test Results: Functional Testing Mapping ---
+    // --- Test Results: Functional Testing ---
     val testing = PtpBAPTesting(
-        isLightingCompliant = didFunctionalTestPass("func_lightingTest"),
-        isNoiseLevelCompliant = didFunctionalTestPass("func_noiseTest"),
-        isEmergencyStopFunctional = didFunctionalTestPass("func_safetyEmergencyStop"),
-        isMachineFunctional = didFunctionalTestPass("func_functionTest"),
-        isVibrationLevelCompliant = didFunctionalTestPass("func_vibrationTest"),
+        isLightingCompliant = (getCheckItemValue("testing", "ndt_lighting").takeIf { it.isNotEmpty() }?.split("#")?.firstOrNull() ?: getCheckItemValue("lighting_measurement", "pointA_result")).toDoubleOrNull() ?: 0.0 > 0.0,
+        isNoiseLevelCompliant = (getCheckItemValue("testing", "ndt_noise").takeIf { it.isNotEmpty() }?.split("#")?.firstOrNull() ?: getCheckItemValue("noise_measurement", "pointA_result")).toDoubleOrNull() ?: 100.0 < 85.0,
+        isEmergencyStopFunctional = getCheckItemStatus("testing", "func_safetyEmergencyStop") || getCheckItemValue("testing", "safety_emergencyStop").contains("Berfungsi", true),
+        isMachineFunctional = getCheckItemStatus("testing", "func_functionTest") || getCheckItemValue("testing", "ndt_loadTest").contains("Berfungsi", true),
+        isVibrationLevelCompliant = getCheckItemStatus("testing", "func_vibrationTest") || getCheckItemStatus("visual_inspection", "mainPartsVibrationDamper"),
         isInsulationResistanceOk = getCheckItemStatus("visual_inspection", "electricalInsulation"),
-        isShaftRotationCompliant = didFunctionalTestPass("ndt_shaftRpm"),
-        isGroundingResistanceCompliant = didFunctionalTestPass("func_safetyGrounding"),
-        isNdtWeldTestOk = didFunctionalTestPass("func_weldJointTest"),
-        isVoltageBetweenPhasesNormal = !getCheckItemValue("testing", "elec_panel_voltRS").isEmpty(),
+        isShaftRotationCompliant = when (inspection.subInspectionType) {
+            SubInspectionType.Machine -> getCheckItemStatus("testing", "func_speedTest")
+            SubInspectionType.Motor_Diesel -> getCheckItemValue("testing", "ndt_shaftRpm").isNotBlank()
+            else -> false
+        },
+        isGroundingResistanceCompliant = getCheckItemStatus("testing", "func_safetyGrounding") || getCheckItemValue("testing", "safety_grounding").isNotBlank(),
+        isNdtWeldTestOk = getCheckItemStatus("testing", "func_weldJointTest") || getCheckItemValue("testing", "ndt_weldJoint").contains("Baik", true),
+        isVoltageBetweenPhasesNormal = getCheckItemValue("testing", "elec_panel_voltRS").isNotEmpty(),
         isPhaseLoadBalanced = {
             val r = getCheckItemValue("testing", "elec_power_ampR").toFloatOrNull()
             val s = getCheckItemValue("testing", "elec_power_ampS").toFloatOrNull()
             val t = getCheckItemValue("testing", "elec_power_ampT").toFloatOrNull()
-
-            if (r != null && s != null && t != null && r > 0 && s > 0 && t > 0) {
-                val avg = (r + s + t) / 3
-                val maxDeviation = 0.10 // 10%
-                abs(r - avg) / avg < maxDeviation &&
-                        abs(s - avg) / avg < maxDeviation &&
-                        abs(t - avg) / avg < maxDeviation
-            } else {
-                false
-            }
+            if (r != null && s != null && t != null && r >= 0f && s >= 0f && t >= 0f) {
+                if (r == s && s == t) true
+                else {
+                    val avg = (r + s + t) / 3
+                    if (avg == 0f) false
+                    else {
+                        val maxDev = 0.10f
+                        (kotlin.math.abs(r - avg) / avg < maxDev) &&
+                                (kotlin.math.abs(s - avg) / avg < maxDev) &&
+                                (kotlin.math.abs(t - avg) / avg < maxDev)
+                    }
+                }
+            } else false
         }()
     )
 
-    val testResults = PtpBAPTestResults(
-        visualInspection = visualInspection,
-        testing = testing
-    )
-
-    // --- Assemble the final report ---
-    val report = PtpBAPReport(
+    return PtpBAPReport(
         extraId = inspection.extraId,
         moreExtraId = inspection.moreExtraId,
         equipmentType = inspection.equipmentType,
@@ -334,8 +308,47 @@ fun InspectionWithDetailsDomain.toPtpBAPCreationReport(): PtpBAPUiState {
         inspectionDate = Utils.formatDateToIndonesian(inspection.createdAt ?: inspection.reportDate ?: ""),
         generalData = generalData,
         technicalData = technicalData,
-        testResults = testResults
+        testResults = PtpBAPTestResults(visualInspection = visualInspection, testing = testing)
     )
+}
 
-    return PtpBAPUiState(report = report)
+/**
+ * REFACTORED: Now acts as a simple bridge to the centralized BAP generation logic.
+ */
+fun InspectionWithDetailsDomain.toPtpBAPCreationReport(): PtpBAPUiState {
+    return PtpBAPUiState(report = this.toPtpBAPReportFromLaporan())
+}
+
+/**
+ * NEW: Converts the canonical PtpBAPReport UI model to the DTO request for MACHINE.
+ */
+fun PtpBAPReport.toBapRequest(laporanId: String, createdAt: String, extraId: Long): MachineBapRequest {
+    return MachineBapRequest(
+        laporanId = laporanId,
+        examinationType = this.examinationType,
+        inspectionDate = this.inspectionDate,
+        createdAt = createdAt,
+        extraId = extraId,
+        generalData = MachineBapGeneralData(this.generalData.companyName, this.generalData.companyLocation, this.generalData.usageLocation, this.generalData.addressUsageLocation),
+        technicalData = MachineBapTechnicalData(this.technicalData.brandOrType, this.technicalData.manufacturer, this.technicalData.manufactureYear, this.technicalData.serialNumber, this.technicalData.capacityDescription, this.technicalData.driveMotorPowerKw, this.technicalData.specialSpecification, this.technicalData.dimensionsDescription, this.technicalData.rotationRpm, this.technicalData.frequencyHz, this.technicalData.currentAmperes, this.technicalData.machineWeightKg, this.technicalData.areSafetyFeaturesInstalled),
+        visualChecks = MachineBapVisualChecks(this.testResults.visualInspection.isMachineGoodCondition, this.testResults.visualInspection.areElectricalIndicatorsGood, this.testResults.visualInspection.personalProtectiveEquipment.isAparAvailable, this.testResults.visualInspection.personalProtectiveEquipment.isPpeAvailable, this.testResults.visualInspection.isGroundingInstalled, this.testResults.visualInspection.isBatteryGoodCondition, this.testResults.visualInspection.hasLubricationLeak, this.testResults.visualInspection.isFoundationGoodCondition, this.testResults.visualInspection.hasHydraulicLeak),
+        functionalTests = MachineBapFunctionalTests(this.testResults.testing.isLightingCompliant, this.testResults.testing.isNoiseLevelCompliant, this.testResults.testing.isEmergencyStopFunctional, this.testResults.testing.isMachineFunctional, this.testResults.testing.isVibrationLevelCompliant, this.testResults.testing.isInsulationResistanceOk, this.testResults.testing.isShaftRotationCompliant, this.testResults.testing.isGroundingResistanceCompliant, this.testResults.testing.isNdtWeldTestOk, this.testResults.testing.isVoltageBetweenPhasesNormal, this.testResults.testing.isPhaseLoadBalanced)
+    )
+}
+
+/**
+ * NEW: Converts the canonical PtpBAPReport UI model to the DTO request for DIESEL.
+ */
+fun PtpBAPReport.toDieselBapRequest(laporanId: String, createdAt: String, extraId: Long): DieselBapRequest {
+    return DieselBapRequest(
+        laporanId = laporanId,
+        examinationType = this.examinationType,
+        inspectionDate = this.inspectionDate,
+        createdAt = createdAt,
+        extraId = extraId,
+        generalData = DieselBapGeneralData(this.generalData.companyName, this.generalData.companyLocation, this.generalData.usageLocation, this.generalData.addressUsageLocation),
+        technicalData = DieselBapTechnicalData(this.technicalData.brandOrType, this.technicalData.manufacturer, this.technicalData.manufactureYear, this.technicalData.serialNumber, this.technicalData.capacityDescription, this.technicalData.driveMotorPowerKw, this.technicalData.specialSpecification, this.technicalData.dimensionsDescription, this.technicalData.rotationRpm, this.technicalData.frequencyHz, this.technicalData.currentAmperes, this.technicalData.machineWeightKg, this.technicalData.areSafetyFeaturesInstalled),
+        visualChecks = DieselBapVisualChecks(this.testResults.visualInspection.isMachineGoodCondition, this.testResults.visualInspection.areElectricalIndicatorsGood, this.testResults.visualInspection.personalProtectiveEquipment.isAparAvailable, this.testResults.visualInspection.personalProtectiveEquipment.isPpeAvailable, this.testResults.visualInspection.isGroundingInstalled, this.testResults.visualInspection.isBatteryGoodCondition, this.testResults.visualInspection.hasLubricationLeak, this.testResults.visualInspection.isFoundationGoodCondition, this.testResults.visualInspection.hasHydraulicLeak),
+        functionalTests = DieselBapFunctionalTests(this.testResults.testing.isLightingCompliant, this.testResults.testing.isNoiseLevelCompliant, this.testResults.testing.isEmergencyStopFunctional, this.testResults.testing.isMachineFunctional, this.testResults.testing.isVibrationLevelCompliant, this.testResults.testing.isInsulationResistanceOk, this.testResults.testing.isShaftRotationCompliant, this.testResults.testing.isGroundingResistanceCompliant, this.testResults.testing.isNdtWeldTestOk, this.testResults.testing.isVoltageBetweenPhasesNormal, this.testResults.testing.isPhaseLoadBalanced)
+    )
 }

@@ -107,7 +107,7 @@ fun FireProtectionBAPScreen(
                 FormTextField(label = "Pintu Darurat", value = data.emergencyExit, onValueChange = { onDataChange(report.copy(technicalData = data.copy(emergencyExit = it))) })
                 FormTextField(label = "APAR", value = data.apar, onValueChange = { onDataChange(report.copy(technicalData = data.copy(apar = it))) })
                 FormTextField(label = "Nomor Seri", value = data.seriesNumber, onValueChange = { onDataChange(report.copy(technicalData = data.copy(seriesNumber = it))) })
-                FormTextField(label = "Lokasi Pemakaian", value = data.usageLocation, onValueChange = { onDataChange(report.copy(technicalData = data.copy(usageLocation = it))) })
+//                FormTextField(label = "Lokasi Pemakaian", value = data.usageLocation, onValueChange = { onDataChange(report.copy(technicalData = data.copy(usageLocation = it))) })
             }
         }
 

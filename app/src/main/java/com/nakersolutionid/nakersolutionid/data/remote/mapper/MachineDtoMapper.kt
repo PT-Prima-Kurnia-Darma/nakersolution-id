@@ -4,12 +4,8 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineAmpereMeasurement
-import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapFunctionalTests
-import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapGeneralData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapReportData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapRequest
-import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapTechnicalData
-import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapVisualChecks
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineConclusionAndRecommendation
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineEnvironmentalMeasurement
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineFoundationAnalysis
@@ -29,29 +25,21 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionFindingDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionTestResultDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.model.ManufacturerDomain
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.toBapRequest
+import com.nakersolutionid.nakersolutionid.features.bap.ptp.toPtpBAPCreationReport
 
 // =================================================================================================
 // Domain Model -> DTO Request
 // =================================================================================================
 
-/**
- * Maps the central [InspectionWithDetailsDomain] to a [MachineReportRequest] DTO.
- * This function reconstructs the complex, nested DTO from the flattened domain model,
- * ensuring all data captured in the UI is sent to the server.
- *
- * It uses a set of helper functions to find specific check items and findings by their
- * unique category and item name, which were assigned during the UI -> Domain mapping.
- */
 fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
     val inspection = this.inspection
     val checkItemsByCategory = this.checkItems.groupBy { it.category }
 
-    // Helper to retrieve a simple string value from the check items list.
     fun getCheckItemValue(category: String, itemName: String, defaultValue: String = ""): String {
         return checkItemsByCategory[category]?.find { it.itemName == itemName }?.result ?: defaultValue
     }
 
-    // Helper to reconstruct a MachineStatusResultDetail DTO from a domain check item.
     fun getStatusResultDetail(category: String, itemName: String): MachineStatusResultDetail {
         val item = checkItemsByCategory[category]?.find { it.itemName == itemName }
         return MachineStatusResultDetail(
@@ -60,7 +48,6 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         )
     }
 
-    // Helper to reconstruct a MachineMeasurementPoint DTO.
     fun getMeasurementPoint(category: String, pointName: String): MachineMeasurementPoint {
         val resultItem = getCheckItemValue(category, "${pointName}_result")
         val analysisItem = getCheckItemValue(category, "${pointName}_analysis")
@@ -70,7 +57,6 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         )
     }
 
-    // 1. General Data Mapping
     val generalData = MachineGeneralData(
         companyName = inspection.ownerName ?: "",
         companyLocation = inspection.ownerAddress ?: "",
@@ -92,10 +78,7 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         equipmentHistory = getCheckItemValue("general_data", "equipmentHistory")
     )
 
-    // 2. Technical Data Mapping
     val technicalData = MachineTechnicalData(
-        // This mapping has a known discrepancy: MachineReport DTO nests some tech data that is flat in the UI.
-        // We will populate based on the available flattened domain data.
         machineSpecification = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSpecification(
             brandType = getCheckItemValue("technical_data", "type"),
             technicalDataMaxFeederSpeed = getCheckItemValue("technical_data", "maxFeederSpeed"),
@@ -120,7 +103,6 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         )
     )
 
-    // 3. Visual Inspection Mapping
     val visualInspection = MachineVisualInspection(
         foundation = getStatusResultDetail("visual_inspection", "foundationCondition"),
         foundationBearing = getStatusResultDetail("visual_inspection", "foundationBearingCondition"),
@@ -133,11 +115,11 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         display = getStatusResultDetail("visual_inspection", "displayCondition"),
         operationButtons = getStatusResultDetail("visual_inspection", "operationButtonsCondition"),
         electricalComponents = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalComponentsVisual(
-            measurements = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalMeasurements( // These seem redundant in DTO, mapping from visual section
-                electricVoltage = getCheckItemValue("visual_inspection", "electricalVoltage_result").toIntOrNull() ?: 0,
-                electricPhase = getCheckItemValue("visual_inspection", "electricalPhase_result").toIntOrNull() ?: 0,
-                electricFrequency = getCheckItemValue("visual_inspection", "electricalFrequency_result").toIntOrNull() ?: 0,
-                electricAmper = getCheckItemValue("visual_inspection", "electricalCurrent_result").toIntOrNull() ?: 0
+            measurements = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalMeasurements(
+                electricVoltage = getCheckItemValue("visual_inspection", "electricalVoltage").toIntOrNull() ?: 0,
+                electricPhase = getCheckItemValue("visual_inspection", "electricalPhase").toIntOrNull() ?: 0,
+                electricFrequency = getCheckItemValue("visual_inspection", "electricalFrequency").toIntOrNull() ?: 0,
+                electricAmper = getCheckItemValue("visual_inspection", "electricalCurrent").toIntOrNull() ?: 0
             ),
             voltage = getStatusResultDetail("visual_inspection", "electricalVoltage"),
             power = getStatusResultDetail("visual_inspection", "electricalPower"),
@@ -164,7 +146,6 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         )
     )
 
-    // 4. Testing & Measurement Mapping
     val testingAndMeasurement = MachineTestingAndMeasurement(
         safetyDeviceTest = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSafetyDeviceTest(
             grounding = getStatusResultDetail("testing", "func_safetyGrounding"),
@@ -180,7 +161,6 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         noiseTest = getStatusResultDetail("testing", "func_noiseTest")
     )
 
-    // 5. Electrical Panel Components Mapping
     val electricalPanelComponents = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalPanelComponents(
         ka = getCheckItemValue("testing", "elec_panel_ka"),
         voltage = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineVoltageMeasurement(
@@ -203,18 +183,15 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         )
     )
 
-    // 6. Conclusion and Recommendation Mapping
     val conclusionAndRecommendation = MachineConclusionAndRecommendation(
         conclusion = this.findings.filter { it.type == FindingType.FINDING }.joinToString("\n") { it.description },
         recommendations = this.findings.filter { it.type == FindingType.RECOMMENDATION }.joinToString("\n") { it.description }
     )
 
-    // 7. Administration
     val administration = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineAdministration(
         inspectionDate = inspection.reportDate ?: ""
     )
 
-    // 8. Foundation Analysis Mapping
     val foundationAnalysis = MachineFoundationAnalysis(
         actualWeight = getCheckItemValue("foundation_analysis", "machineWeight_actual").toDoubleOrNull() ?: 0.0,
         additionalMeterials = getCheckItemValue("foundation_analysis", "machineWeight_additional").toIntOrNull() ?: 0,
@@ -226,7 +203,6 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         foundationAnalysisResult = getCheckItemValue("foundation_analysis", "summary")
     )
 
-    // 9. Environmental Measurement Mapping
     val environmentalMeasurement = MachineEnvironmentalMeasurement(
         noise = MachineMeasurementPoints(
             pointA = getMeasurementPoint("noise_measurement", "pointA"),
@@ -260,101 +236,15 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
 }
 
 /**
- * Maps the central [InspectionWithDetailsDomain] to a [MachineBapRequest] DTO.
- * This function simplifies and aggregates the detailed domain model into the more concise BAP format.
- * The logic is derived from `PtpBAPMapper.kt` to ensure consistency.
+ * REFACTORED: Now uses the centralized BAP logic from PtpBAPMapper.
  */
 fun InspectionWithDetailsDomain.toMachineBapRequest(): MachineBapRequest {
     val inspection = this.inspection
-    val checkItemsByCategory = this.checkItems.groupBy { it.category }
-
-    // Helper functions as defined in PtpBAPMapper
-    fun getCheckItemValue(category: String, itemName: String, defaultValue: String = ""): String {
-        return checkItemsByCategory[category]?.find { it.itemName == itemName }?.result ?: defaultValue
-    }
-
-    fun getCheckItemStatus(category: String, itemName: String, defaultValue: Boolean = false): Boolean {
-        return checkItemsByCategory[category]?.find { it.itemName == itemName }?.status ?: defaultValue
-    }
-
-    fun areAnySafetyFeaturesInstalled(vararg itemNames: String): Boolean {
-        return itemNames.any { getCheckItemStatus("visual_inspection", it) }
-    }
-
-    fun didFunctionalTestPass(itemName: String): Boolean {
-        return getCheckItemStatus("testing", itemName)
-    }
-
-    val generalData = MachineBapGeneralData(
-        companyName = inspection.ownerName ?: "",
-        companyLocation = inspection.ownerAddress ?: "",
-        unitLocation = inspection.usageLocation ?: "",
-        userAddressInCharge = inspection.addressUsageLocation ?: ""
-    )
-
-    val technicalData = MachineBapTechnicalData(
-        brandType = inspection.manufacturer?.brandOrType ?: "",
-        manufacturer = inspection.manufacturer?.name ?: "",
-        locationAndYearOfManufacture = inspection.manufacturer?.year ?: "",
-        serialNumberUnitNumber = inspection.serialNumber ?: "",
-        capacityWorkingLoad = inspection.capacity ?: "",
-        technicalDataDieselMotorPowerRpm = getCheckItemValue("general_data", "motorPower"),
-        specialSpecification = "", // Not available in the source domain model
-        dimensionsDescription = getCheckItemValue("technical_data", "machineDim_overall"),
-        rotationRpm = inspection.speed ?: "", // Assuming speed might hold this value
-        technicalDataGeneratorFrequency = getCheckItemValue("testing", "elec_power_freq"),
-        technicalDataGeneratorCurrent = getCheckItemValue("testing", "elec_power_ampR"), // Simplified
-        machineWeightKg = getCheckItemValue("technical_data", "machineDim_weightKg"),
-        areSafetyFeaturesInstalled = areAnySafetyFeaturesInstalled(
-            "safetyGuard", "safetyEmergencyStop", "safetyLimitSwitchUp", "safetyStampLock"
-        )
-    )
-
-    val visualChecks = MachineBapVisualChecks(
-        isMachineGoodCondition = getCheckItemStatus("visual_inspection", "mainFrameCondition"),
-        areElectricalIndicatorsGood = getCheckItemStatus("visual_inspection", "displayCondition"),
-        isAparAvailable = false, // Not available in source Laporan domain model
-        isPpeAvailable = false, // Not available in source Laporan domain model
-        isGroundingInstalled = getCheckItemStatus("visual_inspection", "safetyGrounding"),
-        isBatteryGoodCondition = getCheckItemStatus("visual_inspection", "startingSystemBatteryPoles"), // Assuming from Diesel
-        hasLubricationLeak = !getCheckItemStatus("visual_inspection", "lubeSystemOil", true), // Inverted logic
-        isFoundationGoodCondition = getCheckItemStatus("visual_inspection", "foundationCondition"),
-        hasHydraulicLeak = !getCheckItemStatus("visual_inspection", "hydraulicHoseCondition", true) // Inverted
-    )
-
-    val functionalTests = MachineBapFunctionalTests(
-        isLightingCompliant = didFunctionalTestPass("func_lightingTest"),
-        isNoiseLevelCompliant = didFunctionalTestPass("func_noiseTest"),
-        isEmergencyStopFunctional = didFunctionalTestPass("func_safetyEmergencyStop"),
-        isMachineFunctional = didFunctionalTestPass("func_functionTest"),
-        isVibrationLevelCompliant = didFunctionalTestPass("func_vibrationTest"),
-        isInsulationResistanceOk = getCheckItemStatus("visual_inspection", "electricalInsulation"),
-        isShaftRotationCompliant = didFunctionalTestPass("ndt_shaftRpm"),
-        isGroundingResistanceCompliant = didFunctionalTestPass("func_safetyGrounding"),
-        isNdtWeldTestOk = didFunctionalTestPass("func_weldJointTest"),
-        isVoltageBetweenPhasesNormal = getCheckItemValue("testing", "elec_panel_voltRS").isNotEmpty(),
-        isPhaseLoadBalanced = {
-            val r = getCheckItemValue("testing", "elec_power_ampR").toFloatOrNull()
-            val s = getCheckItemValue("testing", "elec_power_ampS").toFloatOrNull()
-            val t = getCheckItemValue("testing", "elec_power_ampT").toFloatOrNull()
-            if (r != null && s != null && t != null && r > 0f && s > 0f && t > 0f) {
-                val avg = (r + s + t) / 3
-                val maxDev = 0.10f // 10%
-                kotlin.math.abs(r - avg) / avg < maxDev && kotlin.math.abs(s - avg) / avg < maxDev && kotlin.math.abs(t - avg) / avg < maxDev
-            } else false
-        }()
-    )
-
-    return MachineBapRequest(
+    val ptpBAPReport = this.toPtpBAPCreationReport().report
+    return ptpBAPReport.toBapRequest(
         laporanId = inspection.extraId,
-        examinationType = inspection.examinationType,
-        inspectionDate = inspection.reportDate ?: "",
         createdAt = inspection.createdAt ?: "",
-        extraId = inspection.id,
-        generalData = generalData,
-        technicalData = technicalData,
-        visualChecks = visualChecks,
-        functionalTests = functionalTests
+        extraId = inspection.id
     )
 }
 
@@ -362,25 +252,18 @@ fun InspectionWithDetailsDomain.toMachineBapRequest(): MachineBapRequest {
 // =================================================================================================
 // DTO Response -> Domain Model
 // =================================================================================================
-
-/**
- * Maps a [MachineReportData] DTO to the central [InspectionWithDetailsDomain].
- * This function flattens the nested DTO into the domain model's list-based structure
- * (`checkItems`, `findings`, `testResults`). It meticulously uses the same category and item
- * names as the `MachineMapper` to ensure seamless mapping back to the UI state.
- */
+// ... (rest of the file remains the same, no changes needed here)
 fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
     val inspectionId = this.extraId
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
 
-    // Helper functions to maintain consistency with UI -> Domain mapper
     fun addCheckItem(category: String, itemName: String, value: String?) {
         checkItems.add(
             InspectionCheckItemDomain(
                 inspectionId = inspectionId,
                 category = category,
                 itemName = itemName,
-                status = false, // Status not applicable for simple value items
+                status = false,
                 result = value ?: ""
             )
         )
@@ -403,11 +286,10 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         addCheckItem(category, "${pointName}_analysis", value.status)
     }
 
-    // 1. Map main and general data to InspectionDomain
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = this.id, // API ID is the extraId in domain
-        moreExtraId = "", // Not available in DTO
+        extraId = this.id,
+        moreExtraId = "",
         documentType = DocumentType.valueOf(this.documentType),
         inspectionType = InspectionType.valueOf(this.inspectionType),
         subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
@@ -417,10 +299,10 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         ownerAddress = this.generalData.companyLocation,
         usageLocation = this.generalData.unitLocation,
         addressUsageLocation = this.generalData.userAddressInCharge,
-        driveType = "", // Not directly available, could be inferred
+        driveType = "",
         serialNumber = this.generalData.serialNumberUnitNumber,
         permitNumber = this.generalData.usagePermitNumber,
-        capacity = "", // Not available, could be in technical data
+        capacity = "",
         manufacturer = ManufacturerDomain(
             name = this.generalData.manufacturer,
             brandOrType = this.generalData.brandType,
@@ -428,10 +310,9 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         ),
         createdAt = this.createdAt,
         reportDate = this.administration.inspectionDate,
-        isSynced = true // Data from DTO is considered synced
+        isSynced = true
     )
 
-    // 2. Map remaining General Data to CheckItems
     addCheckItem("general_data", "userInCharge", this.generalData.userInCharge)
     addCheckItem("general_data", "subcontractorPersonInCharge", this.generalData.subcontractorPersonInCharge)
     addCheckItem("general_data", "motorPower", this.generalData.technicalDataDieselMotorPowerRpm)
@@ -441,7 +322,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     addCheckItem("general_data", "operatorName", this.generalData.operatorName)
     addCheckItem("general_data", "equipmentHistory", this.generalData.equipmentHistory)
 
-    // 3. Map all Technical Data to CheckItems
     val techCategory = "technical_data"
     this.technicalData.machineSpecification.let { spec ->
         addCheckItem(techCategory, "type", spec.brandType)
@@ -466,7 +346,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         addCheckItem(techCategory, "foundationDim_weight2", found.technicalDataFoundationWeight2.toString())
     }
 
-    // 4. Map all Visual Inspection to CheckItems
     val visualCategory = "visual_inspection"
     addStatusResultCheckItem(visualCategory, "foundationCondition", this.visualInspection.foundation)
     addStatusResultCheckItem(visualCategory, "foundationBearingCondition", this.visualInspection.foundationBearing)
@@ -499,7 +378,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     addStatusResultCheckItem(visualCategory, "hydraulicPumpCondition", this.visualInspection.hydraulic.pump)
     addStatusResultCheckItem(visualCategory, "hydraulicHoseCondition", this.visualInspection.hydraulic.hose)
 
-    // 5. Map Testing and Measurement to CheckItems
     val testCategory = "testing"
     this.testingAndMeasurement.safetyDeviceTest.let { safeTest ->
         addStatusResultCheckItem(testCategory, "func_safetyGrounding", safeTest.grounding)
@@ -530,7 +408,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         addCheckItem(testCategory, "elec_power_remarks", elec.powerInfo.result)
     }
 
-    // 6. Map Foundation Analysis to CheckItems
     val foundCategory = "foundation_analysis"
     this.foundationAnalysis.let { found ->
         addCheckItem(foundCategory, "machineWeight_actual", found.actualWeight.toString())
@@ -542,7 +419,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         addCheckItem(foundCategory, "summary", found.foundationAnalysisResult)
     }
 
-    // 7. Map Environmental Measurements to CheckItems
     addMeasurementPointCheckItems("noise_measurement", "pointA", this.environmentalMeasurement.noise.pointA)
     addMeasurementPointCheckItems("noise_measurement", "pointB", this.environmentalMeasurement.noise.pointB)
     addMeasurementPointCheckItems("noise_measurement", "pointC", this.environmentalMeasurement.noise.pointC)
@@ -552,7 +428,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     addMeasurementPointCheckItems("lighting_measurement", "pointC", this.environmentalMeasurement.lighting.pointC)
     addMeasurementPointCheckItems("lighting_measurement", "pointD", this.environmentalMeasurement.lighting.pointD)
 
-    // 8. Map Conclusion to Findings
     val findings = mutableListOf<InspectionFindingDomain>()
     this.conclusionAndRecommendation.conclusion.split("\n").filter { it.isNotBlank() }.forEach {
         findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING))
@@ -565,15 +440,10 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         inspection = inspectionDomain,
         checkItems = checkItems,
         findings = findings,
-        testResults = emptyList() // Laporan does not use testResults domain model
+        testResults = emptyList()
     )
 }
 
-/**
- * Maps a [MachineBapReportData] DTO to the central [InspectionWithDetailsDomain].
- * This function flattens the BAP DTO into the domain model's list-based structure,
- * using categories and item names consistent with the `PtpBAPMapper`.
- */
 fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
     val inspectionId = this.extraId
 
@@ -604,7 +474,6 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
     checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.TESTING, itemName = "Perlengkapan pengaman terpasang", status = this.technicalData.areSafetyFeaturesInstalled))
 
-    // Visual Checks
     this.visualChecks.let { visual ->
         checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Kondisi mesin baik", status = visual.isMachineGoodCondition))
         checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Indikator kelistrikan baik", status = visual.areElectricalIndicatorsGood))
@@ -617,7 +486,6 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.VISUAL_INSPECTION, itemName = "Ada kebocoran hidrolik", status = visual.hasHydraulicLeak))
     }
 
-    // Functional Tests
     this.functionalTests.let { test ->
         checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.TESTING, itemName = "Penerangan memenuhi syarat", status = test.isLightingCompliant))
         checkItems.add(InspectionCheckItemDomain(inspectionId = inspectionId, category = BAPCategory.TESTING, itemName = "Tingkat kebisingan memenuhi syarat", status = test.isNoiseLevelCompliant))
@@ -634,7 +502,7 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
 
     val testResults = mutableListOf<InspectionTestResultDomain>()
     this.technicalData.let { tech ->
-        val cat = "DATA TEKNIK" // Category is stored in notes for BAP
+        val cat = "DATA TEKNIK"
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Keterangan Kapasitas", result = tech.capacityWorkingLoad, notes = cat))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Daya Motor Penggerak (kW)", result = tech.technicalDataDieselMotorPowerRpm, notes = cat))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Spesifikasi Khusus", result = tech.specialSpecification, notes = cat))
@@ -648,7 +516,7 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
         checkItems = checkItems,
-        findings = emptyList(), // BAP DTO does not contain findings
+        findings = emptyList(),
         testResults = testResults
     )
 }
