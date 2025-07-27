@@ -107,7 +107,9 @@ data class ElectricalDocumentExaminationPart1(
     val powerRecapitulationCalculationExists: ElectricalTestResult = ElectricalTestResult(),
     val dailyRecordExists: ElectricalTestResult = ElectricalTestResult(),
     val panelCoverCondition: ElectricalTestResult = ElectricalTestResult(),
-    val otherSupportingDataExists: ElectricalTestResult = ElectricalTestResult()
+    val otherSupportingDataExists: ElectricalTestResult = ElectricalTestResult(),
+    // ADDED: Field to match the DTO property `hasPanelPointCount`
+    val hasPanelPointCount: ElectricalTestResult = ElectricalTestResult()
 )
 
 @Immutable

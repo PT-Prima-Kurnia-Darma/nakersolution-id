@@ -59,8 +59,9 @@ fun ElectricalUiState.toInspectionWithDetailsDomain(currentTime: String, reportI
     val checkItems = createCheckItemsFromUiState(report, inspectionId)
 
     val findings = mutableListOf<InspectionFindingDomain>()
+    // FIXED: Use different FindingType for findings and summary to prevent data corruption.
     report.conclusion.findings.forEach { findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING)) }
-    report.conclusion.summary.forEach { findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING)) }
+    report.conclusion.summary.forEach { findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.SUMMARY)) }
     report.conclusion.recommendations.forEach { findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.RECOMMENDATION)) }
 
     val testResults = mutableListOf<InspectionTestResultDomain>()
@@ -108,6 +109,8 @@ private fun createCheckItemsFromUiState(report: ElectricalInspectionReport, insp
         items.add(data.dailyRecordExists.toCheckItem(inspectionId, cat, "Record Daily"))
         items.add(data.panelCoverCondition.toCheckItem(inspectionId, cat, "Cover Panel"))
         items.add(data.otherSupportingDataExists.toCheckItem(inspectionId, cat, "Data Penunjang Lainnya"))
+        // ADDED: Map the new UI field to a check item.
+        items.add(data.hasPanelPointCount.toCheckItem(inspectionId, cat, "Perhitungan Jumlah Titik Panel"))
     }
 
     testing.documentExaminationPart2.let { data ->
@@ -325,7 +328,9 @@ fun InspectionWithDetailsDomain.toElectricalUiState(): ElectricalUiState {
         powerRecapitulationCalculationExists = findTestItem(catDoc1, "Perhitungan Rekapitulasi Daya"),
         dailyRecordExists = findTestItem(catDoc1, "Record Daily"),
         panelCoverCondition = findTestItem(catDoc1, "Cover Panel"),
-        otherSupportingDataExists = findTestItem(catDoc1, "Data Penunjang Lainnya")
+        otherSupportingDataExists = findTestItem(catDoc1, "Data Penunjang Lainnya"),
+        // ADDED: Map the check item back to the new UI field.
+        hasPanelPointCount = findTestItem(catDoc1, "Perhitungan Jumlah Titik Panel")
     )
 
     val catDoc2 = ElectricalCategory.DOC_EXAMINATION_PART_2
@@ -442,8 +447,9 @@ fun InspectionWithDetailsDomain.toElectricalUiState(): ElectricalUiState {
     )
 
     val conclusion = ElectricalConclusion(
+        // FIXED: Separate the sources for findings and summary based on the new FindingType.
         findings = this.findings.filter { it.type == FindingType.FINDING }.map { it.description }.toImmutableList(),
-        summary = this.findings.filter { it.type == FindingType.FINDING }.map { it.description }.toImmutableList(), // Summary juga diambil dari Finding
+        summary = this.findings.filter { it.type == FindingType.SUMMARY }.map { it.description }.toImmutableList(),
         recommendations = this.findings.filter { it.type == FindingType.RECOMMENDATION }.map { it.description }.toImmutableList()
     )
 

@@ -50,6 +50,7 @@ private object ElectricalCategory {
 }
 
 private object ElectricBAPCategory {
+    const val TECHNICAL_DATA = "DATA TEKNIK" // ADDED: For consistency in BAP Test Results
     const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
     const val VISUAL_INSPECTION_PANEL_ROOM = "$VISUAL_INSPECTION - Kondisi Ruang Panel"
     const val TESTING = "PENGUJIAN"
@@ -137,7 +138,7 @@ fun ElectricalBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetai
         extraId = this.laporanId,
         moreExtraId = this.id,
         documentType = this.documentType.toDocumentType() ?: DocumentType.BAP,
-        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.ILPP,
+        inspectionType = this.inspectionType.toInspectionType() ?: InspectionType.ILPP, // Correct default
         subInspectionType = this.subInspectionType.toSubInspectionType() ?: SubInspectionType.Electrical,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
@@ -146,6 +147,9 @@ fun ElectricalBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetai
         usageLocation = this.generalData.usageLocation,
         addressUsageLocation = this.generalData.addressUsageLocation,
         serialNumber = this.technicalData.serialNumber,
+        // FIXED: The DTO doesn't contain driveType, so it will be null from server.
+        // The local value will be preserved until a new value is fetched.
+        driveType = null,
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         isSynced = true
@@ -164,6 +168,8 @@ fun ElectricalBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetai
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Sumber Listrik (Generator)", result = this.technicalData.generatorPower, notes = "kW"))
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Penggunaan Daya (Penerangan)", result = this.technicalData.lightingPower, notes = "kVA"))
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Penggunaan Daya (Tenaga)", result = this.technicalData.powerLoad, notes = "kVA"))
+    // FIXED: The DTO doesn't contain a direct field for this, but to be consistent with BAP UI, we can add it from technical data.
+    // However, as the `technicalData` in DTO doesn't have it, we can't map it back from DTO. But we do need to map the tests.
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Hasil Uji Thermograph", result = if(this.testing.isThermographTestOk) "Baik" else "Tidak Baik", notes = ElectricBAPCategory.TESTING))
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Peralatan pengaman berfungsi", result = if(this.testing.areSafetyDevicesFunctional) "Ya" else "Tidak", notes = ElectricBAPCategory.TESTING))
     testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tegangan antar fasa normal", result = if(this.testing.isVoltageBetweenPhasesNormal) "Ya" else "Tidak", notes = ElectricBAPCategory.TESTING))
@@ -245,7 +251,8 @@ fun InspectionWithDetailsDomain.toElectricalReportRequest(): ElectricalReportReq
         hasDailyRecord = findTestItemStatus(ElectricalCategory.DOC_EXAMINATION_PART_1, "Record Daily"),
         isPanelCoverGood = findTestItemStatus(ElectricalCategory.DOC_EXAMINATION_PART_1, "Cover Panel"),
         hasOtherData = findTestItemStatus(ElectricalCategory.DOC_EXAMINATION_PART_1, "Data Penunjang Lainnya"),
-        hasPanelPointCount = false // This field is missing in the UI state and domain mapper
+        // FIXED: Map the actual value instead of hardcoding 'false'.
+        hasPanelPointCount = findTestItemStatus(ElectricalCategory.DOC_EXAMINATION_PART_1, "Perhitungan Jumlah Titik Panel")
     )
 
     val docExam2 = ElectricalDocumentExamination2(
@@ -366,8 +373,9 @@ fun InspectionWithDetailsDomain.toElectricalReportRequest(): ElectricalReportReq
 
     val visualInspection = ElectricalVisualInspection(sdpFront, sdpFloors, sdpTerminal, sdpTesting)
 
-    // Menggabungkan semua temuan menjadi satu string per kategori
+    // FIXED: Map domain's FINDING to DTO's 'found' and SUMMARY to DTO's 'conclusion'
     val allFindings = this.findings.filter { it.type == FindingType.FINDING }.joinToString("\n") { it.description }
+    val allSummary = this.findings.filter { it.type == FindingType.SUMMARY }.joinToString("\n") { it.description }
     val allRecommendations = this.findings.filter { it.type == FindingType.RECOMMENDATION }.joinToString("\n") { it.description }
 
 
@@ -385,7 +393,7 @@ fun InspectionWithDetailsDomain.toElectricalReportRequest(): ElectricalReportReq
         testing = testing,
         visualInspection = visualInspection,
         found = allFindings,
-        conclusion = allFindings, // Asumsi 'conclusion' dan 'found' diisi data yang sama
+        conclusion = allSummary, // FIXED
         recommendations = allRecommendations
     )
 }
@@ -418,7 +426,10 @@ fun ElectricalReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         inspectorName = this.generalData.ohsExpert,
         reportDate = this.generalData.inspectionDate,
         createdAt = this.createdAt,
-        isSynced = true
+        isSynced = true,
+        // The DTO for Report also doesn't contain a direct `driveType` or `currentVoltageType`
+        // We will retrieve it from test results if available.
+        driveType = null
     )
 
     fun ElectricalDocumentCheckDetail.toCheckItem(cat: String, name: String) =
@@ -459,6 +470,8 @@ fun ElectricalReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         checkItems.add(data.hasDailyRecord.toCheckItem(cat, "Record Daily"))
         checkItems.add(data.isPanelCoverGood.toCheckItem(cat, "Cover Panel"))
         checkItems.add(data.hasOtherData.toCheckItem(cat, "Data Penunjang Lainnya"))
+        // FIXED: Map the DTO field back to a domain check item.
+        checkItems.add(data.hasPanelPointCount.toCheckItem(cat, "Perhitungan Jumlah Titik Panel"))
     }
 
     // Document Examination 2
@@ -589,12 +602,18 @@ fun ElectricalReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Bidang Usaha", it.businessField, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "PJK3 Pelaksana", it.safetyServiceProvider, null))
     }
+    // Attempt to find current/voltage type from test results if it was saved there previously.
+    // This is for backward compatibility if old data saved it this way.
+    val finalDomain = inspectionDomain.copy(
+        driveType = testResults.find { it.testName.equals("Jenis Arus / Tegangan", true) }?.result
+    )
 
     val findings = mutableListOf<InspectionFindingDomain>()
+    // FIXED: Map DTO's 'found' to FINDING and 'conclusion' to SUMMARY
     this.found.split("\n").forEach { if (it.isNotBlank()) findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING)) }
-    this.conclusion.split("\n").forEach { if (it.isNotBlank()) findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING)) } // conclusion juga FINDING
+    this.conclusion.split("\n").forEach { if (it.isNotBlank()) findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.SUMMARY)) }
     this.recommendations.split("\n").forEach { if (it.isNotBlank()) findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.RECOMMENDATION)) }
 
 
-    return InspectionWithDetailsDomain(inspectionDomain, checkItems, findings, testResults)
+    return InspectionWithDetailsDomain(finalDomain, checkItems, findings, testResults)
 }
