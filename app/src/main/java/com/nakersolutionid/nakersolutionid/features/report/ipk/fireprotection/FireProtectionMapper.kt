@@ -96,21 +96,31 @@ private fun createTestResultsFromUiState(report: FireProtectionInspectionReport,
 
     report.automaticFireAlarmSpecifications.let {
         it.mcfa.let { m ->
-            addTest("MCFA - Merk/Type", m.brandOrType); addTest("MCFA - LED Annunciator", m.ledAnnunciator); addTest("MCFA - Type", m.type); addTest("MCFA - No. Serial", m.serialNumber); addTest("MCFA - Hasil", m.result); addTest("MCFA - Keterangan", m.remarks)
+            addTest("MCFA - Merk/Type", m.brandOrType); addTest("MCFA - LED Annunciator", m.ledAnnunciator); addTest("MCFA - Type", m.type); addTest("MCFA - No. Serial", m.serialNumber); addTest("MCFA - Hasil", m.result)
+            // PERBAIKAN: Hapus mapping untuk 'remarks' karena sudah dihapus dari UI state.
+            // addTest("MCFA - Keterangan", m.remarks)
         }
         it.heatDetector.let { d ->
-            addTest("Heat Detector - Merk/Type", d.brandOrType); addTest("Heat Detector - Jumlah Titik", d.pointCount); addTest("Heat Detector - Jarak (m)", d.spacingM); addTest("Heat Detector - Suhu Kerja (°C)", d.operatingTemperatureC); addTest("Heat Detector - Hasil", d.result); addTest("Heat Detector - Keterangan", d.remarks)
+            addTest("Heat Detector - Merk/Type", d.brandOrType); addTest("Heat Detector - Jumlah Titik", d.pointCount); addTest("Heat Detector - Jarak (m)", d.spacingM); addTest("Heat Detector - Suhu Kerja (°C)", d.operatingTemperatureC); addTest("Heat Detector - Hasil", d.result)
+            // PERBAIKAN: Hapus mapping untuk 'remarks'
+            // addTest("Heat Detector - Keterangan", d.remarks)
         }
         it.smokeDetector.let { d ->
-            addTest("Smoke Detector - Merk/Type", d.brandOrType); addTest("Smoke Detector - Jumlah Titik", d.pointCount); addTest("Smoke Detector - Jarak (m)", d.spacingM); addTest("Smoke Detector - Suhu Kerja (°C)", d.operatingTemperatureC); addTest("Smoke Detector - Hasil", d.result); addTest("Smoke Detector - Keterangan", d.remarks)
+            addTest("Smoke Detector - Merk/Type", d.brandOrType); addTest("Smoke Detector - Jumlah Titik", d.pointCount); addTest("Smoke Detector - Jarak (m)", d.spacingM); addTest("Smoke Detector - Suhu Kerja (°C)", d.operatingTemperatureC); addTest("Smoke Detector - Hasil", d.result)
+            // PERBAIKAN: Hapus mapping untuk 'remarks'
+            // addTest("Smoke Detector - Keterangan", d.remarks)
         }
         it.apar.let { a ->
-            addTest("APAR - Merk/Type", a.brandOrType); addTest("APAR - Jumlah", a.count); addTest("APAR - Jarak (m)", a.spacingM); addTest("APAR - Penempatan", a.placement); addTest("APAR - Hasil", a.result); addTest("APAR - Keterangan", a.remarks)
+            addTest("APAR - Merk/Type", a.brandOrType); addTest("APAR - Jumlah", a.count); addTest("APAR - Jarak (m)", a.spacingM); addTest("APAR - Penempatan", a.placement); addTest("APAR - Hasil", a.result)
+            // PERBAIKAN: Hapus mapping untuk 'remarks'
+            // addTest("APAR - Keterangan", a.remarks)
         }
     }
 
     report.alarmInstallationTesting.let {
-        addTest("Uji Alarm - Fungsi Kerja Panel", it.panelFunction); addTest("Uji Alarm - Test Alarm", it.alarmTest); addTest("Uji Alarm - Test Fault", it.faultTest); addTest("Uji Alarm - Test Interkoneksi", it.interconnectionTest); addTest("Uji Alarm - Catatan", it.notes)
+        addTest("Uji Alarm - Fungsi Kerja Panel", it.panelFunction); addTest("Uji Alarm - Test Alarm", it.alarmTest); addTest("Uji Alarm - Test Fault", it.faultTest); addTest("Uji Alarm - Test Interkoneksi", it.interconnectionTest)
+        // PERBAIKAN: Hapus mapping untuk 'notes'
+        // addTest("Uji Alarm - Catatan", it.notes)
     }
 
     report.alarmInstallationItems.forEachIndexed { i, item ->
@@ -174,13 +184,13 @@ fun InspectionWithDetailsDomain.toFireProtectionUiState(): FireProtectionUiState
     )
 
     val alarmSpecs = FireProtectionAutomaticFireAlarmSpecifications(
-        mcfa = FireProtectionMcfa(brandOrType = findTest("MCFA - Merk/Type"), ledAnnunciator = findTest("MCFA - LED Annunciator"), type = findTest("MCFA - Type"), serialNumber = findTest("MCFA - No. Serial"), result = findTest("MCFA - Hasil"), remarks = findTest("MCFA - Keterangan")),
-        heatDetector = FireProtectionDetector(brandOrType = findTest("Heat Detector - Merk/Type"), pointCount = findTest("Heat Detector - Jumlah Titik"), spacingM = findTest("Heat Detector - Jarak (m)"), operatingTemperatureC = findTest("Heat Detector - Suhu Kerja (°C)"), result = findTest("Heat Detector - Hasil"), remarks = findTest("Heat Detector - Keterangan")),
-        smokeDetector = FireProtectionDetector(brandOrType = findTest("Smoke Detector - Merk/Type"), pointCount = findTest("Smoke Detector - Jumlah Titik"), spacingM = findTest("Smoke Detector - Jarak (m)"), operatingTemperatureC = findTest("Smoke Detector - Suhu Kerja (°C)"), result = findTest("Smoke Detector - Hasil"), remarks = findTest("Smoke Detector - Keterangan")),
-        apar = FireProtectionApar(brandOrType = findTest("APAR - Merk/Type"), count = findTest("APAR - Jumlah"), spacingM = findTest("APAR - Jarak (m)"), placement = findTest("APAR - Penempatan"), result = findTest("APAR - Hasil"), remarks = findTest("APAR - Keterangan"))
+        mcfa = FireProtectionMcfa(brandOrType = findTest("MCFA - Merk/Type"), ledAnnunciator = findTest("MCFA - LED Annunciator"), type = findTest("MCFA - Type"), serialNumber = findTest("MCFA - No. Serial"), result = findTest("MCFA - Hasil")), // PERBAIKAN: Hapus 'remarks'
+        heatDetector = FireProtectionDetector(brandOrType = findTest("Heat Detector - Merk/Type"), pointCount = findTest("Heat Detector - Jumlah Titik"), spacingM = findTest("Heat Detector - Jarak (m)"), operatingTemperatureC = findTest("Heat Detector - Suhu Kerja (°C)"), result = findTest("Heat Detector - Hasil")), // PERBAIKAN: Hapus 'remarks'
+        smokeDetector = FireProtectionDetector(brandOrType = findTest("Smoke Detector - Merk/Type"), pointCount = findTest("Smoke Detector - Jumlah Titik"), spacingM = findTest("Smoke Detector - Jarak (m)"), operatingTemperatureC = findTest("Smoke Detector - Suhu Kerja (°C)"), result = findTest("Smoke Detector - Hasil")), // PERBAIKAN: Hapus 'remarks'
+        apar = FireProtectionApar(brandOrType = findTest("APAR - Merk/Type"), count = findTest("APAR - Jumlah"), spacingM = findTest("APAR - Jarak (m)"), placement = findTest("APAR - Penempatan"), result = findTest("APAR - Hasil")) // PERBAIKAN: Hapus 'remarks'
     )
 
-    val alarmTesting = FireProtectionAlarmInstallationTesting(panelFunction = findTest("Uji Alarm - Fungsi Kerja Panel"), alarmTest = findTest("Uji Alarm - Test Alarm"), faultTest = findTest("Uji Alarm - Test Fault"), interconnectionTest = findTest("Uji Alarm - Test Interkoneksi"), notes = findTest("Uji Alarm - Catatan"))
+    val alarmTesting = FireProtectionAlarmInstallationTesting(panelFunction = findTest("Uji Alarm - Fungsi Kerja Panel"), alarmTest = findTest("Uji Alarm - Test Alarm"), faultTest = findTest("Uji Alarm - Test Fault"), interconnectionTest = findTest("Uji Alarm - Test Interkoneksi")) // PERBAIKAN: Hapus 'notes'
 
     val alarmItems = this.testResults.filter { it.testName.startsWith("Pemasangan Alarm #") }.map {
         val notes = it.notes?.split('|') ?: emptyList()

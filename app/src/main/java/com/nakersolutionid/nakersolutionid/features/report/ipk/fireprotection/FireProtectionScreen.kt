@@ -148,8 +148,8 @@ fun FireProtectionScreen(
                     FireProtectionFormTextField("Led Annunciator", mcfa.ledAnnunciator) { onMcfaChanged(mcfa.copy(ledAnnunciator = it)) }
                     FireProtectionFormTextField("Type", mcfa.type) { onMcfaChanged(mcfa.copy(type = it)) }
                     FireProtectionFormTextField("No. Serial", mcfa.serialNumber) { onMcfaChanged(mcfa.copy(serialNumber = it)) }
-//                    FireProtectionFormTextField("Hasil", mcfa.result) { onMcfaChanged(mcfa.copy(result = it)) }
-                    FireProtectionFormTextField("Keterangan", mcfa.remarks) { onMcfaChanged(mcfa.copy(remarks = it)) }
+                    FireProtectionFormTextField("Hasil", mcfa.result) { onMcfaChanged(mcfa.copy(result = it)) }
+//                    FireProtectionFormTextField("Keterangan", mcfa.remarks) { onMcfaChanged(mcfa.copy(remarks = it)) }
                 }
                 HorizontalDivider()
                 FireProtectionExpandableSubSection("Heat Detector") {
@@ -159,8 +159,8 @@ fun FireProtectionScreen(
                     FireProtectionFormTextField("Jumlah Titik", heat.pointCount) { onHeatChanged(heat.copy(pointCount = it)) }
                     FireProtectionFormTextField("Jarak Antar Titik (m)", heat.spacingM) { onHeatChanged(heat.copy(spacingM = it)) }
                     FireProtectionFormTextField("Temperatur Kerja (°C)", heat.operatingTemperatureC) { onHeatChanged(heat.copy(operatingTemperatureC = it)) }
-//                    FireProtectionFormTextField("Hasil", heat.result) { onHeatChanged(heat.copy(result = it)) }
-                    FireProtectionFormTextField("Keterangan", heat.remarks) { onHeatChanged(heat.copy(remarks = it)) }
+                    FireProtectionFormTextField("Hasil", heat.result) { onHeatChanged(heat.copy(result = it)) }
+//                    FireProtectionFormTextField("Keterangan", heat.remarks) { onHeatChanged(heat.copy(remarks = it)) }
                 }
                 HorizontalDivider()
                 FireProtectionExpandableSubSection("Smoke Detector") {
@@ -170,8 +170,8 @@ fun FireProtectionScreen(
                     FireProtectionFormTextField("Jumlah Titik", smoke.pointCount) { onSmokeChanged(smoke.copy(pointCount = it)) }
                     FireProtectionFormTextField("Jarak Antar Titik (m)", smoke.spacingM) { onSmokeChanged(smoke.copy(spacingM = it)) }
                     FireProtectionFormTextField("Temperatur Kerja (°C)", smoke.operatingTemperatureC) { onSmokeChanged(smoke.copy(operatingTemperatureC = it)) }
-//                    FireProtectionFormTextField("Hasil", smoke.result) { onSmokeChanged(smoke.copy(result = it)) }
-                    FireProtectionFormTextField("Keterangan", smoke.remarks) { onSmokeChanged(smoke.copy(remarks = it)) }
+                    FireProtectionFormTextField("Hasil", smoke.result) { onSmokeChanged(smoke.copy(result = it)) }
+//                    FireProtectionFormTextField("Keterangan", smoke.remarks) { onSmokeChanged(smoke.copy(remarks = it)) }
                 }
                 HorizontalDivider()
                 FireProtectionExpandableSubSection("Alat Pemadam Api Ringan (APAR)") {
@@ -181,8 +181,8 @@ fun FireProtectionScreen(
                     FireProtectionFormTextField("Jumlah", apar.count) { onAparChanged(apar.copy(count = it)) }
                     FireProtectionFormTextField("Jarak Antar Titik (m)", apar.spacingM) { onAparChanged(apar.copy(spacingM = it)) }
                     FireProtectionFormTextField("Penempatan", apar.placement) { onAparChanged(apar.copy(placement = it)) }
-//                    FireProtectionFormTextField("Hasil", apar.result) { onAparChanged(apar.copy(result = it)) }
-                    FireProtectionFormTextField("Keterangan", apar.remarks) { onAparChanged(apar.copy(remarks = it)) }
+                    FireProtectionFormTextField("Hasil", apar.result) { onAparChanged(apar.copy(result = it)) }
+//                    FireProtectionFormTextField("Keterangan", apar.remarks) { onAparChanged(apar.copy(remarks = it)) }
                 }
             }
         }

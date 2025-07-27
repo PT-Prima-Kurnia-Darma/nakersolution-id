@@ -124,8 +124,8 @@ data class FireProtectionMcfa(
     val ledAnnunciator: String = "",
     val type: String = "",
     val serialNumber: String = "",
-    val result: String = "",
-    val remarks: String = ""
+    val result: String = ""
+    // HAPUS: val remarks: String = "" --> Field ini tidak ada di DTO, menyebabkan data loss.
 )
 
 @Immutable
@@ -134,8 +134,8 @@ data class FireProtectionDetector(
     val pointCount: String = "",
     val spacingM: String = "",
     val operatingTemperatureC: String = "",
-    val result: String = "",
-    val remarks: String = ""
+    val result: String = ""
+    // HAPUS: val remarks: String = "" --> Field ini tidak ada di DTO, menyebabkan data loss.
 )
 
 @Immutable
@@ -144,8 +144,8 @@ data class FireProtectionApar(
     val count: String = "",
     val spacingM: String = "",
     val placement: String = "",
-    val result: String = "",
-    val remarks: String = ""
+    val result: String = ""
+    // HAPUS: val remarks: String = "" --> Field ini tidak ada di DTO, menyebabkan data loss.
 )
 
 @Immutable
@@ -153,8 +153,8 @@ data class FireProtectionAlarmInstallationTesting(
     val panelFunction: String = "",
     val alarmTest: String = "",
     val faultTest: String = "",
-    val interconnectionTest: String = "",
-    val notes: String = ""
+    val interconnectionTest: String = ""
+    // HAPUS: val notes: String = "" --> Field ini tidak ada di DTO, menyebabkan data loss.
 )
 
 @Immutable
