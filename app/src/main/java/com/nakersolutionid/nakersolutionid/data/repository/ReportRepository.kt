@@ -178,6 +178,50 @@ class ReportRepository(
                     val domain = innerData.laporan.toInspectionWithDetailsDomain()
                     domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
                 }
+                is ForkliftSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is MobileCraneSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is OverheadCraneSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is GantryCraneSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is GondolaSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is ElectricalSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is LightningSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is PubtSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is IpkSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is DieselSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is MachineSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
 
                 // Bap
                 is ElevatorBapSingleReportResponseData -> {
@@ -185,6 +229,50 @@ class ReportRepository(
                     domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
                 }
                 is EscalatorBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is ForkliftBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is MobileCraneBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is OverheadCraneBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.reportHeader.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is GantryCraneBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is GondolaBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is ElectricalBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is LightningBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is PubtBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is IpkBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is DieselBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is MachineBapSingleReportResponseData -> {
                     val domain = innerData.bap.toInspectionWithDetailsDomain()
                     domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
                 }
