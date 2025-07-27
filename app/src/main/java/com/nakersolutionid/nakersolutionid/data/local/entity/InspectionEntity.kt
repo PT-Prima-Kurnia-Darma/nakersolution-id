@@ -190,7 +190,8 @@ data class InspectionFinding(
 
 enum class FindingType {
     FINDING,
-    RECOMMENDATION
+    RECOMMENDATION,
+    SUMMARY // ADDED: To differentiate between findings and summary/conclusion
 }
 
 /**
