@@ -96,7 +96,9 @@ fun InspectionWithDetailsDomain.toLightningBapRequest(): LightningBapRequest {
 
     val measurement = LightningBapMeasurement(
         conductorContinuityResult = if (findBoolItem(LightningBAPCategory.TESTING, "Hasil kontinuitas konduktor baik")) "Baik" else "Tidak Baik",
-        measuredGroundingResistance = "", // Data ini tidak ada di domain, hanya statusnya
+        // --- PERBAIKAN DI SINI ---
+        // Mengambil nilai pengukuran dari domain model, tidak lagi hardcoded.
+        measuredGroundingResistance = findTestResult("Hasil Ukur Tahanan Pembumian (BAP)"),
         measuredGroundingResistanceResult = findBoolItem(LightningBAPCategory.TESTING, "Hasil pengukuran tahanan pembumian baik")
     )
 
@@ -163,6 +165,12 @@ fun LightningBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetail
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Deskripsi Konduktor (mm)", result = it.conductorDescription, notes = null))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tahun Pemasangan", result = it.installer, notes = null))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tahanan Pembumian (Ohm)", result = it.groundingResistance.toString(), notes = null))
+    }
+
+    // --- PERBAIKAN DI SINI ---
+    // Menyimpan nilai pengukuran dari DTO ke domain model agar tidak hilang.
+    this.testResults.measurement.let {
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Hasil Ukur Tahanan Pembumian (BAP)", result = it.measuredGroundingResistance, notes = null))
     }
 
     return InspectionWithDetailsDomain(
@@ -245,7 +253,9 @@ fun InspectionWithDetailsDomain.toLightningReportRequest(): LightningReportReque
         controlBox = findConditionItem(catPhysical, "Bak Kontrol"),
         groundingSystem = findConditionItem(catPhysical, "System Pentanahan"),
         conductorToGroundConnection = findConditionItem(catPhysical, "Down conductor tersambung langsung ke permukaan"),
-        notes = "" // Data tidak ada di domain
+        // --- PERBAIKAN DI SINI ---
+        // Mengambil catatan dari domain model, tidak lagi hardcoded.
+        notes = findTest("Pemeriksaan Fisik - Catatan")
     )
 
     val visualInspection = LightningVisualInspection(
@@ -401,8 +411,8 @@ fun LightningReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jenis & Ukuran Hantaran", it.conductorDescription, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Jenis & Ukuran Hantaran", it.groundingResistance, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tahanan Sebaran Tanah", it.spreadingResistance, null))
-        val tahunPemasangan = it.installer.split("/").getOrNull(0) ?: it.installer
-        val installer = it.installer.split("/").getOrNull(1) ?: it.installer
+        val tahunPemasangan = it.installer.split("/").getOrNull(0)?.trim() ?: it.installer
+        val installer = it.installer.split("/").getOrNull(1)?.trim() ?: ""
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tahun Pemasangan", tahunPemasangan, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Instalatir", installer, null))
     }
@@ -411,6 +421,12 @@ fun LightningReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Visual - Penghantar Penurunan", it.downConductorCheck, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Visual - Pembumian dan Sambungan Ukur", it.groundingAndTestJoint, null))
     }
+    // --- PERBAIKAN DI SINI ---
+    // Menyimpan catatan umum dari DTO ke domain model agar tidak hilang.
+    this.physicalInspection.let {
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Pemeriksaan Fisik - Catatan", it.notes, null))
+    }
+
     this.dynamicTestItems.forEachIndexed { index, item ->
         val notes = "EC: ${item.ecResult}|EP: ${item.epResult}|Remarks: ${item.result}"
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Pengukuran Tahanan #${index + 1}", item.rValue.toString(), notes))

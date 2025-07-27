@@ -155,6 +155,7 @@ fun LightningScreen(
                 ConditionResultInput("Bak Kontrol", data.controlBox) { onDataChanged(data.copy(controlBox = it)) }
                 ConditionResultInput("Sistem Pentanahan", data.groundingSystem) { onDataChanged(data.copy(groundingSystem = it)) }
                 ConditionResultInput("Down Conductor Tersambung Langsung", data.downConductorDirectConnection) { onDataChanged(data.copy(downConductorDirectConnection = it)) }
+                LightningFormTextField("Catatan", data.notes) { onDataChange(report.copy(physicalInspection = data.copy(notes = it))) }
             }
         }
 
@@ -337,7 +338,6 @@ private fun ConditionResultInput(
                 Text("Buruk")
             }
         }
-        LightningFormTextField("Keterangan", value.remarks) { onValueChange(value.copy(remarks = it)) }
     }
 }
 

@@ -65,5 +65,6 @@ data class LightningBAPControlBox(
 @Immutable
 data class LightningBAPTesting(
     val conductorContinuityResult: Boolean = false,
+    val measuredGroundingResistanceValue: String = "",
     val measuredGroundingResistanceInOhm: Boolean = false
 )

@@ -123,6 +123,7 @@ fun LightningBAPScreen(
                 Text("Pengujian", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 CheckboxWithLabel(label = "Hasil Kontinuitas Konduktor Baik", checked = data.testing.conductorContinuityResult, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(conductorContinuityResult = it)))) })
+                FormTextField(label = "Resistansi Pembumian (Ω)", value = data.testing.measuredGroundingResistanceValue, onValueChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(measuredGroundingResistanceValue = it)))) })
                 CheckboxWithLabel(label = "Resistansi Pembumian Terukur Baik", checked = data.testing.measuredGroundingResistanceInOhm, onCheckedChange = { onDataChange(report.copy(testResults = data.copy(testing = data.testing.copy(measuredGroundingResistanceInOhm = it)))) })
             }
         }

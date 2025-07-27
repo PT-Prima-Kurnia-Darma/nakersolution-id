@@ -47,7 +47,22 @@ fun LightningBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Lo
     checkItems.addAll(mapVisualInspectionToDomain(this.testResults.visualInspection, inspectionId))
     checkItems.addAll(mapTestingToDomain(this.testResults.testing, inspectionId))
 
-    val testResults = mapTechnicalDataToDomain(this.technicalData, inspectionId)
+    val testResults = mutableListOf<InspectionTestResultDomain>()
+    testResults.addAll(mapTechnicalDataToDomain(this.technicalData, inspectionId))
+    // --- PERBAIKAN DI SINI ---
+    // Menyimpan nilai pengukuran dari UI state ke domain model.
+    // Diasumsikan UI state `LightningBAPTesting` akan memiliki field baru `measuredGroundingResistanceValue: String`.
+    this.testResults.testing.let {
+        testResults.add(
+            InspectionTestResultDomain(
+                inspectionId = inspectionId,
+                testName = "Hasil Ukur Tahanan Pembumian (BAP)",
+                result = it.measuredGroundingResistanceValue, // Anda perlu menambahkan field ini di data class `LightningBAPTesting`
+                notes = LightningBAPCategory.TESTING
+            )
+        )
+    }
+
 
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
@@ -74,7 +89,6 @@ private fun mapTechnicalDataToDomain(uiState: LightningBAPTechnicalData, inspect
 
 private fun mapVisualInspectionToDomain(uiState: LightningBAPVisualInspection, inspectionId: Long): List<InspectionCheckItemDomain> {
     return mutableListOf<InspectionCheckItemDomain>().apply {
-        // --- PERBAIKAN DI SINI ---
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = LightningBAPCategory.VISUAL_INSPECTION, itemName = "Sistem secara keseluruhan baik", status = uiState.isSystemOverallGood))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = LightningBAPCategory.VISUAL_INSPECTION, itemName = "Kondisi penerima baik", status = uiState.isReceiverConditionGood))
         add(InspectionCheckItemDomain(inspectionId = inspectionId, category = LightningBAPCategory.VISUAL_INSPECTION, itemName = "Kondisi tiang penerima baik", status = uiState.isReceiverPoleConditionGood))
@@ -86,7 +100,6 @@ private fun mapVisualInspectionToDomain(uiState: LightningBAPVisualInspection, i
 
 private fun mapTestingToDomain(uiState: LightningBAPTesting, inspectionId: Long): List<InspectionCheckItemDomain> {
     return listOf(
-        // --- PERBAIKAN DI SINI ---
         InspectionCheckItemDomain(inspectionId = inspectionId, category = LightningBAPCategory.TESTING, itemName = "Hasil kontinuitas konduktor baik", status = uiState.conductorContinuityResult),
         InspectionCheckItemDomain(inspectionId = inspectionId, category = LightningBAPCategory.TESTING, itemName = "Hasil pengukuran tahanan pembumian baik", status = uiState.measuredGroundingResistanceInOhm)
     )
@@ -134,7 +147,11 @@ fun InspectionWithDetailsDomain.toLightningBAPReport(): LightningBAPReport {
 
     val testing = LightningBAPTesting(
         conductorContinuityResult = findBoolItem(LightningBAPCategory.TESTING, "Hasil kontinuitas konduktor baik"),
-        measuredGroundingResistanceInOhm = findBoolItem(LightningBAPCategory.TESTING, "Hasil pengukuran tahanan pembumian baik")
+        measuredGroundingResistanceInOhm = findBoolItem(LightningBAPCategory.TESTING, "Hasil pengukuran tahanan pembumian baik"),
+        // --- PERBAIKAN DI SINI ---
+        // Membaca nilai dari domain model ke UI state.
+        // Anda perlu menambahkan field `measuredGroundingResistanceValue: String` di data class `LightningBAPTesting`.
+        measuredGroundingResistanceValue = findTestResult("Hasil Ukur Tahanan Pembumian (BAP)")
     )
 
     return LightningBAPReport(
