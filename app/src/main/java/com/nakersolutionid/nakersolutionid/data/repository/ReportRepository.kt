@@ -359,12 +359,32 @@ class ReportRepository(
                 DocumentType.LAPORAN -> when (r.inspection.subInspectionType) {
                     SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(t, p, i, r.toElevatorReportRequest()).first()
                     SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(t, p, i, r.toEscalatorReportRequest()).first()
-                    else -> ApiResponse.Empty
+                    SubInspectionType.Forklift -> remoteDataSource.updateReport<ForkliftReportRequest, ForkliftSingleReportResponseData>(t, p, i, r.toForkliftReportRequest()).first()
+                    SubInspectionType.Mobile_Crane -> remoteDataSource.updateReport<MobileCraneReportRequest, MobileCraneSingleReportResponseData>(t, p, i, r.toMobileCraneReportRequest()).first()
+                    SubInspectionType.Overhead_Crane -> remoteDataSource.updateReport<OverheadCraneReportRequest, OverheadCraneSingleReportResponseData>(t, p, i, r.toOverheadCraneReportRequest()).first()
+                    SubInspectionType.Gantry_Crane -> remoteDataSource.updateReport<GantryCraneReportRequest, GantryCraneSingleReportResponseData>(t, p, i, r.toGantryCraneReportRequest()).first()
+                    SubInspectionType.Gondola -> remoteDataSource.updateReport<GondolaReportRequest, GondolaSingleReportResponseData>(t, p, i, r.toGondolaReportRequest()).first()
+                    SubInspectionType.Electrical -> remoteDataSource.updateReport<ElectricalReportRequest, ElectricalSingleReportResponseData>(t, p, i, r.toElectricalReportRequest()).first()
+                    SubInspectionType.Lightning_Conductor -> remoteDataSource.updateReport<LightningReportRequest, LightningSingleReportResponseData>(t, p, i, r.toLightningReportRequest()).first()
+                    SubInspectionType.General_PUBT -> remoteDataSource.updateReport<PubtReportRequest, PubtSingleReportResponseData>(t, p, i, r.toPubtReportRequest()).first()
+                    SubInspectionType.Fire_Protection -> remoteDataSource.updateReport<IpkReportRequest, IpkSingleReportResponseData>(t, p, i, r.toIpkReportRequest()).first()
+                    SubInspectionType.Motor_Diesel -> remoteDataSource.updateReport<DieselReportRequest, DieselSingleReportResponseData>(t, p, i, r.toDieselReportRequest()).first()
+                    SubInspectionType.Machine -> remoteDataSource.updateReport<MachineReportRequest, MachineSingleReportResponseData>(t, p, i, r.toMachineReportRequest()).first()
                 }
                 DocumentType.BAP -> when (r.inspection.subInspectionType) {
                     SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(t, p, i, r.toElevatorBapRequest()).first()
                     SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(t, p, i, r.toEscalatorBapRequest()).first()
-                    else -> ApiResponse.Empty
+                    SubInspectionType.Forklift -> remoteDataSource.updateReport<ForkliftBapRequest, ForkliftBapSingleReportResponseData>(t, p, i, r.toForkliftBapRequest()).first()
+                    SubInspectionType.Mobile_Crane -> remoteDataSource.updateReport<MobileCraneBapRequest, MobileCraneBapSingleReportResponseData>(t, p, i, r.toMobileCraneBapRequest()).first()
+                    SubInspectionType.Overhead_Crane -> remoteDataSource.updateReport<OverheadCraneBapRequest, OverheadCraneBapSingleReportResponseData>(t, p, i, r.toOverheadCraneBapRequest()).first()
+                    SubInspectionType.Gantry_Crane -> remoteDataSource.updateReport<GantryCraneBapRequest, GantryCraneBapSingleReportResponseData>(t, p, i, r.toGantryCraneBapRequest()).first()
+                    SubInspectionType.Gondola -> remoteDataSource.updateReport<GondolaBapRequest, GondolaBapSingleReportResponseData>(t, p, i, r.toGondolaBapRequest()).first()
+                    SubInspectionType.Electrical -> remoteDataSource.updateReport<ElectricalBapRequest, ElectricalBapSingleReportResponseData>(t, p, i, r.toElectricalBapRequest()).first()
+                    SubInspectionType.Lightning_Conductor -> remoteDataSource.updateReport<LightningBapRequest, LightningBapSingleReportResponseData>(t, p, i, r.toLightningBapRequest()).first()
+                    SubInspectionType.General_PUBT -> remoteDataSource.updateReport<PubtBapRequest, PubtBapSingleReportResponseData>(t, p, i, r.toPubtBapRequest()).first()
+                    SubInspectionType.Fire_Protection -> remoteDataSource.updateReport<IpkBapRequest, IpkBapSingleReportResponseData>(t, p, i, r.toIpkBapRequest()).first()
+                    SubInspectionType.Motor_Diesel -> remoteDataSource.updateReport<DieselBapRequest, DieselBapSingleReportResponseData>(t, p, i, r.toDieselBapRequest()).first()
+                    SubInspectionType.Machine -> remoteDataSource.updateReport<MachineBapRequest, MachineBapSingleReportResponseData>(t, p, i, r.toMachineBapRequest()).first()
                 }
                 else -> ApiResponse.Empty
             }
