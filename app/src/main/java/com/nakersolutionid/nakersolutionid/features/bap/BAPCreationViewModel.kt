@@ -349,14 +349,4 @@ class BAPCreationViewModel(
     fun onUpdateState(updater: (BAPCreationUiState) -> BAPCreationUiState) {
         _uiState.update(updater)
     }
-
-    fun startSync() {
-        if (_uiState.value.editMode) {
-            syncManager.startSyncUpdate()
-            onUpdateState { it.copy(editMode = false) }
-        } else {
-            syncManager.startSync()
-            onUpdateState { it.copy(editMode = false) }
-        }
-    }
 }

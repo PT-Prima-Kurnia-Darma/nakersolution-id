@@ -179,16 +179,4 @@ class EEViewModel(
             }
         }
     }
-
-    fun startSync() {
-        if (_eeUiState.value.loadedEquipmentType != null) {
-            Log.d("EEViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _eeUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("EEViewModel", "Starting sync")
-            syncManager.startSync()
-            _eeUiState.update { it.copy(loadedEquipmentType = null) }
-        }
-    }
 }

@@ -203,16 +203,4 @@ class IPKViewModel(
             }
         }
     }
-
-    fun startSync() {
-        if (_ipkUiState.value.loadedEquipmentType != null) {
-            Log.d("IPKViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _ipkUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("IPKViewModel", "Starting sync")
-            syncManager.startSync()
-            _ipkUiState.update { it.copy(loadedEquipmentType = null) }
-        }
-    }
 }

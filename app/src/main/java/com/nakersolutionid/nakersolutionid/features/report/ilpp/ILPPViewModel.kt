@@ -281,16 +281,4 @@ class ILPPViewModel(
             }
         }
     }
-
-    fun startSync() {
-        if (_ilppUiState.value.loadedEquipmentType != null) {
-            Log.d("ILPPViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _ilppUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("ILPPViewModel", "Starting sync")
-            syncManager.startSync()
-            _ilppUiState.update { it.copy(loadedEquipmentType = null) }
-        }
-    }
 }

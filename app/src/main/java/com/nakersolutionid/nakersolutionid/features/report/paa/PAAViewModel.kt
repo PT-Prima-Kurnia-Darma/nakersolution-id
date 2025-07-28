@@ -789,16 +789,4 @@ class PAAViewModel(
             }
         }
     }
-
-    fun startSync() {
-        if (_paaUiState.value.loadedEquipmentType != null) {
-            Log.d("PAAViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _paaUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("PAAViewModel", "Starting sync")
-            syncManager.startSync()
-            _paaUiState.update { it.copy(loadedEquipmentType = null) }
-        }
-    }
 }

@@ -229,16 +229,4 @@ class PTPViewModel(
             }
         }
     }
-
-    fun startSync() {
-        if (_ptpUiState.value.loadedEquipmentType != null) {
-            Log.d("PTPViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _ptpUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("PTPViewModel", "Starting sync")
-            syncManager.startSync()
-            _ptpUiState.update { it.copy(loadedEquipmentType = null) }
-        }
-    }
 }
