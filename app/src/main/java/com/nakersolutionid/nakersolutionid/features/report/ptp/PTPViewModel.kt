@@ -48,12 +48,12 @@ class PTPViewModel(
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Machine -> {
-                    val inspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
 
                 SubInspectionType.Motor_Diesel -> {
-                    val inspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
