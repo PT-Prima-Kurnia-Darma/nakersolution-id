@@ -46,11 +46,11 @@ class EEViewModel(
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Elevator -> {
-                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
                     triggerSaving(elevatorInspection, isInternetAvailable)
                 }
                 SubInspectionType.Escalator -> {
-                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
                     triggerSaving(escalatorInspection, isInternetAvailable)
                 }
                 else -> null

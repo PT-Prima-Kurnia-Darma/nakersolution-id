@@ -38,7 +38,7 @@ private object EskalatorCategory {
  * @param currentTime Waktu saat ini dalam format String untuk kolom `createdAt`.
  * @return Objek [InspectionWithDetailsDomain] yang siap untuk disimpan.
  */
-fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, reportId: Long? = null): InspectionWithDetailsDomain {
     val uiData = this.eskalatorData
     val inspectionId: Long = reportId ?: 0
 
@@ -70,7 +70,8 @@ fun EskalatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId
         manufacturer = manufacturerDomain,
         reportDate = uiData.companyData.inspectionDate,
         createdAt = currentTime,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mapInspectionAndTestingToDomain(uiData.inspectionAndTesting, inspectionId)
