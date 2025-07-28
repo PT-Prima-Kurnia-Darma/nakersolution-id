@@ -9,7 +9,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDom
 data class BAPCreationUiState(
     val isLoading: Boolean = false,
     val result: Resource<String>? = null,
-    val createResult: Resource<String>? = null,
+//    val createResult: Resource<String>? = null,
     val inspectionWithDetailsDomain: InspectionWithDetailsDomain? = null,
     val editMode: Boolean = false
 )

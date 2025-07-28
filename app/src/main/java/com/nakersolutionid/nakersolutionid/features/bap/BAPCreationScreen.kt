@@ -82,7 +82,7 @@ fun BAPCreationScreen(
         }
     }
 
-    LaunchedEffect(uiState.createResult) {
+    /*LaunchedEffect(uiState.createResult) {
         when (val result = uiState.createResult) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
@@ -97,7 +97,7 @@ fun BAPCreationScreen(
             }
             null -> null
         }
-    }
+    }*/
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

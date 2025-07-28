@@ -279,20 +279,20 @@ class BAPCreationViewModel(
     private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
         try {
             reportUseCase.createReport(inspection).collect { result ->
-                _uiState.update { it.copy(createResult = result) }
+                _uiState.update { it.copy(result = result) }
             }
         } catch (e: Exception) {
-            _uiState.update { it.copy(createResult = Resource.Error("Laporan gagal disimpan")) }
+            _uiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
     private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
         try {
             reportUseCase.updateReport(inspection).collect { result ->
-                _uiState.update { it.copy(createResult = result) }
+                _uiState.update { it.copy(result = result) }
             }
         } catch (_: Exception) {
-            _uiState.update { it.copy(createResult = Resource.Error("Laporan gagal disimpan")) }
+            _uiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
