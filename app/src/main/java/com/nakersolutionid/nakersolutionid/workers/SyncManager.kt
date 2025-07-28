@@ -42,7 +42,7 @@ class SyncManager(
         )
     }
 
-    fun startSyncUpdate() {
+    /*fun startSyncUpdate() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -63,7 +63,7 @@ class SyncManager(
             ExistingWorkPolicy.REPLACE,
             syncRequest
         )
-    }
+    }*/
 
     /*fun startSyncOnAppStart() {
         val constraints = Constraints.Builder()
@@ -88,25 +88,25 @@ class SyncManager(
         )
     }*/
 
-    fun setupPeriodicSync() {
-//        val constraints = Constraints.Builder()
-//            .setRequiredNetworkType(NetworkType.CONNECTED)
-//            .setRequiresBatteryNotLow(true)
-//            .build()
-//
-//        val periodicSyncRequest = PeriodicWorkRequestBuilder<SyncReportWorker>(
-//            6, java.util.concurrent.TimeUnit.HOURS // Sync every 6 hours
-//        )
-//            .setConstraints(constraints)
-//            .addTag(SYNC_WORK_TAG)
-//            .build()
-//
-//        workManager.enqueueUniquePeriodicWork(
-//            "periodic_$SYNC_WORK_NAME",
-//            ExistingPeriodicWorkPolicy.KEEP,
-//            periodicSyncRequest
-//        )
-    }
+    /*fun setupPeriodicSync() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+
+        val periodicSyncRequest = PeriodicWorkRequestBuilder<SyncReportWorker>(
+            6, java.util.concurrent.TimeUnit.HOURS // Sync every 6 hours
+        )
+            .setConstraints(constraints)
+            .addTag(SYNC_WORK_TAG)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            "periodic_$SYNC_WORK_NAME",
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicSyncRequest
+        )
+    }*/
 
     fun getSyncStatus() = workManager.getWorkInfosForUniqueWorkLiveData(SYNC_WORK_NAME)
 
