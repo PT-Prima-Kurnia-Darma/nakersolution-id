@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMeasurementResultItem
@@ -40,25 +41,63 @@ class PUBTViewModel(
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.General_PUBT -> {
-                    val electricalInspection = _generalUiState.value.toInspectionWithDetailsDomain(currentTime)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _pubtUiState.update { it.copy(generalResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val electricalInspection = _generalUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(electricalInspection, isInternetAvailable)
                 }
                 else -> {}
             }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _pubtUiState.value.editMode
+        if (isInternetAvailable) {
+            if (isEditMode) {
+                if (isSynced) updateReport(inspection) else saveReport(inspection)
+            } else {
+                createReport(inspection)
+            }
+        } else {
+            saveReport(inspection)
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.saveReport(inspection)
+            _pubtUiState.update { it.copy(generalResult = Resource.Success("Laporan berhasil disimpan")) }
+        } catch(_: SQLiteConstraintException) {
+            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+        } catch (_: Exception) {
+            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _pubtUiState.update { it.copy(generalResult = result) }
+            }
+        } catch (_: Exception) {
+            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _pubtUiState.update { it.copy(generalResult = result) }
+            }
+        } catch (_: Exception) {
+            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -124,6 +163,7 @@ class PUBTViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType

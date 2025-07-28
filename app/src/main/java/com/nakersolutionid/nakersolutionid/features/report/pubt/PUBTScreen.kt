@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.pubt
 
+import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +51,8 @@ fun PUBTScreen(
     viewModel: PUBTViewModel = koinViewModel(),
     menuTitle: String = "Pesawat Uap dan Bejana Tekan",
     reportId: Long? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    editMode: Boolean = false
 ) {
     val pubtUiState by viewModel.pubtUiState.collectAsStateWithLifecycle()
 
@@ -56,6 +61,7 @@ fun PUBTScreen(
     )
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.General_PUBT) }
     val listMenu = listOf(
@@ -84,6 +90,7 @@ fun PUBTScreen(
 
     // Load existing report data for edit mode
     LaunchedEffect(reportId) {
+        viewModel.onUpdatePUBTState { it.copy(editMode = editMode) }
         reportId?.let { id ->
             viewModel.loadReportForEdit(id)
         }
@@ -105,7 +112,7 @@ fun PUBTScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !pubtUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter) }
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {
@@ -158,6 +165,13 @@ fun PUBTScreen(
             }
         }
     }
+}
+
+private fun hasInternetConnection(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)

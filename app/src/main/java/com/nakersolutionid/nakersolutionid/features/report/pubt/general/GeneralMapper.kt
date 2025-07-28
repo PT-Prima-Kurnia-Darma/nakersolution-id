@@ -17,7 +17,8 @@ import kotlinx.collections.immutable.toImmutableList
 // =================================================================================================
 
 fun GeneralUiState.toInspectionWithDetailsDomain(
-    currentTime: String
+    currentTime: String,
+    id: Long? = null
 ): InspectionWithDetailsDomain {
     val report = this.inspectionReport
     val generalData = report.generalData
@@ -25,7 +26,7 @@ fun GeneralUiState.toInspectionWithDetailsDomain(
     val inspection = report.inspectionAndMeasurement
     val conclusion = report.conclusion
 
-    val inspectionId = 0L
+    val inspectionId = id ?: 0L
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
