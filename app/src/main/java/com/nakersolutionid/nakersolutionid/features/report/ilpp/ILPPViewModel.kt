@@ -51,12 +51,12 @@ class ILPPViewModel(
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Electrical -> {
-                    val inspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
                    triggerSaving(inspection, isInternetAvailable)
                 }
 
                 SubInspectionType.Lightning_Conductor -> {
-                    val inspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}

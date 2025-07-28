@@ -24,7 +24,7 @@ private object LightningCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun LightningProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+fun LightningProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.inspectionReport
     val serviceData = report.serviceProviderData
     val clientData = report.clientData
@@ -49,7 +49,8 @@ fun LightningProtectionUiState.toInspectionWithDetailsDomain(currentTime: String
         reportDate = clientData.inspectionDate,
         inspectorName = serviceData.expertName,
         createdAt = currentTime,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = createCheckItemsFromUiState(report, inspectionId)

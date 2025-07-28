@@ -29,7 +29,7 @@ private object ElectricalCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun ElectricalUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+fun ElectricalUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.electricalInspectionReport
     val generalData = report.generalData
     val technicalData = report.technicalData
@@ -53,7 +53,8 @@ fun ElectricalUiState.toInspectionWithDetailsDomain(currentTime: String, reportI
         inspectorName = generalData.ohsExpert,
         reportDate = generalData.inspectionDate,
         createdAt = currentTime,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = createCheckItemsFromUiState(report, inspectionId)
