@@ -114,7 +114,10 @@ data class InspectionEntity(
     val status: String? = null, // e.g., "LAIK", "Aman untuk dioperasikan"
 
     @ColumnInfo(name = "is_synced")
-    val isSynced: Boolean = false
+    val isSynced: Boolean = false,
+
+    @ColumnInfo(name = "is_edited")
+    val isEdited: Boolean = false
 )
 
 /**

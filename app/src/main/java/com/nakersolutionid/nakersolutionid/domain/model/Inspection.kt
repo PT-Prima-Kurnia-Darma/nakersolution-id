@@ -35,7 +35,8 @@ data class InspectionDomain(
     val nextInspectionDate: String? = null,
     val inspectorName: String? = null,
     val status: String? = null,
-    val isSynced: Boolean = false
+    val isSynced: Boolean = false,
+    val isEdited: Boolean = false
 )
 
 /**
