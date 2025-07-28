@@ -310,7 +310,8 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         ),
         createdAt = this.createdAt,
         reportDate = this.administration.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     addCheckItem("general_data", "userInCharge", this.generalData.userInCharge)
@@ -468,7 +469,8 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         ),
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

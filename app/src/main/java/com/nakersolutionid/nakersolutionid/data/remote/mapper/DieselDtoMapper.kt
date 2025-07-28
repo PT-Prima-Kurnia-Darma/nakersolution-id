@@ -393,7 +393,8 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
         ),
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -647,6 +648,7 @@ fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         isSynced = true,
+        isEdited = false,
         capacity = this.technicalData.capacityWorkingLoad
     )
 

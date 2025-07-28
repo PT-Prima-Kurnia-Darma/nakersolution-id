@@ -146,7 +146,8 @@ fun ElevatorBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = null, // BAP does not have a final conclusion/status field
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -512,7 +513,8 @@ fun ElevatorReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDom
         createdAt = this.createdAt,
         reportDate = this.generalData.inspectionDate,
         status = this.conclusion,
-        isSynced = true // Data from network is considered synced
+        isSynced = true, // Data from network is considered synced
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

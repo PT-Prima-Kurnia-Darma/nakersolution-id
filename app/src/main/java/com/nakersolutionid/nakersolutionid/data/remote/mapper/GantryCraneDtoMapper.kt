@@ -719,7 +719,8 @@ fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         ),
         createdAt = this.createdAt,
         reportDate = this.generalData.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -1094,7 +1095,8 @@ fun GantryCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
         ),
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

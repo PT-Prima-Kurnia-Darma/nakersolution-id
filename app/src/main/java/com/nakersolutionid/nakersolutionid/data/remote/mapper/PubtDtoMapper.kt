@@ -110,7 +110,8 @@ fun PubtBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         serialNumber = this.technicalData.serialNumberUnitNumber,
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -498,7 +499,8 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
         ),
         createdAt = this.createdAt,
         reportDate = this.generalData.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

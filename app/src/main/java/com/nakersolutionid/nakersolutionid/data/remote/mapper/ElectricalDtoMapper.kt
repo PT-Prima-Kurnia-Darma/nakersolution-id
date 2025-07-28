@@ -152,7 +152,8 @@ fun ElectricalBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetai
         driveType = null,
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -427,6 +428,7 @@ fun ElectricalReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         reportDate = this.generalData.inspectionDate,
         createdAt = this.createdAt,
         isSynced = true,
+        isEdited = false,
         // The DTO for Report also doesn't contain a direct `driveType` or `currentVoltageType`
         // We will retrieve it from test results if available.
         driveType = null

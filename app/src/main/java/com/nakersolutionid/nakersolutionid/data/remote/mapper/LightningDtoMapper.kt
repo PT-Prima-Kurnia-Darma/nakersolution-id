@@ -137,7 +137,8 @@ fun LightningBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetail
         serialNumber = this.technicalData.serialNumber,
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -349,7 +350,8 @@ fun LightningReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         reportDate = this.ownerData.inspectionDate,
         inspectorName = this.pjk3Data.expertName,
         createdAt = this.createdAt,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     fun LightningResultStatusDetail.toCheckItem(cat: String, name: String): InspectionCheckItemDomain {

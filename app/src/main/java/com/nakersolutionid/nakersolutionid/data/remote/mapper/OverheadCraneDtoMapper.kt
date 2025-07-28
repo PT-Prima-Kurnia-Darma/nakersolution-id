@@ -145,7 +145,8 @@ fun OverheadCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDe
         ),
         createdAt = this.createdAt,
         reportDate = this.reportHeader.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     return InspectionWithDetailsDomain(
@@ -851,7 +852,8 @@ fun OverheadCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetai
         ),
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     return InspectionWithDetailsDomain(

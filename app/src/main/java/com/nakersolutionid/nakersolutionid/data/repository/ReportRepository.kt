@@ -572,7 +572,7 @@ class ReportRepository(
     private suspend fun processReports(
         reports: List<InspectionWithDetailsDomain>,
         token: String,
-        action: suspend (String, String, String, InspectionWithDetailsDomain) -> ApiResponse<Any>
+        action: suspend (String, String, String, InspectionWithDetailsDomain, Boolean) -> ApiResponse<Any>
     ): Boolean {
         var fail = 0
         reports.forEach { report ->
@@ -582,7 +582,8 @@ class ReportRepository(
                 return@forEach
             }
             val id = if (report.inspection.documentType == DocumentType.BAP) report.inspection.moreExtraId else report.inspection.extraId
-            when (val apiResponse = action(token, path, id, report)) {
+            val isEdited = report.inspection.isEdited
+            when (val apiResponse = action(token, path, id, report, isEdited)) {
                 is ApiResponse.Success -> handleSyncSuccess(apiResponse.data) { fail++ }
                 is ApiResponse.Error -> fail++
                 is ApiResponse.Empty -> Unit
@@ -595,45 +596,81 @@ class ReportRepository(
         val listReports = localDataSource.getPendingSyncReports().map { it.toDomain() }
         if (listReports.isEmpty()) return true
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
-        return processReports(listReports, token) { t, p, _, r ->
-            when (r.inspection.documentType) {
-                DocumentType.LAPORAN -> when (r.inspection.subInspectionType) {
-                    SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(t, p, r.toElevatorReportRequest()).first()
-                    SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(t, p, r.toEscalatorReportRequest()).first()
-                    SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftReportRequest, ForkliftSingleReportResponseData>(t, p, r.toForkliftReportRequest()).first()
-                    SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneReportRequest, MobileCraneSingleReportResponseData>(t, p, r.toMobileCraneReportRequest()).first()
-                    SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneReportRequest, OverheadCraneSingleReportResponseData>(t, p, r.toOverheadCraneReportRequest()).first()
-                    SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneReportRequest, GantryCraneSingleReportResponseData>(t, p, r.toGantryCraneReportRequest()).first()
-                    SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaReportRequest, GondolaSingleReportResponseData>(t, p, r.toGondolaReportRequest()).first()
-                    SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalReportRequest, ElectricalSingleReportResponseData>(t, p, r.toElectricalReportRequest()).first()
-                    SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningReportRequest, LightningSingleReportResponseData>(t, p, r.toLightningReportRequest()).first()
-                    SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtReportRequest, PubtSingleReportResponseData>(t, p, r.toPubtReportRequest()).first()
-                    SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkReportRequest, IpkSingleReportResponseData>(t, p, r.toIpkReportRequest()).first()
-                    SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselReportRequest, DieselSingleReportResponseData>(t, p, r.toDieselReportRequest()).first()
-                    SubInspectionType.Machine -> remoteDataSource.createReport<MachineReportRequest, MachineSingleReportResponseData>(t, p, r.toMachineReportRequest()).first()
+        return processReports(listReports, token) { t, p, i, r, e ->
+            if (e) {
+                when (r.inspection.documentType) {
+                    DocumentType.LAPORAN -> when (r.inspection.subInspectionType) {
+                        SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(t, p, i, r.toElevatorReportRequest()).first()
+                        SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(t, p, i, r.toEscalatorReportRequest()).first()
+                        SubInspectionType.Forklift -> remoteDataSource.updateReport<ForkliftReportRequest, ForkliftSingleReportResponseData>(t, p, i, r.toForkliftReportRequest()).first()
+                        SubInspectionType.Mobile_Crane -> remoteDataSource.updateReport<MobileCraneReportRequest, MobileCraneSingleReportResponseData>(t, p, i, r.toMobileCraneReportRequest()).first()
+                        SubInspectionType.Overhead_Crane -> remoteDataSource.updateReport<OverheadCraneReportRequest, OverheadCraneSingleReportResponseData>(t, p, i, r.toOverheadCraneReportRequest()).first()
+                        SubInspectionType.Gantry_Crane -> remoteDataSource.updateReport<GantryCraneReportRequest, GantryCraneSingleReportResponseData>(t, p, i, r.toGantryCraneReportRequest()).first()
+                        SubInspectionType.Gondola -> remoteDataSource.updateReport<GondolaReportRequest, GondolaSingleReportResponseData>(t, p, i, r.toGondolaReportRequest()).first()
+                        SubInspectionType.Electrical -> remoteDataSource.updateReport<ElectricalReportRequest, ElectricalSingleReportResponseData>(t, p, i, r.toElectricalReportRequest()).first()
+                        SubInspectionType.Lightning_Conductor -> remoteDataSource.updateReport<LightningReportRequest, LightningSingleReportResponseData>(t, p, i, r.toLightningReportRequest()).first()
+                        SubInspectionType.General_PUBT -> remoteDataSource.updateReport<PubtReportRequest, PubtSingleReportResponseData>(t, p, i, r.toPubtReportRequest()).first()
+                        SubInspectionType.Fire_Protection -> remoteDataSource.updateReport<IpkReportRequest, IpkSingleReportResponseData>(t, p, i, r.toIpkReportRequest()).first()
+                        SubInspectionType.Motor_Diesel -> remoteDataSource.updateReport<DieselReportRequest, DieselSingleReportResponseData>(t, p, i, r.toDieselReportRequest()).first()
+                        SubInspectionType.Machine -> remoteDataSource.updateReport<MachineReportRequest, MachineSingleReportResponseData>(t, p, i, r.toMachineReportRequest()).first()
+                    }
+                    DocumentType.BAP -> when (r.inspection.subInspectionType) {
+                        SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(t, p, i, r.toElevatorBapRequest()).first()
+                        SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(t, p, i, r.toEscalatorBapRequest()).first()
+                        SubInspectionType.Forklift -> remoteDataSource.updateReport<ForkliftBapRequest, ForkliftBapSingleReportResponseData>(t, p, i, r.toForkliftBapRequest()).first()
+                        SubInspectionType.Mobile_Crane -> remoteDataSource.updateReport<MobileCraneBapRequest, MobileCraneBapSingleReportResponseData>(t, p, i, r.toMobileCraneBapRequest()).first()
+                        SubInspectionType.Overhead_Crane -> remoteDataSource.updateReport<OverheadCraneBapRequest, OverheadCraneBapSingleReportResponseData>(t, p, i, r.toOverheadCraneBapRequest()).first()
+                        SubInspectionType.Gantry_Crane -> remoteDataSource.updateReport<GantryCraneBapRequest, GantryCraneBapSingleReportResponseData>(t, p, i, r.toGantryCraneBapRequest()).first()
+                        SubInspectionType.Gondola -> remoteDataSource.updateReport<GondolaBapRequest, GondolaBapSingleReportResponseData>(t, p, i, r.toGondolaBapRequest()).first()
+                        SubInspectionType.Electrical -> remoteDataSource.updateReport<ElectricalBapRequest, ElectricalBapSingleReportResponseData>(t, p, i, r.toElectricalBapRequest()).first()
+                        SubInspectionType.Lightning_Conductor -> remoteDataSource.updateReport<LightningBapRequest, LightningBapSingleReportResponseData>(t, p, i, r.toLightningBapRequest()).first()
+                        SubInspectionType.General_PUBT -> remoteDataSource.updateReport<PubtBapRequest, PubtBapSingleReportResponseData>(t, p, i, r.toPubtBapRequest()).first()
+                        SubInspectionType.Fire_Protection -> remoteDataSource.updateReport<IpkBapRequest, IpkBapSingleReportResponseData>(t, p, i, r.toIpkBapRequest()).first()
+                        SubInspectionType.Motor_Diesel -> remoteDataSource.updateReport<DieselBapRequest, DieselBapSingleReportResponseData>(t, p, i, r.toDieselBapRequest()).first()
+                        SubInspectionType.Machine -> remoteDataSource.updateReport<MachineBapRequest, MachineBapSingleReportResponseData>(t, p, i, r.toMachineBapRequest()).first()
+                    }
+                    else -> ApiResponse.Empty
                 }
-                DocumentType.BAP -> when (r.inspection.subInspectionType) {
-                    SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(t, p, r.toElevatorBapRequest()).first()
-                    SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(t, p, r.toEscalatorBapRequest()).first()
-                    SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftBapRequest, ForkliftBapSingleReportResponseData>(t, p, r.toForkliftBapRequest()).first()
-                    SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneBapRequest, MobileCraneBapSingleReportResponseData>(t, p, r.toMobileCraneBapRequest()).first()
-                    SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneBapRequest, OverheadCraneBapSingleReportResponseData>(t, p, r.toOverheadCraneBapRequest()).first()
-                    SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneBapRequest, GantryCraneBapSingleReportResponseData>(t, p, r.toGantryCraneBapRequest()).first()
-                    SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaBapRequest, GondolaBapSingleReportResponseData>(t, p, r.toGondolaBapRequest()).first()
-                    SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalBapRequest, ElectricalBapSingleReportResponseData>(t, p, r.toElectricalBapRequest()).first()
-                    SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningBapRequest, LightningBapSingleReportResponseData>(t, p, r.toLightningBapRequest()).first()
-                    SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtBapRequest, PubtBapSingleReportResponseData>(t, p, r.toPubtBapRequest()).first()
-                    SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkBapRequest, IpkBapSingleReportResponseData>(t, p, r.toIpkBapRequest()).first()
-                    SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselBapRequest, DieselBapSingleReportResponseData>(t, p, r.toDieselBapRequest()).first()
-                    SubInspectionType.Machine -> remoteDataSource.createReport<MachineBapRequest, MachineBapSingleReportResponseData>(t, p, r.toMachineBapRequest()).first()
+            } else {
+                when (r.inspection.documentType) {
+                    DocumentType.LAPORAN -> when (r.inspection.subInspectionType) {
+                        SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(t, p, r.toElevatorReportRequest()).first()
+                        SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(t, p, r.toEscalatorReportRequest()).first()
+                        SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftReportRequest, ForkliftSingleReportResponseData>(t, p, r.toForkliftReportRequest()).first()
+                        SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneReportRequest, MobileCraneSingleReportResponseData>(t, p, r.toMobileCraneReportRequest()).first()
+                        SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneReportRequest, OverheadCraneSingleReportResponseData>(t, p, r.toOverheadCraneReportRequest()).first()
+                        SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneReportRequest, GantryCraneSingleReportResponseData>(t, p, r.toGantryCraneReportRequest()).first()
+                        SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaReportRequest, GondolaSingleReportResponseData>(t, p, r.toGondolaReportRequest()).first()
+                        SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalReportRequest, ElectricalSingleReportResponseData>(t, p, r.toElectricalReportRequest()).first()
+                        SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningReportRequest, LightningSingleReportResponseData>(t, p, r.toLightningReportRequest()).first()
+                        SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtReportRequest, PubtSingleReportResponseData>(t, p, r.toPubtReportRequest()).first()
+                        SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkReportRequest, IpkSingleReportResponseData>(t, p, r.toIpkReportRequest()).first()
+                        SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselReportRequest, DieselSingleReportResponseData>(t, p, r.toDieselReportRequest()).first()
+                        SubInspectionType.Machine -> remoteDataSource.createReport<MachineReportRequest, MachineSingleReportResponseData>(t, p, r.toMachineReportRequest()).first()
+                    }
+                    DocumentType.BAP -> when (r.inspection.subInspectionType) {
+                        SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(t, p, r.toElevatorBapRequest()).first()
+                        SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(t, p, r.toEscalatorBapRequest()).first()
+                        SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftBapRequest, ForkliftBapSingleReportResponseData>(t, p, r.toForkliftBapRequest()).first()
+                        SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneBapRequest, MobileCraneBapSingleReportResponseData>(t, p, r.toMobileCraneBapRequest()).first()
+                        SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneBapRequest, OverheadCraneBapSingleReportResponseData>(t, p, r.toOverheadCraneBapRequest()).first()
+                        SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneBapRequest, GantryCraneBapSingleReportResponseData>(t, p, r.toGantryCraneBapRequest()).first()
+                        SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaBapRequest, GondolaBapSingleReportResponseData>(t, p, r.toGondolaBapRequest()).first()
+                        SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalBapRequest, ElectricalBapSingleReportResponseData>(t, p, r.toElectricalBapRequest()).first()
+                        SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningBapRequest, LightningBapSingleReportResponseData>(t, p, r.toLightningBapRequest()).first()
+                        SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtBapRequest, PubtBapSingleReportResponseData>(t, p, r.toPubtBapRequest()).first()
+                        SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkBapRequest, IpkBapSingleReportResponseData>(t, p, r.toIpkBapRequest()).first()
+                        SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselBapRequest, DieselBapSingleReportResponseData>(t, p, r.toDieselBapRequest()).first()
+                        SubInspectionType.Machine -> remoteDataSource.createReport<MachineBapRequest, MachineBapSingleReportResponseData>(t, p, r.toMachineBapRequest()).first()
+                    }
+                    else -> ApiResponse.Empty
                 }
-                else -> ApiResponse.Empty
             }
         }
     }
 
     override suspend fun syncUpdateInspection(): Boolean {
-        val listReports = localDataSource.getPendingSyncReports().map { it.toDomain() }
+        /*val listReports = localDataSource.getPendingSyncReports().map { it.toDomain() }
         if (listReports.isEmpty()) return true
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
         return processReports(listReports, token) { t, p, i, r ->
@@ -670,7 +707,8 @@ class ReportRepository(
                 }
                 else -> ApiResponse.Empty
             }
-        }
+        }*/
+        return true
     }
 
     override fun getAllReports(): Flow<List<History>> {

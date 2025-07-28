@@ -179,7 +179,8 @@ fun GondolaBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = null,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val visualCheck = this.inspectionResult.visualCheck
@@ -524,7 +525,8 @@ fun GondolaReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = this.conclusion,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
