@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineUiState
@@ -40,38 +41,68 @@ class PTPViewModel(
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Machine -> {
-                    val electricalInspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _ptpUiState.update { it.copy(machineResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _ptpUiState.update { it.copy(machineResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _ptpUiState.update { it.copy(machineResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
 
                 SubInspectionType.Motor_Diesel -> {
-                    val electricalInspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
             }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _ptpUiState.value.editMode
+        if (isInternetAvailable) {
+            if (isEditMode) {
+                if (isSynced) updateReport(inspection) else saveReport(inspection)
+            } else {
+                createReport(inspection)
+            }
+        } else {
+            saveReport(inspection)
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.saveReport(inspection)
+            _ptpUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        } catch(_: SQLiteConstraintException) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        } catch (_: Exception) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _ptpUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _ptpUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -162,6 +193,7 @@ class PTPViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType

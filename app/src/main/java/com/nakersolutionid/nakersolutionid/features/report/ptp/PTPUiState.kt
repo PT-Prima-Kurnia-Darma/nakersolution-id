@@ -2,11 +2,13 @@ package com.nakersolutionid.nakersolutionid.features.report.ptp
 
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 
 data class PTPUiState(
     val isLoading: Boolean = false,
-    val machineResult: Resource<String>? = null,
-    val motorDieselResult: Resource<String>? = null,
+    val result: Resource<String>? = null,
     val editLoadResult: Resource<String>? = null,
-    val loadedEquipmentType: SubInspectionType? = null
+    val loadedEquipmentType: SubInspectionType? = null,
+    val inspectionWithDetailsDomain: InspectionWithDetailsDomain? = null,
+    val editMode: Boolean = false
 )
