@@ -68,11 +68,11 @@ fun PUBTScreen(
         SubInspectionType.General_PUBT
     )
 
-    LaunchedEffect(pubtUiState.generalResult) {
-        when (val result = pubtUiState.generalResult) {
+    LaunchedEffect(pubtUiState.result) {
+        when (val result = pubtUiState.result) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdatePUBTState { it.copy(isLoading = false, generalResult = null) }
+                viewModel.onUpdatePUBTState { it.copy(isLoading = false, result = null) }
             }
 
             is Resource.Loading -> {
@@ -80,7 +80,7 @@ fun PUBTScreen(
             }
 
             is Resource.Success -> {
-                viewModel.onUpdatePUBTState { it.copy(isLoading = false, generalResult = null) }
+                viewModel.onUpdatePUBTState { it.copy(isLoading = false, result = null) }
                 onBackClick()
             }
 

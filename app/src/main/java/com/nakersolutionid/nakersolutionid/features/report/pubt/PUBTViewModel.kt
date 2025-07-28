@@ -72,11 +72,11 @@ class PUBTViewModel(
     suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
         try {
             reportUseCase.saveReport(inspection)
-            _pubtUiState.update { it.copy(generalResult = Resource.Success("Laporan berhasil disimpan")) }
+            _pubtUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
         } catch(_: SQLiteConstraintException) {
-            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+            _pubtUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         } catch (_: Exception) {
-            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+            _pubtUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -84,20 +84,20 @@ class PUBTViewModel(
         try {
             Log.d("PUBTViewModel", "Creating report")
             reportUseCase.createReport(inspection).collect { result ->
-                _pubtUiState.update { it.copy(generalResult = result) }
+                _pubtUiState.update { it.copy(result = result) }
             }
         } catch (_: Exception) {
-            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+            _pubtUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
     private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
         try {
             reportUseCase.updateReport(inspection).collect { result ->
-                _pubtUiState.update { it.copy(generalResult = result) }
+                _pubtUiState.update { it.copy(result = result) }
             }
         } catch (_: Exception) {
-            _pubtUiState.update { it.copy(generalResult = Resource.Error("Laporan gagal disimpan")) }
+            _pubtUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 

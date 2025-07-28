@@ -6,7 +6,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDom
 
 data class PUBTUiState(
     val isLoading: Boolean = false,
-    val generalResult: Resource<String>? = null,
+    val result: Resource<String>? = null,
     val editLoadResult: Resource<String>? = null,
     val loadedEquipmentType: SubInspectionType? = null,
     val inspectionWithDetailsDomain: InspectionWithDetailsDomain? = null,
