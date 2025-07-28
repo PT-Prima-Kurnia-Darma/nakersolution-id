@@ -20,7 +20,7 @@ private object FireProtectionBAPCategory {
     const val TESTING_DETECTOR = "$TESTING - Detektor"
 }
 
-fun FireProtectionBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+fun FireProtectionBAPReport.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, id: Long?): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
@@ -40,7 +40,8 @@ fun FireProtectionBAPReport.toInspectionWithDetailsDomain(currentTime: String, i
         serialNumber = this.technicalData.seriesNumber,
         createdAt = currentTime,
         reportDate = this.inspectionDate,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

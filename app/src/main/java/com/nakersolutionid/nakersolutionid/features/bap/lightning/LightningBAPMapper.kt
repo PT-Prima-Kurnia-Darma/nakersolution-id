@@ -21,7 +21,7 @@ private object LightningBAPCategory {
     }
 }
 
-fun LightningBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+fun LightningBAPReport.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, id: Long?): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
@@ -40,7 +40,8 @@ fun LightningBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Lo
         serialNumber = this.technicalData.serialNumber,
         createdAt = currentTime,
         reportDate = this.inspectionDate,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

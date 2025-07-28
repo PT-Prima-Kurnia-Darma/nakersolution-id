@@ -15,7 +15,7 @@ import com.nakersolutionid.nakersolutionid.utils.Utils
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun PubtBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+fun PubtBAPReport.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, id: Long?): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
@@ -40,7 +40,8 @@ fun PubtBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?):
         ),
         createdAt = currentTime,
         reportDate = this.inspectionDate,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

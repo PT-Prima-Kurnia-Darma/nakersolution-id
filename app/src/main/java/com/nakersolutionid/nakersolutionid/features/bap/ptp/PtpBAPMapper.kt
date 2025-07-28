@@ -33,6 +33,7 @@ private object PtpBAPCategory {
 
 fun PtpBAPReport.toInspectionWithDetailsDomain(
     currentTime: String,
+    isEdited: Boolean,
     id: Long?
 ): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
@@ -62,7 +63,8 @@ fun PtpBAPReport.toInspectionWithDetailsDomain(
         ),
         createdAt = currentTime,
         reportDate = this.inspectionDate,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

@@ -30,7 +30,7 @@ private object BAPCategory {
  * @param currentTime The timestamp when the conversion happens, used for 'createdAt'.
  * @return An [InspectionWithDetailsDomain] object populated with data from the BAP report.
  */
-fun GantryCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+fun GantryCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, id: Long?): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
@@ -60,7 +60,8 @@ fun GantryCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: 
         createdAt = currentTime,
         reportDate = this.inspectionDate,
         status = null,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

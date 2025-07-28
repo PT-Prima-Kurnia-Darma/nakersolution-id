@@ -61,7 +61,7 @@ private object BapKeys {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun MobileCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+fun MobileCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, id: Long?): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
@@ -91,7 +91,8 @@ fun MobileCraneBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: 
         createdAt = currentTime,
         reportDate = this.inspectionDate,
         status = null,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
