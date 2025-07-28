@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.ipk
 
+import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +51,8 @@ fun IPKScreen(
     viewModel: IPKViewModel = koinViewModel(),
     menuTitle: String = "Instalasi Proteksi Kebakaran",
     reportId: Long? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    editMode: Boolean = false
 ) {
     val ipkUiState by viewModel.ipkUiState.collectAsStateWithLifecycle()
 
@@ -56,17 +61,18 @@ fun IPKScreen(
     )
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Fire_Protection) }
     val listMenu = listOf(
         SubInspectionType.Fire_Protection
     )
 
-    LaunchedEffect(ipkUiState.fireProtectionResult) {
-        when (val result = ipkUiState.fireProtectionResult) {
+    LaunchedEffect(ipkUiState.result) {
+        when (val result = ipkUiState.result) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onIPKUpdateState { it.copy(isLoading = false, fireProtectionResult = null) }
+                viewModel.onIPKUpdateState { it.copy(isLoading = false, result = null) }
             }
 
             is Resource.Loading -> {
@@ -74,7 +80,7 @@ fun IPKScreen(
             }
 
             is Resource.Success -> {
-                viewModel.onIPKUpdateState { it.copy(isLoading = false, fireProtectionResult = null) }
+                viewModel.onIPKUpdateState { it.copy(isLoading = false, result = null) }
                 onBackClick()
             }
 
@@ -84,6 +90,7 @@ fun IPKScreen(
 
     // Load existing report data for edit mode
     LaunchedEffect(reportId) {
+        viewModel.onIPKUpdateState { it.copy(editMode = editMode) }
         reportId?.let { id ->
             viewModel.loadReportForEdit(id)
         }
@@ -105,7 +112,7 @@ fun IPKScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !ipkUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter) }
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {
@@ -160,6 +167,13 @@ fun IPKScreen(
             }
         }
     }
+}
+
+private fun hasInternetConnection(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
