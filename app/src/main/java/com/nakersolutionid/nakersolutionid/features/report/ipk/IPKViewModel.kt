@@ -44,7 +44,7 @@ class IPKViewModel(
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Fire_Protection -> {
-                    val inspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime, _ipkUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
