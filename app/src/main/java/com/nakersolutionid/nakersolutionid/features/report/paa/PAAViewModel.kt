@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftLoadTestItem
@@ -61,6 +62,7 @@ class PAAViewModel(
 
     // Track current report ID for edit mode
     private var currentReportId: Long? = null
+    private var isSynced = false
 
     private val _forkliftUiState = MutableStateFlow(Dummy.getDummyForkliftUiState())
     val forkliftUiState: StateFlow<ForkliftUiState> = _forkliftUiState.asStateFlow()
@@ -77,72 +79,77 @@ class PAAViewModel(
     private val _overheadCraneUiState = MutableStateFlow(Dummy.getDummyOverheadCraneUiState())
     val overheadCraneUiState: StateFlow<OverheadCraneUiState> = _overheadCraneUiState.asStateFlow()
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Forklift -> {
-                    val electricalInspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _paaUiState.update { it.copy(forkliftResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _paaUiState.update { it.copy(forkliftResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Mobile_Crane -> {
-                    val electricalInspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _paaUiState.update { it.copy(mobileCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Overhead_Crane -> {
-                    val electricalInspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _paaUiState.update { it.copy(overheadCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Gantry_Crane -> {
-                    val electricalInspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _paaUiState.update { it.copy(gantryCraneResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Gondola -> {
-                    val electricalInspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _paaUiState.update { it.copy(gondolaResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _paaUiState.update { it.copy(gondolaResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
             }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _paaUiState.value.editMode
+        if (isInternetAvailable) {
+            if (isEditMode) {
+                if (isSynced) updateReport(inspection) else saveReport(inspection)
+            } else {
+                createReport(inspection)
+            }
+        } else {
+            saveReport(inspection)
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.saveReport(inspection)
+            _paaUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        } catch(_: SQLiteConstraintException) {
+            _paaUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        } catch (_: Exception) {
+            _paaUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _paaUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _paaUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _paaUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _paaUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -743,6 +750,7 @@ class PAAViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType

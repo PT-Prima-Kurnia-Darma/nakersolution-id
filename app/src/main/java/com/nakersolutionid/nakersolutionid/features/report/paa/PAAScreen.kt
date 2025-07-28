@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa
 
+import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +56,8 @@ fun PAAScreen(
     viewModel: PAAViewModel = koinViewModel(),
     menuTitle: String = "Pesawat Angkat dan Angkut",
     reportId: Long? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    editMode: Boolean = false
 ) {
     val paaUiState by viewModel.paaUiState.collectAsStateWithLifecycle()
 
@@ -61,6 +66,7 @@ fun PAAScreen(
     )
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Forklift) }
     val listMenu = listOf(
@@ -71,11 +77,11 @@ fun PAAScreen(
         SubInspectionType.Overhead_Crane
     )
 
-    LaunchedEffect(paaUiState.forkliftResult) {
-        when (val result = paaUiState.forkliftResult) {
+    LaunchedEffect(paaUiState.result) {
+        when (val result = paaUiState.result) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, forkliftResult = null) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, result = null) }
             }
 
             is Resource.Loading -> {
@@ -83,87 +89,7 @@ fun PAAScreen(
             }
 
             is Resource.Success -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, forkliftResult = null) }
-                onBackClick()
-            }
-
-            null -> null
-        }
-    }
-
-    LaunchedEffect(paaUiState.gantryCraneResult) {
-        when (val result = paaUiState.gantryCraneResult) {
-            is Resource.Error -> {
-                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, gantryCraneResult = null) }
-            }
-
-            is Resource.Loading -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
-            }
-
-            is Resource.Success -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, gantryCraneResult = null) }
-                onBackClick()
-            }
-
-            null -> null
-        }
-    }
-
-    LaunchedEffect(paaUiState.gondolaResult) {
-        when (val result = paaUiState.gondolaResult) {
-            is Resource.Error -> {
-                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, gondolaResult = null) }
-            }
-
-            is Resource.Loading -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
-            }
-
-            is Resource.Success -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, gondolaResult = null) }
-                onBackClick()
-            }
-
-            null -> null
-        }
-    }
-
-    LaunchedEffect(paaUiState.mobileCraneResult) {
-        when (val result = paaUiState.mobileCraneResult) {
-            is Resource.Error -> {
-                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, mobileCraneResult = null) }
-            }
-
-            is Resource.Loading -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
-            }
-
-            is Resource.Success -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, mobileCraneResult = null) }
-                onBackClick()
-            }
-
-            null -> null
-        }
-    }
-
-    LaunchedEffect(paaUiState.overheadCraneResult) {
-        when (val result = paaUiState.overheadCraneResult) {
-            is Resource.Error -> {
-                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, overheadCraneResult = null) }
-            }
-
-            is Resource.Loading -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = true) }
-            }
-
-            is Resource.Success -> {
-                viewModel.onUpdatePAAState { it.copy(isLoading = false, overheadCraneResult = null) }
+                viewModel.onUpdatePAAState { it.copy(isLoading = false, result = null) }
                 onBackClick()
             }
 
@@ -173,6 +99,7 @@ fun PAAScreen(
 
     // Load existing report data for edit mode
     LaunchedEffect(reportId) {
+        viewModel.onUpdatePAAState { it.copy(editMode = editMode) }
         reportId?.let { id ->
             viewModel.loadReportForEdit(id)
         }
@@ -194,7 +121,7 @@ fun PAAScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !paaUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter) }
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {
@@ -290,6 +217,13 @@ fun PAAScreen(
             }
         }
     }
+}
+
+private fun hasInternetConnection(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
