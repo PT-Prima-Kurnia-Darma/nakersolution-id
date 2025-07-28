@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.di
 
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -7,11 +8,20 @@ import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeReportRepository : IReportRepository {
     override suspend fun saveReport(request: InspectionWithDetailsDomain) {
         return
+    }
+
+    override fun createReport(id: Long): Flow<Resource<String>> {
+        return flow { emit(Resource.Success("Success")) }
+    }
+
+    override fun updateReport(id: Long): Flow<Resource<String>> {
+        return flow { emit(Resource.Success("Success")) }
     }
 
     override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? {

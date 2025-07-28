@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
+import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
@@ -96,6 +97,7 @@ import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class ReportRepository(
@@ -111,6 +113,159 @@ class ReportRepository(
             findings = inspectionWithDetails.findings,
             testResults = inspectionWithDetails.testResults
         )
+    }
+
+    override fun createReport(id: Long): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        val report = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
+        if (report == null) {
+            emit(Resource.Error("Report not found"))
+            return@flow
+        }
+
+        val token = "Bearer ${userPreference.getUserToken() ?: ""}"
+        val path = getApiPath(report.inspection.subInspectionType, report.inspection.documentType)
+        if (path.isEmpty()) {
+            emit(Resource.Error("Invalid report type"))
+            return@flow
+        }
+
+        val apiResponse = when (report.inspection.documentType) {
+            DocumentType.LAPORAN -> when (report.inspection.subInspectionType) {
+                SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(token, path, report.toElevatorReportRequest()).first()
+                SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(token, path, report.toEscalatorReportRequest()).first()
+                SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftReportRequest, ForkliftSingleReportResponseData>(token, path, report.toForkliftReportRequest()).first()
+                SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneReportRequest, MobileCraneSingleReportResponseData>(token, path, report.toMobileCraneReportRequest()).first()
+                SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneReportRequest, OverheadCraneSingleReportResponseData>(token, path, report.toOverheadCraneReportRequest()).first()
+                SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneReportRequest, GantryCraneSingleReportResponseData>(token, path, report.toGantryCraneReportRequest()).first()
+                SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaReportRequest, GondolaSingleReportResponseData>(token, path, report.toGondolaReportRequest()).first()
+                SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalReportRequest, ElectricalSingleReportResponseData>(token, path, report.toElectricalReportRequest()).first()
+                SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningReportRequest, LightningSingleReportResponseData>(token, path, report.toLightningReportRequest()).first()
+                SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtReportRequest, PubtSingleReportResponseData>(token, path, report.toPubtReportRequest()).first()
+                SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkReportRequest, IpkSingleReportResponseData>(token, path, report.toIpkReportRequest()).first()
+                SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselReportRequest, DieselSingleReportResponseData>(token, path, report.toDieselReportRequest()).first()
+                SubInspectionType.Machine -> remoteDataSource.createReport<MachineReportRequest, MachineSingleReportResponseData>(token, path, report.toMachineReportRequest()).first()
+            }
+            DocumentType.BAP -> when (report.inspection.subInspectionType) {
+                SubInspectionType.Elevator -> remoteDataSource.createReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(token, path, report.toElevatorBapRequest()).first()
+                SubInspectionType.Escalator -> remoteDataSource.createReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(token, path, report.toEscalatorBapRequest()).first()
+                SubInspectionType.Forklift -> remoteDataSource.createReport<ForkliftBapRequest, ForkliftBapSingleReportResponseData>(token, path, report.toForkliftBapRequest()).first()
+                SubInspectionType.Mobile_Crane -> remoteDataSource.createReport<MobileCraneBapRequest, MobileCraneBapSingleReportResponseData>(token, path, report.toMobileCraneBapRequest()).first()
+                SubInspectionType.Overhead_Crane -> remoteDataSource.createReport<OverheadCraneBapRequest, OverheadCraneBapSingleReportResponseData>(token, path, report.toOverheadCraneBapRequest()).first()
+                SubInspectionType.Gantry_Crane -> remoteDataSource.createReport<GantryCraneBapRequest, GantryCraneBapSingleReportResponseData>(token, path, report.toGantryCraneBapRequest()).first()
+                SubInspectionType.Gondola -> remoteDataSource.createReport<GondolaBapRequest, GondolaBapSingleReportResponseData>(token, path, report.toGondolaBapRequest()).first()
+                SubInspectionType.Electrical -> remoteDataSource.createReport<ElectricalBapRequest, ElectricalBapSingleReportResponseData>(token, path, report.toElectricalBapRequest()).first()
+                SubInspectionType.Lightning_Conductor -> remoteDataSource.createReport<LightningBapRequest, LightningBapSingleReportResponseData>(token, path, report.toLightningBapRequest()).first()
+                SubInspectionType.General_PUBT -> remoteDataSource.createReport<PubtBapRequest, PubtBapSingleReportResponseData>(token, path, report.toPubtBapRequest()).first()
+                SubInspectionType.Fire_Protection -> remoteDataSource.createReport<IpkBapRequest, IpkBapSingleReportResponseData>(token, path, report.toIpkBapRequest()).first()
+                SubInspectionType.Motor_Diesel -> remoteDataSource.createReport<DieselBapRequest, DieselBapSingleReportResponseData>(token, path, report.toDieselBapRequest()).first()
+                SubInspectionType.Machine -> remoteDataSource.createReport<MachineBapRequest, MachineBapSingleReportResponseData>(token, path, report.toMachineBapRequest()).first()
+            }
+            else -> null
+        }
+
+        if (apiResponse == null) {
+            emit(Resource.Error("Invalid document type"))
+            return@flow
+        }
+
+        when (apiResponse) {
+            is ApiResponse.Empty -> {
+                emit(Resource.Error("Empty response"))
+                return@flow
+            }
+            is ApiResponse.Error -> {
+                emit(Resource.Error(apiResponse.errorMessage))
+                return@flow
+            }
+            is ApiResponse.Success -> {
+                val status = handleSyncSuccess(apiResponse.data)
+                if (status) {
+                    emit(Resource.Success("Report created successfully"))
+                    return@flow
+                } else {
+                    emit(Resource.Error("Failed to save report"))
+                    return@flow
+                }
+            }
+        }
+    }
+
+    override fun updateReport(id: Long): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        val report = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
+        if (report == null) {
+            emit(Resource.Error("Report not found"))
+            return@flow
+        }
+
+        val token = "Bearer ${userPreference.getUserToken() ?: ""}"
+        val path = getApiPath(report.inspection.subInspectionType, report.inspection.documentType)
+        if (path.isEmpty()) {
+            emit(Resource.Error("Invalid report type"))
+            return@flow
+        }
+
+        val extraId = if (report.inspection.documentType == DocumentType.BAP) report.inspection.moreExtraId else report.inspection.extraId
+        val apiResponse = when (report.inspection.documentType) {
+            DocumentType.LAPORAN -> when (report.inspection.subInspectionType) {
+                SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(token, path, extraId, report.toElevatorReportRequest()).first()
+                SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorReportRequest, EscalatorSingleReportResponseData>(token, path, extraId, report.toEscalatorReportRequest()).first()
+                SubInspectionType.Forklift -> remoteDataSource.updateReport<ForkliftReportRequest, ForkliftSingleReportResponseData>(token, path, extraId, report.toForkliftReportRequest()).first()
+                SubInspectionType.Mobile_Crane -> remoteDataSource.updateReport<MobileCraneReportRequest, MobileCraneSingleReportResponseData>(token, path, extraId, report.toMobileCraneReportRequest()).first()
+                SubInspectionType.Overhead_Crane -> remoteDataSource.updateReport<OverheadCraneReportRequest, OverheadCraneSingleReportResponseData>(token, path, extraId, report.toOverheadCraneReportRequest()).first()
+                SubInspectionType.Gantry_Crane -> remoteDataSource.updateReport<GantryCraneReportRequest, GantryCraneSingleReportResponseData>(token, path, extraId, report.toGantryCraneReportRequest()).first()
+                SubInspectionType.Gondola -> remoteDataSource.updateReport<GondolaReportRequest, GondolaSingleReportResponseData>(token, path, extraId, report.toGondolaReportRequest()).first()
+                SubInspectionType.Electrical -> remoteDataSource.updateReport<ElectricalReportRequest, ElectricalSingleReportResponseData>(token, path, extraId, report.toElectricalReportRequest()).first()
+                SubInspectionType.Lightning_Conductor -> remoteDataSource.updateReport<LightningReportRequest, LightningSingleReportResponseData>(token, path, extraId, report.toLightningReportRequest()).first()
+                SubInspectionType.General_PUBT -> remoteDataSource.updateReport<PubtReportRequest, PubtSingleReportResponseData>(token, path, extraId, report.toPubtReportRequest()).first()
+                SubInspectionType.Fire_Protection -> remoteDataSource.updateReport<IpkReportRequest, IpkSingleReportResponseData>(token, path, extraId, report.toIpkReportRequest()).first()
+                SubInspectionType.Motor_Diesel -> remoteDataSource.updateReport<DieselReportRequest, DieselSingleReportResponseData>(token, path, extraId, report.toDieselReportRequest()).first()
+                SubInspectionType.Machine -> remoteDataSource.updateReport<MachineReportRequest, MachineSingleReportResponseData>(token, path, extraId, report.toMachineReportRequest()).first()
+            }
+            DocumentType.BAP -> when (report.inspection.subInspectionType) {
+                SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorBapRequest, ElevatorBapSingleReportResponseData>(token, path, extraId, report.toElevatorBapRequest()).first()
+                SubInspectionType.Escalator -> remoteDataSource.updateReport<EscalatorBapRequest, EscalatorBapSingleReportResponseData>(token, path, extraId, report.toEscalatorBapRequest()).first()
+                SubInspectionType.Forklift -> remoteDataSource.updateReport<ForkliftBapRequest, ForkliftBapSingleReportResponseData>(token, path, extraId, report.toForkliftBapRequest()).first()
+                SubInspectionType.Mobile_Crane -> remoteDataSource.updateReport<MobileCraneBapRequest, MobileCraneBapSingleReportResponseData>(token, path, extraId, report.toMobileCraneBapRequest()).first()
+                SubInspectionType.Overhead_Crane -> remoteDataSource.updateReport<OverheadCraneBapRequest, OverheadCraneBapSingleReportResponseData>(token, path, extraId, report.toOverheadCraneBapRequest()).first()
+                SubInspectionType.Gantry_Crane -> remoteDataSource.updateReport<GantryCraneBapRequest, GantryCraneBapSingleReportResponseData>(token, path, extraId, report.toGantryCraneBapRequest()).first()
+                SubInspectionType.Gondola -> remoteDataSource.updateReport<GondolaBapRequest, GondolaBapSingleReportResponseData>(token, path, extraId, report.toGondolaBapRequest()).first()
+                SubInspectionType.Electrical -> remoteDataSource.updateReport<ElectricalBapRequest, ElectricalBapSingleReportResponseData>(token, path, extraId, report.toElectricalBapRequest()).first()
+                SubInspectionType.Lightning_Conductor -> remoteDataSource.updateReport<LightningBapRequest, LightningBapSingleReportResponseData>(token, path, extraId, report.toLightningBapRequest()).first()
+                SubInspectionType.General_PUBT -> remoteDataSource.updateReport<PubtBapRequest, PubtBapSingleReportResponseData>(token, path, extraId, report.toPubtBapRequest()).first()
+                SubInspectionType.Fire_Protection -> remoteDataSource.updateReport<IpkBapRequest, IpkBapSingleReportResponseData>(token, path, extraId, report.toIpkBapRequest()).first()
+                SubInspectionType.Motor_Diesel -> remoteDataSource.updateReport<DieselBapRequest, DieselBapSingleReportResponseData>(token, path, extraId, report.toDieselBapRequest()).first()
+                SubInspectionType.Machine -> remoteDataSource.updateReport<MachineBapRequest, MachineBapSingleReportResponseData>(token, path, extraId, report.toMachineBapRequest()).first()
+            }
+            else -> null
+        }
+
+        if (apiResponse == null) {
+            emit(Resource.Error("Invalid document type"))
+            return@flow
+        }
+
+        when (apiResponse) {
+            is ApiResponse.Empty -> {
+                emit(Resource.Error("Empty response"))
+                return@flow
+            }
+            is ApiResponse.Error -> {
+                emit(Resource.Error(apiResponse.errorMessage))
+                return@flow
+            }
+            is ApiResponse.Success -> {
+                val status = handleSyncSuccess(apiResponse.data)
+                if (status) {
+                    emit(Resource.Success("Report created successfully"))
+                    return@flow
+                } else {
+                    emit(Resource.Error("Failed to save report"))
+                    return@flow
+                }
+            }
+        }
     }
 
     override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? {
@@ -287,6 +442,131 @@ class ReportRepository(
         }
     }
 
+    private suspend fun handleSyncSuccess(data: Any): Boolean {
+        try {
+            val innerData = (data as? BaseApiResponse<*>)?.data
+            val responseType = when (innerData) {
+                // Laporan
+                is ElevatorSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is EscalatorSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is ForkliftSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is MobileCraneSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is OverheadCraneSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is GantryCraneSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is GondolaSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is ElectricalSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is LightningSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is PubtSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is IpkSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is DieselSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+                is MachineSingleReportResponseData -> {
+                    val domain = innerData.laporan.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
+                }
+
+                // Bap
+                is ElevatorBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is EscalatorBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is ForkliftBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is MobileCraneBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is OverheadCraneBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.reportHeader.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is GantryCraneBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is GondolaBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is ElectricalBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is LightningBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is PubtBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is IpkBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is DieselBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                is MachineBapSingleReportResponseData -> {
+                    val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
+                }
+                else -> null
+            }
+
+            return if (responseType != null) {
+                saveReport(responseType)
+                true
+            } else {
+                false
+            }
+        } catch (_: Exception) {
+            return false
+        }
+    }
+
     private suspend fun processReports(
         reports: List<InspectionWithDetailsDomain>,
         token: String,
@@ -303,7 +583,7 @@ class ReportRepository(
             when (val apiResponse = action(token, path, id, report)) {
                 is ApiResponse.Success -> handleSyncSuccess(apiResponse.data) { fail++ }
                 is ApiResponse.Error -> fail++
-                is ApiResponse.Empty -> null
+                is ApiResponse.Empty -> Unit
             }
         }
         return fail == 0
