@@ -93,9 +93,9 @@ fun HistoryScreen(
     var historyToDelete by remember { mutableStateOf<History?>(null) }
     val lazyListState = rememberLazyListState()
 
-    /*LaunchedEffect(Unit) {
-        viewModel.startSync()
-    }*/
+    LaunchedEffect(uiState.triggerSync) {
+        viewModel.triggerSync()
+    }
 
     // This effect correctly scrolls the list to the top AFTER the data has been updated
     // from a search or filter action, providing a better user experience.

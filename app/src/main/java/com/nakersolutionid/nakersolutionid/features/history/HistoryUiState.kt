@@ -8,5 +8,6 @@ data class HistoryUiState(
     val isLoading: Boolean = false,
     val historyResult: Resource<String>? = null,
     val error: String? = null,
-    val activeFilters: FilterState = FilterState()
+    val activeFilters: FilterState = FilterState(),
+    val triggerSync: Int = 0
 )

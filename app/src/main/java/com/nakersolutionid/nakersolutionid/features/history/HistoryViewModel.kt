@@ -153,7 +153,11 @@ class HistoryViewModel(
         }
     }
 
-    fun startSync() {
+    fun increaseSyncCount() {
+        _uiState.update { it.copy(triggerSync = it.triggerSync + 1) }
+    }
+
+    fun triggerSync() {
         syncManager.startSync()
     }
 
