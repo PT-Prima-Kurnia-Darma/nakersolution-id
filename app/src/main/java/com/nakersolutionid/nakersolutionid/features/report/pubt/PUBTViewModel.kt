@@ -48,7 +48,7 @@ class PUBTViewModel(
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.General_PUBT -> {
-                    val electricalInspection = _generalUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val electricalInspection = _generalUiState.value.toInspectionWithDetailsDomain(currentTime, _pubtUiState.value.editMode, currentReportId)
                     triggerSaving(electricalInspection, isInternetAvailable)
                 }
                 else -> {}
