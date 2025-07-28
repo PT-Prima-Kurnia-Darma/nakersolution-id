@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
+import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
@@ -115,13 +116,13 @@ class ReportRepository(
         )
     }
 
-    override fun createReport(id: Long): Flow<Resource<String>> = flow {
+    override fun createReport(report: InspectionWithDetailsDomain): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
-        val report = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
+        /*val report = localDataSource.getInspection(report).map { it.toDomain() }.firstOrNull()
         if (report == null) {
             emit(Resource.Error("Report not found"))
             return@flow
-        }
+        }*/
 
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
         val path = getApiPath(report.inspection.subInspectionType, report.inspection.documentType)
@@ -191,13 +192,13 @@ class ReportRepository(
         }
     }
 
-    override fun updateReport(id: Long): Flow<Resource<String>> = flow {
+    override fun updateReport(report: InspectionWithDetailsDomain): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
-        val report = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
+        /*val report = localDataSource.getInspection(report).map { it.toDomain() }.firstOrNull()
         if (report == null) {
             emit(Resource.Error("Report not found"))
             return@flow
-        }
+        }*/
 
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
         val path = getApiPath(report.inspection.subInspectionType, report.inspection.documentType)
@@ -557,6 +558,7 @@ class ReportRepository(
             }
 
             return if (responseType != null) {
+                Log.i("syncInspection", "syncInspection: Success")
                 saveReport(responseType)
                 true
             } else {
@@ -591,7 +593,7 @@ class ReportRepository(
 
     override suspend fun syncInspection(): Boolean {
         val listReports = localDataSource.getPendingSyncReports().map { it.toDomain() }
-        if (listReports.isEmpty()) return false
+        if (listReports.isEmpty()) return true
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
         return processReports(listReports, token) { t, p, _, r ->
             when (r.inspection.documentType) {
@@ -632,7 +634,7 @@ class ReportRepository(
 
     override suspend fun syncUpdateInspection(): Boolean {
         val listReports = localDataSource.getPendingSyncReports().map { it.toDomain() }
-        if (listReports.isEmpty()) return false
+        if (listReports.isEmpty()) return true
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
         return processReports(listReports, token) { t, p, i, r ->
             when (r.inspection.documentType) {

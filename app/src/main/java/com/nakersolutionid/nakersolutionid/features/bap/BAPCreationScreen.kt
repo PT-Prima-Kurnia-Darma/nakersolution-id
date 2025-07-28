@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.bap
 
+import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,6 +58,7 @@ fun BAPCreationScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     LaunchedEffect(id) {
         viewModel.onUpdateState { it.copy(editMode = editMode) }
@@ -77,6 +82,23 @@ fun BAPCreationScreen(
         }
     }
 
+    LaunchedEffect(uiState.createResult) {
+        when (val result = uiState.createResult) {
+            is Resource.Error -> {
+                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
+                viewModel.onUpdateState { it.copy(isLoading = false, createResult = null) }
+            }
+            is Resource.Loading -> {
+                viewModel.onUpdateState { it.copy(isLoading = true) }
+            }
+            is Resource.Success -> {
+                viewModel.onUpdateState { it.copy(isLoading = false, createResult = null) }
+                onBackClick()
+            }
+            null -> null
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -85,10 +107,10 @@ fun BAPCreationScreen(
                 onSaveClick = {
                     if (documentType == DocumentType.BAP) {
                         // Edit
-                        viewModel.onSaveClick(subInspectionType, id)
+                        viewModel.onSaveClick(subInspectionType, hasInternetConnection(context), id)
                     } else {
                         // Create
-                        viewModel.onSaveClick(subInspectionType)
+                        viewModel.onSaveClick(subInspectionType, hasInternetConnection(context))
                     }
                 },
                 name = subInspectionType.toDisplayString(),
@@ -235,6 +257,13 @@ fun BAPCreationScreen(
             }
         }
     }
+}
+
+private fun hasInternetConnection(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)

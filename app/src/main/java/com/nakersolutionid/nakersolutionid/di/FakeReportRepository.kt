@@ -16,11 +16,11 @@ class FakeReportRepository : IReportRepository {
         return
     }
 
-    override fun createReport(id: Long): Flow<Resource<String>> {
+    override fun createReport(report: InspectionWithDetailsDomain): Flow<Resource<String>> {
         return flow { emit(Resource.Success("Success")) }
     }
 
-    override fun updateReport(id: Long): Flow<Resource<String>> {
+    override fun updateReport(report: InspectionWithDetailsDomain): Flow<Resource<String>> {
         return flow { emit(Resource.Success("Success")) }
     }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalInstallationBAPReport
 import com.nakersolutionid.nakersolutionid.features.bap.electric.ElectricalInstallationBAPUiState
@@ -177,77 +178,124 @@ class BAPCreationViewModel(
         }
     }
 
-    fun onSaveClick(selectedIndex: SubInspectionType, id: Long? = null) {
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean, id: Long? = null) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Elevator -> {
                     val inspection = _elevatorBAPUiState.value.elevatorBAPReport.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Escalator -> {
                     val inspection = _escalatorBAPUiState.value.escalatorBAPReport.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Forklift -> {
                     val inspection = _forkliftBAPUiState.value.forkliftBAPReport.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Gantry_Crane -> {
                     val inspection = _gantryCraneBAPUiState.value.gantryCraneBAPReport.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Gondola -> {
                     val inspection = _gondolaBAPUiState.value.gondolaBAPReport.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Mobile_Crane -> {
                     val inspection = _mobileCraneBAPUiState.value.mobileCraneBAPReport.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Overhead_Crane -> {
                     val inspection = _overheadCraneBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Electrical -> {
                     val inspection = _electricalBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Lightning_Conductor -> {
                     val inspection = _lightningBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.General_PUBT -> {
                     val inspection = _pubtBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Fire_Protection -> {
                     val inspection = _fireProtectionBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Motor_Diesel -> {
                     val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Machine -> {
                     val inspection = _ptpBAPUiState.value.report.toInspectionWithDetailsDomain(currentTime, id)
-                    saveReport(inspection)
+                    onUpdateState { it.copy(inspectionWithDetailsDomain = inspection) }
+                    triggerSaving(inspection, isInternetAvailable)
                 }
             }
         }
     }
 
-    private suspend fun saveReport(inspection: com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain) {
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _uiState.value.editMode
+        if (isInternetAvailable) {
+            if (isEditMode) {
+                updateReport(inspection) // hit update backend endpoint
+            } else {
+                createReport(inspection) // hit create backend endpoint
+            }
+        } else {
+            saveReport(inspection)
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
         try {
             reportUseCase.saveReport(inspection)
             _uiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
-            startSync()
+//            startSync()
         } catch(_: SQLiteConstraintException) {
             _uiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         } catch (_: Exception) {
             _uiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.createReport(inspection).collect { result ->
+                _uiState.update { it.copy(createResult = result) }
+            }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(createResult = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _uiState.update { it.copy(createResult = result) }
+            }
+        } catch (_: Exception) {
+            _uiState.update { it.copy(createResult = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
 
     fun onUpdateElevatorBAPState(newData: ElevatorBAPReport) {
         _elevatorBAPUiState.update { it.copy(elevatorBAPReport = newData) }
