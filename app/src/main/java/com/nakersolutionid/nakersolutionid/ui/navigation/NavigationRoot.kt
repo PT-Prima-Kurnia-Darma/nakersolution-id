@@ -177,12 +177,12 @@ fun NavigationRoot(
             entry<PUBT> { PUBTScreen(onBackClick = { backStack.removeLastOrNull() }) }
 
             // Edit entries
-            entry<EEEdit> { key -> EEScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
-            entry<PAAEdit> { key -> PAAScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
-            entry<ILPPEdit> { key -> ILPPScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
-            entry<PTPEdit> { key -> PTPScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
-            entry<IPKEdit> { key -> IPKScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
-            entry<PUBTEdit> { key -> PUBTScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }) }
+            entry<EEEdit> { key -> EEScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }, editMode = true) }
+            entry<PAAEdit> { key -> PAAScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }, editMode = true) }
+            entry<ILPPEdit> { key -> ILPPScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }, editMode = true) }
+            entry<PTPEdit> { key -> PTPScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }, editMode = true) }
+            entry<IPKEdit> { key -> IPKScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }, editMode = true) }
+            entry<PUBTEdit> { key -> PUBTScreen(reportId = key.reportId, onBackClick = { backStack.removeLastOrNull() }, editMode = true) }
 
             entry<BAP> {
                 BAPScreen(
