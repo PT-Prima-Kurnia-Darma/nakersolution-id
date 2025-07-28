@@ -17,6 +17,7 @@ import kotlinx.collections.immutable.toImmutableList
  */
 fun GondolaUiState.toInspectionWithDetailsDomain(
     currentTime: String,
+    isEdited: Boolean,
     reportId: Long? = null
 ): InspectionWithDetailsDomain {
     val report = this.gondolaInspectionReport
@@ -64,7 +65,8 @@ fun GondolaUiState.toInspectionWithDetailsDomain(
         nextInspectionDate = "",
         inspectorName = "",
         status = "",
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

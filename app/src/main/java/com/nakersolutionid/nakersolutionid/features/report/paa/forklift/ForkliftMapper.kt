@@ -26,7 +26,7 @@ private object ForkliftCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.forkliftInspectionReport
     val general = report.generalData
     val inspectionId: Long = reportId ?: 0
@@ -56,7 +56,8 @@ fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, reportId:
         capacity = general.liftingCapacity,
         manufacturer = manufacturer,
         createdAt = currentTime,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = createCheckItemsFromUiState(report, inspectionId)

@@ -84,23 +84,23 @@ class PAAViewModel(
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Forklift -> {
-                    val inspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Mobile_Crane -> {
-                    val inspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Overhead_Crane -> {
-                    val inspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Gantry_Crane -> {
-                    val inspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 SubInspectionType.Gondola -> {
-                    val inspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    val inspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
                     triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
