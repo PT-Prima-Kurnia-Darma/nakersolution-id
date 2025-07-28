@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
@@ -43,38 +44,68 @@ class ILPPViewModel(
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Electrical -> {
-                    val electricalInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _ilppUiState.update { it.copy(electricResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _ilppUiState.update { it.copy(electricResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _ilppUiState.update { it.copy(electricResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                   triggerSaving(inspection, isInternetAvailable)
                 }
 
                 SubInspectionType.Lightning_Conductor -> {
-                    val lightningInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(lightningInspection)
-                        _ilppUiState.update { it.copy(lightningResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _ilppUiState.update { it.copy(lightningResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _ilppUiState.update { it.copy(lightningResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
             }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _ilppUiState.value.editMode
+        if (isInternetAvailable) {
+            if (isEditMode) {
+                if (isSynced) updateReport(inspection) else saveReport(inspection)
+            } else {
+                createReport(inspection)
+            }
+        } else {
+            saveReport(inspection)
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.saveReport(inspection)
+            _ilppUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        } catch(_: SQLiteConstraintException) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        } catch (_: Exception) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _ilppUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _ilppUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 

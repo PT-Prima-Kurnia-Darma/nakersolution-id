@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.features.report.ilpp
 
+import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,7 +52,8 @@ fun ILPPScreen(
     viewModel: ILPPViewModel = koinViewModel(),
     menuTitle: String = "Instalasi Listrik dan Penyalur Petir",
     reportId: Long? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    editMode: Boolean = false
 ) {
     val ilppUiState by viewModel.ilppUiState.collectAsStateWithLifecycle()
 
@@ -57,6 +62,7 @@ fun ILPPScreen(
     )
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var selectedFilter by remember { mutableStateOf<SubInspectionType>(SubInspectionType.Electrical) }
     val listMenu = listOf(
@@ -64,11 +70,11 @@ fun ILPPScreen(
         SubInspectionType.Lightning_Conductor
     )
 
-    LaunchedEffect(ilppUiState.electricResult) {
-        when (val result = ilppUiState.electricResult) {
+    LaunchedEffect(ilppUiState.result) {
+        when (val result = ilppUiState.result) {
             is Resource.Error -> {
                 scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onILPPUpdateState { it.copy(isLoading = false, electricResult = null) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = false, result = null) }
             }
 
             is Resource.Loading -> {
@@ -76,27 +82,7 @@ fun ILPPScreen(
             }
 
             is Resource.Success -> {
-                viewModel.onILPPUpdateState { it.copy(isLoading = false, electricResult = null) }
-                onBackClick()
-            }
-
-            null -> null
-        }
-    }
-
-    LaunchedEffect(ilppUiState.lightningResult) {
-        when (val result = ilppUiState.lightningResult) {
-            is Resource.Error -> {
-                scope.launch { snackbarHostState.showSnackbar("${result.message}") }
-                viewModel.onILPPUpdateState { it.copy(isLoading = false, lightningResult = null) }
-            }
-
-            is Resource.Loading -> {
-                viewModel.onILPPUpdateState { it.copy(isLoading = true) }
-            }
-
-            is Resource.Success -> {
-                viewModel.onILPPUpdateState { it.copy(isLoading = false, lightningResult = null) }
+                viewModel.onILPPUpdateState { it.copy(isLoading = false, result = null) }
                 onBackClick()
             }
 
@@ -106,6 +92,7 @@ fun ILPPScreen(
 
     // Load existing report data for edit mode
     LaunchedEffect(reportId) {
+        viewModel.onILPPUpdateState { it.copy(editMode = editMode) }
         reportId?.let { id ->
             viewModel.loadReportForEdit(id)
         }
@@ -127,7 +114,7 @@ fun ILPPScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !ilppUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter) }
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {
@@ -190,6 +177,13 @@ fun ILPPScreen(
             }
         }
     }
+}
+
+private fun hasInternetConnection(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
 
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
