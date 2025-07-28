@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toElevatorUiState
@@ -38,37 +39,67 @@ class EEViewModel(
 
     // Track current report ID for edit mode
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Elevator -> {
                     val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(elevatorInspection)
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    triggerSaving(elevatorInspection, isInternetAvailable)
                 }
                 SubInspectionType.Escalator -> {
                     val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(escalatorInspection)
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    triggerSaving(escalatorInspection, isInternetAvailable)
                 }
                 else -> null
             }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _eeUiState.value.editMode
+        if (isInternetAvailable) {
+            if (isEditMode) {
+                if (isSynced) updateReport(inspection) else saveReport(inspection)
+            } else {
+                createReport(inspection)
+            }
+        } else {
+            saveReport(inspection)
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.saveReport(inspection)
+            _eeUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        } catch(_: SQLiteConstraintException) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        } catch (_: Exception) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _eeUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _eeUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -112,6 +143,7 @@ class EEViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
 
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
