@@ -596,8 +596,9 @@ class ReportRepository(
         val listReports = localDataSource.getPendingSyncReports().map { it.toDomain() }
         if (listReports.isEmpty()) return true
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
-        return processReports(listReports, token) { t, p, i, r, e ->
-            if (e) {
+        return processReports(listReports, token) { t, p, i, r, isEdited ->
+            val isInCloud = i.isNotEmpty()
+            if (isInCloud && isEdited) {
                 when (r.inspection.documentType) {
                     DocumentType.LAPORAN -> when (r.inspection.subInspectionType) {
                         SubInspectionType.Elevator -> remoteDataSource.updateReport<ElevatorReportRequest, ElevatorSingleReportResponseData>(t, p, i, r.toElevatorReportRequest()).first()
