@@ -632,7 +632,7 @@ fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         moreExtraId = this.id,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.PTP,
-        subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
+        subInspectionType = SubInspectionType.Motor_Diesel,
         equipmentType = "Motor Diesel",
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,

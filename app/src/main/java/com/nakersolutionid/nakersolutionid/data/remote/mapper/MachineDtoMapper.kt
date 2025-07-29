@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.remote.mapper
 
+import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -266,6 +267,7 @@ fun InspectionWithDetailsDomain.toMachineBapRequest(): MachineBapRequest {
 // DTO Response -> Domain Model
 // =================================================================================================
 fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
+    Log.d("syncInspection", "Start mapping machine report data into domain")
     val inspectionId = this.extraId // Local DB ID from server response
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
 
@@ -302,9 +304,9 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         id = inspectionId,
         extraId = this.id, // Server's report ID
         moreExtraId = "",
-        documentType = DocumentType.valueOf(this.documentType),
-        inspectionType = InspectionType.valueOf(this.inspectionType),
-        subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
+        documentType = DocumentType.LAPORAN,
+        inspectionType = InspectionType.PTP,
+        subInspectionType = SubInspectionType.Machine,
         equipmentType = this.generalData.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
@@ -325,7 +327,7 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         isSynced = true,
         isEdited = false
     )
-
+    Log.d("syncInspection", "Inspection domain created")
     // General Data
     addCheckItem("general_data", "userInCharge", this.generalData.userInCharge)
     addCheckItem("general_data", "subcontractorPersonInCharge", this.generalData.subcontractorPersonInCharge)
@@ -457,6 +459,8 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.RECOMMENDATION))
     }
 
+    Log.d("syncInspection", "Mapping machine into domain done")
+
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,
         checkItems = checkItems,
@@ -472,9 +476,9 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         id = inspectionId,
         extraId = this.laporanId,
         moreExtraId = this.id, // API BAP ID
-        documentType = DocumentType.valueOf(this.documentType),
+        documentType = DocumentType.BAP,
         inspectionType = InspectionType.PTP,
-        subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
+        subInspectionType = SubInspectionType.Machine,
         equipmentType = "", // Not present in BAP DTO
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
