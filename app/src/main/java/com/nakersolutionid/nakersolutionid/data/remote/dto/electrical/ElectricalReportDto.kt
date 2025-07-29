@@ -195,7 +195,7 @@ data class ElectricalSdpFront(
 )
 
 data class ElectricalSdpFloor(
-    @SerializedName("floorNumber") val floorNumber: Int,
+    @SerializedName("floorNumber") val floorNumber: String,
     @SerializedName("hasCover") val hasCover: Boolean,
     @SerializedName("hasSld") val hasSld: Boolean,
     @SerializedName("hasBonding") val hasBonding: Boolean,

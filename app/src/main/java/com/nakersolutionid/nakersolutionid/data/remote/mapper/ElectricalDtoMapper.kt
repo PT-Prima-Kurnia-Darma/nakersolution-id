@@ -340,7 +340,7 @@ fun InspectionWithDetailsDomain.toElectricalReportRequest(): ElectricalReportReq
             if (floor == null) return@mapNotNull null
             val prefix = "Lantai $floor: "
             ElectricalSdpFloor(
-                floorNumber = floor,
+                floorNumber = floor.toString(),
                 hasCover = findTestItemStatus(ElectricalCategory.SDP_VISUAL_INTERNAL, "${prefix}Cover Pelindung Tegangan Sentuh"),
                 hasSld = findTestItemStatus(ElectricalCategory.SDP_VISUAL_INTERNAL, "${prefix}Gambar SLD & Kartu Perawatan"),
                 hasBonding = findTestItemStatus(ElectricalCategory.SDP_VISUAL_INTERNAL, "${prefix}Kabel Bonding"),
