@@ -5,21 +5,52 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep line number information for debugging stack traces
+-keepattributes SourceFile,LineNumberTable
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep all attributes needed for serialization
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# ================================
+# GSON RULES
+# ================================
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
 
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+
+# Gson specific classes
+-dontwarn sun.misc.**
+-keep class com.google.gson.stream.** { *; }
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.nakersolutionid.nakersolutionid.data.remote.response.** { <fields>; }
+-keep class com.nakersolutionid.nakersolutionid.data.remote.request.** { <fields>; }
+-keep class com.nakersolutionid.nakersolutionid.data.remote.dto.** { <fields>; }
+
+# Prevent proguard from stripping interface information from TypeAdapter, TypeAdapterFactory,
+# JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
+-keep class * extends com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Prevent R8 from leaving Data object members always null
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# ================================
+# RETROFIT RULES
+# ================================
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.
 -keepattributes Signature, InnerClasses, EnclosingMethod
@@ -53,47 +84,62 @@
 -if interface * { @retrofit2.http.* <methods>; }
 -keep,allowobfuscation interface <1>
 
-# Keep inherited services.
--if interface * { @retrofit2.http.* <methods>; }
--keep,allowobfuscation interface * extends <1>
-
-# With R8 full mode generic signatures are stripped for classes that are not
-# kept. Suspend functions are wrapped in continuations where the type argument
-# is used.
--keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
-
-# R8 full mode strips generic signatures from return types if not kept.
--if interface * { @retrofit2.http.* public *** *(...); }
--keep,allowoptimization,allowshrinking,allowobfuscation class <3>
-
-# With R8 full mode generic signatures are stripped for classes that are not kept.
+# Keep generic signature of Call, Response (R8 full mode strips signatures from non-kept items).
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
 -keep,allowobfuscation,allowshrinking class retrofit2.Response
 
+# With R8 full mode generic signatures are stripped for classes that are not kept.
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# Keep API services
+-keep class com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices { *; }
+
+# ================================
+# OKHTTP RULES
+# ================================
 # JSR 305 annotations are for embedding nullability information.
 -dontwarn javax.annotation.**
+
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
 # Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
 -dontwarn org.codehaus.mojo.animal_sniffer.*
 
-# OkHttp platform used only on JVM and when Conscrypt and other security providers are available.
-# May be used with robolectric or deliberate use of Bouncy Castle on Android
--dontwarn okhttp3.internal.platform.**
--dontwarn org.conscrypt.**
--dontwarn org.bouncycastle.**
+# OkHttp platform used only on JVM and when Conscrypt dependency is available.
+-dontwarn okhttp3.internal.platform.ConscryptPlatform
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
 
-# Keep all data classes in your data/model/remote package.
-# Adjust the package path 'com.nakersolutionid.nakersolutionid.data.remote.response' to match your project structure.
-#-keep class com.nakersolutionid.nakersolutionid.data.remote.response.** { *; }
-#-keepclassmembers class com.nakersolutionid.nakersolutionid.data.remote.response.** { *; }
-#-keep class com.nakersolutionid.nakersolutionid.data.remote.request.** { *; }
-#-keepclassmembers class com.nakersolutionid.nakersolutionid.data.remote.request.** { *; }
-#-keep class com.nakersolutionid.nakersolutionid.data.remote.dto.** { *; }
-#-keepclassmembers class com.nakersolutionid.nakersolutionid.data.remote.dto.** { *; }
+# ================================
+# KOTLINX SERIALIZATION RULES
+# ================================
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt # core serialization annotations
 
--keep class com.nakersolutionid.nakersolutionid.data.remote.response.** { <fields>; }
--keep class com.nakersolutionid.nakersolutionid.data.remote.request.** { <fields>; }
--keep class com.nakersolutionid.nakersolutionid.data.remote.dto.** { <fields>; }
--keepattributes Signature
--keepclassmembers class * {
-    @com.google.gson.annotations.SerializedName <fields>;
+# kotlinx-serialization-json specific. Add this if you have problems with serialization.
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
 }
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Change here com.yourcompany.yourpackage
+-keep,includedescriptorclasses class com.nakersolutionid.nakersolutionid.**$$serializer { *; }
+-keepclassmembers class com.nakersolutionid.nakersolutionid.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.nakersolutionid.nakersolutionid.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# ================================
+# ROOM RULES
+# ================================
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-keep @androidx.room.Dao class *
+-keep class * extends androidx.room.RoomDatabase {
+    <init>(...);
+}
+-dontwarn androidx.room.paging.**

@@ -27,21 +27,55 @@ android {
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "BASE_URL", properties.getProperty("BASE_URL"))
         buildConfigField("String", "HOSTNAME", properties.getProperty("HOSTNAME"))
+        buildConfigField("String", "ML_API", properties.getProperty("ML_API"))
+        buildConfigField("String", "ML_BASE_URL", properties.getProperty("ML_BASE_URL"))
+        buildConfigField("String", "ML_HOSTNAME", properties.getProperty("ML_HOSTNAME"))
     }
 
     buildTypes {
         release {
-            // Enables resource shrinking.
-            isShrinkResources = true
-            // Enables code-related app optimization.
+            // Enable maximum code shrinking and resource optimization
             isMinifyEnabled = true
+            isShrinkResources = true
+            
+            // Enable more aggressive R8 optimizations
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            
+            // Enable additional optimizations for smaller APK
+            isDebuggable = false
+            isJniDebuggable = false
+            isPseudoLocalesEnabled = false
+            
+            // Package optimization
+            packaging {
+                resources {
+                    excludes += setOf(
+                        "META-INF/DEPENDENCIES",
+                        "META-INF/LICENSE",
+                        "META-INF/LICENSE.txt",
+                        "META-INF/license.txt",
+                        "META-INF/NOTICE",
+                        "META-INF/NOTICE.txt",
+                        "META-INF/notice.txt",
+                        "META-INF/ASL2.0",
+                        "META-INF/*.kotlin_module",
+                        "META-INF/AL2.0",
+                        "META-INF/LGPL2.1",
+                        "kotlin/**",
+                        "DebugProbesKt.bin",
+                        "**/*.pro",
+                        "**/*.properties"
+                    )
+                }
+            }
         }
         debug {
             isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
     }
     compileOptions {
