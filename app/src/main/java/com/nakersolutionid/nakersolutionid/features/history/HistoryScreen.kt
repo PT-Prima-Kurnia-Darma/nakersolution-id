@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -106,16 +107,33 @@ fun HistoryScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    fun shareFile(filePath: String) {
+    fun openOrShareFile(context: Context, filePath: String) {
         val file = File(filePath)
-        // Pastikan authority sama dengan yang ada di AndroidManifest.xml
+        // Ensure the authority matches what's in your AndroidManifest.xml
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = context.contentResolver.getType(uri) ?: "*/*"
+        val mimeType = context.contentResolver.getType(uri) ?: "*/*"
+
+        // 1. Create the Intent to VIEW the file (Open with...)
+        val viewIntent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, mimeType)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        // 2. Create the Intent to SEND the file (Share via...)
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = mimeType
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(Intent.createChooser(intent, "Bagikan Laporan"))
+
+        // 3. Create a chooser that combines both intents
+        // The system will show apps for the primary intent (viewIntent)
+        // and add apps for the initial intents (shareIntent).
+        val chooserIntent = Intent.createChooser(viewIntent, "Buka atau Bagikan Laporan").apply {
+            putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(shareIntent))
+        }
+
+        context.startActivity(chooserIntent)
     }
 
     LaunchedEffect(uiState.error) {
@@ -130,7 +148,7 @@ fun HistoryScreen(
     // TAMBAHKAN BLOK LaunchedEffect INI
     LaunchedEffect(Unit) {
         viewModel.shareEvent.collect { filePath ->
-            shareFile(filePath) // Panggil fungsi share yang sudah ada
+            openOrShareFile(context, filePath) // Panggil fungsi share yang sudah ada
         }
     }
 
@@ -197,7 +215,7 @@ fun HistoryScreen(
                             viewModel.downloadReport(history) // Panggil fungsi baru
                         },
                         onShareClick = { filePath ->
-                            shareFile(filePath) // Panggil fungsi share
+                            openOrShareFile(context, filePath) // Panggil fungsi share
                         },
                         onEditClick = {
                             onEditClick(history)
