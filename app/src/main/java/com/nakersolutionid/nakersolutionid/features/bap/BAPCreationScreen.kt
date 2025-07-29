@@ -114,7 +114,7 @@ fun BAPCreationScreen(
                     }
                 },
                 name = subInspectionType.toDisplayString(),
-                actionEnable = true
+                actionEnable = uiState.isLoading
             )
         },
         snackbarHost = {

@@ -44,13 +44,13 @@ fun BAPCreationAppBar(
             TextButton(
                 modifier = Modifier,
                 onClick = onSaveClick,
-                enabled = actionEnable,
+                enabled = !actionEnable,
                 colors = ButtonDefaults.textButtonColors(
                     disabledContainerColor = Color.Unspecified,
                     disabledContentColor = MaterialTheme.colorScheme.primary
                 )
             ) {
-                if (!actionEnable) {
+                if (actionEnable) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.primary
