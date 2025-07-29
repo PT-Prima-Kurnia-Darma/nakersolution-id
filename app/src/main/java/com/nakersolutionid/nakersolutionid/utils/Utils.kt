@@ -8,16 +8,16 @@ import java.util.TimeZone
 object Utils {
 
     /**
-     * Formats an ISO 8601 date string into "MM-dd-yyyy (HH:mm)" format.
+     * Formats an ISO 8601 date string into "MM-dd-yyyy (HH:mm)" format in UTC.
      *
-     * The input string is expected to be in a format that OffsetDateTime can parse,
+     * The input string is expected to be in a format that can be parsed,
      * such as "2024-07-26T10:00:00Z".
      *
-     * The 'Z' at the end indicates that the time is in UTC. This function
-     * will format the date and time based on the system's default time zone.
+     * This function will format the date and time in UTC, ignoring the
+     * system's default time zone.
      *
      * @param isoDateString The date string in ISO 8601 format.
-     * @return The formatted date string (e.g., "07-26-2024 (17:00)"), or an error
+     * @return The formatted date string (e.g., "07-26-2024 (10:00)"), or an error
      * message if the input string is invalid.
      */
     fun formatIsoDate(isoDateString: String): String {
@@ -26,6 +26,9 @@ object Utils {
 
         // 2. Create a formatter for the desired output string
         val outputFormat = SimpleDateFormat("MM-dd-yyyy (HH:mm)", Locale.US)
+
+        // 3. Set the output formatter's timezone to UTC to prevent local conversion
+        outputFormat.timeZone = TimeZone.getTimeZone("UTC")
 
         return try {
             // Parse the input string into a Date object
@@ -110,11 +113,18 @@ object Utils {
         return "Format tanggal tidak valid."
     }
 
+    /**
+     * Returns the current system date and time in ISO 8601 format.
+     *
+     * This function uses the device's default time zone to format the date.
+     * For a device in Jakarta, the output will include the "+07:00" offset.
+     *
+     * @return The formatted date string, e.g., "2025-07-29T15:18:00.123+07:00".
+     */
     fun getCurrentTime(): String {
-        // The format XXX will produce the offset like +07:00
+        // The format XXX will produce the offset like +07:00 or -05:00
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
-        // Set the time zone to UTC+7 (Jakarta Time)
-        dateFormat.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+        // By not setting a specific time zone, SimpleDateFormat uses the system's default.
         return dateFormat.format(Date())
     }
 }
