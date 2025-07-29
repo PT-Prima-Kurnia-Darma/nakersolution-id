@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,6 +40,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -99,6 +103,9 @@ fun HistoryScreen(
     var historyToDelete by remember { mutableStateOf<History?>(null) }
     val lazyListState = rememberLazyListState()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     fun shareFile(filePath: String) {
         val file = File(filePath)
         // Pastikan authority sama dengan yang ada di AndroidManifest.xml
@@ -109,6 +116,15 @@ fun HistoryScreen(
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         context.startActivity(Intent.createChooser(intent, "Bagikan Laporan"))
+    }
+
+    LaunchedEffect(uiState.error) {
+        val msg = uiState.error
+        msg?.let {
+            scope.launch {
+                snackbarHostState.showSnackbar(it, duration = SnackbarDuration.Short)
+            }
+        }
     }
 
     // TAMBAHKAN BLOK LaunchedEffect INI
@@ -135,6 +151,12 @@ fun HistoryScreen(
             HistoryAppBar(
                 onBackClick = { onBackClick() },
                 onFilterClick = { showBottomSheet = true }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding()
             )
         },
         modifier = Modifier.fillMaxSize(),
