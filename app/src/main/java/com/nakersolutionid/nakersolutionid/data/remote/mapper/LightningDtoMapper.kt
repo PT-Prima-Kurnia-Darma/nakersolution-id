@@ -233,8 +233,8 @@ fun InspectionWithDetailsDomain.toLightningReportRequest(): LightningReportReque
         buildingHeight = findTest("Teknis - Tinggi Bangunan"),
         buildingArea = findTest("Teknis - Luas Bangunan"),
         receiverHeight = findTest("Teknis - Tinggi Penerima"),
-        receiverCount = findTest("Teknis - Jumlah Penerima").toIntOrNull() ?: 0,
-        testJointCount = findTest("Teknis - Jumlah sambungan ukur").toIntOrNull() ?: 0,
+        receiverCount = findTest("Teknis - Jumlah Penerima"),
+        testJointCount = findTest("Teknis - Jumlah sambungan ukur"),
         conductorDescription = findTest("Teknis - Jumlah hantaran penyalur"),
         groundingResistance = findTest("Teknis - Jenis & Ukuran Hantaran"),
         spreadingResistance = findTest("Teknis - Tahanan Sebaran Tanah"),
@@ -283,7 +283,7 @@ fun InspectionWithDetailsDomain.toLightningReportRequest(): LightningReportReque
         .map { res ->
             val notes = res.notes?.split('|') ?: listOf()
             LightningDynamicTestItem(
-                rValue = res.result.toDoubleOrNull() ?: 0.0,
+                rValue = res.result,
                 ecResult = notes.find { it.startsWith("EC:") }?.removePrefix("EC:") ?: "",
                 epResult = notes.find { it.startsWith("EP:") }?.removePrefix("EP:") ?: "",
                 result = notes.find { it.startsWith("Remarks:") }?.removePrefix("Remarks:") ?: ""
@@ -408,8 +408,8 @@ fun LightningReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tinggi Bangunan", it.buildingHeight, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Luas Bangunan", it.buildingArea, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tinggi Penerima", it.receiverHeight, null))
-        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jumlah Penerima", it.receiverCount.toString(), null))
-        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jumlah sambungan ukur", it.testJointCount.toString(), null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jumlah Penerima", it.receiverCount, null))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jumlah sambungan ukur", it.testJointCount, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Jenis & Ukuran Hantaran", it.conductorDescription, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Jenis & Ukuran Hantaran", it.groundingResistance, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Teknis - Tahanan Sebaran Tanah", it.spreadingResistance, null))
@@ -431,7 +431,7 @@ fun LightningReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
 
     this.dynamicTestItems.forEachIndexed { index, item ->
         val notes = "EC: ${item.ecResult}|EP: ${item.epResult}|Remarks: ${item.result}"
-        testResults.add(InspectionTestResultDomain(0, inspectionId, "Pengukuran Tahanan #${index + 1}", item.rValue.toString(), notes))
+        testResults.add(InspectionTestResultDomain(0, inspectionId, "Pengukuran Tahanan #${index + 1}", item.rValue, notes))
     }
 
     val findings = mutableListOf<InspectionFindingDomain>()

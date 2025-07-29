@@ -76,8 +76,8 @@ data class LightningTechnicalData(
     @SerializedName("buildingHeight") val buildingHeight: String,
     @SerializedName("buildingArea") val buildingArea: String,
     @SerializedName("receiverHeight") val receiverHeight: String,
-    @SerializedName("receiverCount") val receiverCount: Int,
-    @SerializedName("testJointCount") val testJointCount: Int,
+    @SerializedName("receiverCount") val receiverCount: String,
+    @SerializedName("testJointCount") val testJointCount: String,
     @SerializedName("conductorDescription") val conductorDescription: String,
     @SerializedName("groundingResistance") val groundingResistance: String,
     @SerializedName("spreadingResistance") val spreadingResistance: String,
@@ -132,7 +132,7 @@ data class LightningStandardComplianceDetail(
 data class LightningDynamicTestItem(
     @SerializedName("ecResult") val ecResult: String,
     @SerializedName("epResult") val epResult: String,
-    @SerializedName("rValue") val rValue: Double,
+    @SerializedName("rValue") val rValue: String,
     @SerializedName("result") val result: String
 )
 

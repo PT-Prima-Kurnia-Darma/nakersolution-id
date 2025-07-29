@@ -79,7 +79,7 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
 
     fun getMeasurementPoint(category: String, pointPrefix: String): DieselMeasurementPoint {
         return DieselMeasurementPoint(
-            result = getCheckItemValue(category, "${pointPrefix}_result").toDoubleOrNull() ?: 0.0,
+            result = getCheckItemValue(category, "${pointPrefix}_result"),
             status = getCheckItemValue(category, "${pointPrefix}_analysis")
         )
     }
@@ -281,12 +281,12 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
         panelControl = DieselPanelControl(
             ka = getCheckItemValue(testCategory, "elec_panel_ka"),
             voltage = DieselVoltage(
-                rs = getCheckItemValue(testCategory, "elec_panel_voltRS").toIntOrNull() ?: 0,
-                rt = getCheckItemValue(testCategory, "elec_panel_voltRT").toIntOrNull() ?: 0,
-                st = getCheckItemValue(testCategory, "elec_panel_voltST").toIntOrNull() ?: 0,
-                rn = getCheckItemValue(testCategory, "elec_panel_voltRN").toIntOrNull() ?: 0,
-                rg = getCheckItemValue(testCategory, "elec_panel_voltRG").toIntOrNull() ?: 0,
-                ng = getCheckItemValue(testCategory, "elec_panel_voltNG").toIntOrNull() ?: 0
+                rs = getCheckItemValue(testCategory, "elec_panel_voltRS"),
+                rt = getCheckItemValue(testCategory, "elec_panel_voltRT"),
+                st = getCheckItemValue(testCategory, "elec_panel_voltST"),
+                rn = getCheckItemValue(testCategory, "elec_panel_voltRN"),
+                rg = getCheckItemValue(testCategory, "elec_panel_voltRG"),
+                ng = getCheckItemValue(testCategory, "elec_panel_voltNG")
             ),
             powerInfo = DieselPowerInfo(
                 frequency = getCheckItemValue(testCategory, "elec_power_freq"),
@@ -303,13 +303,13 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
 
     val mcbCategory = "mcb_calculation"
     val mcbCalculation = DieselMcbCalculation(
-        phase = getCheckItemValue(mcbCategory, "known_phase").toIntOrNull() ?: 0,
+        phase = getCheckItemValue(mcbCategory, "known_phase"),
         voltage = getCheckItemValue(mcbCategory, "known_voltage"),
-        cosQ = getCheckItemValue(mcbCategory, "known_cosQ").toDoubleOrNull() ?: 0.0,
-        generatorPowerKva = getCheckItemValue(mcbCategory, "known_powerKva").toIntOrNull() ?: 0,
-        generatorPowerKw = getCheckItemValue(mcbCategory, "known_powerKw").toIntOrNull() ?: 0,
-        resultCalculation = getCheckItemValue(mcbCategory, "calc_resultA").toIntOrNull() ?: 0,
-        requirementCalculation = getCheckItemValue(mcbCategory, "calc_requiredAmps").toIntOrNull() ?: 0,
+        cosQ = getCheckItemValue(mcbCategory, "known_cosQ"),
+        generatorPowerKva = getCheckItemValue(mcbCategory, "known_powerKva"),
+        generatorPowerKw = getCheckItemValue(mcbCategory, "known_powerKw"),
+        resultCalculation = getCheckItemValue(mcbCategory, "calc_resultA"),
+        requirementCalculation = getCheckItemValue(mcbCategory, "calc_requiredAmps"),
         conclusion = getCheckItemValue(mcbCategory, "conclusion")
     )
 
@@ -562,12 +562,12 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
 
     val elec = this.electricalComponents.panelControl
     addCheckItem(testCategory, "elec_panel_ka", elec.ka)
-    addCheckItem(testCategory, "elec_panel_voltRS", elec.voltage.rs.toString())
-    addCheckItem(testCategory, "elec_panel_voltRT", elec.voltage.rt.toString())
-    addCheckItem(testCategory, "elec_panel_voltST", elec.voltage.st.toString())
-    addCheckItem(testCategory, "elec_panel_voltRN", elec.voltage.rn.toString())
-    addCheckItem(testCategory, "elec_panel_voltRG", elec.voltage.rg.toString())
-    addCheckItem(testCategory, "elec_panel_voltNG", elec.voltage.ng.toString())
+    addCheckItem(testCategory, "elec_panel_voltRS", elec.voltage.rs)
+    addCheckItem(testCategory, "elec_panel_voltRT", elec.voltage.rt)
+    addCheckItem(testCategory, "elec_panel_voltST", elec.voltage.st)
+    addCheckItem(testCategory, "elec_panel_voltRN", elec.voltage.rn)
+    addCheckItem(testCategory, "elec_panel_voltRG", elec.voltage.rg)
+    addCheckItem(testCategory, "elec_panel_voltNG", elec.voltage.ng)
     addCheckItem(testCategory, "elec_power_freq", elec.powerInfo.frequency)
     addCheckItem(testCategory, "elec_power_cosQ", elec.powerInfo.cosQ.toString())
     addCheckItem(testCategory, "elec_power_ampR", elec.powerInfo.ampere.r.toString())
@@ -577,34 +577,34 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
 
     val mcbCategory = "mcb_calculation"
     val mcb = this.mcbCalculation
-    addCheckItem(mcbCategory, "known_phase", mcb.phase.toString())
+    addCheckItem(mcbCategory, "known_phase", mcb.phase)
     addCheckItem(mcbCategory, "known_voltage", mcb.voltage)
-    addCheckItem(mcbCategory, "known_cosQ", mcb.cosQ.toString())
-    addCheckItem(mcbCategory, "known_powerKva", mcb.generatorPowerKva.toString())
-    addCheckItem(mcbCategory, "known_powerKw", mcb.generatorPowerKw.toString())
+    addCheckItem(mcbCategory, "known_cosQ", mcb.cosQ)
+    addCheckItem(mcbCategory, "known_powerKva", mcb.generatorPowerKva)
+    addCheckItem(mcbCategory, "known_powerKw", mcb.generatorPowerKw)
     addCheckItem(mcbCategory, "calc_formula", "I = P / (V * CosQ * sqrt(3))")
-    addCheckItem(mcbCategory, "calc_resultA", mcb.resultCalculation.toString())
-    addCheckItem(mcbCategory, "calc_requiredAmps", mcb.requirementCalculation.toString())
+    addCheckItem(mcbCategory, "calc_resultA", mcb.resultCalculation)
+    addCheckItem(mcbCategory, "calc_requiredAmps", mcb.requirementCalculation)
     addCheckItem(mcbCategory, "conclusion", mcb.conclusion)
 
     val noiseCategory = "noise_measurement"
-    addCheckItem(noiseCategory, "pointA_result", this.noiseMeasurement.pointA.result.toString())
+    addCheckItem(noiseCategory, "pointA_result", this.noiseMeasurement.pointA.result)
     addCheckItem(noiseCategory, "pointA_analysis", this.noiseMeasurement.pointA.status)
-    addCheckItem(noiseCategory, "pointB_result", this.noiseMeasurement.pointB.result.toString())
+    addCheckItem(noiseCategory, "pointB_result", this.noiseMeasurement.pointB.result)
     addCheckItem(noiseCategory, "pointB_analysis", this.noiseMeasurement.pointB.status)
-    addCheckItem(noiseCategory, "pointC_result", this.noiseMeasurement.pointC.result.toString())
+    addCheckItem(noiseCategory, "pointC_result", this.noiseMeasurement.pointC.result)
     addCheckItem(noiseCategory, "pointC_analysis", this.noiseMeasurement.pointC.status)
-    addCheckItem(noiseCategory, "pointD_result", this.noiseMeasurement.pointD.result.toString())
+    addCheckItem(noiseCategory, "pointD_result", this.noiseMeasurement.pointD.result)
     addCheckItem(noiseCategory, "pointD_analysis", this.noiseMeasurement.pointD.status)
 
     val lightCategory = "lighting_measurement"
-    addCheckItem(lightCategory, "pointA_result", this.lightingMeasurement.pointA.result.toString())
+    addCheckItem(lightCategory, "pointA_result", this.lightingMeasurement.pointA.result)
     addCheckItem(lightCategory, "pointA_analysis", this.lightingMeasurement.pointA.status)
-    addCheckItem(lightCategory, "pointB_result", this.lightingMeasurement.pointB.result.toString())
+    addCheckItem(lightCategory, "pointB_result", this.lightingMeasurement.pointB.result)
     addCheckItem(lightCategory, "pointB_analysis", this.lightingMeasurement.pointB.status)
-    addCheckItem(lightCategory, "pointC_result", this.lightingMeasurement.pointC.result.toString())
+    addCheckItem(lightCategory, "pointC_result", this.lightingMeasurement.pointC.result)
     addCheckItem(lightCategory, "pointC_analysis", this.lightingMeasurement.pointC.status)
-    addCheckItem(lightCategory, "pointD_result", this.lightingMeasurement.pointD.result.toString())
+    addCheckItem(lightCategory, "pointD_result", this.lightingMeasurement.pointD.result)
     addCheckItem(lightCategory, "pointD_analysis", this.lightingMeasurement.pointD.status)
 
     val findings = mutableListOf<InspectionFindingDomain>()

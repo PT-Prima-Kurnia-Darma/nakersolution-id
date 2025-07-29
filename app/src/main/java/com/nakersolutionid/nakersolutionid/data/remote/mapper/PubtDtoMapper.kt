@@ -182,7 +182,7 @@ fun InspectionWithDetailsDomain.toPubtReportRequest(): PubtReportRequest {
         val parts = (item?.result ?: "").split(PubtMappingKeys.SEPARATOR)
         return PubtAppendageItem(
             status = item?.status ?: false,
-            quantity = parts.getOrNull(0)?.toIntOrNull() ?: 0,
+            quantity = parts.getOrNull(0) ?: "",
             result = parts.getOrNull(1) ?: ""
         )
     }
@@ -198,11 +198,11 @@ fun InspectionWithDetailsDomain.toPubtReportRequest(): PubtReportRequest {
         brandType = this.inspection.manufacturer?.brandOrType ?: "",
         countryAndYearOfManufacture = this.inspection.manufacturer?.year ?: "",
         serialNumberUnitNumber = this.inspection.serialNumber ?: "",
-        designPressure = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.DESIGN_PRESSURE_KGCM2).toIntOrNull() ?: 0,
-        maxAllowableWorkingPressure = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.MAX_ALLOWABLE_WORKING_PRESSURE_KGCM2).toIntOrNull() ?: 0,
-        capacityWorkingLoad = this.inspection.capacity?.toIntOrNull() ?: 0,
+        designPressure = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.DESIGN_PRESSURE_KGCM2),
+        maxAllowableWorkingPressure = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.MAX_ALLOWABLE_WORKING_PRESSURE_KGCM2),
+        capacityWorkingLoad = this.inspection.capacity ?: "",
         steamTemperature = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.STEAM_TEMPERATURE),
-        operatingPressure = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.OPERATING_PRESSURE_KGCM2).toIntOrNull() ?: 0,
+        operatingPressure = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.OPERATING_PRESSURE_KGCM2),
         fuelType = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.FUEL_TYPE),
         intendedUse = getCheckItemValue(PubtMappingKeys.Report.Category.GENERAL_DATA, PubtMappingKeys.Report.ItemName.INTENDED_USE),
         permitNumber = this.inspection.permitNumber ?: "",
@@ -214,20 +214,20 @@ fun InspectionWithDetailsDomain.toPubtReportRequest(): PubtReportRequest {
     val techCategory = PubtMappingKeys.Report.Category.TECHNICAL_DATA
     val technicalData = PubtTechnicalData(
         shell = PubtShell(
-            numberOfRounds = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_NUMBER_OF_ROUNDS).toIntOrNull() ?: 0,
+            numberOfRounds = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_NUMBER_OF_ROUNDS),
             connectionMethod = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_CONNECTION_METHOD),
             material = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_MATERIAL),
-            pipeDiameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_PIPE_DIAMETER_MM).toIntOrNull() ?: 0,
-            thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_THICKNESS_MM).toIntOrNull() ?: 0,
-            bodyLength = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_BODY_LENGTH_MM).toIntOrNull() ?: 0,
+            pipeDiameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_PIPE_DIAMETER_MM),
+            thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_THICKNESS_MM),
+            bodyLength = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.SHELL_BODY_LENGTH_MM),
             heads = PubtHeads(
                 top = PubtHeadDetail(
-                    diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_DIAMETER_MM).toIntOrNull() ?: 0,
-                    thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_THICKNESS_MM).toIntOrNull() ?: 0
+                    diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_DIAMETER_MM),
+                    thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_THICKNESS_MM)
                 ),
                 rear = PubtHeadDetail(
-                    diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_DIAMETER_MM).toIntOrNull() ?: 0,
-                    thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_THICKNESS_MM).toIntOrNull() ?: 0
+                    diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_DIAMETER_MM),
+                    thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_THICKNESS_MM)
                 )
             ),
             tubePlate = PubtTubePlate(
@@ -244,34 +244,34 @@ fun InspectionWithDetailsDomain.toPubtReportRequest(): PubtReportRequest {
         furnace = PubtFurnace(
             type = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_TYPE),
             material = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_MATERIAL),
-            outerDiameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_OUTER_DIAMETER_MM).toIntOrNull() ?: 0,
-            innerDiameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_INNER_DIAMETER_MM).toIntOrNull() ?: 0,
-            thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_THICKNESS_MM).toIntOrNull() ?: 0
+            outerDiameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_OUTER_DIAMETER_MM),
+            innerDiameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_INNER_DIAMETER_MM),
+            thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_THICKNESS_MM)
         ),
         waterTubes = PubtWaterTubes(
             firstPass = PubtWaterTubePass(
-                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_DIAMETER).toDoubleOrNull() ?: 0.0,
-                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_THICKNESS).toDoubleOrNull() ?: 0.0,
-                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_LENGTH).toIntOrNull() ?: 0,
-                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_QUANTITY).toIntOrNull() ?: 0
+                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_DIAMETER),
+                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_THICKNESS),
+                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_LENGTH),
+                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_QUANTITY)
             ),
             secondPass = PubtWaterTubePass(
-                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_DIAMETER).toDoubleOrNull() ?: 0.0,
-                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_THICKNESS).toDoubleOrNull() ?: 0.0,
-                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_LENGTH).toIntOrNull() ?: 0,
-                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_QUANTITY).toIntOrNull() ?: 0
+                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_DIAMETER),
+                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_THICKNESS),
+                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_LENGTH),
+                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_QUANTITY)
             ),
             stayTube = PubtWaterTubeStayMaterial(
-                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_DIAMETER).toIntOrNull() ?: 0,
-                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_THICKNESS).toIntOrNull() ?: 0,
-                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_LENGTH).toIntOrNull() ?: 0,
-                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_QUANTITY).toIntOrNull() ?: 0
+                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_DIAMETER),
+                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_THICKNESS),
+                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_LENGTH),
+                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_QUANTITY)
             ),
             material = PubtWaterTubeStayMaterial(
-                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_DIAMETER).toIntOrNull() ?: 0,
-                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_THICKNESS).toIntOrNull() ?: 0,
-                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_LENGTH).toIntOrNull() ?: 0,
-                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_QUANTITY).toIntOrNull() ?: 0
+                diameter = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_DIAMETER),
+                thickness = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_THICKNESS),
+                length = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_LENGTH),
+                quantity = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_QUANTITY)
             )
         ),
         tubePlateSplicing = getCheckItemValue(techCategory, PubtMappingKeys.Report.ItemName.TUBES_CONNECTION_METHOD)
@@ -384,28 +384,28 @@ fun InspectionWithDetailsDomain.toPubtReportRequest(): PubtReportRequest {
         ),
         measurementResults = PubtMeasurementResults(
             topHead = PubtMeasurementDetail(
-                nominal = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM).toIntOrNull() ?: 0,
-                point1 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1).toDoubleOrNull() ?: 0.0,
-                point2 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2).toDoubleOrNull() ?: 0.0,
-                point3 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3).toDoubleOrNull() ?: 0.0,
-                minimum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM).toDoubleOrNull() ?: 0.0,
-                maximum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM).toDoubleOrNull() ?: 0.0
+                nominal = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM),
+                point1 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1),
+                point2 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2),
+                point3 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3),
+                minimum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM),
+                maximum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM)
             ),
             shell = PubtMeasurementDetail(
-                nominal = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM).toIntOrNull() ?: 0,
-                point1 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1).toDoubleOrNull() ?: 0.0,
-                point2 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2).toDoubleOrNull() ?: 0.0,
-                point3 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3).toDoubleOrNull() ?: 0.0,
-                minimum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM).toDoubleOrNull() ?: 0.0,
-                maximum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM).toDoubleOrNull() ?: 0.0
+                nominal = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM),
+                point1 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1),
+                point2 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2),
+                point3 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3),
+                minimum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM),
+                maximum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM)
             ),
             buttonHead = PubtMeasurementDetail(
-                nominal = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM).toIntOrNull() ?: 0,
-                point1 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1).toDoubleOrNull() ?: 0.0,
-                point2 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2).toDoubleOrNull() ?: 0.0,
-                point3 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3).toDoubleOrNull() ?: 0.0,
-                minimum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM).toDoubleOrNull() ?: 0.0,
-                maximum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM).toDoubleOrNull() ?: 0.0
+                nominal = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM),
+                point1 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1),
+                point2 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2),
+                point3 = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3),
+                minimum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM),
+                maximum = getCheckItemValue(PubtMappingKeys.Report.Category.MEASUREMENT_BUTTON_HEAD, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM)
             )
         ),
         ndt = PubtNdt(
@@ -426,8 +426,8 @@ fun InspectionWithDetailsDomain.toPubtReportRequest(): PubtReportRequest {
             )
         ),
         hydrotest = PubtHydrotest(
-            testPressure = getCheckItemValue(PubtMappingKeys.Report.Category.HYDROTEST, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_PRESSURE_KGCM2).toIntOrNull() ?: 0,
-            mawp = getCheckItemValue(PubtMappingKeys.Report.Category.HYDROTEST, PubtMappingKeys.Report.ItemName.HYDROTEST_MAWP_KGCM2).toIntOrNull() ?: 0,
+            testPressure = getCheckItemValue(PubtMappingKeys.Report.Category.HYDROTEST, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_PRESSURE_KGCM2),
+            mawp = getCheckItemValue(PubtMappingKeys.Report.Category.HYDROTEST, PubtMappingKeys.Report.ItemName.HYDROTEST_MAWP_KGCM2),
             testMedium = getCheckItemValue(PubtMappingKeys.Report.Category.HYDROTEST, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_MEDIUM),
             testDate = getCheckItemValue(PubtMappingKeys.Report.Category.HYDROTEST, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_DATE),
             testResult = getCheckItemValue(PubtMappingKeys.Report.Category.HYDROTEST, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_RESULT)
@@ -448,7 +448,7 @@ fun InspectionWithDetailsDomain.toPubtReportRequest(): PubtReportRequest {
         ),
         safetyValveTest = PubtSafetyValveTest(
             header = getCheckItemValue(PubtMappingKeys.Report.Category.SAFETY_VALVE_TEST, PubtMappingKeys.Report.ItemName.VALVE_TEST_HEADER),
-            startsToOpen = getCheckItemValue(PubtMappingKeys.Report.Category.SAFETY_VALVE_TEST, PubtMappingKeys.Report.ItemName.VALVE_TEST_STARTS_TO_OPEN_KGCM2).toDoubleOrNull() ?: 0.0,
+            startsToOpen = getCheckItemValue(PubtMappingKeys.Report.Category.SAFETY_VALVE_TEST, PubtMappingKeys.Report.ItemName.VALVE_TEST_STARTS_TO_OPEN_KGCM2),
             valveInfo = getCheckItemValue(PubtMappingKeys.Report.Category.SAFETY_VALVE_TEST, PubtMappingKeys.Report.ItemName.VALVE_TEST_VALVE_INFO)
         )
     )
@@ -491,7 +491,7 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
         addressUsageLocation = this.generalData.userAddress,
         serialNumber = this.generalData.serialNumberUnitNumber,
         permitNumber = this.generalData.permitNumber,
-        capacity = this.generalData.capacityWorkingLoad.toString(),
+        capacity = this.generalData.capacityWorkingLoad,
         manufacturer = ManufacturerDomain(
             name = this.generalData.manufacturer,
             brandOrType = this.generalData.brandType,
@@ -524,10 +524,10 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
     val generalCat = PubtMappingKeys.Report.Category.GENERAL_DATA
     addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.USER, this.generalData.userUsage)
     addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.OPERATOR_NAME, this.generalData.operatorName)
-    addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.DESIGN_PRESSURE_KGCM2, this.generalData.designPressure.toString())
-    addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.MAX_ALLOWABLE_WORKING_PRESSURE_KGCM2, this.generalData.maxAllowableWorkingPressure.toString())
+    addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.DESIGN_PRESSURE_KGCM2, this.generalData.designPressure)
+    addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.MAX_ALLOWABLE_WORKING_PRESSURE_KGCM2, this.generalData.maxAllowableWorkingPressure)
     addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.STEAM_TEMPERATURE, this.generalData.steamTemperature)
-    addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.OPERATING_PRESSURE_KGCM2, this.generalData.operatingPressure.toString())
+    addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.OPERATING_PRESSURE_KGCM2, this.generalData.operatingPressure)
     addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.FUEL_TYPE, this.generalData.fuelType)
     addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.INTENDED_USE, this.generalData.intendedUse)
     addCheckItem(generalCat, PubtMappingKeys.Report.ItemName.OPERATOR_CERTIFICATE, this.generalData.operatorCertificate)
@@ -535,19 +535,19 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
 
     val techCategory = PubtMappingKeys.Report.Category.TECHNICAL_DATA
     this.technicalData.shell.let {
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_NUMBER_OF_ROUNDS, it.numberOfRounds.toString())
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_NUMBER_OF_ROUNDS, it.numberOfRounds)
         addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_CONNECTION_METHOD, it.connectionMethod)
         addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_MATERIAL, it.material)
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_PIPE_DIAMETER_MM, it.pipeDiameter.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_THICKNESS_MM, it.thickness.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_BODY_LENGTH_MM, it.bodyLength.toString())
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_PIPE_DIAMETER_MM, it.pipeDiameter)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_THICKNESS_MM, it.thickness)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.SHELL_BODY_LENGTH_MM, it.bodyLength)
         it.heads.top.let { h ->
-            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_DIAMETER_MM, h.diameter.toString())
-            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_THICKNESS_MM, h.thickness.toString())
+            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_DIAMETER_MM, h.diameter)
+            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_TOP_THICKNESS_MM, h.thickness)
         }
         it.heads.rear.let { h ->
-            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_DIAMETER_MM, h.diameter.toString())
-            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_THICKNESS_MM, h.thickness.toString())
+            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_DIAMETER_MM, h.diameter)
+            addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.HEADS_REAR_THICKNESS_MM, h.thickness)
         }
         it.tubePlate.front.let { p ->
             addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBE_PLATE_FRONT_DIM1_MM, p.dim1)
@@ -561,27 +561,27 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
     this.technicalData.furnace.let {
         addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_TYPE, it.type)
         addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_MATERIAL, it.material)
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_OUTER_DIAMETER_MM, it.outerDiameter.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_INNER_DIAMETER_MM, it.innerDiameter.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_THICKNESS_MM, it.thickness.toString())
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_OUTER_DIAMETER_MM, it.outerDiameter)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_INNER_DIAMETER_MM, it.innerDiameter)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.FURNACE_THICKNESS_MM, it.thickness)
     }
     this.technicalData.waterTubes.let {
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_DIAMETER, it.firstPass.diameter.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_THICKNESS, it.firstPass.thickness.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_LENGTH, it.firstPass.length.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_QUANTITY, it.firstPass.quantity.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_DIAMETER, it.secondPass.diameter.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_THICKNESS, it.secondPass.thickness.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_LENGTH, it.secondPass.length.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_QUANTITY, it.secondPass.quantity.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_DIAMETER, it.stayTube.diameter.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_THICKNESS, it.stayTube.thickness.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_LENGTH, it.stayTube.length.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_QUANTITY, it.stayTube.quantity.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_DIAMETER, it.material.diameter.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_THICKNESS, it.material.thickness.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_LENGTH, it.material.length.toString())
-        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_QUANTITY, it.material.quantity.toString())
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_DIAMETER, it.firstPass.diameter)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_THICKNESS, it.firstPass.thickness)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_LENGTH, it.firstPass.length)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_FIRST_QUANTITY, it.firstPass.quantity)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_DIAMETER, it.secondPass.diameter)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_THICKNESS, it.secondPass.thickness)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_LENGTH, it.secondPass.length)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_SECOND_QUANTITY, it.secondPass.quantity)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_DIAMETER, it.stayTube.diameter)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_THICKNESS, it.stayTube.thickness)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_LENGTH, it.stayTube.length)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_STAY_QUANTITY, it.stayTube.quantity)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_DIAMETER, it.material.diameter)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_THICKNESS, it.material.thickness)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_LENGTH, it.material.length)
+        addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_MATERIAL_QUANTITY, it.material.quantity)
     }
     addCheckItem(techCategory, PubtMappingKeys.Report.ItemName.TUBES_CONNECTION_METHOD, this.technicalData.tubePlateSplicing)
 
@@ -677,12 +677,12 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
     }
 
     fun addMeasurementResultItem(category: String, item: PubtMeasurementDetail) {
-        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM, item.nominal.toString())
-        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1, item.point1.toString())
-        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2, item.point2.toString())
-        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3, item.point3.toString())
-        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM, item.minimum.toString())
-        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM, item.maximum.toString())
+        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_NOMINAL_MM, item.nominal)
+        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_1, item.point1)
+        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_2, item.point2)
+        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_POINT_3, item.point3)
+        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_MINIMUM, item.minimum)
+        addCheckItem(category, PubtMappingKeys.Report.ItemName.MEASUREMENT_MAXIMUM, item.maximum)
     }
     addMeasurementResultItem(PubtMappingKeys.Report.Category.MEASUREMENT_TOP_HEAD, this.inspectionAndMeasurement.measurementResults.topHead)
     addMeasurementResultItem(PubtMappingKeys.Report.Category.MEASUREMENT_SHELL, this.inspectionAndMeasurement.measurementResults.shell)
@@ -707,8 +707,8 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
 
     val hydroCategory = PubtMappingKeys.Report.Category.HYDROTEST
     this.inspectionAndMeasurement.hydrotest.let {
-        addCheckItem(hydroCategory, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_PRESSURE_KGCM2, it.testPressure.toString())
-        addCheckItem(hydroCategory, PubtMappingKeys.Report.ItemName.HYDROTEST_MAWP_KGCM2, it.mawp.toString())
+        addCheckItem(hydroCategory, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_PRESSURE_KGCM2, it.testPressure)
+        addCheckItem(hydroCategory, PubtMappingKeys.Report.ItemName.HYDROTEST_MAWP_KGCM2, it.mawp)
         addCheckItem(hydroCategory, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_MEDIUM, it.testMedium)
         addCheckItem(hydroCategory, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_DATE, it.testDate)
         addCheckItem(hydroCategory, PubtMappingKeys.Report.ItemName.HYDROTEST_TEST_RESULT, it.testResult)
@@ -733,7 +733,7 @@ fun PubtReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain 
     val valveCategory = PubtMappingKeys.Report.Category.SAFETY_VALVE_TEST
     this.inspectionAndMeasurement.safetyValveTest.let {
         addCheckItem(valveCategory, PubtMappingKeys.Report.ItemName.VALVE_TEST_HEADER, it.header)
-        addCheckItem(valveCategory, PubtMappingKeys.Report.ItemName.VALVE_TEST_STARTS_TO_OPEN_KGCM2, it.startsToOpen.toString())
+        addCheckItem(valveCategory, PubtMappingKeys.Report.ItemName.VALVE_TEST_STARTS_TO_OPEN_KGCM2, it.startsToOpen)
         addCheckItem(valveCategory, PubtMappingKeys.Report.ItemName.VALVE_TEST_VALVE_INFO, it.valveInfo)
     }
 

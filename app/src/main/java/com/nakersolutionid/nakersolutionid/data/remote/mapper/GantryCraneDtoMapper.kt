@@ -115,430 +115,227 @@ fun InspectionWithDetailsDomain.toGantryCraneReportRequest(): GantryCraneReportR
     )
 
     val visualCategory = "visual_inspection"
+    fun createVisualItem(itemName: String) = GantryCraneVisualInspectionItem(
+        status = findStatus(visualCategory, itemName),
+        result = findString(visualCategory, itemName)
+    )
+
     val visualInspection = GantryCraneVisualInspection(
-        anchorBoltsCorrosionMemenuhi = findStatus(visualCategory, "foundationAnchorBoltCorrosion"),
-        anchorBoltsCorrosionTidakMemenuhi = !findStatus(visualCategory, "foundationAnchorBoltCorrosion"),
-        anchorBoltsCorrosionResult = findString(visualCategory, "foundationAnchorBoltCorrosion"),
-        anchorBoltsCracksMemenuhi = findStatus(visualCategory, "foundationAnchorBoltCracks"),
-        anchorBoltsCracksTidakMemenuhi = !findStatus(visualCategory, "foundationAnchorBoltCracks"),
-        anchorBoltsCracksResult = findString(visualCategory, "foundationAnchorBoltCracks"),
-        anchorBoltsDeformationMemenuhi = findStatus(visualCategory, "foundationAnchorBoltDeformation"),
-        anchorBoltsDeformationTidakMemenuhi = !findStatus(visualCategory, "foundationAnchorBoltDeformation"),
-        anchorBoltsDeformationResult = findString(visualCategory, "foundationAnchorBoltDeformation"),
-        anchorBoltsFasteningMemenuhi = findStatus(visualCategory, "foundationAnchorBoltTightness"),
-        anchorBoltsFasteningTidakMemenuhi = !findStatus(visualCategory, "foundationAnchorBoltTightness"),
-        anchorBoltsFasteningResult = findString(visualCategory, "foundationAnchorBoltTightness"),
-        columnFrameCorrosionMemenuhi = findStatus(visualCategory, "columnFrameCorrosion"),
-        columnFrameCorrosionTidakMemenuhi = !findStatus(visualCategory, "columnFrameCorrosion"),
-        columnFrameCorrosionResult = findString(visualCategory, "columnFrameCorrosion"),
-        columnFrameCracksMemenuhi = findStatus(visualCategory, "columnFrameCracks"),
-        columnFrameCracksTidakMemenuhi = !findStatus(visualCategory, "columnFrameCracks"),
-        columnFrameCracksResult = findString(visualCategory, "columnFrameCracks"),
-        columnFrameDeformationMemenuhi = findStatus(visualCategory, "columnFrameDeformation"),
-        columnFrameDeformationTidakMemenuhi = !findStatus(visualCategory, "columnFrameDeformation"),
-        columnFrameDeformationResult = findString(visualCategory, "columnFrameDeformation"),
-        columnFrameFasteningMemenuhi = findStatus(visualCategory, "columnFrameFastening"),
-        columnFrameFasteningTidakMemenuhi = !findStatus(visualCategory, "columnFrameFastening"),
-        columnFrameFasteningResult = findString(visualCategory, "columnFrameFastening"),
-        columnFrameTransverseReinforcementMemenuhi = findStatus(visualCategory, "columnFrameCrossBracing"),
-        columnFrameTransverseReinforcementTidakMemenuhi = !findStatus(visualCategory, "columnFrameCrossBracing"),
-        columnFrameTransverseReinforcementResult = findString(visualCategory, "columnFrameCrossBracing"),
-        columnFrameDiagonalReinforcementMemenuhi = findStatus(visualCategory, "columnFrameDiagonalBracing"),
-        columnFrameDiagonalReinforcementTidakMemenuhi = !findStatus(visualCategory, "columnFrameDiagonalBracing"),
-        columnFrameDiagonalReinforcementResult = findString(visualCategory, "columnFrameDiagonalBracing"),
-        ladderCorrosionMemenuhi = findStatus(visualCategory, "ladderCorrosion"),
-        ladderCorrosionTidakMemenuhi = !findStatus(visualCategory, "ladderCorrosion"),
-        ladderCorrosionResult = findString(visualCategory, "ladderCorrosion"),
-        ladderCracksMemenuhi = findStatus(visualCategory, "ladderCracks"),
-        ladderCracksTidakMemenuhi = !findStatus(visualCategory, "ladderCracks"),
-        ladderCracksResult = findString(visualCategory, "ladderCracks"),
-        ladderDeformationMemenuhi = findStatus(visualCategory, "ladderDeformation"),
-        ladderDeformationTidakMemenuhi = !findStatus(visualCategory, "ladderDeformation"),
-        ladderDeformationResult = findString(visualCategory, "ladderDeformation"),
-        ladderFasteningMemenuhi = findStatus(visualCategory, "ladderFastening"),
-        ladderFasteningTidakMemenuhi = !findStatus(visualCategory, "ladderFastening"),
-        ladderFasteningResult = findString(visualCategory, "ladderFastening"),
-        workingFloorCorrosionMemenuhi = findStatus(visualCategory, "workPlatformCorrosion"),
-        workingFloorCorrosionTidakMemenuhi = !findStatus(visualCategory, "workPlatformCorrosion"),
-        workingFloorCorrosionResult = findString(visualCategory, "workPlatformCorrosion"),
-        workingFloorCracksMemenuhi = findStatus(visualCategory, "workPlatformCracks"),
-        workingFloorCracksTidakMemenuhi = !findStatus(visualCategory, "workPlatformCracks"),
-        workingFloorCracksResult = findString(visualCategory, "workPlatformCracks"),
-        workingFloorDeformationMemenuhi = findStatus(visualCategory, "workPlatformDeformation"),
-        workingFloorDeformationTidakMemenuhi = !findStatus(visualCategory, "workPlatformDeformation"),
-        workingFloorDeformationResult = findString(visualCategory, "workPlatformDeformation"),
-        workingFloorFasteningMemenuhi = findStatus(visualCategory, "workPlatformFastening"),
-        workingFloorFasteningTidakMemenuhi = !findStatus(visualCategory, "workPlatformFastening"),
-        workingFloorFasteningResult = findString(visualCategory, "workPlatformFastening"),
-        railSupportBeamCorrosionMemenuhi = findStatus(visualCategory, "railMountingBeamCorrosion"),
-        railSupportBeamCorrosionTidakMemenuhi = !findStatus(visualCategory, "railMountingBeamCorrosion"),
-        railSupportBeamCorrosionResult = findString(visualCategory, "railMountingBeamCorrosion"),
-        railSupportBeamCracksMemenuhi = findStatus(visualCategory, "railMountingBeamCracks"),
-        railSupportBeamCracksTidakMemenuhi = !findStatus(visualCategory, "railMountingBeamCracks"),
-        railSupportBeamCracksResult = findString(visualCategory, "railMountingBeamCracks"),
-        railSupportBeamDeformationMemenuhi = findStatus(visualCategory, "railMountingBeamDeformation"),
-        railSupportBeamDeformationTidakMemenuhi = !findStatus(visualCategory, "railMountingBeamDeformation"),
-        railSupportBeamDeformationResult = findString(visualCategory, "railMountingBeamDeformation"),
-        railSupportBeamFasteningMemenuhi = findStatus(visualCategory, "railMountingBeamFastening"),
-        railSupportBeamFasteningTidakMemenuhi = !findStatus(visualCategory, "railMountingBeamFastening"),
-        railSupportBeamFasteningResult = findString(visualCategory, "railMountingBeamFastening"),
-        travelingRailCorrosionMemenuhi = findStatus(visualCategory, "travelingRailCorrosion"),
-        travelingRailCracksTidakMemenuhi = !findStatus(visualCategory, "travelingRailCorrosion"),
-        travelingRailCracksResult = findString(visualCategory, "travelingRailCorrosion"),
-        travelingCracksMemenuhi = findStatus(visualCategory, "travelingRailCracks"),
-        travelingCracksTidakMemenuhi = !findStatus(visualCategory, "travelingRailCracks"), // FIXED
-        travelingCracksResult = findString(visualCategory, "travelingRailCracks"),
-        travelingRailConnectionMemenuhi = findStatus(visualCategory, "travelingRailJoint"),
-        travelingRailConnectionTidakMemenuhi = !findStatus(visualCategory, "travelingRailJoint"),
-        travelingRailConnectionResult = findString(visualCategory, "travelingRailJoint"),
-        travelingRailAlignmentMemenuhi = findStatus(visualCategory, "travelingRailStraightness"),
-        travelingRailAlignmentTidakMemenuhi = !findStatus(visualCategory, "travelingRailStraightness"),
-        travelingRailAlignmentResult = findString(visualCategory, "travelingRailStraightness"),
-        travelingInterRailAlignmentMemenuhi = findStatus(visualCategory, "travelingRailAlignmentBetweenRails"),
-        travelingInterRailAlignmentTidakMemenuhi = !findStatus(visualCategory, "travelingRailAlignmentBetweenRails"),
-        travelingInterRailAlignmentResult = findString(visualCategory, "travelingRailAlignmentBetweenRails"),
-        travelingInterRailFlatnessMemenuhi = findStatus(visualCategory, "travelingRailEvennessBetweenRails"),
-        travelingInterRailFlatnessTidakMemenuhi = !findStatus(visualCategory, "travelingRailEvennessBetweenRails"),
-        travelingInterRailFlatnessResult = findString(visualCategory, "travelingRailEvennessBetweenRails"),
-        travelingRailConnectionGapMemenuhi = findStatus(visualCategory, "travelingRailGapBetweenRailJoints"),
-        travelingRailConnectionGapTidakMemenuhi = !findStatus(visualCategory, "travelingRailGapBetweenRailJoints"),
-        travelingRailConnectionGapResult = findString(visualCategory, "travelingRailGapBetweenRailJoints"),
-        travelingRailFastenerMemenuhi = findStatus(visualCategory, "travelingRailFastener"),
-        travelingRailFastenerTidakMemenuhi = !findStatus(visualCategory, "travelingRailFastener"),
-        travelingRailFastenerResult = findString(visualCategory, "travelingRailFastener"),
-        travelingRailStopperMemenuhi = findStatus(visualCategory, "travelingRailStopper"),
-        travelingRailStopperTidakMemenuhi = !findStatus(visualCategory, "travelingRailStopper"),
-        travelingRailStopperResult = findString(visualCategory, "travelingRailStopper"),
-        traversingRailCorrosionMemenuhi = findStatus(visualCategory, "traversingRailCorrosion"),
-        traversingRailCorrosionTidakMemenuhi = !findStatus(visualCategory, "traversingRailCorrosion"),
-        traversingRailCorrosionResult = findString(visualCategory, "traversingRailCorrosion"),
-        traversingRailCracksMemenuhi = findStatus(visualCategory, "traversingRailCracks"),
-        traversingRailCracksTidakMemenuhi = !findStatus(visualCategory, "traversingRailCracks"),
-        traversingRailCracksResult = findString(visualCategory, "traversingRailCracks"),
-        traversingRailRailConnectionMemenuhi = findStatus(visualCategory, "traversingRailJoint"),
-        traversingRailRailConnectionTidakMemenuhi = !findStatus(visualCategory, "traversingRailJoint"),
-        traversingRailRailConnectionResult = findString(visualCategory, "traversingRailJoint"),
-        traversingRailRailAlignmentMemenuhi = findStatus(visualCategory, "traversingRailStraightness"),
-        traversingRailRailAlignmentTidakMemenuhi = !findStatus(visualCategory, "traversingRailStraightness"),
-        traversingRailRailAlignmentResult = findString(visualCategory, "traversingRailStraightness"),
-        traversingRailInterRailAlignmentMemenuhi = findStatus(visualCategory, "traversingRailAlignmentBetweenRails"),
-        traversingRailInterRailAlignmentTidakMemenuhi = !findStatus(visualCategory, "traversingRailAlignmentBetweenRails"),
-        traversingRailInterRailAlignmentResult = findString(visualCategory, "traversingRailAlignmentBetweenRails"),
-        traversingRailInterRailFlatnessMemenuhi = findStatus(visualCategory, "traversingRailEvennessBetweenRails"),
-        traversingRailInterRailFlatnessTidakMemenuhi = !findStatus(visualCategory, "traversingRailEvennessBetweenRails"),
-        traversingRailInterRailFlatnessResult = findString(visualCategory, "traversingRailEvennessBetweenRails"),
-        traversingRailRailConnectionGapMemenuhi = findStatus(visualCategory, "traversingRailGapBetweenRailJoints"),
-        traversingRailRailConnectionGapTidakMemenuhi = !findStatus(visualCategory, "traversingRailGapBetweenRailJoints"),
-        traversingRailRailConnectionGapResult = findString(visualCategory, "traversingRailGapBetweenRailJoints"),
-        traversingRailRailFastenerMemenuhi = findStatus(visualCategory, "traversingRailFastener"),
-        traversingRailRailFastenerTidakMemenuhi = !findStatus(visualCategory, "traversingRailFastener"),
-        traversingRailRailFastenerResult = findString(visualCategory, "traversingRailFastener"),
-        traversingRailRailStopperMemenuhi = findStatus(visualCategory, "traversingRailStopper"),
-        traversingRailRailStopperTidakMemenuhi = !findStatus(visualCategory, "traversingRailStopper"),
-        traversingRailRailStopperResult = findString(visualCategory, "traversingRailStopper"),
-        girderCorrosionMemenuhi = findStatus(visualCategory, "girderCorrosion"),
-        girderCorrosionTidakMemenuhi = !findStatus(visualCategory, "girderCorrosion"),
-        girderCorrosionResult = findString(visualCategory, "girderCorrosion"),
-        girderCracksMemenuhi = findStatus(visualCategory, "girderCracks"),
-        girderCracksTidakMemenuhi = !findStatus(visualCategory, "girderCracks"),
-        girderCracksResult = findString(visualCategory, "girderCracks"),
-        girderCamberMemenuhi = findStatus(visualCategory, "girderCamber"),
-        girderCamberTidakMemenuhi = !findStatus(visualCategory, "girderCamber"),
-        girderCamberResult = findString(visualCategory, "girderCamber"),
-        girderConnectionMemenuhi = findStatus(visualCategory, "girderJoint"),
-        girderConnectionTidakMemenuhi = !findStatus(visualCategory, "girderJoint"),
-        girderConnectionResult = findString(visualCategory, "girderJoint"),
-        girderEndGirderConnectionMemenuhi = findStatus(visualCategory, "girderEndJoint"),
-        girderEndGirderConnectionTidakMemenuhi = !findStatus(visualCategory, "girderEndJoint"),
-        girderEndGirderConnectionResult = findString(visualCategory, "girderEndJoint"),
-        girderTruckMountingOnGirderMemenuhi = findStatus(visualCategory, "girderTruckMountOnGirder"),
-        girderTruckMountingOnGirderTidakMemenuhi = !findStatus(visualCategory, "girderTruckMountOnGirder"),
-        girderTruckMountingOnGirderResult = findString(visualCategory, "girderTruckMountOnGirder"),
-        travelingGearboxCorrosionMemenuhi = findStatus(visualCategory, "travelingGearboxGirderCorrosion"),
-        travelingGearboxCorrosionTidakMemenuhi = !findStatus(visualCategory, "travelingGearboxGirderCorrosion"),
-        travelingGearboxCorrosionResult = findString(visualCategory, "travelingGearboxGirderCorrosion"),
-        travelingGearboxCracksMemenuhi = findStatus(visualCategory, "travelingGearboxGirderCracks"),
-        travelingGearboxCracksTidakMemenuhi = !findStatus(visualCategory, "travelingGearboxGirderCracks"),
-        travelingGearboxCracksResult = findString(visualCategory, "travelingGearboxGirderCracks"),
-        travelingGearboxLubricatingOilMemenuhi = findStatus(visualCategory, "travelingGearboxGirderLubricatingOil"),
-        travelingGearboxLubricatingOilTidakMemenuhi = !findStatus(visualCategory, "travelingGearboxGirderLubricatingOil"),
-        travelingGearboxLubricatingOilResult = findString(visualCategory, "travelingGearboxGirderLubricatingOil"),
-        travelingGearboxOilSealMemenuhi = findStatus(visualCategory, "travelingGearboxGirderOilSeal"),
-        travelingGearboxOilSealTidakMemenuhi = !findStatus(visualCategory, "travelingGearboxGirderOilSeal"),
-        travelingGearboxOilSealResult = findString(visualCategory, "travelingGearboxGirderOilSeal"),
-        driveWheelsWearMemenuhi = findStatus(visualCategory, "driveWheelWear"),
-        driveWheelsWearTidakMemenuhi = !findStatus(visualCategory, "driveWheelWear"),
-        driveWheelsWearResult = findString(visualCategory, "driveWheelWear"),
-        driveWheelsCracksMemenuhi = findStatus(visualCategory, "driveWheelCracks"),
-        driveWheelsCracksTidakMemenuhi = !findStatus(visualCategory, "driveWheelCracks"),
-        driveWheelsCracksResult = findString(visualCategory, "driveWheelCracks"),
-        driveWheelsDeformationMemenuhi = findStatus(visualCategory, "driveWheelDeformation"),
-        driveWheelsDeformationTidakMemenuhi = !findStatus(visualCategory, "driveWheelDeformation"),
-        driveWheelsDeformationResult = findString(visualCategory, "driveWheelDeformation"),
-        driveWheelsFlangeConditionMemenuhi = findStatus(visualCategory, "driveWheelFlangeCondition"),
-        driveWheelsFlangeConditionTidakMemenuhi = !findStatus(visualCategory, "driveWheelFlangeCondition"),
-        driveWheelsFlangeConditionResult = findString(visualCategory, "driveWheelFlangeCondition"),
-        driveWheelsChainConditionMemenuhi = findStatus(visualCategory, "driveWheelChainCondition"),
-        driveWheelsChainConditionTidakMemenuhi = !findStatus(visualCategory, "driveWheelChainCondition"),
-        driveWheelsChainConditionResult = findString(visualCategory, "driveWheelChainCondition"),
-        idleWheelsSafetyMemenuhi = findStatus(visualCategory, "idleWheelSecurity"),
-        idleWheelsSafetyTidakMemenuhi = !findStatus(visualCategory, "idleWheelSecurity"),
-        idleWheelsSafetyResult = findString(visualCategory, "idleWheelSecurity"),
-        idleWheelsCracksMemenuhi = findStatus(visualCategory, "idleWheelCracks"),
-        idleWheelsCracksTidakMemenuhi = !findStatus(visualCategory, "idleWheelCracks"),
-        idleWheelsCracksResult = findString(visualCategory, "idleWheelCracks"),
-        idleWheelsDeformationMemenuhi = findStatus(visualCategory, "idleWheelDeformation"),
-        idleWheelsDeformationTidakMemenuhi = !findStatus(visualCategory, "idleWheelDeformation"),
-        idleWheelsDeformationResult = findString(visualCategory, "idleWheelDeformation"),
-        idleWheelsFlangeConditionMemenuhi = findStatus(visualCategory, "idleWheelFlangeCondition"),
-        idleWheelsFlangeConditionTidakMemenuhi = !findStatus(visualCategory, "idleWheelFlangeCondition"),
-        idleWheelsFlangeConditionResult = findString(visualCategory, "idleWheelFlangeCondition"),
-        wheelConnectorAlignmentMemenuhi = findStatus(visualCategory, "wheelConnectorBogieAxleStraightness"),
-        wheelConnectorAlignmentTidakMemenuhi = !findStatus(visualCategory, "wheelConnectorBogieAxleStraightness"),
-        wheelConnectorAlignmentResult = findString(visualCategory, "wheelConnectorBogieAxleStraightness"),
-        wheelConnectorCrossJointMemenuhi = findStatus(visualCategory, "wheelConnectorBogieAxleCrossJoint"),
-        wheelConnectorCrossJointTidakMemenuhi = !findStatus(visualCategory, "wheelConnectorBogieAxleCrossJoint"),
-        wheelConnectorCrossJointResult = findString(visualCategory, "wheelConnectorBogieAxleCrossJoint"),
-        wheelConnectorLubricationMemenuhi = findStatus(visualCategory, "wheelConnectorBogieAxleLubrication"),
-        wheelConnectorLubricationTidakMemenuhi = !findStatus(visualCategory, "wheelConnectorBogieAxleLubrication"),
-        wheelConnectorLubricationResult = findString(visualCategory, "wheelConnectorBogieAxleLubrication"),
-        girderStopperConditionMemenuhi = findStatus(visualCategory, "stopperBumperOnGirderCondition"),
-        girderStopperConditionTidakMemenuhi = !findStatus(visualCategory, "stopperBumperOnGirderCondition"),
-        girderStopperConditionResult = findString(visualCategory, "stopperBumperOnGirderCondition"),
-        girderStopperReinforcementMemenuhi = findStatus(visualCategory, "stopperBumperOnGirderReinforcement"),
-        girderStopperReinforcementTidakMemenuhi = !findStatus(visualCategory, "stopperBumperOnGirderReinforcement"),
-        girderStopperReinforcementResult = findString(visualCategory, "stopperBumperOnGirderReinforcement"),
-        trolleyTraversingGearboxFasteningMemenuhi = findStatus(visualCategory, "traversingGearboxTrolleyCarrierFastening"),
-        trolleyTraversingGearboxFasteningTidakMemenuhi = !findStatus(visualCategory, "traversingGearboxTrolleyCarrierFastening"),
-        trolleyTraversingGearboxFasteningResult = findString(visualCategory, "traversingGearboxTrolleyCarrierFastening"),
-        trolleyTraversingGearboxCorrosionMemenuhi = findStatus(visualCategory, "traversingGearboxTrolleyCarrierCorrosion"),
-        trolleyTraversingGearboxCorrosionTidakMemenuhi = !findStatus(visualCategory, "traversingGearboxTrolleyCarrierCorrosion"),
-        trolleyTraversingGearboxCorrosionResult = findString(visualCategory, "traversingGearboxTrolleyCarrierCorrosion"),
-        trolleyTraversingGearboxCracksMemenuhi = findStatus(visualCategory, "traversingGearboxTrolleyCarrierCracks"),
-        trolleyTraversingGearboxCracksTidakMemenuhi = !findStatus(visualCategory, "traversingGearboxTrolleyCarrierCracks"),
-        trolleyTraversingGearboxCracksResult = findString(visualCategory, "traversingGearboxTrolleyCarrierCracks"),
-        trolleyTraversingGearboxLubricatingOilMemenuhi = findStatus(visualCategory, "traversingGearboxTrolleyCarrierLubricatingOil"),
-        trolleyTraversingGearboxLubricatingOilTidakMemenuhi = !findStatus(visualCategory, "traversingGearboxTrolleyCarrierLubricatingOil"),
-        trolleyTraversingGearboxLubricatingOilResult = findString(visualCategory, "traversingGearboxTrolleyCarrierLubricatingOil"),
-        trolleyTraversingGearboxOilSealMemenuhi = findStatus(visualCategory, "traversingGearboxTrolleyCarrierOilSeal"),
-        trolleyTraversingGearboxOilSealTidakMemenuhi = !findStatus(visualCategory, "traversingGearboxTrolleyCarrierOilSeal"),
-        trolleyTraversingGearboxOilSealResult = findString(visualCategory, "traversingGearboxTrolleyCarrierOilSeal"),
-        trolleyDriveWheelsWearMemenuhi = findStatus(visualCategory, "driveWheelOnTrolleyWear"),
-        trolleyDriveWheelsWearTidakMemenuhi = !findStatus(visualCategory, "driveWheelOnTrolleyWear"),
-        trolleyDriveWheelsWearResult = findString(visualCategory, "driveWheelOnTrolleyWear"),
-        trolleyDriveWheelsCracksMemenuhi = findStatus(visualCategory, "driveWheelOnTrolleyCracks"),
-        trolleyDriveWheelsCracksTidakMemenuhi = !findStatus(visualCategory, "driveWheelOnTrolleyCracks"),
-        trolleyDriveWheelsCracksResult = findString(visualCategory, "driveWheelOnTrolleyCracks"),
-        trolleyDriveWheelsDeformationMemenuhi = findStatus(visualCategory, "driveWheelOnTrolleyDeformation"),
-        trolleyDriveWheelsDeformationTidakMemenuhi = !findStatus(visualCategory, "driveWheelOnTrolleyDeformation"),
-        trolleyDriveWheelsDeformationResult = findString(visualCategory, "driveWheelOnTrolleyDeformation"),
-        trolleyDriveWheelsFlangeConditionMemenuhi = findStatus(visualCategory, "driveWheelOnTrolleyFlangeCondition"),
-        trolleyDriveWheelsFlangeConditionTidakMemenuhi = !findStatus(visualCategory, "driveWheelOnTrolleyFlangeCondition"),
-        trolleyDriveWheelsFlangeConditionResult = findString(visualCategory, "driveWheelOnTrolleyFlangeCondition"),
-        trolleyDriveWheelsChainConditionMemenuhi = findStatus(visualCategory, "driveWheelOnTrolleyChainCondition"),
-        trolleyDriveWheelsChainConditionTidakMemenuhi = !findStatus(visualCategory, "driveWheelOnTrolleyChainCondition"),
-        trolleyDriveWheelsChainConditionResult = findString(visualCategory, "driveWheelOnTrolleyChainCondition"),
-        trolleyIdleWheelsWearMemenuhi = findStatus(visualCategory, "idleWheelOnTrolleyWear"),
-        trolleyIdleWheelsWearTidakMemenuhi = !findStatus(visualCategory, "idleWheelOnTrolleyWear"),
-        trolleyIdleWheelsWearResult = findString(visualCategory, "idleWheelOnTrolleyWear"),
-        trolleyIdleWheelsCracksMemenuhi = findStatus(visualCategory, "idleWheelOnTrolleyCracks"),
-        trolleyIdleWheelsCracksTidakMemenuhi = !findStatus(visualCategory, "idleWheelOnTrolleyCracks"),
-        trolleyIdleWheelsCracksResult = findString(visualCategory, "idleWheelOnTrolleyCracks"),
-        trolleyIdleWheelsDeformationMemenuhi = findStatus(visualCategory, "idleWheelOnTrolleyDeformation"),
-        trolleyIdleWheelsDeformationTidakMemenuhi = !findStatus(visualCategory, "idleWheelOnTrolleyDeformation"),
-        trolleyIdleWheelsDeformationResult = findString(visualCategory, "idleWheelOnTrolleyDeformation"),
-        trolleyIdleWheelsFlangeConditionMemenuhi = findStatus(visualCategory, "idleWheelOnTrolleyFlangeCondition"),
-        trolleyIdleWheelsFlangeConditionTidakMemenuhi = !findStatus(visualCategory, "idleWheelOnTrolleyFlangeCondition"),
-        trolleyIdleWheelsFlangeConditionResult = findString(visualCategory, "idleWheelOnTrolleyFlangeCondition"),
-        trolleyWheelConnectorAlignmentMemenuhi = findStatus(visualCategory, "wheelConnectorBogieAxleOnTrolleyStraightness"),
-        trolleyWheelConnectorAlignmentTidakMemenuhi = !findStatus(visualCategory, "wheelConnectorBogieAxleOnTrolleyStraightness"),
-        trolleyWheelConnectorAlignmentResult = findString(visualCategory, "wheelConnectorBogieAxleOnTrolleyStraightness"),
-        trolleyWheelConnectorCrossJointMemenuhi = findStatus(visualCategory, "wheelConnectorBogieAxleOnTrolleyCrossJoint"),
-        trolleyWheelConnectorCrossJointTidakMemenuhi = !findStatus(visualCategory, "wheelConnectorBogieAxleOnTrolleyCrossJoint"),
-        trolleyWheelConnectorCrossJointResult = findString(visualCategory, "wheelConnectorBogieAxleOnTrolleyCrossJoint"),
-        trolleyWheelConnectorLubricationMemenuhi = findStatus(visualCategory, "wheelConnectorBogieAxleOnTrolleyLubrication"),
-        trolleyWheelConnectorLubricationTidakMemenuhi = !findStatus(visualCategory, "wheelConnectorBogieAxleOnTrolleyLubrication"),
-        trolleyWheelConnectorLubricationResult = findString(visualCategory, "wheelConnectorBogieAxleOnTrolleyLubrication"),
-        trolleyGirderStopperConditionMemenuhi = findStatus(visualCategory, "stopperBumperOnGirderOnTrolleyCondition"),
-        trolleyGirderStopperConditionTidakMemenuhi = !findStatus(visualCategory, "stopperBumperOnGirderOnTrolleyCondition"),
-        trolleyGirderStopperConditionResult = findString(visualCategory, "stopperBumperOnGirderOnTrolleyCondition"),
-        trolleyGirderStopperReinforcementMemenuhi = findStatus(visualCategory, "stopperBumperOnGirderOnTrolleyReinforcement"),
-        trolleyGirderStopperReinforcementTidakMemenuhi = !findStatus(visualCategory, "stopperBumperOnGirderOnTrolleyReinforcement"),
-        trolleyGirderStopperReinforcementResult = findString(visualCategory, "stopperBumperOnGirderOnTrolleyReinforcement"),
-        windingDrumGrooveMemenuhi = findStatus(visualCategory, "windingDrumGroove"),
-        windingDrumGrooveTidakMemenuhi = !findStatus(visualCategory, "windingDrumGroove"),
-        windingDrumGrooveResult = findString(visualCategory, "windingDrumGroove"),
-        windingDrumGrooveLipMemenuhi = findStatus(visualCategory, "windingDrumGrooveFlange"),
-        windingDrumGrooveLipTidakMemenuhi = !findStatus(visualCategory, "windingDrumGrooveFlange"),
-        windingDrumGrooveLipResult = findString(visualCategory, "windingDrumGrooveFlange"),
-        windingDrumFlangesMemenuhi = findStatus(visualCategory, "windingDrumFlanges"),
-        windingDrumFlangesTidakMemenuhi = !findStatus(visualCategory, "windingDrumFlanges"),
-        windingDrumFlangesResult = findString(visualCategory, "windingDrumFlanges"),
-        visualBrakeInspectionWearMemenuhi = findStatus(visualCategory, "brakeWear"),
-        visualBrakeInspectionWearTidakMemenuhi = !findStatus(visualCategory, "brakeWear"),
-        visualBrakeInspectionWearResult = findString(visualCategory, "brakeWear"),
-        visualBrakeInspectionAdjustmentMemenuhi = findStatus(visualCategory, "brakeAdjustment"),
-        visualBrakeInspectionAdjustmentTidakMemenuhi = !findStatus(visualCategory, "brakeAdjustment"),
-        visualBrakeInspectionAdjustmentResult = findString(visualCategory, "brakeAdjustment"),
-        hoistGearboxLubricationMemenuhi = findStatus(visualCategory, "hoistGearboxLubrication"),
-        hoistGearboxLubricationTidakMemenuhi = !findStatus(visualCategory, "hoistGearboxLubrication"),
-        hoistGearboxLubricationResult = findString(visualCategory, "hoistGearboxLubrication"),
-        hoistGearboxOilSealMemenuhi = findStatus(visualCategory, "hoistGearboxOilSeal"),
-        hoistGearboxOilSealTidakMemenuhi = !findStatus(visualCategory, "hoistGearboxOilSeal"),
-        hoistGearboxOilSealResult = findString(visualCategory, "hoistGearboxOilSeal"),
-        pulleySprocketPulleyGrooveMemenuhi = findStatus(visualCategory, "pulleyDiscChainSprocketPulleyGroove"),
-        pulleySprocketPulleyGrooveTidakMemenuhi = !findStatus(visualCategory, "pulleyDiscChainSprocketPulleyGroove"),
-        pulleySprocketPulleyGrooveResult = findString(visualCategory, "pulleyDiscChainSprocketPulleyGroove"),
-        pulleySprocketPulleyLipMemenuhi = findStatus(visualCategory, "pulleyDiscChainSprocketPulleyFlange"),
-        pulleySprocketPulleyLipTidakMemenuhi = !findStatus(visualCategory, "pulleyDiscChainSprocketPulleyFlange"),
-        pulleySprocketPulleyLipResult = findString(visualCategory, "pulleyDiscChainSprocketPulleyFlange"),
-        pulleySprocketPulleyPinMemenuhi = findStatus(visualCategory, "pulleyDiscChainSprocketPulleyPin"),
-        pulleySprocketPulleyPinTidakMemenuhi = !findStatus(visualCategory, "pulleyDiscChainSprocketPulleyPin"),
-        pulleySprocketPulleyPinResult = findString(visualCategory, "pulleyDiscChainSprocketPulleyPin"),
-        pulleySprocketBearingMemenuhi = findStatus(visualCategory, "pulleyDiscChainSprocketBearing"),
-        pulleySprocketBearingTidakMemenuhi = !findStatus(visualCategory, "pulleyDiscChainSprocketBearing"),
-        pulleySprocketBearingResult = findString(visualCategory, "pulleyDiscChainSprocketBearing"),
-        pulleySprocketPulleyGuardMemenuhi = findStatus(visualCategory, "pulleyDiscChainSprocketPulleyGuard"),
-        pulleySprocketPulleyGuardTidakMemenuhi = !findStatus(visualCategory, "pulleyDiscChainSprocketPulleyGuard"),
-        pulleySprocketPulleyGuardResult = findString(visualCategory, "pulleyDiscChainSprocketPulleyGuard"),
-        pulleySprocketRopeChainGuardMemenuhi = findStatus(visualCategory, "pulleyDiscChainSprocketWireRopeChainGuard"),
-        pulleySprocketRopeChainGuardTidakMemenuhi = !findStatus(visualCategory, "pulleyDiscChainSprocketWireRopeChainGuard"),
-        pulleySprocketRopeChainGuardResult = findString(visualCategory, "pulleyDiscChainSprocketWireRopeChainGuard"),
-        mainHookInspectionWearMemenuhi = findStatus(visualCategory, "mainHookWear"),
-        mainHookInspectionWearTidakMemenuhi = !findStatus(visualCategory, "mainHookWear"),
-        mainHookInspectionWearResult = findString(visualCategory, "mainHookWear"),
-        mainHookInspectionHookOpeningGapMemenuhi = findStatus(visualCategory, "mainHookThroatOpening"),
-        mainHookInspectionHookOpeningGapTidakMemenuhi = !findStatus(visualCategory, "mainHookThroatOpening"),
-        mainHookInspectionHookOpeningGapResult = findString(visualCategory, "mainHookThroatOpening"),
-        mainHookInspectionSwivelNutAndBearingMemenuhi = findStatus(visualCategory, "mainHookSwivelNutAndBearing"),
-        mainHookInspectionSwivelNutAndBearingTidakMemenuhi = !findStatus(visualCategory, "mainHookSwivelNutAndBearing"),
-        mainHookInspectionSwivelNutAndBearingResult = findString(visualCategory, "mainHookSwivelNutAndBearing"),
-        mainHookInspectionTrunnionMemenuhi = findStatus(visualCategory, "mainHookTrunnion"),
-        mainHookInspectionTrunnionTidakMemenuhi = !findStatus(visualCategory, "mainHookTrunnion"),
-        mainHookInspectionTrunnionResult = findString(visualCategory, "mainHookTrunnion"),
-        auxiliaryHookInspectionWearMemenuhi = findStatus(visualCategory, "auxiliaryHookWear"),
-        auxiliaryHookInspectionWearTidakMemenuhi = !findStatus(visualCategory, "auxiliaryHookWear"),
-        auxiliaryHookInspectionWearResult = findString(visualCategory, "auxiliaryHookWear"),
-        auxiliaryHookInspectionHookOpeningGapMemenuhi = findStatus(visualCategory, "auxiliaryHookThroatOpening"),
-        auxiliaryHookInspectionHookOpeningGapTidakMemenuhi = !findStatus(visualCategory, "auxiliaryHookThroatOpening"),
-        auxiliaryHookInspectionHookOpeningGapResult = findString(visualCategory, "auxiliaryHookThroatOpening"),
-        auxiliaryHookInspectionSwivelNutAndBearingMemenuhi = findStatus(visualCategory, "auxiliaryHookSwivelNutAndBearing"),
-        auxiliaryHookInspectionSwivelNutAndBearingTidakMemenuhi = !findStatus(visualCategory, "auxiliaryHookSwivelNutAndBearing"),
-        auxiliaryHookInspectionSwivelNutAndBearingResult = findString(visualCategory, "auxiliaryHookSwivelNutAndBearing"),
-        auxiliaryHookInspectionTrunnionMemenuhi = findStatus(visualCategory, "auxiliaryHookTrunnion"),
-        auxiliaryHookInspectionTrunnionTidakMemenuhi = !findStatus(visualCategory, "auxiliaryHookTrunnion"),
-        auxiliaryHookInspectionTrunnionResult = findString(visualCategory, "auxiliaryHookTrunnion"),
-        mainWireRopeInspectionCorrosionMemenuhi = findStatus(visualCategory, "mainWireRopeCorrosion"),
-        mainWireRopeInspectionCorrosionTidakMemenuhi = !findStatus(visualCategory, "mainWireRopeCorrosion"),
-        mainWireRopeInspectionCorrosionResult = findString(visualCategory, "mainWireRopeCorrosion"),
-        mainWireRopeInspectionWearMemenuhi = findStatus(visualCategory, "mainWireRopeWear"),
-        mainWireRopeInspectionWearTidakMemenuhi = !findStatus(visualCategory, "mainWireRopeWear"),
-        mainWireRopeInspectionWearResult = findString(visualCategory, "mainWireRopeWear"),
-        mainWireRopeInspectionBreakageMemenuhi = findStatus(visualCategory, "mainWireRopeBroken"),
-        mainWireRopeInspectionBreakageTidakMemenuhi = !findStatus(visualCategory, "mainWireRopeBroken"),
-        mainWireRopeInspectionBreakageResult = findString(visualCategory, "mainWireRopeBroken"),
-        mainWireRopeInspectionDeformationMemenuhi = findStatus(visualCategory, "mainWireRopeDeformation"),
-        mainWireRopeInspectionDeformationTidakMemenuhi = !findStatus(visualCategory, "mainWireRopeDeformation"),
-        mainWireRopeInspectionDeformationResult = findString(visualCategory, "mainWireRopeDeformation"),
-        auxiliaryWireRopeInspectionCorrosionMemenuhi = findStatus(visualCategory, "auxiliaryWireRopeCorrosion"),
-        auxiliaryWireRopeInspectionCorrosionTidakMemenuhi = !findStatus(visualCategory, "auxiliaryWireRopeCorrosion"),
-        auxiliaryWireRopeInspectionCorrosionResult = findString(visualCategory, "auxiliaryWireRopeCorrosion"),
-        auxiliaryWireRopeInspectionWearMemenuhi = findStatus(visualCategory, "auxiliaryWireRopeWear"),
-        auxiliaryWireRopeInspectionWearTidakMemenuhi = !findStatus(visualCategory, "auxiliaryWireRopeWear"),
-        auxiliaryWireRopeInspectionWearResult = findString(visualCategory, "auxiliaryWireRopeWear"),
-        auxiliaryWireRopeInspectionBreakageMemenuhi = findStatus(visualCategory, "auxiliaryWireRopeBroken"),
-        auxiliaryWireRopeInspectionBreakageTidakMemenuhi = !findStatus(visualCategory, "auxiliaryWireRopeBroken"),
-        auxiliaryWireRopeInspectionBreakageResult = findString(visualCategory, "auxiliaryWireRopeBroken"),
-        auxiliaryWireRopeInspectionDeformationMemenuhi = findStatus(visualCategory, "auxiliaryWireRopeDeformation"),
-        auxiliaryWireRopeInspectionDeformationTidakMemenuhi = !findStatus(visualCategory, "auxiliaryWireRopeDeformation"),
-        auxiliaryWireRopeInspectionDeformationResult = findString(visualCategory, "auxiliaryWireRopeDeformation"),
-        mainChainInspectionCorrosionMemenuhi = findStatus(visualCategory, "mainChainCorrosion"),
-        mainChainInspectionCorrosionTidakMemenuhi = !findStatus(visualCategory, "mainChainCorrosion"),
-        mainChainInspectionCorrosionResult = findString(visualCategory, "mainChainCorrosion"),
-        mainChainInspectionWearMemenuhi = findStatus(visualCategory, "mainChainWear"),
-        mainChainInspectionWearTidakMemenuhi = !findStatus(visualCategory, "mainChainWear"),
-        mainChainInspectionWearResult = findString(visualCategory, "mainChainWear"),
-        mainChainInspectionCrackOrBreakageMemenuhi = findStatus(visualCategory, "mainChainCrackedBroken"),
-        mainChainInspectionCrackOrBreakageTidakMemenuhi = !findStatus(visualCategory, "mainChainCrackedBroken"),
-        mainChainInspectionCrackOrBreakageResult = findString(visualCategory, "mainChainCrackedBroken"),
-        mainChainInspectionDeformationMemenuhi = findStatus(visualCategory, "mainChainDeformation"),
-        mainChainInspectionDeformationTidakMemenuhi = !findStatus(visualCategory, "mainChainDeformation"),
-        mainChainInspectionDeformationResult = findString(visualCategory, "mainChainDeformation"),
-        auxiliaryChainInspectionCorrosionMemenuhi = findStatus(visualCategory, "auxiliaryChainCorrosion"),
-        auxiliaryChainInspectionCorrosionTidakMemenuhi = !findStatus(visualCategory, "auxiliaryChainCorrosion"),
-        auxiliaryChainInspectionCorrosionResult = findString(visualCategory, "auxiliaryChainCorrosion"),
-        auxiliaryChainInspectionWearMemenuhi = findStatus(visualCategory, "auxiliaryChainWear"),
-        auxiliaryChainInspectionWearTidakMemenuhi = !findStatus(visualCategory, "auxiliaryChainWear"),
-        auxiliaryChainInspectionWearResult = findString(visualCategory, "auxiliaryChainWear"),
-        auxiliaryChainInspectionCrackOrBreakageMemenuhi = findStatus(visualCategory, "auxiliaryChainCrackedBroken"),
-        auxiliaryChainInspectionCrackOrBreakageTidakMemenuhi = !findStatus(visualCategory, "auxiliaryChainCrackedBroken"),
-        auxiliaryChainInspectionCrackOrBreakageResult = findString(visualCategory, "auxiliaryChainCrackedBroken"),
-        auxiliaryChainInspectionDeformationMemenuhi = findStatus(visualCategory, "auxiliaryChainDeformation"),
-        auxiliaryChainInspectionDeformationTidakMemenuhi = !findStatus(visualCategory, "auxiliaryChainDeformation"),
-        auxiliaryChainInspectionDeformationResult = findString(visualCategory, "auxiliaryChainDeformation"),
-        limitSwitchLongTravelMemenuhi = findStatus(visualCategory, "limitSwitchLsLongTraveling"),
-        limitSwitchLongTravelTidakMemenuhi = !findStatus(visualCategory, "limitSwitchLsLongTraveling"),
-        limitSwitchLongTravelResult = findString(visualCategory, "limitSwitchLsLongTraveling"),
-        limitSwitchCrossTravelMemenuhi = findStatus(visualCategory, "limitSwitchLsCrossTraveling"),
-        limitSwitchCrossTravelTidakMemenuhi = !findStatus(visualCategory, "limitSwitchLsCrossTraveling"),
-        limitSwitchCrossTravelResult = findString(visualCategory, "limitSwitchLsCrossTraveling"),
-        limitSwitchHoistMemenuhi = findStatus(visualCategory, "limitSwitchLsHoisting"),
-        limitSwitchHoistTidakMemenuhi = !findStatus(visualCategory, "limitSwitchLsHoisting"),
-        limitSwitchHoistResult = findString(visualCategory, "limitSwitchLsHoisting"),
-        operatorCabinSafetyLadderMemenuhi = findStatus(visualCategory, "operatorCabinSafetyLadder"),
-        operatorCabinSafetyLadderTidakMemenuhi = !findStatus(visualCategory, "operatorCabinSafetyLadder"),
-        operatorCabinSafetyLadderResult = findString(visualCategory, "operatorCabinSafetyLadder"),
-        operatorCabinDoorMemenuhi = findStatus(visualCategory, "operatorCabinDoor"),
-        operatorCabinDoorTidakMemenuhi = !findStatus(visualCategory, "operatorCabinDoor"),
-        operatorCabinDoorResult = findString(visualCategory, "operatorCabinDoor"),
-        operatorCabinWindowMemenuhi = findStatus(visualCategory, "operatorCabinWindow"),
-        operatorCabinWindowTidakMemenuhi = !findStatus(visualCategory, "operatorCabinWindow"),
-        operatorCabinWindowResult = findString(visualCategory, "operatorCabinWindow"),
-        operatorCabinFanOrACMemenuhi = findStatus(visualCategory, "operatorCabinFanAc"),
-        operatorCabinFanOrACTidakMemenuhi = !findStatus(visualCategory, "operatorCabinFanAc"),
-        operatorCabinFanOrACResult = findString(visualCategory, "operatorCabinFanAc"),
-        operatorCabinControlLeversOrButtonsMemenuhi = findStatus(visualCategory, "operatorCabinControlLeversButtons"),
-        operatorCabinControlLeversOrButtonsTidakMemenuhi = !findStatus(visualCategory, "operatorCabinControlLeversButtons"),
-        operatorCabinControlLeversOrButtonsResult = findString(visualCategory, "operatorCabinControlLeversButtons"),
-        operatorCabinPendantControlMemenuhi = findStatus(visualCategory, "operatorCabinPendantControl"),
-        operatorCabinPendantControlTidakMemenuhi = !findStatus(visualCategory, "operatorCabinPendantControl"),
-        operatorCabinPendantControlResult = findString(visualCategory, "operatorCabinPendantControl"),
-        operatorCabinLightingMemenuhi = findStatus(visualCategory, "operatorCabinLighting"),
-        operatorCabinLightingTidakMemenuhi = !findStatus(visualCategory, "operatorCabinLighting"),
-        operatorCabinLightingResult = findString(visualCategory, "operatorCabinLighting"),
-        operatorCabinHornMemenuhi = findStatus(visualCategory, "operatorCabinHorn"),
-        operatorCabinHornTidakMemenuhi = !findStatus(visualCategory, "operatorCabinHorn"),
-        operatorCabinHornResult = findString(visualCategory, "operatorCabinHorn"),
-        operatorCabinFuseProtectionMemenuhi = findStatus(visualCategory, "operatorCabinFuse"),
-        operatorCabinFuseProtectionTidakMemenuhi = !findStatus(visualCategory, "operatorCabinFuse"),
-        operatorCabinFuseProtectionResult = findString(visualCategory, "operatorCabinFuse"),
-        operatorCabinCommunicationDeviceMemenuhi = findStatus(visualCategory, "operatorCabinCommunicationDevice"),
-        operatorCabinCommunicationDeviceTidakMemenuhi = !findStatus(visualCategory, "operatorCabinCommunicationDevice"),
-        operatorCabinCommunicationDeviceResult = findString(visualCategory, "operatorCabinCommunicationDevice"),
-        operatorCabinFireExtinguisherMemenuhi = findStatus(visualCategory, "operatorCabinFireExtinguisher"),
-        operatorCabinFireExtinguisherTidakMemenuhi = !findStatus(visualCategory, "operatorCabinFireExtinguisher"),
-        operatorCabinFireExtinguisherResult = findString(visualCategory, "operatorCabinFireExtinguisher"),
-        operatorCabinOperationalSignsMemenuhi = findStatus(visualCategory, "operatorCabinOperatingSigns"),
-        operatorCabinOperationalSignsTidakMemenuhi = !findStatus(visualCategory, "operatorCabinOperatingSigns"),
-        operatorCabinOperationalSignsResult = findString(visualCategory, "operatorCabinOperatingSigns"),
-        operatorCabinIgnitionOrMasterSwitchMemenuhi = findStatus(visualCategory, "operatorCabinIgnitionKeyMasterSwitch"),
-        operatorCabinIgnitionOrMasterSwitchTidakMemenuhi = !findStatus(visualCategory, "operatorCabinIgnitionKeyMasterSwitch"),
-        operatorCabinIgnitionOrMasterSwitchResult = findString(visualCategory, "operatorCabinIgnitionKeyMasterSwitch"),
-        electricalComponentsPanelConductorConnectorMemenuhi = findStatus(visualCategory, "electricalComponentsPanelConductorConnector"),
-        electricalComponentsPanelConductorConnectorTidakMemenuhi = !findStatus(visualCategory, "electricalComponentsPanelConductorConnector"),
-        electricalComponentsPanelConductorConnectorResult = findString(visualCategory, "electricalComponentsPanelConductorConnector"),
-        electricalComponentsConductorProtectionMemenuhi = findStatus(visualCategory, "electricalComponentsConductorProtection"),
-        electricalComponentsConductorProtectionTidakMemenuhi = !findStatus(visualCategory, "electricalComponentsConductorProtection"),
-        electricalComponentsConductorProtectionResult = findString(visualCategory, "electricalComponentsConductorProtection"),
-        electricalComponentsMotorInstallationSafetySystemMemenuhi = findStatus(visualCategory, "electricalComponentsMotorInstallationSafetySystem"),
-        electricalComponentsMotorInstallationSafetySystemTidakMemenuhi = !findStatus(visualCategory, "electricalComponentsMotorInstallationSafetySystem"),
-        electricalComponentsMotorInstallationSafetySystemResult = findString(visualCategory, "electricalComponentsMotorInstallationSafetySystem"),
-        electricalComponentsGroundingSystemMemenuhi = findStatus(visualCategory, "electricalComponentsGroundingSystem"),
-        electricalComponentsGroundingSystemTidakMemenuhi = !findStatus(visualCategory, "electricalComponentsGroundingSystem"),
-        electricalComponentsGroundingSystemResult = findString(visualCategory, "electricalComponentsGroundingSystem"),
-        electricalComponentsInstallationMemenuhi = findStatus(visualCategory, "electricalComponentsInstallation"),
-        electricalComponentsInstallationTidakMemenuhi = !findStatus(visualCategory, "electricalComponentsInstallation"),
-        electricalComponentsInstallationResult = findString(visualCategory, "electricalComponentsInstallation")
+        foundationAndStructure = GantryCraneFoundationAndStructure(
+            anchorBolts = GantryCraneAnchorBolts(
+                corrosion = createVisualItem("foundationAnchorBoltCorrosion"),
+                cracks = createVisualItem("foundationAnchorBoltCracks"),
+                deformation = createVisualItem("foundationAnchorBoltDeformation"),
+                fastening = createVisualItem("foundationAnchorBoltTightness")
+            ),
+            columnFrame = GantryCraneColumnFrame(
+                corrosion = createVisualItem("columnFrameCorrosion"),
+                cracks = createVisualItem("columnFrameCracks"),
+                deformation = createVisualItem("columnFrameDeformation"),
+                fastening = createVisualItem("columnFrameFastening"),
+                transverseReinforcement = createVisualItem("columnFrameCrossBracing"),
+                diagonalReinforcement = createVisualItem("columnFrameDiagonalBracing")
+            ),
+            ladder = GantryCraneLadder(
+                corrosion = createVisualItem("ladderCorrosion"),
+                cracks = createVisualItem("ladderCracks"),
+                deformation = createVisualItem("ladderDeformation"),
+                fastening = createVisualItem("ladderFastening")
+            ),
+            workingFloor = GantryCraneWorkingFloor(
+                corrosion = createVisualItem("workPlatformCorrosion"),
+                cracks = createVisualItem("workPlatformCracks"),
+                deformation = createVisualItem("workPlatformDeformation"),
+                fastening = createVisualItem("workPlatformFastening")
+            )
+        ),
+        mechanismAndRail = GantryCraneMechanismAndRail(
+            railSupportBeam = GantryCraneRailSupportBeam(
+                corrosion = createVisualItem("railMountingBeamCorrosion"),
+                cracks = createVisualItem("railMountingBeamCracks"),
+                deformation = createVisualItem("railMountingBeamDeformation"),
+                fastening = createVisualItem("railMountingBeamFastening")
+            ),
+            travelingRail = GantryCraneTravelingRail(
+                corrosion = createVisualItem("travelingRailCorrosion"),
+                cracks = createVisualItem("travelingRailCracks"),
+                railConnection = createVisualItem("travelingRailJoint"),
+                railAlignment = createVisualItem("travelingRailStraightness"),
+                interRailAlignment = createVisualItem("travelingRailAlignmentBetweenRails"),
+                interRailFlatness = createVisualItem("travelingRailEvennessBetweenRails"),
+                railConnectionGap = createVisualItem("travelingRailGapBetweenRailJoints"),
+                railFastener = createVisualItem("travelingRailFastener"),
+                railStopper = createVisualItem("travelingRailStopper")
+            ),
+            traversingRail = GantryCraneTraversingRail(
+                corrosion = createVisualItem("traversingRailCorrosion"),
+                cracks = createVisualItem("traversingRailCracks"),
+                railConnection = createVisualItem("traversingRailJoint"),
+                railAlignment = createVisualItem("traversingRailStraightness"),
+                interRailAlignment = createVisualItem("traversingRailAlignmentBetweenRails"),
+                interRailFlatness = createVisualItem("traversingRailEvennessBetweenRails"),
+                railConnectionGap = createVisualItem("traversingRailGapBetweenRailJoints"),
+                railFastener = createVisualItem("traversingRailFastener"),
+                railStopper = createVisualItem("traversingRailStopper")
+            )
+        ),
+        girderAndTrolley = GantryCraneGirderAndTrolley(
+            girder = GantryCraneGirder(
+                corrosion = createVisualItem("girderCorrosion"),
+                cracks = createVisualItem("girderCracks"),
+                camber = createVisualItem("girderCamber"),
+                connection = createVisualItem("girderJoint"),
+                endGirderConnection = createVisualItem("girderEndJoint"),
+                truckMountingOnGirder = createVisualItem("girderTruckMountOnGirder")
+            ),
+            travelingGearbox = GantryCraneTravelingGearbox(
+                corrosion = createVisualItem("travelingGearboxGirderCorrosion"),
+                cracks = createVisualItem("travelingGearboxGirderCracks"),
+                lubricatingOil = createVisualItem("travelingGearboxGirderLubricatingOil"),
+                oilSeal = createVisualItem("travelingGearboxGirderOilSeal")
+            ),
+            driveWheels = GantryCraneDriveWheels(
+                wear = createVisualItem("driveWheelWear"),
+                cracks = createVisualItem("driveWheelCracks"),
+                deformation = createVisualItem("driveWheelDeformation"),
+                flangeCondition = createVisualItem("driveWheelFlangeCondition"),
+                chainCondition = createVisualItem("driveWheelChainCondition")
+            ),
+            idleWheels = GantryCraneIdleWheels(
+                safety = createVisualItem("idleWheelSecurity"),
+                cracks = createVisualItem("idleWheelCracks"),
+                deformation = createVisualItem("idleWheelDeformation"),
+                flangeCondition = createVisualItem("idleWheelFlangeCondition")
+            ),
+            wheelConnector = GantryCraneWheelConnector(
+                alignment = createVisualItem("wheelConnectorBogieAxleStraightness"),
+                crossJoint = createVisualItem("wheelConnectorBogieAxleCrossJoint"),
+                lubrication = createVisualItem("wheelConnectorBogieAxleLubrication")
+            ),
+            girderStopper = GantryCraneGirderStopper(
+                condition = createVisualItem("stopperBumperOnGirderCondition"),
+                reinforcement = createVisualItem("stopperBumperOnGirderReinforcement")
+            )
+        ),
+        trolleyMechanism = GantryCraneTrolleyMechanism(
+            trolleyTraversingGearbox = GantryCraneTrolleyTraversingGearbox(
+                fastening = createVisualItem("traversingGearboxTrolleyCarrierFastening"),
+                corrosion = createVisualItem("traversingGearboxTrolleyCarrierCorrosion"),
+                cracks = createVisualItem("traversingGearboxTrolleyCarrierCracks"),
+                lubricatingOil = createVisualItem("traversingGearboxTrolleyCarrierLubricatingOil"),
+                oilSeal = createVisualItem("traversingGearboxTrolleyCarrierOilSeal")
+            ),
+            trolleyDriveWheels = GantryCraneTrolleyDriveWheels(
+                wear = createVisualItem("driveWheelOnTrolleyWear"),
+                cracks = createVisualItem("driveWheelOnTrolleyCracks"),
+                deformation = createVisualItem("driveWheelOnTrolleyDeformation"),
+                flangeCondition = createVisualItem("driveWheelOnTrolleyFlangeCondition"),
+                chainCondition = createVisualItem("driveWheelOnTrolleyChainCondition")
+            ),
+            trolleyIdleWheels = GantryCraneTrolleyIdleWheels(
+                wear = createVisualItem("idleWheelOnTrolleyWear"),
+                cracks = createVisualItem("idleWheelOnTrolleyCracks"),
+                deformation = createVisualItem("idleWheelOnTrolleyDeformation"),
+                flangeCondition = createVisualItem("idleWheelOnTrolleyFlangeCondition")
+            ),
+            trolleyWheelConnector = GantryCraneTrolleyWheelConnector(
+                alignment = createVisualItem("wheelConnectorBogieAxleOnTrolleyStraightness"),
+                crossJoint = createVisualItem("wheelConnectorBogieAxleOnTrolleyCrossJoint"),
+                lubrication = createVisualItem("wheelConnectorBogieAxleOnTrolleyLubrication")
+            ),
+            trolleyGirderStopper = GantryCraneTrolleyGirderStopper(
+                condition = createVisualItem("stopperBumperOnGirderOnTrolleyCondition"),
+                reinforcement = createVisualItem("stopperBumperOnGirderOnTrolleyReinforcement")
+            )
+        ),
+        liftingEquipment = GantryCraneLiftingEquipment(
+            windingDrum = GantryCraneWindingDrum(
+                groove = createVisualItem("windingDrumGroove"),
+                grooveLip = createVisualItem("windingDrumGrooveFlange"),
+                flanges = createVisualItem("windingDrumFlanges")
+            ),
+            visualBrakeInspection = GantryCraneVisualBrakeInspection(
+                wear = createVisualItem("brakeWear"),
+                adjustment = createVisualItem("brakeAdjustment")
+            ),
+            hoistGearbox = GantryCraneHoistGearbox(
+                lubrication = createVisualItem("hoistGearboxLubrication"),
+                oilSeal = createVisualItem("hoistGearboxOilSeal")
+            ),
+            pulleySprocket = GantryCranePulleySprocket(
+                pulleyGroove = createVisualItem("pulleyDiscChainSprocketPulleyGroove"),
+                pulleyLip = createVisualItem("pulleyDiscChainSprocketPulleyFlange"),
+                pulleyPin = createVisualItem("pulleyDiscChainSprocketPulleyPin"),
+                bearing = createVisualItem("pulleyDiscChainSprocketBearing"),
+                pulleyGuard = createVisualItem("pulleyDiscChainSprocketPulleyGuard"),
+                ropeChainGuard = createVisualItem("pulleyDiscChainSprocketWireRopeChainGuard")
+            ),
+            mainHook = GantryCraneHook(
+                wear = createVisualItem("mainHookWear"),
+                hookOpeningGap = createVisualItem("mainHookThroatOpening"),
+                swivelNutAndBearing = createVisualItem("mainHookSwivelNutAndBearing"),
+                trunnion = createVisualItem("mainHookTrunnion")
+            ),
+            auxiliaryHook = GantryCraneHook(
+                wear = createVisualItem("auxiliaryHookWear"),
+                hookOpeningGap = createVisualItem("auxiliaryHookThroatOpening"),
+                swivelNutAndBearing = createVisualItem("auxiliaryHookSwivelNutAndBearing"),
+                trunnion = createVisualItem("auxiliaryHookTrunnion")
+            ),
+            mainWireRope = GantryCraneWireRope(
+                corrosion = createVisualItem("mainWireRopeCorrosion"),
+                wear = createVisualItem("mainWireRopeWear"),
+                breakage = createVisualItem("mainWireRopeBroken"),
+                deformation = createVisualItem("mainWireRopeDeformation")
+            ),
+            auxiliaryWireRope = GantryCraneWireRope(
+                corrosion = createVisualItem("auxiliaryWireRopeCorrosion"),
+                wear = createVisualItem("auxiliaryWireRopeWear"),
+                breakage = createVisualItem("auxiliaryWireRopeBroken"),
+                deformation = createVisualItem("auxiliaryWireRopeDeformation")
+            ),
+            mainChain = GantryCraneChain(
+                corrosion = createVisualItem("mainChainCorrosion"),
+                wear = createVisualItem("mainChainWear"),
+                crackOrBreakage = createVisualItem("mainChainCrackedBroken"),
+                deformation = createVisualItem("mainChainDeformation")
+            ),
+            auxiliaryChain = GantryCraneChain(
+                corrosion = createVisualItem("auxiliaryChainCorrosion"),
+                wear = createVisualItem("auxiliaryChainWear"),
+                crackOrBreakage = createVisualItem("auxiliaryChainCrackedBroken"),
+                deformation = createVisualItem("auxiliaryChainDeformation")
+            )
+        ),
+        controlAndSafetySystem = GantryCraneControlAndSafetySystem(
+            limitSwitch = GantryCraneLimitSwitch(
+                longTravel = createVisualItem("limitSwitchLsLongTraveling"),
+                crossTravel = createVisualItem("limitSwitchLsCrossTraveling"),
+                hoist = createVisualItem("limitSwitchLsHoisting")
+            ),
+            operatorCabin = GantryCraneOperatorCabin(
+                safetyLadder = createVisualItem("operatorCabinSafetyLadder"),
+                door = createVisualItem("operatorCabinDoor"),
+                window = createVisualItem("operatorCabinWindow"),
+                fanOrAC = createVisualItem("operatorCabinFanAc"),
+                controlLeversOrButtons = createVisualItem("operatorCabinControlLeversButtons"),
+                pendantControl = createVisualItem("operatorCabinPendantControl"),
+                lighting = createVisualItem("operatorCabinLighting"),
+                horn = createVisualItem("operatorCabinHorn"),
+                fuseProtection = createVisualItem("operatorCabinFuse"),
+                communicationDevice = createVisualItem("operatorCabinCommunicationDevice"),
+                fireExtinguisher = createVisualItem("operatorCabinFireExtinguisher"),
+                operationalSigns = createVisualItem("operatorCabinOperatingSigns"),
+                ignitionOrMasterSwitch = createVisualItem("operatorCabinIgnitionKeyMasterSwitch")
+            ),
+            electricalComponents = GantryCraneElectricalComponents(
+                panelConductorConnector = createVisualItem("electricalComponentsPanelConductorConnector"),
+                conductorProtection = createVisualItem("electricalComponentsConductorProtection"),
+                motorInstallationSafetySystem = createVisualItem("electricalComponentsMotorInstallationSafetySystem"),
+                groundingSystem = createVisualItem("electricalComponentsGroundingSystem"),
+                installation = createVisualItem("electricalComponentsInstallation")
+            )
+        )
     )
 
     val wireRopeItemCategories = this.checkItems.map { it.category }.filter { it.startsWith("nde_wirerope_item_") }.mapNotNull { it.substringAfterLast('_').toIntOrNull() }.distinct()
@@ -798,151 +595,229 @@ fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     add(techCategory, "wireRope_length_traveling", this.technicalData.mediumTypeTravelingLength)
     add(techCategory, "wireRope_length_traversing", this.technicalData.mediumTypeTraversingLength)
 
-    // Visual Inspection
     val visualCategory = "visual_inspection"
-    this.visualInspection.let {
-        add(visualCategory, "foundationAnchorBoltCorrosion", it.anchorBoltsCorrosionMemenuhi, it.anchorBoltsCorrosionResult)
-        add(visualCategory, "foundationAnchorBoltCracks", it.anchorBoltsCracksMemenuhi, it.anchorBoltsCracksResult)
-        add(visualCategory, "foundationAnchorBoltDeformation", it.anchorBoltsDeformationMemenuhi, it.anchorBoltsDeformationResult)
-        add(visualCategory, "foundationAnchorBoltTightness", it.anchorBoltsFasteningMemenuhi, it.anchorBoltsFasteningResult)
-        add(visualCategory, "columnFrameCorrosion", it.columnFrameCorrosionMemenuhi, it.columnFrameCorrosionResult)
-        add(visualCategory, "columnFrameCracks", it.columnFrameCracksMemenuhi, it.columnFrameCracksResult)
-        add(visualCategory, "columnFrameDeformation", it.columnFrameDeformationMemenuhi, it.columnFrameDeformationResult)
-        add(visualCategory, "columnFrameFastening", it.columnFrameFasteningMemenuhi, it.columnFrameFasteningResult)
-        add(visualCategory, "columnFrameCrossBracing", it.columnFrameTransverseReinforcementMemenuhi, it.columnFrameTransverseReinforcementResult)
-        add(visualCategory, "columnFrameDiagonalBracing", it.columnFrameDiagonalReinforcementMemenuhi, it.columnFrameDiagonalReinforcementResult)
-        add(visualCategory, "ladderCorrosion", it.ladderCorrosionMemenuhi, it.ladderCorrosionResult)
-        add(visualCategory, "ladderCracks", it.ladderCracksMemenuhi, it.ladderCracksResult)
-        add(visualCategory, "ladderDeformation", it.ladderDeformationMemenuhi, it.ladderDeformationResult)
-        add(visualCategory, "ladderFastening", it.ladderFasteningMemenuhi, it.ladderFasteningResult)
-        add(visualCategory, "workPlatformCorrosion", it.workingFloorCorrosionMemenuhi, it.workingFloorCorrosionResult)
-        add(visualCategory, "workPlatformCracks", it.workingFloorCracksMemenuhi, it.workingFloorCracksResult)
-        add(visualCategory, "workPlatformDeformation", it.workingFloorDeformationMemenuhi, it.workingFloorDeformationResult)
-        add(visualCategory, "workPlatformFastening", it.workingFloorFasteningMemenuhi, it.workingFloorFasteningResult)
-        add(visualCategory, "railMountingBeamCorrosion", it.railSupportBeamCorrosionMemenuhi, it.railSupportBeamCorrosionResult)
-        add(visualCategory, "railMountingBeamCracks", it.railSupportBeamCracksMemenuhi, it.railSupportBeamCracksResult)
-        add(visualCategory, "railMountingBeamDeformation", it.railSupportBeamDeformationMemenuhi, it.railSupportBeamDeformationResult)
-        add(visualCategory, "railMountingBeamFastening", it.railSupportBeamFasteningMemenuhi, it.railSupportBeamFasteningResult)
-        add(visualCategory, "travelingRailCorrosion", it.travelingRailCorrosionMemenuhi, it.travelingRailCracksResult) // FIXED
-        add(visualCategory, "travelingRailCracks", it.travelingCracksMemenuhi, it.travelingCracksResult)
-        add(visualCategory, "travelingRailJoint", it.travelingRailConnectionMemenuhi, it.travelingRailConnectionResult)
-        add(visualCategory, "travelingRailStraightness", it.travelingRailAlignmentMemenuhi, it.travelingRailAlignmentResult)
-        add(visualCategory, "travelingRailAlignmentBetweenRails", it.travelingInterRailAlignmentMemenuhi, it.travelingInterRailAlignmentResult)
-        add(visualCategory, "travelingRailEvennessBetweenRails", it.travelingInterRailFlatnessMemenuhi, it.travelingInterRailFlatnessResult)
-        add(visualCategory, "travelingRailGapBetweenRailJoints", it.travelingRailConnectionGapMemenuhi, it.travelingRailConnectionGapResult)
-        add(visualCategory, "travelingRailFastener", it.travelingRailFastenerMemenuhi, it.travelingRailFastenerResult)
-        add(visualCategory, "travelingRailStopper", it.travelingRailStopperMemenuhi, it.travelingRailStopperResult)
-        add(visualCategory, "traversingRailCorrosion", it.traversingRailCorrosionMemenuhi, it.traversingRailCorrosionResult)
-        add(visualCategory, "traversingRailCracks", it.traversingRailCracksMemenuhi, it.traversingRailCracksResult)
-        add(visualCategory, "traversingRailJoint", it.traversingRailRailConnectionMemenuhi, it.traversingRailRailConnectionResult)
-        add(visualCategory, "traversingRailStraightness", it.traversingRailRailAlignmentMemenuhi, it.traversingRailRailAlignmentResult)
-        add(visualCategory, "traversingRailAlignmentBetweenRails", it.traversingRailInterRailAlignmentMemenuhi, it.traversingRailInterRailAlignmentResult)
-        add(visualCategory, "traversingRailEvennessBetweenRails", it.traversingRailInterRailFlatnessMemenuhi, it.traversingRailInterRailFlatnessResult)
-        add(visualCategory, "traversingRailGapBetweenRailJoints", it.traversingRailRailConnectionGapMemenuhi, it.traversingRailRailConnectionGapResult)
-        add(visualCategory, "traversingRailFastener", it.traversingRailRailFastenerMemenuhi, it.traversingRailRailFastenerResult)
-        add(visualCategory, "traversingRailStopper", it.traversingRailRailStopperMemenuhi, it.traversingRailRailStopperResult)
-        add(visualCategory, "girderCorrosion", it.girderCorrosionMemenuhi, it.girderCorrosionResult)
-        add(visualCategory, "girderCracks", it.girderCracksMemenuhi, it.girderCracksResult)
-        add(visualCategory, "girderCamber", it.girderCamberMemenuhi, it.girderCamberResult)
-        add(visualCategory, "girderJoint", it.girderConnectionMemenuhi, it.girderConnectionResult)
-        add(visualCategory, "girderEndJoint", it.girderEndGirderConnectionMemenuhi, it.girderEndGirderConnectionResult)
-        add(visualCategory, "girderTruckMountOnGirder", it.girderTruckMountingOnGirderMemenuhi, it.girderTruckMountingOnGirderResult)
-        add(visualCategory, "travelingGearboxGirderCorrosion", it.travelingGearboxCorrosionMemenuhi, it.travelingGearboxCorrosionResult)
-        add(visualCategory, "travelingGearboxGirderCracks", it.travelingGearboxCracksMemenuhi, it.travelingGearboxCracksResult)
-        add(visualCategory, "travelingGearboxGirderLubricatingOil", it.travelingGearboxLubricatingOilMemenuhi, it.travelingGearboxLubricatingOilResult)
-        add(visualCategory, "travelingGearboxGirderOilSeal", it.travelingGearboxOilSealMemenuhi, it.travelingGearboxOilSealResult)
-        add(visualCategory, "driveWheelWear", it.driveWheelsWearMemenuhi, it.driveWheelsWearResult)
-        add(visualCategory, "driveWheelCracks", it.driveWheelsCracksMemenuhi, it.driveWheelsCracksResult)
-        add(visualCategory, "driveWheelDeformation", it.driveWheelsDeformationMemenuhi, it.driveWheelsDeformationResult)
-        add(visualCategory, "driveWheelFlangeCondition", it.driveWheelsFlangeConditionMemenuhi, it.driveWheelsFlangeConditionResult)
-        add(visualCategory, "driveWheelChainCondition", it.driveWheelsChainConditionMemenuhi, it.driveWheelsChainConditionResult)
-        add(visualCategory, "idleWheelSecurity", it.idleWheelsSafetyMemenuhi, it.idleWheelsSafetyResult)
-        add(visualCategory, "idleWheelCracks", it.idleWheelsCracksMemenuhi, it.idleWheelsCracksResult)
-        add(visualCategory, "idleWheelDeformation", it.idleWheelsDeformationMemenuhi, it.idleWheelsDeformationResult)
-        add(visualCategory, "idleWheelFlangeCondition", it.idleWheelsFlangeConditionMemenuhi, it.idleWheelsFlangeConditionResult)
-        add(visualCategory, "wheelConnectorBogieAxleStraightness", it.wheelConnectorAlignmentMemenuhi, it.wheelConnectorAlignmentResult)
-        add(visualCategory, "wheelConnectorBogieAxleCrossJoint", it.wheelConnectorCrossJointMemenuhi, it.wheelConnectorCrossJointResult)
-        add(visualCategory, "wheelConnectorBogieAxleLubrication", it.wheelConnectorLubricationMemenuhi, it.wheelConnectorLubricationResult)
-        add(visualCategory, "stopperBumperOnGirderCondition", it.girderStopperConditionMemenuhi, it.girderStopperConditionResult)
-        add(visualCategory, "stopperBumperOnGirderReinforcement", it.girderStopperReinforcementMemenuhi, it.girderStopperReinforcementResult)
-        add(visualCategory, "traversingGearboxTrolleyCarrierFastening", it.trolleyTraversingGearboxFasteningMemenuhi, it.trolleyTraversingGearboxFasteningResult)
-        add(visualCategory, "traversingGearboxTrolleyCarrierCorrosion", it.trolleyTraversingGearboxCorrosionMemenuhi, it.trolleyTraversingGearboxCorrosionResult)
-        add(visualCategory, "traversingGearboxTrolleyCarrierCracks", it.trolleyTraversingGearboxCracksMemenuhi, it.trolleyTraversingGearboxCracksResult)
-        add(visualCategory, "traversingGearboxTrolleyCarrierLubricatingOil", it.trolleyTraversingGearboxLubricatingOilMemenuhi, it.trolleyTraversingGearboxLubricatingOilResult)
-        add(visualCategory, "traversingGearboxTrolleyCarrierOilSeal", it.trolleyTraversingGearboxOilSealMemenuhi, it.trolleyTraversingGearboxOilSealResult)
-        add(visualCategory, "driveWheelOnTrolleyWear", it.trolleyDriveWheelsWearMemenuhi, it.trolleyDriveWheelsWearResult)
-        add(visualCategory, "driveWheelOnTrolleyCracks", it.trolleyDriveWheelsCracksMemenuhi, it.trolleyDriveWheelsCracksResult)
-        add(visualCategory, "driveWheelOnTrolleyDeformation", it.trolleyDriveWheelsDeformationMemenuhi, it.trolleyDriveWheelsDeformationResult)
-        add(visualCategory, "driveWheelOnTrolleyFlangeCondition", it.trolleyDriveWheelsFlangeConditionMemenuhi, it.trolleyDriveWheelsFlangeConditionResult)
-        add(visualCategory, "driveWheelOnTrolleyChainCondition", it.trolleyDriveWheelsChainConditionMemenuhi, it.trolleyDriveWheelsChainConditionResult)
-        add(visualCategory, "idleWheelOnTrolleyWear", it.trolleyIdleWheelsWearMemenuhi, it.trolleyIdleWheelsWearResult)
-        add(visualCategory, "idleWheelOnTrolleyCracks", it.trolleyIdleWheelsCracksMemenuhi, it.trolleyIdleWheelsCracksResult)
-        add(visualCategory, "idleWheelOnTrolleyDeformation", it.trolleyIdleWheelsDeformationMemenuhi, it.trolleyIdleWheelsDeformationResult)
-        add(visualCategory, "idleWheelOnTrolleyFlangeCondition", it.trolleyIdleWheelsFlangeConditionMemenuhi, it.trolleyIdleWheelsFlangeConditionResult)
-        add(visualCategory, "wheelConnectorBogieAxleOnTrolleyStraightness", it.trolleyWheelConnectorAlignmentMemenuhi, it.trolleyWheelConnectorAlignmentResult)
-        add(visualCategory, "wheelConnectorBogieAxleOnTrolleyCrossJoint", it.trolleyWheelConnectorCrossJointMemenuhi, it.trolleyWheelConnectorCrossJointResult)
-        add(visualCategory, "wheelConnectorBogieAxleOnTrolleyLubrication", it.trolleyWheelConnectorLubricationMemenuhi, it.trolleyWheelConnectorLubricationResult)
-        add(visualCategory, "stopperBumperOnGirderOnTrolleyCondition", it.trolleyGirderStopperConditionMemenuhi, it.trolleyGirderStopperConditionResult)
-        add(visualCategory, "stopperBumperOnGirderOnTrolleyReinforcement", it.trolleyGirderStopperReinforcementMemenuhi, it.trolleyGirderStopperReinforcementResult)
-        add(visualCategory, "windingDrumGroove", it.windingDrumGrooveMemenuhi, it.windingDrumGrooveResult)
-        add(visualCategory, "windingDrumGrooveFlange", it.windingDrumGrooveLipMemenuhi, it.windingDrumGrooveLipResult)
-        add(visualCategory, "windingDrumFlanges", it.windingDrumFlangesMemenuhi, it.windingDrumFlangesResult)
-        add(visualCategory, "brakeWear", it.visualBrakeInspectionWearMemenuhi, it.visualBrakeInspectionWearResult)
-        add(visualCategory, "brakeAdjustment", it.visualBrakeInspectionAdjustmentMemenuhi, it.visualBrakeInspectionAdjustmentResult)
-        add(visualCategory, "hoistGearboxLubrication", it.hoistGearboxLubricationMemenuhi, it.hoistGearboxLubricationResult)
-        add(visualCategory, "hoistGearboxOilSeal", it.hoistGearboxOilSealMemenuhi, it.hoistGearboxOilSealResult)
-        add(visualCategory, "pulleyDiscChainSprocketPulleyGroove", it.pulleySprocketPulleyGrooveMemenuhi, it.pulleySprocketPulleyGrooveResult)
-        add(visualCategory, "pulleyDiscChainSprocketPulleyFlange", it.pulleySprocketPulleyLipMemenuhi, it.pulleySprocketPulleyLipResult)
-        add(visualCategory, "pulleyDiscChainSprocketPulleyPin", it.pulleySprocketPulleyPinMemenuhi, it.pulleySprocketPulleyPinResult)
-        add(visualCategory, "pulleyDiscChainSprocketBearing", it.pulleySprocketBearingMemenuhi, it.pulleySprocketBearingResult)
-        add(visualCategory, "pulleyDiscChainSprocketPulleyGuard", it.pulleySprocketPulleyGuardMemenuhi, it.pulleySprocketPulleyGuardResult)
-        add(visualCategory, "pulleyDiscChainSprocketWireRopeChainGuard", it.pulleySprocketRopeChainGuardMemenuhi, it.pulleySprocketRopeChainGuardResult)
-        add(visualCategory, "mainHookWear", it.mainHookInspectionWearMemenuhi, it.mainHookInspectionWearResult)
-        add(visualCategory, "mainHookThroatOpening", it.mainHookInspectionHookOpeningGapMemenuhi, it.mainHookInspectionHookOpeningGapResult)
-        add(visualCategory, "mainHookSwivelNutAndBearing", it.mainHookInspectionSwivelNutAndBearingMemenuhi, it.mainHookInspectionSwivelNutAndBearingResult)
-        add(visualCategory, "mainHookTrunnion", it.mainHookInspectionTrunnionMemenuhi, it.mainHookInspectionTrunnionResult)
-        add(visualCategory, "auxiliaryHookWear", it.auxiliaryHookInspectionWearMemenuhi, it.auxiliaryHookInspectionWearResult)
-        add(visualCategory, "auxiliaryHookThroatOpening", it.auxiliaryHookInspectionHookOpeningGapMemenuhi, it.auxiliaryHookInspectionHookOpeningGapResult)
-        add(visualCategory, "auxiliaryHookSwivelNutAndBearing", it.auxiliaryHookInspectionSwivelNutAndBearingMemenuhi, it.auxiliaryHookInspectionSwivelNutAndBearingResult)
-        add(visualCategory, "auxiliaryHookTrunnion", it.auxiliaryHookInspectionTrunnionMemenuhi, it.auxiliaryHookInspectionTrunnionResult)
-        add(visualCategory, "mainWireRopeCorrosion", it.mainWireRopeInspectionCorrosionMemenuhi, it.mainWireRopeInspectionCorrosionResult)
-        add(visualCategory, "mainWireRopeWear", it.mainWireRopeInspectionWearMemenuhi, it.mainWireRopeInspectionWearResult)
-        add(visualCategory, "mainWireRopeBroken", it.mainWireRopeInspectionBreakageMemenuhi, it.mainWireRopeInspectionBreakageResult)
-        add(visualCategory, "mainWireRopeDeformation", it.mainWireRopeInspectionDeformationMemenuhi, it.mainWireRopeInspectionDeformationResult)
-        add(visualCategory, "auxiliaryWireRopeCorrosion", it.auxiliaryWireRopeInspectionCorrosionMemenuhi, it.auxiliaryWireRopeInspectionCorrosionResult)
-        add(visualCategory, "auxiliaryWireRopeWear", it.auxiliaryWireRopeInspectionWearMemenuhi, it.auxiliaryWireRopeInspectionWearResult)
-        add(visualCategory, "auxiliaryWireRopeBroken", it.auxiliaryWireRopeInspectionBreakageMemenuhi, it.auxiliaryWireRopeInspectionBreakageResult)
-        add(visualCategory, "auxiliaryWireRopeDeformation", it.auxiliaryWireRopeInspectionDeformationMemenuhi, it.auxiliaryWireRopeInspectionDeformationResult)
-        add(visualCategory, "mainChainCorrosion", it.mainChainInspectionCorrosionMemenuhi, it.mainChainInspectionCorrosionResult)
-        add(visualCategory, "mainChainWear", it.mainChainInspectionWearMemenuhi, it.mainChainInspectionWearResult)
-        add(visualCategory, "mainChainCrackedBroken", it.mainChainInspectionCrackOrBreakageMemenuhi, it.mainChainInspectionCrackOrBreakageResult)
-        add(visualCategory, "mainChainDeformation", it.mainChainInspectionDeformationMemenuhi, it.mainChainInspectionDeformationResult)
-        add(visualCategory, "auxiliaryChainCorrosion", it.auxiliaryChainInspectionCorrosionMemenuhi, it.auxiliaryChainInspectionCorrosionResult)
-        add(visualCategory, "auxiliaryChainWear", it.auxiliaryChainInspectionWearMemenuhi, it.auxiliaryChainInspectionWearResult)
-        add(visualCategory, "auxiliaryChainCrackedBroken", it.auxiliaryChainInspectionCrackOrBreakageMemenuhi, it.auxiliaryChainInspectionCrackOrBreakageResult)
-        add(visualCategory, "auxiliaryChainDeformation", it.auxiliaryChainInspectionDeformationMemenuhi, it.auxiliaryChainInspectionDeformationResult)
-        add(visualCategory, "limitSwitchLsLongTraveling", it.limitSwitchLongTravelMemenuhi, it.limitSwitchLongTravelResult)
-        add(visualCategory, "limitSwitchLsCrossTraveling", it.limitSwitchCrossTravelMemenuhi, it.limitSwitchCrossTravelResult)
-        add(visualCategory, "limitSwitchLsHoisting", it.limitSwitchHoistMemenuhi, it.limitSwitchHoistResult)
-        add(visualCategory, "operatorCabinSafetyLadder", it.operatorCabinSafetyLadderMemenuhi, it.operatorCabinSafetyLadderResult)
-        add(visualCategory, "operatorCabinDoor", it.operatorCabinDoorMemenuhi, it.operatorCabinDoorResult)
-        add(visualCategory, "operatorCabinWindow", it.operatorCabinWindowMemenuhi, it.operatorCabinWindowResult)
-        add(visualCategory, "operatorCabinFanAc", it.operatorCabinFanOrACMemenuhi, it.operatorCabinFanOrACResult)
-        add(visualCategory, "operatorCabinControlLeversButtons", it.operatorCabinControlLeversOrButtonsMemenuhi, it.operatorCabinControlLeversOrButtonsResult)
-        add(visualCategory, "operatorCabinPendantControl", it.operatorCabinPendantControlMemenuhi, it.operatorCabinPendantControlResult)
-        add(visualCategory, "operatorCabinLighting", it.operatorCabinLightingMemenuhi, it.operatorCabinLightingResult)
-        add(visualCategory, "operatorCabinHorn", it.operatorCabinHornMemenuhi, it.operatorCabinHornResult)
-        add(visualCategory, "operatorCabinFuse", it.operatorCabinFuseProtectionMemenuhi, it.operatorCabinFuseProtectionResult)
-        add(visualCategory, "operatorCabinCommunicationDevice", it.operatorCabinCommunicationDeviceMemenuhi, it.operatorCabinCommunicationDeviceResult)
-        add(visualCategory, "operatorCabinFireExtinguisher", it.operatorCabinFireExtinguisherMemenuhi, it.operatorCabinFireExtinguisherResult)
-        add(visualCategory, "operatorCabinOperatingSigns", it.operatorCabinOperationalSignsMemenuhi, it.operatorCabinOperationalSignsResult)
-        add(visualCategory, "operatorCabinIgnitionKeyMasterSwitch", it.operatorCabinIgnitionOrMasterSwitchMemenuhi, it.operatorCabinIgnitionOrMasterSwitchResult)
-        add(visualCategory, "electricalComponentsPanelConductorConnector", it.electricalComponentsPanelConductorConnectorMemenuhi, it.electricalComponentsPanelConductorConnectorResult)
-        add(visualCategory, "electricalComponentsConductorProtection", it.electricalComponentsConductorProtectionMemenuhi, it.electricalComponentsConductorProtectionResult)
-        add(visualCategory, "electricalComponentsMotorInstallationSafetySystem", it.electricalComponentsMotorInstallationSafetySystemMemenuhi, it.electricalComponentsMotorInstallationSafetySystemResult)
-        add(visualCategory, "electricalComponentsGroundingSystem", it.electricalComponentsGroundingSystemMemenuhi, it.electricalComponentsGroundingSystemResult)
-        add(visualCategory, "electricalComponentsInstallation", it.electricalComponentsInstallationMemenuhi, it.electricalComponentsInstallationResult)
+    fun addVisualItem(itemName: String, item: GantryCraneVisualInspectionItem) {
+        add(visualCategory, itemName, item.status, item.result)
     }
+
+    this.visualInspection.let { vis ->
+        vis.foundationAndStructure.let { fas ->
+            fas.anchorBolts.let {
+                addVisualItem("foundationAnchorBoltCorrosion", it.corrosion)
+                addVisualItem("foundationAnchorBoltCracks", it.cracks)
+                addVisualItem("foundationAnchorBoltDeformation", it.deformation)
+                addVisualItem("foundationAnchorBoltTightness", it.fastening)
+            }
+            fas.columnFrame.let {
+                addVisualItem("columnFrameCorrosion", it.corrosion)
+                addVisualItem("columnFrameCracks", it.cracks)
+                addVisualItem("columnFrameDeformation", it.deformation)
+                addVisualItem("columnFrameFastening", it.fastening)
+                addVisualItem("columnFrameCrossBracing", it.transverseReinforcement)
+                addVisualItem("columnFrameDiagonalBracing", it.diagonalReinforcement)
+            }
+            fas.ladder.let {
+                addVisualItem("ladderCorrosion", it.corrosion)
+                addVisualItem("ladderCracks", it.cracks)
+                addVisualItem("ladderDeformation", it.deformation)
+                addVisualItem("ladderFastening", it.fastening)
+            }
+            fas.workingFloor.let {
+                addVisualItem("workPlatformCorrosion", it.corrosion)
+                addVisualItem("workPlatformCracks", it.cracks)
+                addVisualItem("workPlatformDeformation", it.deformation)
+                addVisualItem("workPlatformFastening", it.fastening)
+            }
+        }
+        vis.mechanismAndRail.let { mar ->
+            mar.railSupportBeam.let {
+                addVisualItem("railMountingBeamCorrosion", it.corrosion)
+                addVisualItem("railMountingBeamCracks", it.cracks)
+                addVisualItem("railMountingBeamDeformation", it.deformation)
+                addVisualItem("railMountingBeamFastening", it.fastening)
+            }
+            mar.travelingRail.let {
+                addVisualItem("travelingRailCorrosion", it.corrosion)
+                addVisualItem("travelingRailCracks", it.cracks)
+                addVisualItem("travelingRailJoint", it.railConnection)
+                addVisualItem("travelingRailStraightness", it.railAlignment)
+                addVisualItem("travelingRailAlignmentBetweenRails", it.interRailAlignment)
+                addVisualItem("travelingRailEvennessBetweenRails", it.interRailFlatness)
+                addVisualItem("travelingRailGapBetweenRailJoints", it.railConnectionGap)
+                addVisualItem("travelingRailFastener", it.railFastener)
+                addVisualItem("travelingRailStopper", it.railStopper)
+            }
+            mar.traversingRail.let {
+                addVisualItem("traversingRailCorrosion", it.corrosion)
+                addVisualItem("traversingRailCracks", it.cracks)
+                addVisualItem("traversingRailJoint", it.railConnection)
+                addVisualItem("traversingRailStraightness", it.railAlignment)
+                addVisualItem("traversingRailAlignmentBetweenRails", it.interRailAlignment)
+                addVisualItem("traversingRailEvennessBetweenRails", it.interRailFlatness)
+                addVisualItem("traversingRailGapBetweenRailJoints", it.railConnectionGap)
+                addVisualItem("traversingRailFastener", it.railFastener)
+                addVisualItem("traversingRailStopper", it.railStopper)
+            }
+        }
+        vis.girderAndTrolley.let { gat ->
+            gat.girder.let {
+                addVisualItem("girderCorrosion", it.corrosion)
+                addVisualItem("girderCracks", it.cracks)
+                addVisualItem("girderCamber", it.camber)
+                addVisualItem("girderJoint", it.connection)
+                addVisualItem("girderEndJoint", it.endGirderConnection)
+                addVisualItem("girderTruckMountOnGirder", it.truckMountingOnGirder)
+            }
+            gat.travelingGearbox.let {
+                addVisualItem("travelingGearboxGirderCorrosion", it.corrosion)
+                addVisualItem("travelingGearboxGirderCracks", it.cracks)
+                addVisualItem("travelingGearboxGirderLubricatingOil", it.lubricatingOil)
+                addVisualItem("travelingGearboxGirderOilSeal", it.oilSeal)
+            }
+            gat.driveWheels.let {
+                addVisualItem("driveWheelWear", it.wear)
+                addVisualItem("driveWheelCracks", it.cracks)
+                addVisualItem("driveWheelDeformation", it.deformation)
+                addVisualItem("driveWheelFlangeCondition", it.flangeCondition)
+                addVisualItem("driveWheelChainCondition", it.chainCondition)
+            }
+            gat.idleWheels.let {
+                addVisualItem("idleWheelSecurity", it.safety)
+                addVisualItem("idleWheelCracks", it.cracks)
+                addVisualItem("idleWheelDeformation", it.deformation)
+                addVisualItem("idleWheelFlangeCondition", it.flangeCondition)
+            }
+            gat.wheelConnector.let {
+                addVisualItem("wheelConnectorBogieAxleStraightness", it.alignment)
+                addVisualItem("wheelConnectorBogieAxleCrossJoint", it.crossJoint)
+                addVisualItem("wheelConnectorBogieAxleLubrication", it.lubrication)
+            }
+            gat.girderStopper.let {
+                addVisualItem("stopperBumperOnGirderCondition", it.condition)
+                addVisualItem("stopperBumperOnGirderReinforcement", it.reinforcement)
+            }
+        }
+        vis.trolleyMechanism.let { tm ->
+            tm.trolleyTraversingGearbox.let {
+                addVisualItem("traversingGearboxTrolleyCarrierFastening", it.fastening)
+                addVisualItem("traversingGearboxTrolleyCarrierCorrosion", it.corrosion)
+                addVisualItem("traversingGearboxTrolleyCarrierCracks", it.cracks)
+                addVisualItem("traversingGearboxTrolleyCarrierLubricatingOil", it.lubricatingOil)
+                addVisualItem("traversingGearboxTrolleyCarrierOilSeal", it.oilSeal)
+            }
+            tm.trolleyDriveWheels.let {
+                addVisualItem("driveWheelOnTrolleyWear", it.wear)
+                addVisualItem("driveWheelOnTrolleyCracks", it.cracks)
+                addVisualItem("driveWheelOnTrolleyDeformation", it.deformation)
+                addVisualItem("driveWheelOnTrolleyFlangeCondition", it.flangeCondition)
+                addVisualItem("driveWheelOnTrolleyChainCondition", it.chainCondition)
+            }
+            tm.trolleyIdleWheels.let {
+                addVisualItem("idleWheelOnTrolleyWear", it.wear)
+                addVisualItem("idleWheelOnTrolleyCracks", it.cracks)
+                addVisualItem("idleWheelOnTrolleyDeformation", it.deformation)
+                addVisualItem("idleWheelOnTrolleyFlangeCondition", it.flangeCondition)
+            }
+            tm.trolleyWheelConnector.let {
+                addVisualItem("wheelConnectorBogieAxleOnTrolleyStraightness", it.alignment)
+                addVisualItem("wheelConnectorBogieAxleOnTrolleyCrossJoint", it.crossJoint)
+                addVisualItem("wheelConnectorBogieAxleOnTrolleyLubrication", it.lubrication)
+            }
+            tm.trolleyGirderStopper.let {
+                addVisualItem("stopperBumperOnGirderOnTrolleyCondition", it.condition)
+                addVisualItem("stopperBumperOnGirderOnTrolleyReinforcement", it.reinforcement)
+            }
+        }
+        vis.liftingEquipment.let { le ->
+            le.windingDrum.let {
+                addVisualItem("windingDrumGroove", it.groove)
+                addVisualItem("windingDrumGrooveFlange", it.grooveLip)
+                addVisualItem("windingDrumFlanges", it.flanges)
+            }
+            le.visualBrakeInspection.let {
+                addVisualItem("brakeWear", it.wear)
+                addVisualItem("brakeAdjustment", it.adjustment)
+            }
+            le.hoistGearbox.let {
+                addVisualItem("hoistGearboxLubrication", it.lubrication)
+                addVisualItem("hoistGearboxOilSeal", it.oilSeal)
+            }
+            le.pulleySprocket.let {
+                addVisualItem("pulleyDiscChainSprocketPulleyGroove", it.pulleyGroove)
+                addVisualItem("pulleyDiscChainSprocketPulleyFlange", it.pulleyLip)
+                addVisualItem("pulleyDiscChainSprocketPulleyPin", it.pulleyPin)
+                addVisualItem("pulleyDiscChainSprocketBearing", it.bearing)
+                addVisualItem("pulleyDiscChainSprocketPulleyGuard", it.pulleyGuard)
+                addVisualItem("pulleyDiscChainSprocketWireRopeChainGuard", it.ropeChainGuard)
+            }
+            le.mainHook.let {
+                addVisualItem("mainHookWear", it.wear)
+                addVisualItem("mainHookThroatOpening", it.hookOpeningGap)
+                addVisualItem("mainHookSwivelNutAndBearing", it.swivelNutAndBearing)
+                addVisualItem("mainHookTrunnion", it.trunnion)
+            }
+            le.auxiliaryHook.let {
+                addVisualItem("auxiliaryHookWear", it.wear)
+                addVisualItem("auxiliaryHookThroatOpening", it.hookOpeningGap)
+                addVisualItem("auxiliaryHookSwivelNutAndBearing", it.swivelNutAndBearing)
+                addVisualItem("auxiliaryHookTrunnion", it.trunnion)
+            }
+            le.mainWireRope.let {
+                addVisualItem("mainWireRopeCorrosion", it.corrosion)
+                addVisualItem("mainWireRopeWear", it.wear)
+                addVisualItem("mainWireRopeBroken", it.breakage)
+                addVisualItem("mainWireRopeDeformation", it.deformation)
+            }
+            le.auxiliaryWireRope.let {
+                addVisualItem("auxiliaryWireRopeCorrosion", it.corrosion)
+                addVisualItem("auxiliaryWireRopeWear", it.wear)
+                addVisualItem("auxiliaryWireRopeBroken", it.breakage)
+                addVisualItem("auxiliaryWireRopeDeformation", it.deformation)
+            }
+            le.mainChain.let {
+                addVisualItem("mainChainCorrosion", it.corrosion)
+                addVisualItem("mainChainWear", it.wear)
+                addVisualItem("mainChainCrackedBroken", it.crackOrBreakage)
+                addVisualItem("mainChainDeformation", it.deformation)
+            }
+            le.auxiliaryChain.let {
+                addVisualItem("auxiliaryChainCorrosion", it.corrosion)
+                addVisualItem("auxiliaryChainWear", it.wear)
+                addVisualItem("auxiliaryChainCrackedBroken", it.crackOrBreakage)
+                addVisualItem("auxiliaryChainDeformation", it.deformation)
+            }
+        }
+        vis.controlAndSafetySystem.let { cs ->
+            cs.limitSwitch.let {
+                addVisualItem("limitSwitchLsLongTraveling", it.longTravel)
+                addVisualItem("limitSwitchLsCrossTraveling", it.crossTravel)
+                addVisualItem("limitSwitchLsHoisting", it.hoist)
+            }
+            cs.operatorCabin.let {
+                addVisualItem("operatorCabinSafetyLadder", it.safetyLadder)
+                addVisualItem("operatorCabinDoor", it.door)
+                addVisualItem("operatorCabinWindow", it.window)
+                addVisualItem("operatorCabinFanAc", it.fanOrAC)
+                addVisualItem("operatorCabinControlLeversButtons", it.controlLeversOrButtons)
+                addVisualItem("operatorCabinPendantControl", it.pendantControl)
+                addVisualItem("operatorCabinLighting", it.lighting)
+                addVisualItem("operatorCabinHorn", it.horn)
+                addVisualItem("operatorCabinFuse", it.fuseProtection)
+                addVisualItem("operatorCabinCommunicationDevice", it.communicationDevice)
+                addVisualItem("operatorCabinFireExtinguisher", it.fireExtinguisher)
+                addVisualItem("operatorCabinOperatingSigns", it.operationalSigns)
+                addVisualItem("operatorCabinIgnitionKeyMasterSwitch", it.ignitionOrMasterSwitch)
+            }
+            cs.electricalComponents.let {
+                addVisualItem("electricalComponentsPanelConductorConnector", it.panelConductorConnector)
+                addVisualItem("electricalComponentsConductorProtection", it.conductorProtection)
+                addVisualItem("electricalComponentsMotorInstallationSafetySystem", it.motorInstallationSafetySystem)
+                addVisualItem("electricalComponentsGroundingSystem", it.groundingSystem)
+                addVisualItem("electricalComponentsInstallation", it.installation)
+            }
+        }
+    }
+
 
     // NDT
     add("nde_wirerope", "method", this.ndt.wireropeMethod)

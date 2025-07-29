@@ -22,6 +22,42 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCra
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneStaticHookTest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneTechnicalData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtBoom
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtBoomInspection
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtDrum
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtHook
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtMeasurement
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtPulley
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtSpecification
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtSteelWireRope
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.NdtSteelWireRopeItem
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.TestingFunction
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualAuxiliaryHook
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualAuxiliaryWinch
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualBrake
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualControlValve
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualElectricalComponents
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualFoundationAndBolts
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualFrameColumnsOnFoundation
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualHoistGearBlock
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualHydraulic
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualHydraulicCylinder
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualInternalCombustionEngine
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualLadder
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualLatticeBoom
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualLimitSwitch
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualMainHook
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualMainPulley
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualMainWinch
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualOperatorCabin
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualOutriggers
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualPneumatic
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualSafetyDevices
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualSteering
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualTravelDrum
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualTurntable
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualWireRope
+import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.VisualWorkingPlatform
 import com.nakersolutionid.nakersolutionid.domain.model.FindingType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
@@ -233,10 +269,16 @@ fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest
 //                                     Report Mappers
 // =================================================================================================
 
+/**
+ * Maps a [MobileCraneReportData] DTO (from API response) to an [InspectionWithDetailsDomain].
+ * This function converts the nested DTO structure into a flattened domain model, which is easier
+ * to work with in the UI and local database.
+ */
 fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
     val inspectionId = this.extraId
 
+    // Helper functions to simplify creating check items
     fun addCheckItem(category: String, itemName: String, value: String?) {
         checkItems.add(
             InspectionCheckItemDomain(inspectionId = inspectionId, category = category, itemName = itemName, status = false, result = value ?: "")
@@ -249,6 +291,12 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         )
     }
 
+    fun addBooleanCheckItem(category: String, itemName: String, value: Boolean) {
+        checkItems.add(
+            InspectionCheckItemDomain(inspectionId = inspectionId, category = category, itemName = itemName, status = value, result = "")
+        )
+    }
+
     // --- General Data ---
     val generalDataCategory = "general_data"
     addCheckItem(generalDataCategory, "personInCharge", this.generalData.userSubcontractorPersonInCharge)
@@ -256,8 +304,6 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     addCheckItem(generalDataCategory, "intendedUse", this.generalData.intendedUse)
     addCheckItem(generalDataCategory, "operatorCertificate", this.generalData.operatorCertificate)
     addCheckItem(generalDataCategory, "equipmentHistory", this.generalData.equipmentHistory)
-    addCheckItem(generalDataCategory, "inspectionDate", this.generalData.inspectionDate)
-
 
     // --- Technical Data ---
     val techCategory = "technical_data"
@@ -271,12 +317,11 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     addCheckItem(techCategory, "spec_maxLiftingHeight", tech.maxLiftingHeight)
     addCheckItem(techCategory, "spec_boomWorkingAngle", tech.boomWorkingAngle)
     addCheckItem(techCategory, "motor_engineNumber", tech.engineNumber)
-    addCheckItem(techCategory, "motor_type", tech.engineType)
+    addCheckItem(techCategory, "motor_type", tech.type)
     addCheckItem(techCategory, "motor_numberOfCylinders", tech.numberOfCylinders)
     addCheckItem(techCategory, "motor_netPower", tech.netPower)
     addCheckItem(techCategory, "motor_brandYearOfManufacture", tech.brandYearOfManufacture)
-    // NOTE: DTO has `hookManufacturer` but UI/Domain has `driveMotor.manufacturer`. Assuming they are the same for this mapping.
-    addCheckItem(techCategory, "motor_manufacturer", tech.hookManufacturer)
+    addCheckItem(techCategory, "motor_manufacturer", tech.manufacturer)
     addCheckItem(techCategory, "mainHook_type", tech.mainHookType)
     addCheckItem(techCategory, "mainHook_capacity", tech.mainHookCapacity)
     addCheckItem(techCategory, "mainHook_material", tech.mainHookMaterial)
@@ -301,377 +346,410 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     addCheckItem(techCategory, "rope_boom_breakingStrength", tech.wireRopeBoomHoistDrumBreakingStrength)
     addCheckItem(techCategory, "rope_boom_length", tech.wireRopeBoomHoistDrumLength)
 
-
-    // --- Inspection and Testing ---
+    // --- Inspection and Testing (Visual) ---
     val visualCategory = "visual_inspection"
     val it = this.inspectionAndTesting
-    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltCorrosion", it.visualFoundationAndBoltsCorrosionResult)
-    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltCracks", it.visualFoundationAndBoltsCracksResult)
-    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltDeformation", it.visualFoundationAndBoltsDeformationResult)
-    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltTightness", it.visualFoundationAndBoltsTightnessResult)
-    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationCorrosion", it.visualFrameColumnsOnFoundationCorrosionResult)
-    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationCracks", it.visualFrameColumnsOnFoundationCracksResult)
-    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationDeformation", it.visualFrameColumnsOnFoundationDeformationResult)
-    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationFastening", it.visualFrameColumnsOnFoundationFasteningResult)
-    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationTransverseReinforcement", it.visualFrameColumnsOnFoundationTransverseReinforcementResult)
-    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationDiagonalReinforcement", it.visualFrameColumnsOnFoundationDiagonalReinforcementResult)
-    addResultStatusCheckItem(visualCategory, "ladderCorrosion", it.visualLadderCorrosionResult)
-    addResultStatusCheckItem(visualCategory, "ladderCracks", it.visualLadderCracksResult)
-    addResultStatusCheckItem(visualCategory, "ladderDeformation", it.visualLadderDeformationResult)
-    addResultStatusCheckItem(visualCategory, "ladderFastening", it.visualLadderFasteningResult)
-    addResultStatusCheckItem(visualCategory, "workingPlatformCorrosion", it.visualWorkingPlatformCorrosionResult)
-    addResultStatusCheckItem(visualCategory, "workingPlatformCracks", it.visualWorkingPlatformCracksResult)
-    addResultStatusCheckItem(visualCategory, "workingPlatformDeformation", it.visualWorkingPlatformDeformationResult)
-    addResultStatusCheckItem(visualCategory, "workingPlatformFastening", it.visualWorkingPlatformFasteningResult)
-    addResultStatusCheckItem(visualCategory, "outriggersOutriggerArmHousing", it.visualOutriggersOutriggerArmHousingResult)
-    addResultStatusCheckItem(visualCategory, "outriggersOutriggerArms", it.visualOutriggersOutriggerArmsResult)
-    addResultStatusCheckItem(visualCategory, "outriggersJack", it.visualOutriggersJackResult)
-    addResultStatusCheckItem(visualCategory, "outriggersOutriggerPads", it.visualOutriggersOutriggerPadsResult)
-    addResultStatusCheckItem(visualCategory, "outriggersHousingConnectionToChassis", it.visualOutriggersHousingConnectionToChassisResult)
-    addResultStatusCheckItem(visualCategory, "outriggersOutriggerSafetyLocks", it.visualOutriggersOutriggerSafetyLocksResult)
-    addResultStatusCheckItem(visualCategory, "turntableSlewingRollerBearing", it.visualTurntableSlewingRollerBearingResult)
-    addResultStatusCheckItem(visualCategory, "turntableBrakeHousing", it.visualTurntableBrakeHousingResult)
-    addResultStatusCheckItem(visualCategory, "turntableBrakeLiningsAndShoes", it.visualTurntableBrakeLiningsAndShoesResult)
-    addResultStatusCheckItem(visualCategory, "turntableDrumSurface", it.visualTurntableDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "turntablePressureCylinder", it.visualTurntablePressureCylinderResult)
-    addResultStatusCheckItem(visualCategory, "turntableDrumAxle", it.visualTurntableDrumAxleResult)
-    addResultStatusCheckItem(visualCategory, "turntableLeversPinsBolts", it.visualTurntableLeversPinsBoltsResult)
-    addResultStatusCheckItem(visualCategory, "turntableGuard", it.visualTurntableGuardResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomMainBoom", it.visualLatticeBoomMainBoomResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomBoomSection", it.visualLatticeBoomBoomSectionResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomTopPulley", it.visualLatticeBoomTopPulleyResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomPulleyGuard", it.visualLatticeBoomPulleyGuardResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomWireRopeGuard", it.visualLatticeBoomWireRopeGuardResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomPulleyGrooveLip", it.visualLatticeBoomPulleyGrooveLipResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomPivotPin", it.visualLatticeBoomPivotPinResult)
-    addResultStatusCheckItem(visualCategory, "latticeBoomWireRopeGuidePulley", it.visualLatticeBoomWireRopeGuidePulleyResult)
-    addResultStatusCheckItem(visualCategory, "clutchMainClutch", it.visualSteeringMainClutchResult)
-    addResultStatusCheckItem(visualCategory, "transmission", it.visualTransmissionResult)
-    addResultStatusCheckItem(visualCategory, "steeringFrontWheel", it.visualSteeringFrontWheelResult)
-    addResultStatusCheckItem(visualCategory, "steeringMiddleWheel", it.visualSteeringMiddleWheelResult)
-    addResultStatusCheckItem(visualCategory, "steeringRearWheel", it.visualSteeringRearWheelResult)
-    addResultStatusCheckItem(visualCategory, "brakeServiceBrake", it.visualBrakeServiceBrakeResult)
-    addResultStatusCheckItem(visualCategory, "brakeParkingBrake", it.visualBrakeParkingBrakeResult)
-    addResultStatusCheckItem(visualCategory, "brakeBrakeHousing", it.visualBrakeBrakeHousingResult)
-    addResultStatusCheckItem(visualCategory, "brakeBrakeLiningsAndShoes", it.visualBrakeBrakeLiningsAndShoesResult)
-    addResultStatusCheckItem(visualCategory, "brakeDrumSurface", it.visualBrakeDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "brakeLeversPinsBolts", it.visualBrakeLeversPinsAndBoltsResult)
-    addResultStatusCheckItem(visualCategory, "brakeGuard", it.visualBrakeGuardResult)
-    addResultStatusCheckItem(visualCategory, "travelDrumClutchHousing", it.visualTravelDrumClutchHousingResult)
-    addResultStatusCheckItem(visualCategory, "travelDrumClutchLining", it.visualTravelDrumClutchLiningResult)
-    addResultStatusCheckItem(visualCategory, "travelDrumClutchDrumSurface", it.visualTravelDrumClutchDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "travelDrumLeversPinsBolts", it.visualTravelDrumLeversPinsAndBoltsResult)
-    addResultStatusCheckItem(visualCategory, "travelDrumGuard", it.visualTravelDrumGuardResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchDrumMounting", it.visualMainWinchDrumMountingResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchWindingDrumSurface", it.visualMainWinchWindingDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchBrakeLiningsAndShoes", it.visualMainWinchBrakeLiningsAndShoesResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchBrakeDrumSurface", it.visualMainWinchBrakeDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchBrakeHousing", it.visualMainWinchBrakeHousingResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchClutchLiningsAndShoes", it.visualMainWinchClutchLiningsAndShoesResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchClutchDrumSurface", it.visualMainWinchClutchDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchGroove", it.visualMainWinchGrooveResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchGrooveLip", it.visualMainWinchGrooveLipResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchFlanges", it.visualMainWinchFlangesResult)
-    addResultStatusCheckItem(visualCategory, "mainWinchBrakeActuatorLeversPinsAndBolts", it.visualMainWinchBrakeActuatorLeversPinsAndBoltsResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchDrumMounting", it.visualAuxiliaryWinchDrumMountingResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchWindingDrumSurface", it.visualAuxiliaryWinchWindingDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeLiningsAndShoes", it.visualAuxiliaryWinchBrakeLiningsAndShoesResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeDrumSurface", it.visualAuxiliaryWinchBrakeDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeHousing", it.visualAuxiliaryWinchBrakeHousingResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchClutchLiningsAndShoes", it.visualAuxiliaryWinchClutchLiningsAndShoesResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchClutchDrumSurface", it.visualAuxiliaryWinchClutchDrumSurfaceResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchGroove", it.visualAuxiliaryWinchGrooveResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchGrooveLip", it.visualAuxiliaryWinchGrooveLipResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchFlanges", it.visualAuxiliaryWinchFlangesResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeActuatorLeversPinsAndBolts", it.visualAuxiliaryWinchBrakeActuatorLeversPinsAndBoltsResult)
-    addResultStatusCheckItem(visualCategory, "hoistGearBlockLubrication", it.visualHoistGearBlockLubricationResult)
-    addResultStatusCheckItem(visualCategory, "hoistGearBlockOilSeal", it.visualHoistGearBlockOilSealResult)
-    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyGroove", it.visualMainPulleyPulleyGrooveResult)
-    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyGrooveLip", it.visualMainPulleyPulleyGrooveLipResult)
-    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyPin", it.visualMainPulleyPulleyPinResult)
-    addResultStatusCheckItem(visualCategory, "mainPulleyBearing", it.visualMainPulleyBearingResult)
-    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyGuard", it.visualMainPulleyPulleyGuardResult)
-    addResultStatusCheckItem(visualCategory, "mainPulleyWireRopeGuard", it.visualMainPulleyWireRopeGuardResult)
-    addResultStatusCheckItem(visualCategory, "mainHookVisualSwivelNutAndBearing", it.visualMainHookSwivelNutAndBearingResult)
-    addResultStatusCheckItem(visualCategory, "mainHookVisualTrunnion", it.visualMainHookTrunnionResult)
-    addResultStatusCheckItem(visualCategory, "mainHookVisualSafetyLatch", it.visualMainHookSafetyLatchResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryHookVisualFreeFallWeight", it.visualAuxiliaryHookFreeFallWeightResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryHookVisualSwivelNutAndBearing", it.visualAuxiliaryHookSwivelNutAndBearingResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryHookVisualSafetyLatch", it.visualAuxiliaryHookSafetyLatchResult)
-    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualCorrosion", it.visualMainWireRopeCorrosionResult)
-    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualWear", it.visualMainWireRopeWearResult)
-    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualBreakage", it.visualMainWireRopeBreakageResult)
-    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualDeformation", it.visualMainWireRopeDeformationResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualCorrosion", it.visualAuxiliaryWireRopeCorrosionResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualWear", it.visualAuxiliaryWireRopeWearResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualBreakage", it.visualAuxiliaryWireRopeBreakageResult)
-    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualDeformation", it.visualAuxiliaryWireRopeDeformationResult)
-    addResultStatusCheckItem(visualCategory, "limitSwitchLsLongTravel", it.visualLimitSwitchLongTravelResult)
-    addResultStatusCheckItem(visualCategory, "limitSwitchLsCrossTravel", it.visualLimitSwitchCrossTravelResult)
-    addResultStatusCheckItem(visualCategory, "limitSwitchLsHoisting", it.visualLimitSwitchHoistingResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineCoolingSystem", it.visualInternalCombustionEngineCoolingSystemResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineLubricationSystem", it.visualInternalCombustionEngineLubricationSystemResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineEngineMounting", it.visualInternalCombustionEngineEngineMountingResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineSafetyGuardEquipment", it.visualInternalCombustionEngineSafetyGuardEquipmentResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineExhaustSystem", it.visualInternalCombustionEngineExhaustSystemResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineFuelSystem", it.visualInternalCombustionEngineFuelSystemResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEnginePowerTransmissionSystem", it.visualInternalCombustionEnginePowerTransmissionSystemResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineBattery", it.visualInternalCombustionEngineBatteryResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineStarterMotor", it.visualInternalCombustionEngineStarterMotorResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineWiringInstallation", it.visualInternalCombustionEngineWiringInstallationResult)
-    addResultStatusCheckItem(visualCategory, "internalCombustionEngineTurbocharger", it.visualInternalCombustionEngineTurbochargerResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicPump", it.visualHydraulicPumpResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicLines", it.visualHydraulicLinesResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicFilter", it.visualHydraulicFilterResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicTank", it.visualHydraulicTankResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicMotorMainWinchMotor", it.visualHydraulicMainWinchMotorResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicMotorAuxiliaryWinchMotor", it.visualHydraulicAuxiliaryWinchMotorResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicMotorBoomWinchMotor", it.visualHydraulicBoomWinchMotorResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicMotorSwingMotor", it.visualHydraulicSwingMotorResult)
-    addResultStatusCheckItem(visualCategory, "controlValveReliefValve", it.visualControlValveReliefValveResult)
-    addResultStatusCheckItem(visualCategory, "controlValveMainWinchValve", it.visualControlValveMainWinchValveResult)
-    addResultStatusCheckItem(visualCategory, "controlValveAuxiliaryWinchValve", it.visualControlValveAuxiliaryWinchValveResult)
-    addResultStatusCheckItem(visualCategory, "controlValveBoomWinchValve", it.visualControlValveBoomWinchValveResult)
-    addResultStatusCheckItem(visualCategory, "controlValveBoomMovementValve", it.visualControlValveBoomMovementValveResult)
-    addResultStatusCheckItem(visualCategory, "controlValveSteeringCylinderValve", it.visualControlValveSteeringCylinderValveResult)
-    addResultStatusCheckItem(visualCategory, "controlValveAxleOscillationValve", it.visualControlValveAxleOscillationValveResult)
-    addResultStatusCheckItem(visualCategory, "controlValveOutriggerMovementValve", it.visualControlValveOutriggerMovementValveResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicCylinderBoomMovementCylinder", it.visualHydraulicCylinderBoomMovementCylinderResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicCylinderOutriggerCylinder", it.visualHydraulicCylinderOutriggerCylinderResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicCylinderSteeringWheelCylinder", it.visualHydraulicCylinderSteeringWheelCylinderResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicCylinderAxleOscillationCylinder", it.visualHydraulicCylinderAxleOscillationCylinderResult)
-    addResultStatusCheckItem(visualCategory, "hydraulicCylinderTelescopicCylinder", it.visualHydraulicCylinderTelescopicCylinderResult)
-    addResultStatusCheckItem(visualCategory, "pneumaticCompressor", it.visualPneumaticCompressorResult)
-    addResultStatusCheckItem(visualCategory, "pneumaticTankAndSafetyValve", it.visualPneumaticTankAndSafetyValveResult)
-    addResultStatusCheckItem(visualCategory, "pneumaticPressurizedAirLines", it.visualPneumaticPressurizedAirLinesResult)
-    addResultStatusCheckItem(visualCategory, "pneumaticAirFilter", it.visualPneumaticAirFilterResult)
-    addResultStatusCheckItem(visualCategory, "pneumaticControlValve", it.visualPneumaticControlValveResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinSafetyLadder", it.visualOperatorCabinSafetyLadderResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinDoor", it.visualOperatorCabinDoorResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinWindow", it.visualOperatorCabinWindowResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinFanAc", it.visualOperatorCabinFanAcResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinControlLeversButtons", it.visualOperatorCabinControlLeversButtonsResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinPendantControl", it.visualOperatorCabinPendantControlResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinLighting", it.visualOperatorCabinLightingResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinHornSignalAlarm", it.visualOperatorCabinHornSignalAlarmResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinFuse", it.visualOperatorCabinFuseResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinCommunicationDevice", it.visualOperatorCabinCommunicationDeviceResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinFireExtinguisher", it.visualOperatorCabinFireExtinguisherResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinOperatingSigns", it.visualOperatorCabinOperatingSignsResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinIgnitionKeyMasterSwitch", it.visualOperatorCabinIgnitionKeyMasterSwitchResult)
-    addResultStatusCheckItem(visualCategory, "operatorCabinButtonsHandlesLevers", it.visualOperatorCabinButtonsHandlesLeversResult)
-    addResultStatusCheckItem(visualCategory, "electricalComponentsPanelConductorConnector", it.visualElectricalComponentsPanelConductorConnectorResult)
-    addResultStatusCheckItem(visualCategory, "electricalComponentsConductorProtection", it.visualElectricalComponentsConductorProtectionResult)
-    addResultStatusCheckItem(visualCategory, "electricalComponentsMotorInstallationSafetySystem", it.visualElectricalComponentsMotorInstallationSafetySystemResult)
-    addResultStatusCheckItem(visualCategory, "electricalComponentsGroundingSystem", it.visualElectricalComponentsGroundingSystemResult)
-    addResultStatusCheckItem(visualCategory, "electricalComponentsInstallation", it.visualElectricalComponentsInstallationResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesLadderHandrail", it.visualSafetyDevicesLadderHandrailResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesEngineOilLubricantPressure", it.visualSafetyDevicesEngineOilLubricantPressureResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesHydraulicOilPressure", it.visualSafetyDevicesHydraulicOilPressureResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesAirPressure", it.visualSafetyDevicesAirPressureResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesAmperemeter", it.visualSafetyDevicesAmperemeterResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesVoltage", it.visualSafetyDevicesVoltageResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesEngineTemperature", it.visualSafetyDevicesEngineTemperatureResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesTransmissionTemperature", it.visualSafetyDevicesTransmissionTemperatureResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesConverterOilTemperaturePressure", it.visualSafetyDevicesConverterOilTemperaturePressureResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesSpeedometerIndicator", it.visualSafetyDevicesConverterSpeedometerIndicatorResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesRotaryLamp", it.visualSafetyDevicesConverterRotaryLampResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesMainHoistRopeUpDownLimit", it.visualSafetyDevicesConverterMainHoistRopeUpDownLimitResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesAuxiliaryHoistRopeUpDownLimit", it.visualSafetyDevicesConverterAuxiliaryHoistRopeUpDownLimitResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesSwingMotionLimit", it.visualSafetyDevicesConverterSwingMotionLimitResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesLevelIndicator", it.visualSafetyDevicesConverterLevelIndicatorResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesLoadWeightIndicator", it.visualSafetyDevicesConverterLoadWeightIndicatorResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesLoadChart", it.visualSafetyDevicesConverterLoadChartResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesAnemometerWindSpeed", it.visualSafetyDevicesConverterAnemometerWindSpeedResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesBoomAngleIndicator", it.visualSafetyDevicesConverterBoomAngleIndicatorResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesAirPressureIndicator", it.visualSafetyDevicesConverterAirPressureIndicatorResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesHydraulicPressureIndicator", it.visualSafetyDevicesConverterHydraulicPressureIndicatorResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesSafetyValves", it.visualSafetyDevicesConverterSafetyValvesResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesMainWindingDrumSafetyLock", it.visualSafetyDevicesConverterMainWindingDrumSafetyLockResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesAuxiliaryWindingDrumSafetyLock", it.visualSafetyDevicesConverterAuxiliaryWindingDrumSafetyLockResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesTelescopicMotionLimit", it.visualSafetyDevicesConverterTelescopicMotionLimitResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesLightningArrester", it.visualSafetyDevicesConverterLightningArresterResult)
-    addResultStatusCheckItem(visualCategory, "safetyDevicesLiftingHeightIndicator", it.visualSafetyDevicesConverterLiftingHeightIndicatorResult)
+    // VisualFoundationAndBolts
+    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltCorrosion", it.visualFoundationAndBolts.corrosion)
+    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltCracks", it.visualFoundationAndBolts.cracks)
+    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltDeformation", it.visualFoundationAndBolts.deformation)
+    addResultStatusCheckItem(visualCategory, "foundationAnchorBoltTightness", it.visualFoundationAndBolts.tightness)
+    // VisualFrameColumnsOnFoundation
+    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationCorrosion", it.visualFrameColumnsOnFoundation.corrosion)
+    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationCracks", it.visualFrameColumnsOnFoundation.cracks)
+    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationDeformation", it.visualFrameColumnsOnFoundation.deformation)
+    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationFastening", it.visualFrameColumnsOnFoundation.fastening)
+    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationTransverseReinforcement", it.visualFrameColumnsOnFoundation.transverseReinforcement)
+    addResultStatusCheckItem(visualCategory, "frameColumnsOnFoundationDiagonalReinforcement", it.visualFrameColumnsOnFoundation.diagonalReinforcement)
+    // VisualLadder
+    addResultStatusCheckItem(visualCategory, "ladderCorrosion", it.visualLadder.corrosion)
+    addResultStatusCheckItem(visualCategory, "ladderCracks", it.visualLadder.cracks)
+    addResultStatusCheckItem(visualCategory, "ladderDeformation", it.visualLadder.deformation)
+    addResultStatusCheckItem(visualCategory, "ladderFastening", it.visualLadder.fastening)
+    // VisualWorkingPlatform
+    addResultStatusCheckItem(visualCategory, "workingPlatformCorrosion", it.visualWorkingPlatform.corrosion)
+    addResultStatusCheckItem(visualCategory, "workingPlatformCracks", it.visualWorkingPlatform.cracks)
+    addResultStatusCheckItem(visualCategory, "workingPlatformDeformation", it.visualWorkingPlatform.deformation)
+    addResultStatusCheckItem(visualCategory, "workingPlatformFastening", it.visualWorkingPlatform.fastening)
+    // VisualOutriggers
+    addResultStatusCheckItem(visualCategory, "outriggersOutriggerArmHousing", it.visualOutriggers.outriggerArmHousing)
+    addResultStatusCheckItem(visualCategory, "outriggersOutriggerArms", it.visualOutriggers.outriggerArms)
+    addResultStatusCheckItem(visualCategory, "outriggersJack", it.visualOutriggers.jack)
+    addResultStatusCheckItem(visualCategory, "outriggersOutriggerPads", it.visualOutriggers.outriggerPads)
+    addResultStatusCheckItem(visualCategory, "outriggersHousingConnectionToChassis", it.visualOutriggers.housingConnectionToChassis)
+    addResultStatusCheckItem(visualCategory, "outriggersOutriggerSafetyLocks", it.visualOutriggers.outriggerSafetyLocks)
+    // VisualTurntable
+    addResultStatusCheckItem(visualCategory, "turntableSlewingRollerBearing", it.visualTurntable.slewingRollerBearing)
+    addResultStatusCheckItem(visualCategory, "turntableBrakeHousing", it.visualTurntable.brakeHousing)
+    addResultStatusCheckItem(visualCategory, "turntableBrakeLiningsAndShoes", it.visualTurntable.brakeLiningsAndShoes)
+    addResultStatusCheckItem(visualCategory, "turntableDrumSurface", it.visualTurntable.drumSurface)
+    addResultStatusCheckItem(visualCategory, "turntablePressureCylinder", it.visualTurntable.pressureCylinder)
+    addResultStatusCheckItem(visualCategory, "turntableDrumAxle", it.visualTurntable.drumAxle)
+    addResultStatusCheckItem(visualCategory, "turntableLeversPinsBolts", it.visualTurntable.leversPinsBolts)
+    addResultStatusCheckItem(visualCategory, "turntableGuard", it.visualTurntable.guard)
+    // VisualLatticeBoom
+    addResultStatusCheckItem(visualCategory, "latticeBoomMainBoom", it.visualLatticeBoom.mainBoom)
+    addResultStatusCheckItem(visualCategory, "latticeBoomBoomSection", it.visualLatticeBoom.boomSection)
+    addResultStatusCheckItem(visualCategory, "latticeBoomTopPulley", it.visualLatticeBoom.topPulley)
+    addResultStatusCheckItem(visualCategory, "latticeBoomPulleyGuard", it.visualLatticeBoom.pulleyGuard)
+    addResultStatusCheckItem(visualCategory, "latticeBoomWireRopeGuard", it.visualLatticeBoom.wireRopeGuard)
+    addResultStatusCheckItem(visualCategory, "latticeBoomPulleyGrooveLip", it.visualLatticeBoom.pulleyGrooveLip)
+    addResultStatusCheckItem(visualCategory, "latticeBoomPivotPin", it.visualLatticeBoom.pivotPin)
+    addResultStatusCheckItem(visualCategory, "latticeBoomWireRopeGuidePulley", it.visualLatticeBoom.wireRopeGuidePulley)
+    // VisualSteering
+    addResultStatusCheckItem(visualCategory, "clutchMainClutch", it.visualSteering.mainClutch)
+    addResultStatusCheckItem(visualCategory, "transmission", it.visualSteering.transmission)
+    addResultStatusCheckItem(visualCategory, "steeringFrontWheel", it.visualSteering.frontWheel)
+    addResultStatusCheckItem(visualCategory, "steeringMiddleWheel", it.visualSteering.middleWheel)
+    addResultStatusCheckItem(visualCategory, "steeringRearWheel", it.visualSteering.rearWheel)
+    // VisualBrake
+    addResultStatusCheckItem(visualCategory, "brakeServiceBrake", it.visualBrake.serviceBrake)
+    addResultStatusCheckItem(visualCategory, "brakeParkingBrake", it.visualBrake.parkingBrake)
+    addResultStatusCheckItem(visualCategory, "brakeBrakeHousing", it.visualBrake.brakeHousing)
+    addResultStatusCheckItem(visualCategory, "brakeBrakeLiningsAndShoes", it.visualBrake.brakeLiningsAndShoes)
+    addResultStatusCheckItem(visualCategory, "brakeDrumSurface", it.visualBrake.drumSurface)
+    addResultStatusCheckItem(visualCategory, "brakeLeversPinsBolts", it.visualBrake.leversPinsBolts)
+    addResultStatusCheckItem(visualCategory, "brakeGuard", it.visualBrake.guard)
+    // VisualTravelDrum
+    addResultStatusCheckItem(visualCategory, "travelDrumClutchHousing", it.visualTravelDrum.clutchHousing)
+    addResultStatusCheckItem(visualCategory, "travelDrumClutchLining", it.visualTravelDrum.clutchLining)
+    addResultStatusCheckItem(visualCategory, "travelDrumClutchDrumSurface", it.visualTravelDrum.clutchDrumSurface)
+    addResultStatusCheckItem(visualCategory, "travelDrumLeversPinsBolts", it.visualTravelDrum.leversPinsBolts)
+    addResultStatusCheckItem(visualCategory, "travelDrumGuard", it.visualTravelDrum.guard)
+    // VisualMainWinch
+    addResultStatusCheckItem(visualCategory, "mainWinchDrumMounting", it.visualMainWinch.drumMounting)
+    addResultStatusCheckItem(visualCategory, "mainWinchWindingDrumSurface", it.visualMainWinch.windingDrumSurface)
+    addResultStatusCheckItem(visualCategory, "mainWinchBrakeLiningsAndShoes", it.visualMainWinch.brakeLiningsAndShoes)
+    addResultStatusCheckItem(visualCategory, "mainWinchBrakeDrumSurface", it.visualMainWinch.brakeDrumSurface)
+    addResultStatusCheckItem(visualCategory, "mainWinchBrakeHousing", it.visualMainWinch.brakeHousing)
+    addResultStatusCheckItem(visualCategory, "mainWinchClutchLiningsAndShoes", it.visualMainWinch.clutchLiningsAndShoes)
+    addResultStatusCheckItem(visualCategory, "mainWinchClutchDrumSurface", it.visualMainWinch.clutchDrumSurface)
+    addResultStatusCheckItem(visualCategory, "mainWinchGroove", it.visualMainWinch.groove)
+    addResultStatusCheckItem(visualCategory, "mainWinchGrooveLip", it.visualMainWinch.grooveLip)
+    addResultStatusCheckItem(visualCategory, "mainWinchFlanges", it.visualMainWinch.flanges)
+    addResultStatusCheckItem(visualCategory, "mainWinchBrakeActuatorLeversPinsAndBolts", it.visualMainWinch.brakeActuatorLeversPinsAndBolts)
+    // VisualAuxiliaryWinch
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchDrumMounting", it.visualAuxiliaryWinch.drumMounting)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchWindingDrumSurface", it.visualAuxiliaryWinch.windingDrumSurface)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeLiningsAndShoes", it.visualAuxiliaryWinch.brakeLiningsAndShoes)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeDrumSurface", it.visualAuxiliaryWinch.brakeDrumSurface)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeHousing", it.visualAuxiliaryWinch.brakeHousing)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchClutchLiningsAndShoes", it.visualAuxiliaryWinch.clutchLiningsAndShoes)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchClutchDrumSurface", it.visualAuxiliaryWinch.clutchDrumSurface)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchGroove", it.visualAuxiliaryWinch.groove)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchGrooveLip", it.visualAuxiliaryWinch.grooveLip)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchFlanges", it.visualAuxiliaryWinch.flanges)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWinchBrakeActuatorLeversPinsAndBolts", it.visualAuxiliaryWinch.brakeActuatorLeversPinsAndBolts)
+    // VisualHoistGearBlock
+    addResultStatusCheckItem(visualCategory, "hoistGearBlockLubrication", it.visualHoistGearBlock.lubrication)
+    addResultStatusCheckItem(visualCategory, "hoistGearBlockOilSeal", it.visualHoistGearBlock.oilSeal)
+    // VisualMainPulley
+    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyGroove", it.visualMainPulley.pulleyGroove)
+    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyGrooveLip", it.visualMainPulley.pulleyGrooveLip)
+    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyPin", it.visualMainPulley.pulleyPin)
+    addResultStatusCheckItem(visualCategory, "mainPulleyBearing", it.visualMainPulley.bearing)
+    addResultStatusCheckItem(visualCategory, "mainPulleyPulleyGuard", it.visualMainPulley.pulleyGuard)
+    addResultStatusCheckItem(visualCategory, "mainPulleyWireRopeGuard", it.visualMainPulley.wireRopeGuard)
+    // VisualMainHook
+    addResultStatusCheckItem(visualCategory, "mainHookVisualSwivelNutAndBearing", it.visualMainHook.swivelNutAndBearing)
+    addResultStatusCheckItem(visualCategory, "mainHookVisualTrunnion", it.visualMainHook.trunnion)
+    addResultStatusCheckItem(visualCategory, "mainHookVisualSafetyLatch", it.visualMainHook.safetyLatch)
+    // VisualAuxiliaryHook
+    addResultStatusCheckItem(visualCategory, "auxiliaryHookVisualFreeFallWeight", it.visualAuxiliaryHook.freeFallWeight)
+    addResultStatusCheckItem(visualCategory, "auxiliaryHookVisualSwivelNutAndBearing", it.visualAuxiliaryHook.swivelNutAndBearing)
+    addResultStatusCheckItem(visualCategory, "auxiliaryHookVisualSafetyLatch", it.visualAuxiliaryHook.safetyLatch)
+    // VisualWireRope
+    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualCorrosion", it.visualMainWireRope.corrosion)
+    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualWear", it.visualMainWireRope.wear)
+    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualBreakage", it.visualMainWireRope.breakage)
+    addResultStatusCheckItem(visualCategory, "mainWireRopeVisualDeformation", it.visualMainWireRope.deformation)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualCorrosion", it.visualAuxiliaryWireRope.corrosion)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualWear", it.visualAuxiliaryWireRope.wear)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualBreakage", it.visualAuxiliaryWireRope.breakage)
+    addResultStatusCheckItem(visualCategory, "auxiliaryWireRopeVisualDeformation", it.visualAuxiliaryWireRope.deformation)
+    // VisualLimitSwitch
+    addResultStatusCheckItem(visualCategory, "limitSwitchLsLongTravel", it.visualLimitSwitch.longTravel)
+    addResultStatusCheckItem(visualCategory, "limitSwitchLsCrossTravel", it.visualLimitSwitch.crossTravel)
+    addResultStatusCheckItem(visualCategory, "limitSwitchLsHoisting", it.visualLimitSwitch.hoisting)
+    // VisualInternalCombustionEngine
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineCoolingSystem", it.visualInternalCombustionEngine.coolingSystem)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineLubricationSystem", it.visualInternalCombustionEngine.lubricationSystem)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineEngineMounting", it.visualInternalCombustionEngine.engineMounting)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineSafetyGuardEquipment", it.visualInternalCombustionEngine.safetyGuardEquipment)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineExhaustSystem", it.visualInternalCombustionEngine.exhaustSystem)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineFuelSystem", it.visualInternalCombustionEngine.fuelSystem)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEnginePowerTransmissionSystem", it.visualInternalCombustionEngine.powerTransmissionSystem)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineBattery", it.visualInternalCombustionEngine.battery)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineStarterMotor", it.visualInternalCombustionEngine.starterMotor)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineWiringInstallation", it.visualInternalCombustionEngine.wiringInstallation)
+    addResultStatusCheckItem(visualCategory, "internalCombustionEngineTurbocharger", it.visualInternalCombustionEngine.turbocharger)
+    // VisualHydraulic
+    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicPump", it.visualHydraulic.pump)
+    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicLines", it.visualHydraulic.lines)
+    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicFilter", it.visualHydraulic.filter)
+    addResultStatusCheckItem(visualCategory, "hydraulicHydraulicTank", it.visualHydraulic.tank)
+    addResultStatusCheckItem(visualCategory, "hydraulicMotorMainWinchMotor", it.visualHydraulic.mainWinchMotor)
+    addResultStatusCheckItem(visualCategory, "hydraulicMotorAuxiliaryWinchMotor", it.visualHydraulic.auxiliaryWinchMotor)
+    addResultStatusCheckItem(visualCategory, "hydraulicMotorBoomWinchMotor", it.visualHydraulic.boomWinchMotor)
+    addResultStatusCheckItem(visualCategory, "hydraulicMotorSwingMotor", it.visualHydraulic.swingMotor)
+    // VisualControlValve
+    addResultStatusCheckItem(visualCategory, "controlValveReliefValve", it.visualControlValve.reliefValve)
+    addResultStatusCheckItem(visualCategory, "controlValveMainWinchValve", it.visualControlValve.mainWinchValve)
+    addResultStatusCheckItem(visualCategory, "controlValveAuxiliaryWinchValve", it.visualControlValve.auxiliaryWinchValve)
+    addResultStatusCheckItem(visualCategory, "controlValveBoomWinchValve", it.visualControlValve.boomWinchValve)
+    addResultStatusCheckItem(visualCategory, "controlValveBoomMovementValve", it.visualControlValve.boomMovementValve)
+    addResultStatusCheckItem(visualCategory, "controlValveSteeringCylinderValve", it.visualControlValve.steeringCylinderValve)
+    addResultStatusCheckItem(visualCategory, "controlValveAxleOscillationValve", it.visualControlValve.axleOscillationValve)
+    addResultStatusCheckItem(visualCategory, "controlValveOutriggerMovementValve", it.visualControlValve.outriggerMovementValve)
+    // VisualHydraulicCylinder
+    addResultStatusCheckItem(visualCategory, "hydraulicCylinderBoomMovementCylinder", it.visualHydraulicCylinder.boomMovementCylinder)
+    addResultStatusCheckItem(visualCategory, "hydraulicCylinderOutriggerCylinder", it.visualHydraulicCylinder.outriggerCylinder)
+    addResultStatusCheckItem(visualCategory, "hydraulicCylinderSteeringWheelCylinder", it.visualHydraulicCylinder.steeringWheelCylinder)
+    addResultStatusCheckItem(visualCategory, "hydraulicCylinderAxleOscillationCylinder", it.visualHydraulicCylinder.axleOscillationCylinder)
+    addResultStatusCheckItem(visualCategory, "hydraulicCylinderTelescopicCylinder", it.visualHydraulicCylinder.telescopicCylinder)
+    // VisualPneumatic
+    addResultStatusCheckItem(visualCategory, "pneumaticCompressor", it.visualPneumatic.compressor)
+    addResultStatusCheckItem(visualCategory, "pneumaticTankAndSafetyValve", it.visualPneumatic.tankAndSafetyValve)
+    addResultStatusCheckItem(visualCategory, "pneumaticPressurizedAirLines", it.visualPneumatic.pressurizedAirLines)
+    addResultStatusCheckItem(visualCategory, "pneumaticAirFilter", it.visualPneumatic.airFilter)
+    addResultStatusCheckItem(visualCategory, "pneumaticControlValve", it.visualPneumatic.controlValve)
+    // VisualOperatorCabin
+    addResultStatusCheckItem(visualCategory, "operatorCabinSafetyLadder", it.visualOperatorCabin.safetyLadder)
+    addResultStatusCheckItem(visualCategory, "operatorCabinDoor", it.visualOperatorCabin.door)
+    addResultStatusCheckItem(visualCategory, "operatorCabinWindow", it.visualOperatorCabin.window)
+    addResultStatusCheckItem(visualCategory, "operatorCabinFanAc", it.visualOperatorCabin.fanAc)
+    addResultStatusCheckItem(visualCategory, "operatorCabinControlLeversButtons", it.visualOperatorCabin.controlLeversButtons)
+    addResultStatusCheckItem(visualCategory, "operatorCabinPendantControl", it.visualOperatorCabin.pendantControl)
+    addResultStatusCheckItem(visualCategory, "operatorCabinLighting", it.visualOperatorCabin.lighting)
+    addResultStatusCheckItem(visualCategory, "operatorCabinHornSignalAlarm", it.visualOperatorCabin.hornSignalAlarm)
+    addResultStatusCheckItem(visualCategory, "operatorCabinFuse", it.visualOperatorCabin.fuse)
+    addResultStatusCheckItem(visualCategory, "operatorCabinCommunicationDevice", it.visualOperatorCabin.communicationDevice)
+    addResultStatusCheckItem(visualCategory, "operatorCabinFireExtinguisher", it.visualOperatorCabin.fireExtinguisher)
+    addResultStatusCheckItem(visualCategory, "operatorCabinOperatingSigns", it.visualOperatorCabin.operatingSigns)
+    addResultStatusCheckItem(visualCategory, "operatorCabinIgnitionKeyMasterSwitch", it.visualOperatorCabin.ignitionKeyMasterSwitch)
+    addResultStatusCheckItem(visualCategory, "operatorCabinButtonsHandlesLevers", it.visualOperatorCabin.buttonsHandlesLevers)
+    // VisualElectricalComponents
+    addResultStatusCheckItem(visualCategory, "electricalComponentsPanelConductorConnector", it.visualElectricalComponents.panelConductorConnector)
+    addResultStatusCheckItem(visualCategory, "electricalComponentsConductorProtection", it.visualElectricalComponents.conductorProtection)
+    addResultStatusCheckItem(visualCategory, "electricalComponentsMotorInstallationSafetySystem", it.visualElectricalComponents.motorInstallationSafetySystem)
+    addResultStatusCheckItem(visualCategory, "electricalComponentsGroundingSystem", it.visualElectricalComponents.groundingSystem)
+    addResultStatusCheckItem(visualCategory, "electricalComponentsInstallation", it.visualElectricalComponents.installation)
+    // VisualSafetyDevices
+    addResultStatusCheckItem(visualCategory, "safetyDevicesLadderHandrail", it.visualSafetyDevices.ladderHandrail)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesEngineOilLubricantPressure", it.visualSafetyDevices.engineOilLubricantPressure)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesHydraulicOilPressure", it.visualSafetyDevices.hydraulicOilPressure)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesAirPressure", it.visualSafetyDevices.airPressure)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesAmperemeter", it.visualSafetyDevices.amperemeter)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesVoltage", it.visualSafetyDevices.voltage)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesEngineTemperature", it.visualSafetyDevices.engineTemperature)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesTransmissionTemperature", it.visualSafetyDevices.transmissionTemperature)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesConverterOilTemperaturePressure", it.visualSafetyDevices.converterOilTemperaturePressure)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesSpeedometerIndicator", it.visualSafetyDevices.converterSpeedometerIndicator)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesRotaryLamp", it.visualSafetyDevices.converterRotaryLamp)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesMainHoistRopeUpDownLimit", it.visualSafetyDevices.converterMainHoistRopeUpDownLimit)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesAuxiliaryHoistRopeUpDownLimit", it.visualSafetyDevices.converterAuxiliaryHoistRopeUpDownLimit)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesSwingMotionLimit", it.visualSafetyDevices.converterSwingMotionLimit)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesLevelIndicator", it.visualSafetyDevices.converterLevelIndicator)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesLoadWeightIndicator", it.visualSafetyDevices.converterLoadWeightIndicator)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesLoadChart", it.visualSafetyDevices.converterLoadChart)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesAnemometerWindSpeed", it.visualSafetyDevices.converterAnemometerWindSpeed)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesBoomAngleIndicator", it.visualSafetyDevices.converterBoomAngleIndicator)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesAirPressureIndicator", it.visualSafetyDevices.converterAirPressureIndicator)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesHydraulicPressureIndicator", it.visualSafetyDevices.converterHydraulicPressureIndicator)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesSafetyValves", it.visualSafetyDevices.converterSafetyValves)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesMainWindingDrumSafetyLock", it.visualSafetyDevices.converterMainWindingDrumSafetyLock)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesAuxiliaryWindingDrumSafetyLock", it.visualSafetyDevices.converterAuxiliaryWindingDrumSafetyLock)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesTelescopicMotionLimit", it.visualSafetyDevices.converterTelescopicMotionLimit)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesLightningArrester", it.visualSafetyDevices.converterLightningArrester)
+    addResultStatusCheckItem(visualCategory, "safetyDevicesLiftingHeightIndicator", it.visualSafetyDevices.converterLiftingHeightIndicator)
 
+    // --- Inspection and Testing (NDE) ---
+    addCheckItem("nde_wireRope", "ndtType", it.ndtSteelWireRope.ndtType)
+    it.ndtSteelWireRope.ropes.forEachIndexed { index, item ->
+        val cat = "nde_wireRope_item_$index"
+        addCheckItem(cat, "usage", item.usageAt)
+        addCheckItem(cat, "specDiameter", item.specDiameter)
+        addCheckItem(cat, "actualDiameter", item.actualDiameter)
+        addCheckItem(cat, "construction", item.construction)
+        addCheckItem(cat, "type", item.type)
+        addCheckItem(cat, "length", item.length)
+        addCheckItem(cat, "age", item.age)
+        addBooleanCheckItem(cat, "hasDefect", item.result.status)
+        addCheckItem(cat, "remarks", item.result.result)
+    }
 
-    // --- NDE ---
-    val ndeCategory = "nde"
-    addCheckItem(ndeCategory, "wireRope_main_specDiameter", it.ndtWireRopeMainLoadSpecDiameter)
-    addCheckItem(ndeCategory, "wireRope_main_actualDiameter", it.ndtWireRopeMainLoadActualDiameter)
-    addCheckItem(ndeCategory, "wireRope_main_construction", it.ndtWireRopeMainLoadConstruction)
-    addCheckItem(ndeCategory, "wireRope_main_type", it.ndtWireRopeMainLoadType)
-    addCheckItem(ndeCategory, "wireRope_main_length", it.ndtWireRopeMainLoadLength)
-    addCheckItem(ndeCategory, "wireRope_main_age", it.ndtWireRopeMainLoadAge)
-    addResultStatusCheckItem(ndeCategory, "wireRope_main_result", it.ndtWireRopeMainLoadResult)
+    addCheckItem("nde_boom", "boomType", it.ndtBoom.boomType)
+    addCheckItem("nde_boom", "ndtType", it.ndtBoom.ndtType)
+    it.ndtBoom.inspections.forEachIndexed { index, item ->
+        val cat = "nde_boom_item_$index"
+        addCheckItem(cat, "partInspected", item.part)
+        addCheckItem(cat, "location", item.location)
+        addBooleanCheckItem(cat, "hasDefect", item.result.status)
+        addCheckItem(cat, "remarks", item.result.result)
+    }
 
-    addCheckItem(ndeCategory, "wireRope_aux_specDiameter", it.ndtWireRopeAuxiliaryLoadSpecDiameter)
-    addCheckItem(ndeCategory, "wireRope_aux_actualDiameter", it.ndtWireRopeAuxiliaryLoadActualDiameter)
-    addCheckItem(ndeCategory, "wireRope_aux_construction", it.ndtWireRopeAuxiliaryLoadConstruction)
-    addCheckItem(ndeCategory, "wireRope_aux_type", it.ndtWireRopeAuxiliaryLoadType)
-    addCheckItem(ndeCategory, "wireRope_aux_length", it.ndtWireRopeAuxiliaryLoadLength)
-    addCheckItem(ndeCategory, "wireRope_aux_age", it.ndtWireRopeAuxiliaryLoadAge)
-    addResultStatusCheckItem(ndeCategory, "wireRope_aux_result", it.ndtWireRopeAuxiliaryLoadResult)
+    it.ndtMainHook.let { hook ->
+        val cat = "nde_mainHook"
+        addCheckItem(cat, "hookCapacity", hook.capacity)
+        addCheckItem(cat, "ndtType", hook.ndtType)
+        addCheckItem(cat, "spec_a", hook.specification.a)
+        addCheckItem(cat, "spec_b", hook.specification.b)
+        addCheckItem(cat, "spec_c", hook.specification.c)
+        addCheckItem(cat, "spec_d", hook.specification.d)
+        addCheckItem(cat, "spec_e", hook.specification.e)
+        addCheckItem(cat, "spec_f", hook.specification.f)
+        addCheckItem(cat, "spec_g", hook.specification.g)
+        addCheckItem(cat, "spec_h", hook.specification.h)
+        addResultStatusCheckItem(cat, "spec_finding", hook.specification.result)
+        addCheckItem(cat, "result_a", hook.measurementResults.a)
+        addCheckItem(cat, "result_b", hook.measurementResults.b)
+        addCheckItem(cat, "result_c", hook.measurementResults.c)
+        addCheckItem(cat, "result_d", hook.measurementResults.d)
+        addCheckItem(cat, "result_e", hook.measurementResults.e)
+        addCheckItem(cat, "result_f", hook.measurementResults.f)
+        addCheckItem(cat, "result_g", hook.measurementResults.g)
+        addCheckItem(cat, "result_h", hook.measurementResults.h)
+        addResultStatusCheckItem(cat, "result_finding", hook.measurementResults.result)
+        addCheckItem(cat, "tolerance_a", hook.toleranceMeasure.a)
+        addCheckItem(cat, "tolerance_b", hook.toleranceMeasure.b)
+        addCheckItem(cat, "tolerance_c", hook.toleranceMeasure.c)
+        addCheckItem(cat, "tolerance_d", hook.toleranceMeasure.d)
+        addCheckItem(cat, "tolerance_e", hook.toleranceMeasure.e)
+        addCheckItem(cat, "tolerance_f", hook.toleranceMeasure.f)
+        addCheckItem(cat, "tolerance_g", hook.toleranceMeasure.g)
+        addCheckItem(cat, "tolerance_h", hook.toleranceMeasure.h)
+        addResultStatusCheckItem(cat, "tolerance_finding", hook.toleranceMeasure.result)
+    }
 
-    addCheckItem(ndeCategory, "wireRope_boom_specDiameter", it.ndtWireRopeBoomHoistSpecDiameter)
-    addCheckItem(ndeCategory, "wireRope_boom_actualDiameter", it.ndtWireRopeBoomHoistActualDiameter)
-    addCheckItem(ndeCategory, "wireRope_boom_construction", it.ndtWireRopeBoomHoistConstruction)
-    addCheckItem(ndeCategory, "wireRope_boom_type", it.ndtWireRopeBoomHoistType)
-    addCheckItem(ndeCategory, "wireRope_boom_length", it.ndtWireRopeBoomHoistLength)
-    addCheckItem(ndeCategory, "wireRope_boom_age", it.ndtWireRopeBoomHoistAge)
-    addResultStatusCheckItem(ndeCategory, "wireRope_boom_result", it.ndtWireRopeBoomHoistResult)
+    it.ndtAuxiliaryHook.let { hook ->
+        val cat = "nde_auxHook"
+        addCheckItem(cat, "hookCapacity", hook.capacity)
+        addCheckItem(cat, "ndtType", hook.ndtType)
+        addCheckItem(cat, "spec_a", hook.specification.a)
+        addCheckItem(cat, "spec_b", hook.specification.b)
+        addCheckItem(cat, "spec_c", hook.specification.c)
+        addCheckItem(cat, "spec_d", hook.specification.d)
+        addCheckItem(cat, "spec_e", hook.specification.e)
+        addCheckItem(cat, "spec_f", hook.specification.f)
+        addCheckItem(cat, "spec_g", hook.specification.g)
+        addCheckItem(cat, "spec_h", hook.specification.h)
+        addResultStatusCheckItem(cat, "spec_finding", hook.specification.result)
+        addCheckItem(cat, "result_a", hook.measurementResults.a)
+        addCheckItem(cat, "result_b", hook.measurementResults.b)
+        addCheckItem(cat, "result_c", hook.measurementResults.c)
+        addCheckItem(cat, "result_d", hook.measurementResults.d)
+        addCheckItem(cat, "result_e", hook.measurementResults.e)
+        addCheckItem(cat, "result_f", hook.measurementResults.f)
+        addCheckItem(cat, "result_g", hook.measurementResults.g)
+        addCheckItem(cat, "result_h", hook.measurementResults.h)
+        addResultStatusCheckItem(cat, "result_finding", hook.measurementResults.result)
+        addCheckItem(cat, "tolerance_a", hook.toleranceMeasure.a)
+        addCheckItem(cat, "tolerance_b", hook.toleranceMeasure.b)
+        addCheckItem(cat, "tolerance_c", hook.toleranceMeasure.c)
+        addCheckItem(cat, "tolerance_d", hook.toleranceMeasure.d)
+        addCheckItem(cat, "tolerance_e", hook.toleranceMeasure.e)
+        addCheckItem(cat, "tolerance_f", hook.toleranceMeasure.f)
+        addCheckItem(cat, "tolerance_g", hook.toleranceMeasure.g)
+        addCheckItem(cat, "tolerance_h", hook.toleranceMeasure.h)
+        addResultStatusCheckItem(cat, "tolerance_finding", hook.toleranceMeasure.result)
+    }
 
-    addCheckItem(ndeCategory, "boom_type", it.ndtBoomType)
-    addCheckItem(ndeCategory, "boom_ndtType", it.ndtBoomNdtType)
-    addCheckItem(ndeCategory, "boom_inspection1_part", it.ndtBoomInspection1Part)
-    addCheckItem(ndeCategory, "boom_inspection1_location", it.ndtBoomInspection1Location)
-    addResultStatusCheckItem(ndeCategory, "boom_inspection1_result", it.ndtBoomInspection1Result)
-    addCheckItem(ndeCategory, "boom_inspection2_part", it.ndtBoomInspection2Part)
-    addCheckItem(ndeCategory, "boom_inspection2_location", it.ndtBoomInspection2Location)
-    addResultStatusCheckItem(ndeCategory, "boom_inspection2_result", it.ndtBoomInspection2Result)
-    addCheckItem(ndeCategory, "boom_inspection3_part", it.ndtBoomInspection3Part)
-    addCheckItem(ndeCategory, "boom_inspection3_location", it.ndtBoomInspection3Location)
-    addResultStatusCheckItem(ndeCategory, "boom_inspection3_result", it.ndtBoomInspection3Result)
+    it.ndtMainDrum.let { drum ->
+        val cat = "nde_mainDrum"
+        addCheckItem(cat, "ndtType", drum.ndtType)
+        addCheckItem(cat, "spec_a", drum.specification.a)
+        addCheckItem(cat, "spec_b", drum.specification.b)
+        addCheckItem(cat, "spec_c", drum.specification.c)
+        addCheckItem(cat, "spec_d", drum.specification.d)
+        addCheckItem(cat, "spec_e", drum.specification.e)
+        addCheckItem(cat, "spec_f", drum.specification.f)
+        addCheckItem(cat, "spec_g", drum.specification.g)
+        addResultStatusCheckItem(cat, "spec_finding", drum.specification.result)
+        addCheckItem(cat, "result_a", drum.measurementResults.a)
+        addCheckItem(cat, "result_b", drum.measurementResults.b)
+        addCheckItem(cat, "result_c", drum.measurementResults.c)
+        addCheckItem(cat, "result_d", drum.measurementResults.d)
+        addCheckItem(cat, "result_e", drum.measurementResults.e)
+        addCheckItem(cat, "result_f", drum.measurementResults.f)
+        addCheckItem(cat, "result_g", drum.measurementResults.g)
+        addResultStatusCheckItem(cat, "result_finding", drum.measurementResults.result)
+    }
 
-    addCheckItem(ndeCategory, "mainHook_ndtType", it.ndtMainHookNdtType)
-    addCheckItem(ndeCategory, "mainHook_spec_a", it.ndtMainHookSpecificationA)
-    addCheckItem(ndeCategory, "mainHook_spec_b", it.ndtMainHookSpecificationB)
-    addCheckItem(ndeCategory, "mainHook_spec_c", it.ndtMainHookSpecificationC)
-    addCheckItem(ndeCategory, "mainHook_spec_d", it.ndtMainHookSpecificationD)
-    addCheckItem(ndeCategory, "mainHook_spec_e", it.ndtMainHookSpecificationE)
-    addCheckItem(ndeCategory, "mainHook_spec_f", it.ndtMainHookSpecificationF)
-    addCheckItem(ndeCategory, "mainHook_spec_g", it.ndtMainHookSpecificationG)
-    addCheckItem(ndeCategory, "mainHook_spec_h", it.ndtMainHookSpecificationH)
-    addResultStatusCheckItem(ndeCategory, "mainHook_spec_result", it.ndtMainHookSpecificationResult)
-    addCheckItem(ndeCategory, "mainHook_measure_a", it.ndtMainHookMeasurementResultsA)
-    addCheckItem(ndeCategory, "mainHook_measure_b", it.ndtMainHookMeasurementResultsB)
-    addCheckItem(ndeCategory, "mainHook_measure_c", it.ndtMainHookMeasurementResultsC)
-    addCheckItem(ndeCategory, "mainHook_measure_d", it.ndtMainHookMeasurementResultsD)
-    addCheckItem(ndeCategory, "mainHook_measure_e", it.ndtMainHookMeasurementResultsE)
-    addCheckItem(ndeCategory, "mainHook_measure_f", it.ndtMainHookMeasurementResultsF)
-    addCheckItem(ndeCategory, "mainHook_measure_g", it.ndtMainHookMeasurementResultsG)
-    addCheckItem(ndeCategory, "mainHook_measure_h", it.ndtMainHookMeasurementResultsH)
-    addResultStatusCheckItem(ndeCategory, "mainHook_measure_result", it.ndtMainHookMeasurementResultsResult)
-    addCheckItem(ndeCategory, "mainHook_tolerance_a", it.ndtMainHookToleranceMeasureA)
-    addCheckItem(ndeCategory, "mainHook_tolerance_b", it.ndtMainHookToleranceMeasureB)
-    addCheckItem(ndeCategory, "mainHook_tolerance_c", it.ndtMainHookToleranceMeasureC)
-    addCheckItem(ndeCategory, "mainHook_tolerance_d", it.ndtMainHookToleranceMeasureD)
-    addCheckItem(ndeCategory, "mainHook_tolerance_e", it.ndtMainHookToleranceMeasureE)
-    addCheckItem(ndeCategory, "mainHook_tolerance_f", it.ndtMainHookToleranceMeasureF)
-    addCheckItem(ndeCategory, "mainHook_tolerance_g", it.ndtMainHookToleranceMeasureG)
-    addCheckItem(ndeCategory, "mainHook_tolerance_h", it.ndtMainHookToleranceMeasureH)
-    addResultStatusCheckItem(ndeCategory, "mainHook_tolerance_result", it.ndtMainHookToleranceMeasureResult)
+    it.ndtAuxiliaryDrum.let { drum ->
+        val cat = "nde_auxDrum"
+        addCheckItem(cat, "ndtType", drum.ndtType)
+        addCheckItem(cat, "spec_a", drum.specification.a)
+        addCheckItem(cat, "spec_b", drum.specification.b)
+        addCheckItem(cat, "spec_c", drum.specification.c)
+        addCheckItem(cat, "spec_d", drum.specification.d)
+        addCheckItem(cat, "spec_e", drum.specification.e)
+        addCheckItem(cat, "spec_f", drum.specification.f)
+        addCheckItem(cat, "spec_g", drum.specification.g)
+        addResultStatusCheckItem(cat, "spec_finding", drum.specification.result)
+        addCheckItem(cat, "result_a", drum.measurementResults.a)
+        addCheckItem(cat, "result_b", drum.measurementResults.b)
+        addCheckItem(cat, "result_c", drum.measurementResults.c)
+        addCheckItem(cat, "result_d", drum.measurementResults.d)
+        addCheckItem(cat, "result_e", drum.measurementResults.e)
+        addCheckItem(cat, "result_f", drum.measurementResults.f)
+        addCheckItem(cat, "result_g", drum.measurementResults.g)
+        addResultStatusCheckItem(cat, "result_finding", drum.measurementResults.result)
+    }
 
-    addCheckItem(ndeCategory, "auxHook_ndtType", it.ndtAuxiliaryHookNdtType)
-    addCheckItem(ndeCategory, "auxHook_spec_a", it.ndtAuxiliaryHookSpecificationA)
-    addCheckItem(ndeCategory, "auxHook_spec_b", it.ndtAuxiliaryHookSpecificationB)
-    addCheckItem(ndeCategory, "auxHook_spec_c", it.ndtAuxiliaryHookSpecificationC)
-    addCheckItem(ndeCategory, "auxHook_spec_d", it.ndtAuxiliaryHookSpecificationD)
-    addCheckItem(ndeCategory, "auxHook_spec_e", it.ndtAuxiliaryHookSpecificationE)
-    addCheckItem(ndeCategory, "auxHook_spec_f", it.ndtAuxiliaryHookSpecificationF)
-    addCheckItem(ndeCategory, "auxHook_spec_g", it.ndtAuxiliaryHookSpecificationG)
-    addCheckItem(ndeCategory, "auxHook_spec_h", it.ndtAuxiliaryHookSpecificationH)
-    addResultStatusCheckItem(ndeCategory, "auxHook_spec_result", it.ndtAuxiliaryHookSpecificationResult)
-    addCheckItem(ndeCategory, "auxHook_measure_a", it.ndtAuxiliaryHookMeasurementResultsA)
-    addCheckItem(ndeCategory, "auxHook_measure_b", it.ndtAuxiliaryHookMeasurementResultsB)
-    addCheckItem(ndeCategory, "auxHook_measure_c", it.ndtAuxiliaryHookMeasurementResultsC)
-    addCheckItem(ndeCategory, "auxHook_measure_d", it.ndtAuxiliaryHookMeasurementResultsD)
-    addCheckItem(ndeCategory, "auxHook_measure_e", it.ndtAuxiliaryHookMeasurementResultsE)
-    addCheckItem(ndeCategory, "auxHook_measure_f", it.ndtAuxiliaryHookMeasurementResultsF)
-    addCheckItem(ndeCategory, "auxHook_measure_g", it.ndtAuxiliaryHookMeasurementResultsG)
-    addCheckItem(ndeCategory, "auxHook_measure_h", it.ndtAuxiliaryHookMeasurementResultsH)
-    addResultStatusCheckItem(ndeCategory, "auxHook_measure_result", it.ndtAuxiliaryHookMeasurementResultsResult)
-    addCheckItem(ndeCategory, "auxHook_tolerance_a", it.ndtAuxiliaryHookToleranceMeasureA)
-    addCheckItem(ndeCategory, "auxHook_tolerance_b", it.ndtAuxiliaryHookToleranceMeasureB)
-    addCheckItem(ndeCategory, "auxHook_tolerance_c", it.ndtAuxiliaryHookToleranceMeasureC)
-    addCheckItem(ndeCategory, "auxHook_tolerance_d", it.ndtAuxiliaryHookToleranceMeasureD)
-    addCheckItem(ndeCategory, "auxHook_tolerance_e", it.ndtAuxiliaryHookToleranceMeasureE)
-    addCheckItem(ndeCategory, "auxHook_tolerance_f", it.ndtAuxiliaryHookToleranceMeasureF)
-    addCheckItem(ndeCategory, "auxHook_tolerance_g", it.ndtAuxiliaryHookToleranceMeasureG)
-    addCheckItem(ndeCategory, "auxHook_tolerance_h", it.ndtAuxiliaryHookToleranceMeasureH)
-    addResultStatusCheckItem(ndeCategory, "auxHook_tolerance_result", it.ndtAuxiliaryHookToleranceMeasureResult)
+    it.ndtMainPulley.let { pulley ->
+        val cat = "nde_mainPulley"
+        addCheckItem(cat, "ndtType", pulley.ndtType)
+        addCheckItem(cat, "spec_a", pulley.specification.a)
+        addCheckItem(cat, "spec_b", pulley.specification.b)
+        addCheckItem(cat, "spec_c", pulley.specification.c)
+        addCheckItem(cat, "spec_d", pulley.specification.d)
+        addCheckItem(cat, "spec_e", pulley.specification.e)
+        addResultStatusCheckItem(cat, "spec_finding", pulley.specification.result)
+        addCheckItem(cat, "result_a", pulley.measurementResults.a)
+        addCheckItem(cat, "result_b", pulley.measurementResults.b)
+        addCheckItem(cat, "result_c", pulley.measurementResults.c)
+        addCheckItem(cat, "result_d", pulley.measurementResults.d)
+        addCheckItem(cat, "result_e", pulley.measurementResults.e)
+        addResultStatusCheckItem(cat, "result_finding", pulley.measurementResults.result)
+    }
 
-    addCheckItem(ndeCategory, "mainDrum_ndtType", it.ndtMainDrumNdtType)
-    addCheckItem(ndeCategory, "mainDrum_spec_a", it.ndtMainDrumSpecificationA)
-    addCheckItem(ndeCategory, "mainDrum_spec_b", it.ndtMainDrumSpecificationB)
-    addCheckItem(ndeCategory, "mainDrum_spec_c", it.ndtMainDrumSpecificationC)
-    addCheckItem(ndeCategory, "mainDrum_spec_d", it.ndtMainDrumSpecificationD)
-    addCheckItem(ndeCategory, "mainDrum_spec_e", it.ndtMainDrumSpecificationE)
-    addCheckItem(ndeCategory, "mainDrum_spec_f", it.ndtMainDrumSpecificationF)
-    addCheckItem(ndeCategory, "mainDrum_spec_g", it.ndtMainDrumSpecificationG)
-    addResultStatusCheckItem(ndeCategory, "mainDrum_spec_result", it.ndtMainDrumSpecificationResult)
-    addCheckItem(ndeCategory, "mainDrum_measure_a", it.ndtMainDrumMeasurementResultsA)
-    addCheckItem(ndeCategory, "mainDrum_measure_b", it.ndtMainDrumMeasurementResultsB)
-    addCheckItem(ndeCategory, "mainDrum_measure_c", it.ndtMainDrumMeasurementResultsC)
-    addCheckItem(ndeCategory, "mainDrum_measure_d", it.ndtMainDrumMeasurementResultsD)
-    addCheckItem(ndeCategory, "mainDrum_measure_e", it.ndtMainDrumMeasurementResultsE)
-    addCheckItem(ndeCategory, "mainDrum_measure_f", it.ndtMainDrumMeasurementResultsF)
-    addCheckItem(ndeCategory, "mainDrum_measure_g", it.ndtMainDrumMeasurementResultsG)
-    addResultStatusCheckItem(ndeCategory, "mainDrum_measure_result", it.ndtMainDrumMeasurementResultsResult)
+    it.ndtAuxiliaryPulley.let { pulley ->
+        val cat = "nde_auxPulley"
+        addCheckItem(cat, "ndtType", pulley.ndtType)
+        addCheckItem(cat, "spec_a", pulley.specification.a)
+        addCheckItem(cat, "spec_b", pulley.specification.b)
+        addCheckItem(cat, "spec_c", pulley.specification.c)
+        addCheckItem(cat, "spec_d", pulley.specification.d)
+        addCheckItem(cat, "spec_e", pulley.specification.e)
+        addResultStatusCheckItem(cat, "spec_finding", pulley.specification.result)
+        addCheckItem(cat, "result_a", pulley.measurementResults.a)
+        addCheckItem(cat, "result_b", pulley.measurementResults.b)
+        addCheckItem(cat, "result_c", pulley.measurementResults.c)
+        addCheckItem(cat, "result_d", pulley.measurementResults.d)
+        addCheckItem(cat, "result_e", pulley.measurementResults.e)
+        addResultStatusCheckItem(cat, "result_finding", pulley.measurementResults.result)
+    }
 
-    addCheckItem(ndeCategory, "auxDrum_ndtType", it.ndtAuxiliaryDrumNdtType)
-    addCheckItem(ndeCategory, "auxDrum_spec_a", it.ndtAuxiliaryDrumSpecificationA)
-    addCheckItem(ndeCategory, "auxDrum_spec_b", it.ndtAuxiliaryDrumSpecificationB)
-    addCheckItem(ndeCategory, "auxDrum_spec_c", it.ndtAuxiliaryDrumSpecificationC)
-    addCheckItem(ndeCategory, "auxDrum_spec_d", it.ndtAuxiliaryDrumSpecificationD)
-    addCheckItem(ndeCategory, "auxDrum_spec_e", it.ndtAuxiliaryDrumSpecificationE)
-    addCheckItem(ndeCategory, "auxDrum_spec_f", it.ndtAuxiliaryDrumSpecificationF)
-    addCheckItem(ndeCategory, "auxDrum_spec_g", it.ndtAuxiliaryDrumSpecificationG)
-    addResultStatusCheckItem(ndeCategory, "auxDrum_spec_result", it.ndtAuxiliaryDrumSpecificationResult)
-    addCheckItem(ndeCategory, "auxDrum_measure_a", it.ndtAuxiliaryDrumMeasurementResultsA)
-    addCheckItem(ndeCategory, "auxDrum_measure_b", it.ndtAuxiliaryDrumMeasurementResultsB)
-    addCheckItem(ndeCategory, "auxDrum_measure_c", it.ndtAuxiliaryDrumMeasurementResultsC)
-    addCheckItem(ndeCategory, "auxDrum_measure_d", it.ndtAuxiliaryDrumMeasurementResultsD)
-    addCheckItem(ndeCategory, "auxDrum_measure_e", it.ndtAuxiliaryDrumMeasurementResultsE)
-    addCheckItem(ndeCategory, "auxDrum_measure_f", it.ndtAuxiliaryDrumMeasurementResultsF)
-    addCheckItem(ndeCategory, "auxDrum_measure_g", it.ndtAuxiliaryDrumMeasurementResultsG)
-    addResultStatusCheckItem(ndeCategory, "auxDrum_measure_result", it.ndtAuxiliaryDrumMeasurementResultsResult)
-
-    addCheckItem(ndeCategory, "mainPulley_spec_a", it.ndtMainPulleySpecificationA)
-    addCheckItem(ndeCategory, "mainPulley_spec_b", it.ndtMainPulleySpecificationB)
-    addCheckItem(ndeCategory, "mainPulley_spec_c", it.ndtMainPulleySpecificationC)
-    addCheckItem(ndeCategory, "mainPulley_spec_d", it.ndtMainPulleySpecificationD)
-    addCheckItem(ndeCategory, "mainPulley_spec_e", it.ndtMainPulleySpecificationE)
-    addResultStatusCheckItem(ndeCategory, "mainPulley_spec_result", it.ndtMainPulleySpecificationResult)
-    addCheckItem(ndeCategory, "mainPulley_measure_a", it.ndtMainPulleyMeasurementResultsA)
-    addCheckItem(ndeCategory, "mainPulley_measure_b", it.ndtMainPulleyMeasurementResultsB)
-    addCheckItem(ndeCategory, "mainPulley_measure_c", it.ndtMainPulleyMeasurementResultsC)
-    addCheckItem(ndeCategory, "mainPulley_measure_d", it.ndtMainPulleyMeasurementResultsD)
-    addCheckItem(ndeCategory, "mainPulley_measure_e", it.ndtMainPulleyMeasurementResultsE)
-    addResultStatusCheckItem(ndeCategory, "mainPulley_measure_result", it.ndtMainPulleyMeasurementResultsResult)
-
-    addCheckItem(ndeCategory, "auxPulley_spec_a", it.ndtAuxiliaryPulleySpecificationA)
-    addCheckItem(ndeCategory, "auxPulley_spec_b", it.ndtAuxiliaryPulleySpecificationB)
-    addCheckItem(ndeCategory, "auxPulley_spec_c", it.ndtAuxiliaryPulleySpecificationC)
-    addCheckItem(ndeCategory, "auxPulley_spec_d", it.ndtAuxiliaryPulleySpecificationD)
-    addCheckItem(ndeCategory, "auxPulley_spec_e", it.ndtAuxiliaryPulleySpecificationE)
-    addResultStatusCheckItem(ndeCategory, "auxPulley_spec_result", it.ndtAuxiliaryPulleySpecificationResult)
-    addCheckItem(ndeCategory, "auxPulley_measure_a", it.ndtAuxiliaryPulleyMeasurementResultsA)
-    addCheckItem(ndeCategory, "auxPulley_measure_b", it.ndtAuxiliaryPulleyMeasurementResultsB)
-    addCheckItem(ndeCategory, "auxPulley_measure_c", it.ndtAuxiliaryPulleyMeasurementResultsC)
-    addCheckItem(ndeCategory, "auxPulley_measure_d", it.ndtAuxiliaryPulleyMeasurementResultsD)
-    addCheckItem(ndeCategory, "auxPulley_measure_e", it.ndtAuxiliaryPulleyMeasurementResultsE)
-    addResultStatusCheckItem(ndeCategory, "auxPulley_measure_result", it.ndtAuxiliaryPulleyMeasurementResultsResult)
-
-
-    // --- Testing ---
+    // --- Inspection and Testing (Functional & Load Tests) ---
     val funcTestCategory = "testing_function"
-    addResultStatusCheckItem(funcTestCategory, "hoistingLowering", it.testingFunctionHoistingLoweringResult)
-    addResultStatusCheckItem(funcTestCategory, "extendedRetractedBoom", it.testingFunctionExtendedRectractedBoomResult)
-    addResultStatusCheckItem(funcTestCategory, "extendedRetractedOutrigger", it.testingFunctionExtendedRectractedOutriggerResult)
-    addResultStatusCheckItem(funcTestCategory, "swingSlewing", it.testingFunctionSwingSlewingResult)
-    addResultStatusCheckItem(funcTestCategory, "antiTwoBlock", it.testingFunctionAntiTwoBlockResult)
-    addResultStatusCheckItem(funcTestCategory, "boomStop", it.testingFunctionBoomStopResult)
-    addResultStatusCheckItem(funcTestCategory, "anemometerWindSpeed", it.testingFunctionAnemometerWindSpeedResult)
-    addResultStatusCheckItem(funcTestCategory, "brakeLockingDevice", it.testingFunctionBrakeLockingDeviceResult)
-    addResultStatusCheckItem(funcTestCategory, "loadMomentIndicator", it.testingFunctionLoadMomentIndicatorResult)
-    addResultStatusCheckItem(funcTestCategory, "turnSignal", it.testingFunctionTurnSignalResult)
-    addResultStatusCheckItem(funcTestCategory, "drivingLights", it.testingFunctionDrivingLightsResult)
-    addResultStatusCheckItem(funcTestCategory, "loadIndicatorLight", it.testingFunctionLoadIndicatorLightResult)
-    addResultStatusCheckItem(funcTestCategory, "rotaryLamp", it.testingFunctionRotaryLampResult)
-    addResultStatusCheckItem(funcTestCategory, "horn", it.testingFunctionHornResult)
-    addResultStatusCheckItem(funcTestCategory, "swingAlarm", it.testingFunctionSwingAlarmResult)
-    addResultStatusCheckItem(funcTestCategory, "reverseAlarm", it.testingFunctionReverseAlarmResult)
-    addResultStatusCheckItem(funcTestCategory, "overloadAlarm", it.testingFunctionOverloadAlarmResult)
+    val funcTest = it.testingFunction
+    addResultStatusCheckItem(funcTestCategory, "hoistingLowering", funcTest.hoistingLowering)
+    addResultStatusCheckItem(funcTestCategory, "extendedRetractedBoom", funcTest.extendedRetractedBoom)
+    addResultStatusCheckItem(funcTestCategory, "extendedRetractedOutrigger", funcTest.extendedRetractedOutrigger)
+    addResultStatusCheckItem(funcTestCategory, "swingSlewing", funcTest.swingSlewing)
+    addResultStatusCheckItem(funcTestCategory, "antiTwoBlock", funcTest.antiTwoBlock)
+    addResultStatusCheckItem(funcTestCategory, "boomStop", funcTest.boomStop)
+    addResultStatusCheckItem(funcTestCategory, "anemometerWindSpeed", funcTest.anemometerWindSpeed)
+    addResultStatusCheckItem(funcTestCategory, "brakeLockingDevice", funcTest.brakeLockingDevice)
+    addResultStatusCheckItem(funcTestCategory, "loadMomentIndicator", funcTest.loadMomentIndicator)
+    addResultStatusCheckItem(funcTestCategory, "turnSignal", funcTest.turnSignal)
+    addResultStatusCheckItem(funcTestCategory, "drivingLights", funcTest.drivingLights)
+    addResultStatusCheckItem(funcTestCategory, "loadIndicatorLight", funcTest.loadIndicatorLight)
+    addResultStatusCheckItem(funcTestCategory, "rotaryLamp", funcTest.rotaryLamp)
+    addResultStatusCheckItem(funcTestCategory, "horn", funcTest.horn)
+    addResultStatusCheckItem(funcTestCategory, "swingAlarm", funcTest.swingAlarm)
+    addResultStatusCheckItem(funcTestCategory, "reverseAlarm", funcTest.reverseAlarm)
+    addResultStatusCheckItem(funcTestCategory, "overloadAlarm", funcTest.overloadAlarm)
 
     it.dynamicMainHookTests.forEachIndexed { index, test ->
         val cat = "testing_load_dynamic_main_item_$index"
@@ -735,8 +813,7 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         ownerAddress = this.generalData.ownerAddress,
         usageLocation = this.generalData.unitLocation,
         addressUsageLocation = this.generalData.userAddress,
-        // FIXED: Acknowledging data loss as DTO doesn't contain this field.
-        driveType = "", // This data is lost because it's not present in the MobileCraneReportData DTO.
+        driveType = "", // This data is lost because it's not present in the DTO.
         serialNumber = this.generalData.serialNumberUnitNumber,
         permitNumber = this.generalData.usagePermitNumber,
         capacity = this.generalData.capacityWorkingLoad,
@@ -759,16 +836,35 @@ fun MobileCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
     )
 }
 
+/**
+ * Maps an [InspectionWithDetailsDomain] to a [MobileCraneReportRequest] DTO for API submission.
+ * This function reconstructs the nested DTO from the flattened domain model.
+ */
 fun InspectionWithDetailsDomain.toMobileCraneReportRequest(): MobileCraneReportRequest {
     val checkItemsByCategory = this.checkItems.groupBy { it.category }
 
+    // Helper functions to retrieve data from the flattened check items list
     fun getCheckItemValue(category: String, itemName: String, default: String = ""): String {
         return checkItemsByCategory[category]?.find { it.itemName == itemName }?.result ?: default
+    }
+
+    fun getBooleanStatus(category: String, itemName: String, default: Boolean = false): Boolean {
+        return checkItemsByCategory[category]?.find { it.itemName == itemName }?.status ?: default
     }
 
     fun getResultStatus(category: String, itemName: String): ResultStatus {
         val item = checkItemsByCategory[category]?.find { it.itemName == itemName }
         return ResultStatus(status = item?.status ?: false, result = item?.result ?: "")
+    }
+
+    fun getIndexedCheckItemValue(prefix: String, index: Int, itemName: String, default: String = ""): String {
+        val category = "${prefix}_${index}"
+        return getCheckItemValue(category, itemName, default)
+    }
+
+    fun getIndexedResultStatus(prefix: String, index: Int, itemName: String): ResultStatus {
+        val category = "${prefix}_${index}"
+        return getResultStatus(category, itemName)
     }
 
     // --- General Data ---
@@ -789,8 +885,8 @@ fun InspectionWithDetailsDomain.toMobileCraneReportRequest(): MobileCraneReportR
         operatorCertificate = getCheckItemValue("general_data", "operatorCertificate"),
         equipmentHistory = getCheckItemValue("general_data", "equipmentHistory"),
         inspectionDate = this.inspection.reportDate ?: ""
-        // NOTE: `driveType` from domain is lost here because the Request DTO does not have a field for it.
-        // To fix this, `driveType` must be added to `MobileCraneGeneralData` in `MobileCraneReportDto.kt`.
+        // NOTE: `driveType` from the domain model is lost here because the Request DTO does not have a field for it.
+        // To fix this, a `driveType` field would need to be added to the `MobileCraneGeneralData` DTO class.
     )
 
     // --- Technical Data ---
@@ -805,13 +901,11 @@ fun InspectionWithDetailsDomain.toMobileCraneReportRequest(): MobileCraneReportR
         maxLiftingHeight = getCheckItemValue(techCategory, "spec_maxLiftingHeight"),
         boomWorkingAngle = getCheckItemValue(techCategory, "spec_boomWorkingAngle"),
         engineNumber = getCheckItemValue(techCategory, "motor_engineNumber"),
-        engineType = getCheckItemValue(techCategory, "motor_type"),
+        type = getCheckItemValue(techCategory, "motor_type"),
         numberOfCylinders = getCheckItemValue(techCategory, "motor_numberOfCylinders"),
         netPower = getCheckItemValue(techCategory, "motor_netPower"),
         brandYearOfManufacture = getCheckItemValue(techCategory, "motor_brandYearOfManufacture"),
-        // NOTE: `hookManufacturer` is being mapped from the `motor_manufacturer` check item.
-        // This assumes the API intends for the motor's manufacturer to be placed here.
-        hookManufacturer = getCheckItemValue(techCategory, "motor_manufacturer"),
+        manufacturer = getCheckItemValue(techCategory, "motor_manufacturer"),
         mainHookType = getCheckItemValue(techCategory, "mainHook_type"),
         mainHookCapacity = getCheckItemValue(techCategory, "mainHook_capacity"),
         mainHookMaterial = getCheckItemValue(techCategory, "mainHook_material"),
@@ -839,363 +933,438 @@ fun InspectionWithDetailsDomain.toMobileCraneReportRequest(): MobileCraneReportR
 
     // --- Inspection and Testing ---
     val visualCategory = "visual_inspection"
-    val ndeCategory = "nde"
     val funcTestCategory = "testing_function"
+
+    // NDE Wire Rope
+    val ndeWireRopeItems = checkItemsByCategory.keys
+        .filter { it.startsWith("nde_wireRope_item_") }
+        .mapNotNull { it.substringAfterLast('_').toIntOrNull() }
+        .distinct()
+        .map { index ->
+            NdtSteelWireRopeItem(
+                usageAt = getIndexedCheckItemValue("nde_wireRope_item", index, "usage"),
+                specDiameter = getIndexedCheckItemValue("nde_wireRope_item", index, "specDiameter"),
+                actualDiameter = getIndexedCheckItemValue("nde_wireRope_item", index, "actualDiameter"),
+                construction = getIndexedCheckItemValue("nde_wireRope_item", index, "construction"),
+                type = getIndexedCheckItemValue("nde_wireRope_item", index, "type"),
+                length = getIndexedCheckItemValue("nde_wireRope_item", index, "length"),
+                age = getIndexedCheckItemValue("nde_wireRope_item", index, "age"),
+                result = ResultStatus(
+                    status = getBooleanStatus("nde_wireRope_item_$index", "hasDefect"),
+                    result = getIndexedCheckItemValue("nde_wireRope_item", index, "remarks")
+                )
+            )
+        }
+
+    // NDE Boom
+    val ndeBoomItems = checkItemsByCategory.keys
+        .filter { it.startsWith("nde_boom_item_") }
+        .mapNotNull { it.substringAfterLast('_').toIntOrNull() }
+        .distinct()
+        .map { index ->
+            NdtBoomInspection(
+                part = getIndexedCheckItemValue("nde_boom_item", index, "partInspected"),
+                location = getIndexedCheckItemValue("nde_boom_item", index, "location"),
+                result = ResultStatus(
+                    status = getBooleanStatus("nde_boom_item_$index", "hasDefect"),
+                    result = getIndexedCheckItemValue("nde_boom_item", index, "remarks")
+                )
+            )
+        }
+
     val inspectionAndTesting = MobileCraneInspectionAndTesting(
-        visualFoundationAndBoltsCorrosionResult = getResultStatus(visualCategory, "foundationAnchorBoltCorrosion"),
-        visualFoundationAndBoltsCracksResult = getResultStatus(visualCategory, "foundationAnchorBoltCracks"),
-        visualFoundationAndBoltsDeformationResult = getResultStatus(visualCategory, "foundationAnchorBoltDeformation"),
-        visualFoundationAndBoltsTightnessResult = getResultStatus(visualCategory, "foundationAnchorBoltTightness"),
-        visualFrameColumnsOnFoundationCorrosionResult = getResultStatus(visualCategory, "frameColumnsOnFoundationCorrosion"),
-        visualFrameColumnsOnFoundationCracksResult = getResultStatus(visualCategory, "frameColumnsOnFoundationCracks"),
-        visualFrameColumnsOnFoundationDeformationResult = getResultStatus(visualCategory, "frameColumnsOnFoundationDeformation"),
-        visualFrameColumnsOnFoundationFasteningResult = getResultStatus(visualCategory, "frameColumnsOnFoundationFastening"),
-        visualFrameColumnsOnFoundationTransverseReinforcementResult = getResultStatus(visualCategory, "frameColumnsOnFoundationTransverseReinforcement"),
-        visualFrameColumnsOnFoundationDiagonalReinforcementResult = getResultStatus(visualCategory, "frameColumnsOnFoundationDiagonalReinforcement"),
-        visualLadderCorrosionResult = getResultStatus(visualCategory, "ladderCorrosion"),
-        visualLadderCracksResult = getResultStatus(visualCategory, "ladderCracks"),
-        visualLadderDeformationResult = getResultStatus(visualCategory, "ladderDeformation"),
-        visualLadderFasteningResult = getResultStatus(visualCategory, "ladderFastening"),
-        visualWorkingPlatformCorrosionResult = getResultStatus(visualCategory, "workingPlatformCorrosion"),
-        visualWorkingPlatformCracksResult = getResultStatus(visualCategory, "workingPlatformCracks"),
-        visualWorkingPlatformDeformationResult = getResultStatus(visualCategory, "workingPlatformDeformation"),
-        visualWorkingPlatformFasteningResult = getResultStatus(visualCategory, "workingPlatformFastening"),
-        visualOutriggersOutriggerArmHousingResult = getResultStatus(visualCategory, "outriggersOutriggerArmHousing"),
-        visualOutriggersOutriggerArmsResult = getResultStatus(visualCategory, "outriggersOutriggerArms"),
-        visualOutriggersJackResult = getResultStatus(visualCategory, "outriggersJack"),
-        visualOutriggersOutriggerPadsResult = getResultStatus(visualCategory, "outriggersOutriggerPads"),
-        visualOutriggersHousingConnectionToChassisResult = getResultStatus(visualCategory, "outriggersHousingConnectionToChassis"),
-        visualOutriggersOutriggerSafetyLocksResult = getResultStatus(visualCategory, "outriggersOutriggerSafetyLocks"),
-        visualTurntableSlewingRollerBearingResult = getResultStatus(visualCategory, "turntableSlewingRollerBearing"),
-        visualTurntableBrakeHousingResult = getResultStatus(visualCategory, "turntableBrakeHousing"),
-        visualTurntableBrakeLiningsAndShoesResult = getResultStatus(visualCategory, "turntableBrakeLiningsAndShoes"),
-        visualTurntableDrumSurfaceResult = getResultStatus(visualCategory, "turntableDrumSurface"),
-        visualTurntablePressureCylinderResult = getResultStatus(visualCategory, "turntablePressureCylinder"),
-        visualTurntableDrumAxleResult = getResultStatus(visualCategory, "turntableDrumAxle"),
-        visualTurntableLeversPinsBoltsResult = getResultStatus(visualCategory, "turntableLeversPinsBolts"),
-        visualTurntableGuardResult = getResultStatus(visualCategory, "turntableGuard"),
-        visualLatticeBoomMainBoomResult = getResultStatus(visualCategory, "latticeBoomMainBoom"),
-        visualLatticeBoomBoomSectionResult = getResultStatus(visualCategory, "latticeBoomBoomSection"),
-        visualLatticeBoomTopPulleyResult = getResultStatus(visualCategory, "latticeBoomTopPulley"),
-        visualLatticeBoomPulleyGuardResult = getResultStatus(visualCategory, "latticeBoomPulleyGuard"),
-        visualLatticeBoomWireRopeGuardResult = getResultStatus(visualCategory, "latticeBoomWireRopeGuard"),
-        visualLatticeBoomPulleyGrooveLipResult = getResultStatus(visualCategory, "latticeBoomPulleyGrooveLip"),
-        visualLatticeBoomPivotPinResult = getResultStatus(visualCategory, "latticeBoomPivotPin"),
-        visualLatticeBoomWireRopeGuidePulleyResult = getResultStatus(visualCategory, "latticeBoomWireRopeGuidePulley"),
-        visualSteeringMainClutchResult = getResultStatus(visualCategory, "clutchMainClutch"),
-        visualTransmissionResult = getResultStatus(visualCategory, "transmission"),
-        visualSteeringFrontWheelResult = getResultStatus(visualCategory, "steeringFrontWheel"),
-        visualSteeringMiddleWheelResult = getResultStatus(visualCategory, "steeringMiddleWheel"),
-        visualSteeringRearWheelResult = getResultStatus(visualCategory, "steeringRearWheel"),
-        visualBrakeServiceBrakeResult = getResultStatus(visualCategory, "brakeServiceBrake"),
-        visualBrakeParkingBrakeResult = getResultStatus(visualCategory, "brakeParkingBrake"),
-        visualBrakeBrakeHousingResult = getResultStatus(visualCategory, "brakeBrakeHousing"),
-        visualBrakeBrakeLiningsAndShoesResult = getResultStatus(visualCategory, "brakeBrakeLiningsAndShoes"),
-        visualBrakeDrumSurfaceResult = getResultStatus(visualCategory, "brakeDrumSurface"),
-        visualBrakeLeversPinsAndBoltsResult = getResultStatus(visualCategory, "brakeLeversPinsBolts"),
-        visualBrakeGuardResult = getResultStatus(visualCategory, "brakeGuard"),
-        visualTravelDrumClutchHousingResult = getResultStatus(visualCategory, "travelDrumClutchHousing"),
-        visualTravelDrumClutchLiningResult = getResultStatus(visualCategory, "travelDrumClutchLining"),
-        visualTravelDrumClutchDrumSurfaceResult = getResultStatus(visualCategory, "travelDrumClutchDrumSurface"),
-        visualTravelDrumLeversPinsAndBoltsResult = getResultStatus(visualCategory, "travelDrumLeversPinsBolts"),
-        visualTravelDrumGuardResult = getResultStatus(visualCategory, "travelDrumGuard"),
-        visualMainWinchDrumMountingResult = getResultStatus(visualCategory, "mainWinchDrumMounting"),
-        visualMainWinchWindingDrumSurfaceResult = getResultStatus(visualCategory, "mainWinchWindingDrumSurface"),
-        visualMainWinchBrakeLiningsAndShoesResult = getResultStatus(visualCategory, "mainWinchBrakeLiningsAndShoes"),
-        visualMainWinchBrakeDrumSurfaceResult = getResultStatus(visualCategory, "mainWinchBrakeDrumSurface"),
-        visualMainWinchBrakeHousingResult = getResultStatus(visualCategory, "mainWinchBrakeHousing"),
-        visualMainWinchClutchLiningsAndShoesResult = getResultStatus(visualCategory, "mainWinchClutchLiningsAndShoes"),
-        visualMainWinchClutchDrumSurfaceResult = getResultStatus(visualCategory, "mainWinchClutchDrumSurface"),
-        visualMainWinchGrooveResult = getResultStatus(visualCategory, "mainWinchGroove"),
-        visualMainWinchGrooveLipResult = getResultStatus(visualCategory, "mainWinchGrooveLip"),
-        visualMainWinchFlangesResult = getResultStatus(visualCategory, "mainWinchFlanges"),
-        visualMainWinchBrakeActuatorLeversPinsAndBoltsResult = getResultStatus(visualCategory, "mainWinchBrakeActuatorLeversPinsAndBolts"),
-        visualAuxiliaryWinchDrumMountingResult = getResultStatus(visualCategory, "auxiliaryWinchDrumMounting"),
-        visualAuxiliaryWinchWindingDrumSurfaceResult = getResultStatus(visualCategory, "auxiliaryWinchWindingDrumSurface"),
-        visualAuxiliaryWinchBrakeLiningsAndShoesResult = getResultStatus(visualCategory, "auxiliaryWinchBrakeLiningsAndShoes"),
-        visualAuxiliaryWinchBrakeDrumSurfaceResult = getResultStatus(visualCategory, "auxiliaryWinchBrakeDrumSurface"),
-        visualAuxiliaryWinchBrakeHousingResult = getResultStatus(visualCategory, "auxiliaryWinchBrakeHousing"),
-        visualAuxiliaryWinchClutchLiningsAndShoesResult = getResultStatus(visualCategory, "auxiliaryWinchClutchLiningsAndShoes"),
-        visualAuxiliaryWinchClutchDrumSurfaceResult = getResultStatus(visualCategory, "auxiliaryWinchClutchDrumSurface"),
-        visualAuxiliaryWinchGrooveResult = getResultStatus(visualCategory, "auxiliaryWinchGroove"),
-        visualAuxiliaryWinchGrooveLipResult = getResultStatus(visualCategory, "auxiliaryWinchGrooveLip"),
-        visualAuxiliaryWinchFlangesResult = getResultStatus(visualCategory, "auxiliaryWinchFlanges"),
-        visualAuxiliaryWinchBrakeActuatorLeversPinsAndBoltsResult = getResultStatus(visualCategory, "auxiliaryWinchBrakeActuatorLeversPinsAndBolts"),
-        visualHoistGearBlockLubricationResult = getResultStatus(visualCategory, "hoistGearBlockLubrication"),
-        visualHoistGearBlockOilSealResult = getResultStatus(visualCategory, "hoistGearBlockOilSeal"),
-        visualMainPulleyPulleyGrooveResult = getResultStatus(visualCategory, "mainPulleyPulleyGroove"),
-        visualMainPulleyPulleyGrooveLipResult = getResultStatus(visualCategory, "mainPulleyPulleyGrooveLip"),
-        visualMainPulleyPulleyPinResult = getResultStatus(visualCategory, "mainPulleyPulleyPin"),
-        visualMainPulleyBearingResult = getResultStatus(visualCategory, "mainPulleyBearing"),
-        visualMainPulleyPulleyGuardResult = getResultStatus(visualCategory, "mainPulleyPulleyGuard"),
-        visualMainPulleyWireRopeGuardResult = getResultStatus(visualCategory, "mainPulleyWireRopeGuard"),
-        visualMainHookSwivelNutAndBearingResult = getResultStatus(visualCategory, "mainHookVisualSwivelNutAndBearing"),
-        visualMainHookTrunnionResult = getResultStatus(visualCategory, "mainHookVisualTrunnion"),
-        visualMainHookSafetyLatchResult = getResultStatus(visualCategory, "mainHookVisualSafetyLatch"),
-        visualAuxiliaryHookFreeFallWeightResult = getResultStatus(visualCategory, "auxiliaryHookVisualFreeFallWeight"),
-        visualAuxiliaryHookSwivelNutAndBearingResult = getResultStatus(visualCategory, "auxiliaryHookVisualSwivelNutAndBearing"),
-        visualAuxiliaryHookSafetyLatchResult = getResultStatus(visualCategory, "auxiliaryHookVisualSafetyLatch"),
-        visualMainWireRopeCorrosionResult = getResultStatus(visualCategory, "mainWireRopeVisualCorrosion"),
-        visualMainWireRopeWearResult = getResultStatus(visualCategory, "mainWireRopeVisualWear"),
-        visualMainWireRopeBreakageResult = getResultStatus(visualCategory, "mainWireRopeVisualBreakage"),
-        visualMainWireRopeDeformationResult = getResultStatus(visualCategory, "mainWireRopeVisualDeformation"),
-        visualAuxiliaryWireRopeCorrosionResult = getResultStatus(visualCategory, "auxiliaryWireRopeVisualCorrosion"),
-        visualAuxiliaryWireRopeWearResult = getResultStatus(visualCategory, "auxiliaryWireRopeVisualWear"),
-        visualAuxiliaryWireRopeBreakageResult = getResultStatus(visualCategory, "auxiliaryWireRopeVisualBreakage"),
-        visualAuxiliaryWireRopeDeformationResult = getResultStatus(visualCategory, "auxiliaryWireRopeVisualDeformation"),
-        visualLimitSwitchLongTravelResult = getResultStatus(visualCategory, "limitSwitchLsLongTravel"),
-        visualLimitSwitchCrossTravelResult = getResultStatus(visualCategory, "limitSwitchLsCrossTravel"),
-        visualLimitSwitchHoistingResult = getResultStatus(visualCategory, "limitSwitchLsHoisting"),
-        visualInternalCombustionEngineCoolingSystemResult = getResultStatus(visualCategory, "internalCombustionEngineCoolingSystem"),
-        visualInternalCombustionEngineLubricationSystemResult = getResultStatus(visualCategory, "internalCombustionEngineLubricationSystem"),
-        visualInternalCombustionEngineEngineMountingResult = getResultStatus(visualCategory, "internalCombustionEngineEngineMounting"),
-        visualInternalCombustionEngineSafetyGuardEquipmentResult = getResultStatus(visualCategory, "internalCombustionEngineSafetyGuardEquipment"),
-        visualInternalCombustionEngineExhaustSystemResult = getResultStatus(visualCategory, "internalCombustionEngineExhaustSystem"),
-        visualInternalCombustionEngineFuelSystemResult = getResultStatus(visualCategory, "internalCombustionEngineFuelSystem"),
-        visualInternalCombustionEnginePowerTransmissionSystemResult = getResultStatus(visualCategory, "internalCombustionEnginePowerTransmissionSystem"),
-        visualInternalCombustionEngineBatteryResult = getResultStatus(visualCategory, "internalCombustionEngineBattery"),
-        visualInternalCombustionEngineStarterMotorResult = getResultStatus(visualCategory, "internalCombustionEngineStarterMotor"),
-        visualInternalCombustionEngineWiringInstallationResult = getResultStatus(visualCategory, "internalCombustionEngineWiringInstallation"),
-        visualInternalCombustionEngineTurbochargerResult = getResultStatus(visualCategory, "internalCombustionEngineTurbocharger"),
-        visualHydraulicPumpResult = getResultStatus(visualCategory, "hydraulicHydraulicPump"),
-        visualHydraulicLinesResult = getResultStatus(visualCategory, "hydraulicHydraulicLines"),
-        visualHydraulicFilterResult = getResultStatus(visualCategory, "hydraulicHydraulicFilter"),
-        visualHydraulicTankResult = getResultStatus(visualCategory, "hydraulicHydraulicTank"),
-        visualHydraulicMainWinchMotorResult = getResultStatus(visualCategory, "hydraulicMotorMainWinchMotor"),
-        visualHydraulicAuxiliaryWinchMotorResult = getResultStatus(visualCategory, "hydraulicMotorAuxiliaryWinchMotor"),
-        visualHydraulicBoomWinchMotorResult = getResultStatus(visualCategory, "hydraulicMotorBoomWinchMotor"),
-        visualHydraulicSwingMotorResult = getResultStatus(visualCategory, "hydraulicMotorSwingMotor"),
-        visualControlValveReliefValveResult = getResultStatus(visualCategory, "controlValveReliefValve"),
-        visualControlValveMainWinchValveResult = getResultStatus(visualCategory, "controlValveMainWinchValve"),
-        visualControlValveAuxiliaryWinchValveResult = getResultStatus(visualCategory, "controlValveAuxiliaryWinchValve"),
-        visualControlValveBoomWinchValveResult = getResultStatus(visualCategory, "controlValveBoomWinchValve"),
-        visualControlValveBoomMovementValveResult = getResultStatus(visualCategory, "controlValveBoomMovementValve"),
-        visualControlValveSteeringCylinderValveResult = getResultStatus(visualCategory, "controlValveSteeringCylinderValve"),
-        visualControlValveAxleOscillationValveResult = getResultStatus(visualCategory, "controlValveAxleOscillationValve"),
-        visualControlValveOutriggerMovementValveResult = getResultStatus(visualCategory, "controlValveOutriggerMovementValve"),
-        visualHydraulicCylinderBoomMovementCylinderResult = getResultStatus(visualCategory, "hydraulicCylinderBoomMovementCylinder"),
-        visualHydraulicCylinderOutriggerCylinderResult = getResultStatus(visualCategory, "hydraulicCylinderOutriggerCylinder"),
-        visualHydraulicCylinderSteeringWheelCylinderResult = getResultStatus(visualCategory, "hydraulicCylinderSteeringWheelCylinder"),
-        visualHydraulicCylinderAxleOscillationCylinderResult = getResultStatus(visualCategory, "hydraulicCylinderAxleOscillationCylinder"),
-        visualHydraulicCylinderTelescopicCylinderResult = getResultStatus(visualCategory, "hydraulicCylinderTelescopicCylinder"),
-        visualPneumaticCompressorResult = getResultStatus(visualCategory, "pneumaticCompressor"),
-        visualPneumaticTankAndSafetyValveResult = getResultStatus(visualCategory, "pneumaticTankAndSafetyValve"),
-        visualPneumaticPressurizedAirLinesResult = getResultStatus(visualCategory, "pneumaticPressurizedAirLines"),
-        visualPneumaticAirFilterResult = getResultStatus(visualCategory, "pneumaticAirFilter"),
-        visualPneumaticControlValveResult = getResultStatus(visualCategory, "pneumaticControlValve"),
-        visualOperatorCabinSafetyLadderResult = getResultStatus(visualCategory, "operatorCabinSafetyLadder"),
-        visualOperatorCabinDoorResult = getResultStatus(visualCategory, "operatorCabinDoor"),
-        visualOperatorCabinWindowResult = getResultStatus(visualCategory, "operatorCabinWindow"),
-        visualOperatorCabinFanAcResult = getResultStatus(visualCategory, "operatorCabinFanAc"),
-        visualOperatorCabinControlLeversButtonsResult = getResultStatus(visualCategory, "operatorCabinControlLeversButtons"),
-        visualOperatorCabinPendantControlResult = getResultStatus(visualCategory, "operatorCabinPendantControl"),
-        visualOperatorCabinLightingResult = getResultStatus(visualCategory, "operatorCabinLighting"),
-        visualOperatorCabinHornSignalAlarmResult = getResultStatus(visualCategory, "operatorCabinHornSignalAlarm"),
-        visualOperatorCabinFuseResult = getResultStatus(visualCategory, "operatorCabinFuse"),
-        visualOperatorCabinCommunicationDeviceResult = getResultStatus(visualCategory, "operatorCabinCommunicationDevice"),
-        visualOperatorCabinFireExtinguisherResult = getResultStatus(visualCategory, "operatorCabinFireExtinguisher"),
-        visualOperatorCabinOperatingSignsResult = getResultStatus(visualCategory, "operatorCabinOperatingSigns"),
-        visualOperatorCabinIgnitionKeyMasterSwitchResult = getResultStatus(visualCategory, "operatorCabinIgnitionKeyMasterSwitch"),
-        visualOperatorCabinButtonsHandlesLeversResult = getResultStatus(visualCategory, "operatorCabinButtonsHandlesLevers"),
-        visualElectricalComponentsPanelConductorConnectorResult = getResultStatus(visualCategory, "electricalComponentsPanelConductorConnector"),
-        visualElectricalComponentsConductorProtectionResult = getResultStatus(visualCategory, "electricalComponentsConductorProtection"),
-        visualElectricalComponentsMotorInstallationSafetySystemResult = getResultStatus(visualCategory, "electricalComponentsMotorInstallationSafetySystem"),
-        visualElectricalComponentsGroundingSystemResult = getResultStatus(visualCategory, "electricalComponentsGroundingSystem"),
-        visualElectricalComponentsInstallationResult = getResultStatus(visualCategory, "electricalComponentsInstallation"),
-        visualSafetyDevicesLadderHandrailResult = getResultStatus(visualCategory, "safetyDevicesLadderHandrail"),
-        visualSafetyDevicesEngineOilLubricantPressureResult = getResultStatus(visualCategory, "safetyDevicesEngineOilLubricantPressure"),
-        visualSafetyDevicesHydraulicOilPressureResult = getResultStatus(visualCategory, "safetyDevicesHydraulicOilPressure"),
-        visualSafetyDevicesAirPressureResult = getResultStatus(visualCategory, "safetyDevicesAirPressure"),
-        visualSafetyDevicesAmperemeterResult = getResultStatus(visualCategory, "safetyDevicesAmperemeter"),
-        visualSafetyDevicesVoltageResult = getResultStatus(visualCategory, "safetyDevicesVoltage"),
-        visualSafetyDevicesEngineTemperatureResult = getResultStatus(visualCategory, "safetyDevicesEngineTemperature"),
-        visualSafetyDevicesTransmissionTemperatureResult = getResultStatus(visualCategory, "safetyDevicesTransmissionTemperature"),
-        visualSafetyDevicesConverterOilTemperaturePressureResult = getResultStatus(visualCategory, "safetyDevicesConverterOilTemperaturePressure"),
-        visualSafetyDevicesConverterSpeedometerIndicatorResult = getResultStatus(visualCategory, "safetyDevicesSpeedometerIndicator"),
-        visualSafetyDevicesConverterRotaryLampResult = getResultStatus(visualCategory, "safetyDevicesRotaryLamp"),
-        visualSafetyDevicesConverterMainHoistRopeUpDownLimitResult = getResultStatus(visualCategory, "safetyDevicesMainHoistRopeUpDownLimit"),
-        visualSafetyDevicesConverterAuxiliaryHoistRopeUpDownLimitResult = getResultStatus(visualCategory, "safetyDevicesAuxiliaryHoistRopeUpDownLimit"),
-        visualSafetyDevicesConverterSwingMotionLimitResult = getResultStatus(visualCategory, "safetyDevicesSwingMotionLimit"),
-        visualSafetyDevicesConverterLevelIndicatorResult = getResultStatus(visualCategory, "safetyDevicesLevelIndicator"),
-        visualSafetyDevicesConverterLoadWeightIndicatorResult = getResultStatus(visualCategory, "safetyDevicesLoadWeightIndicator"),
-        visualSafetyDevicesConverterLoadChartResult = getResultStatus(visualCategory, "safetyDevicesLoadChart"),
-        visualSafetyDevicesConverterAnemometerWindSpeedResult = getResultStatus(visualCategory, "safetyDevicesAnemometerWindSpeed"),
-        visualSafetyDevicesConverterBoomAngleIndicatorResult = getResultStatus(visualCategory, "safetyDevicesBoomAngleIndicator"),
-        visualSafetyDevicesConverterAirPressureIndicatorResult = getResultStatus(visualCategory, "safetyDevicesAirPressureIndicator"),
-        visualSafetyDevicesConverterHydraulicPressureIndicatorResult = getResultStatus(visualCategory, "safetyDevicesHydraulicPressureIndicator"),
-        visualSafetyDevicesConverterSafetyValvesResult = getResultStatus(visualCategory, "safetyDevicesSafetyValves"),
-        visualSafetyDevicesConverterMainWindingDrumSafetyLockResult = getResultStatus(visualCategory, "safetyDevicesMainWindingDrumSafetyLock"),
-        visualSafetyDevicesConverterAuxiliaryWindingDrumSafetyLockResult = getResultStatus(visualCategory, "safetyDevicesAuxiliaryWindingDrumSafetyLock"),
-        visualSafetyDevicesConverterTelescopicMotionLimitResult = getResultStatus(visualCategory, "safetyDevicesTelescopicMotionLimit"),
-        visualSafetyDevicesConverterLightningArresterResult = getResultStatus(visualCategory, "safetyDevicesLightningArrester"),
-        visualSafetyDevicesConverterLiftingHeightIndicatorResult = getResultStatus(visualCategory, "safetyDevicesLiftingHeightIndicator"),
+        // Visual Checks
+        visualFoundationAndBolts = VisualFoundationAndBolts(
+            corrosion = getResultStatus(visualCategory, "foundationAnchorBoltCorrosion"),
+            cracks = getResultStatus(visualCategory, "foundationAnchorBoltCracks"),
+            deformation = getResultStatus(visualCategory, "foundationAnchorBoltDeformation"),
+            tightness = getResultStatus(visualCategory, "foundationAnchorBoltTightness")
+        ),
+        visualFrameColumnsOnFoundation = VisualFrameColumnsOnFoundation(
+            corrosion = getResultStatus(visualCategory, "frameColumnsOnFoundationCorrosion"),
+            cracks = getResultStatus(visualCategory, "frameColumnsOnFoundationCracks"),
+            deformation = getResultStatus(visualCategory, "frameColumnsOnFoundationDeformation"),
+            fastening = getResultStatus(visualCategory, "frameColumnsOnFoundationFastening"),
+            transverseReinforcement = getResultStatus(visualCategory, "frameColumnsOnFoundationTransverseReinforcement"),
+            diagonalReinforcement = getResultStatus(visualCategory, "frameColumnsOnFoundationDiagonalReinforcement")
+        ),
+        visualLadder = VisualLadder(
+            corrosion = getResultStatus(visualCategory, "ladderCorrosion"),
+            cracks = getResultStatus(visualCategory, "ladderCracks"),
+            deformation = getResultStatus(visualCategory, "ladderDeformation"),
+            fastening = getResultStatus(visualCategory, "ladderFastening")
+        ),
+        visualWorkingPlatform = VisualWorkingPlatform(
+            corrosion = getResultStatus(visualCategory, "workingPlatformCorrosion"),
+            cracks = getResultStatus(visualCategory, "workingPlatformCracks"),
+            deformation = getResultStatus(visualCategory, "workingPlatformDeformation"),
+            fastening = getResultStatus(visualCategory, "workingPlatformFastening")
+        ),
+        visualOutriggers = VisualOutriggers(
+            outriggerArmHousing = getResultStatus(visualCategory, "outriggersOutriggerArmHousing"),
+            outriggerArms = getResultStatus(visualCategory, "outriggersOutriggerArms"),
+            jack = getResultStatus(visualCategory, "outriggersJack"),
+            outriggerPads = getResultStatus(visualCategory, "outriggersOutriggerPads"),
+            housingConnectionToChassis = getResultStatus(visualCategory, "outriggersHousingConnectionToChassis"),
+            outriggerSafetyLocks = getResultStatus(visualCategory, "outriggersOutriggerSafetyLocks")
+        ),
+        visualTurntable = VisualTurntable(
+            slewingRollerBearing = getResultStatus(visualCategory, "turntableSlewingRollerBearing"),
+            brakeHousing = getResultStatus(visualCategory, "turntableBrakeHousing"),
+            brakeLiningsAndShoes = getResultStatus(visualCategory, "turntableBrakeLiningsAndShoes"),
+            drumSurface = getResultStatus(visualCategory, "turntableDrumSurface"),
+            pressureCylinder = getResultStatus(visualCategory, "turntablePressureCylinder"),
+            drumAxle = getResultStatus(visualCategory, "turntableDrumAxle"),
+            leversPinsBolts = getResultStatus(visualCategory, "turntableLeversPinsBolts"),
+            guard = getResultStatus(visualCategory, "turntableGuard")
+        ),
+        visualLatticeBoom = VisualLatticeBoom(
+            mainBoom = getResultStatus(visualCategory, "latticeBoomMainBoom"),
+            boomSection = getResultStatus(visualCategory, "latticeBoomBoomSection"),
+            topPulley = getResultStatus(visualCategory, "latticeBoomTopPulley"),
+            pulleyGuard = getResultStatus(visualCategory, "latticeBoomPulleyGuard"),
+            wireRopeGuard = getResultStatus(visualCategory, "latticeBoomWireRopeGuard"),
+            pulleyGrooveLip = getResultStatus(visualCategory, "latticeBoomPulleyGrooveLip"),
+            pivotPin = getResultStatus(visualCategory, "latticeBoomPivotPin"),
+            wireRopeGuidePulley = getResultStatus(visualCategory, "latticeBoomWireRopeGuidePulley")
+        ),
+        visualSteering = VisualSteering(
+            mainClutch = getResultStatus(visualCategory, "clutchMainClutch"),
+            transmission = getResultStatus(visualCategory, "transmission"),
+            frontWheel = getResultStatus(visualCategory, "steeringFrontWheel"),
+            middleWheel = getResultStatus(visualCategory, "steeringMiddleWheel"),
+            rearWheel = getResultStatus(visualCategory, "steeringRearWheel")
+        ),
+        visualBrake = VisualBrake(
+            serviceBrake = getResultStatus(visualCategory, "brakeServiceBrake"),
+            parkingBrake = getResultStatus(visualCategory, "brakeParkingBrake"),
+            brakeHousing = getResultStatus(visualCategory, "brakeBrakeHousing"),
+            brakeLiningsAndShoes = getResultStatus(visualCategory, "brakeBrakeLiningsAndShoes"),
+            drumSurface = getResultStatus(visualCategory, "brakeDrumSurface"),
+            leversPinsBolts = getResultStatus(visualCategory, "brakeLeversPinsBolts"),
+            guard = getResultStatus(visualCategory, "brakeGuard")
+        ),
+        visualTravelDrum = VisualTravelDrum(
+            clutchHousing = getResultStatus(visualCategory, "travelDrumClutchHousing"),
+            clutchLining = getResultStatus(visualCategory, "travelDrumClutchLining"),
+            clutchDrumSurface = getResultStatus(visualCategory, "travelDrumClutchDrumSurface"),
+            leversPinsBolts = getResultStatus(visualCategory, "travelDrumLeversPinsBolts"),
+            guard = getResultStatus(visualCategory, "travelDrumGuard")
+        ),
+        visualMainWinch = VisualMainWinch(
+            drumMounting = getResultStatus(visualCategory, "mainWinchDrumMounting"),
+            windingDrumSurface = getResultStatus(visualCategory, "mainWinchWindingDrumSurface"),
+            brakeLiningsAndShoes = getResultStatus(visualCategory, "mainWinchBrakeLiningsAndShoes"),
+            brakeDrumSurface = getResultStatus(visualCategory, "mainWinchBrakeDrumSurface"),
+            brakeHousing = getResultStatus(visualCategory, "mainWinchBrakeHousing"),
+            clutchLiningsAndShoes = getResultStatus(visualCategory, "mainWinchClutchLiningsAndShoes"),
+            clutchDrumSurface = getResultStatus(visualCategory, "mainWinchClutchDrumSurface"),
+            groove = getResultStatus(visualCategory, "mainWinchGroove"),
+            grooveLip = getResultStatus(visualCategory, "mainWinchGrooveLip"),
+            flanges = getResultStatus(visualCategory, "mainWinchFlanges"),
+            brakeActuatorLeversPinsAndBolts = getResultStatus(visualCategory, "mainWinchBrakeActuatorLeversPinsAndBolts")
+        ),
+        visualAuxiliaryWinch = VisualAuxiliaryWinch(
+            drumMounting = getResultStatus(visualCategory, "auxiliaryWinchDrumMounting"),
+            windingDrumSurface = getResultStatus(visualCategory, "auxiliaryWinchWindingDrumSurface"),
+            brakeLiningsAndShoes = getResultStatus(visualCategory, "auxiliaryWinchBrakeLiningsAndShoes"),
+            brakeDrumSurface = getResultStatus(visualCategory, "auxiliaryWinchBrakeDrumSurface"),
+            brakeHousing = getResultStatus(visualCategory, "auxiliaryWinchBrakeHousing"),
+            clutchLiningsAndShoes = getResultStatus(visualCategory, "auxiliaryWinchClutchLiningsAndShoes"),
+            clutchDrumSurface = getResultStatus(visualCategory, "auxiliaryWinchClutchDrumSurface"),
+            groove = getResultStatus(visualCategory, "auxiliaryWinchGroove"),
+            grooveLip = getResultStatus(visualCategory, "auxiliaryWinchGrooveLip"),
+            flanges = getResultStatus(visualCategory, "auxiliaryWinchFlanges"),
+            brakeActuatorLeversPinsAndBolts = getResultStatus(visualCategory, "auxiliaryWinchBrakeActuatorLeversPinsAndBolts")
+        ),
+        visualHoistGearBlock = VisualHoistGearBlock(
+            lubrication = getResultStatus(visualCategory, "hoistGearBlockLubrication"),
+            oilSeal = getResultStatus(visualCategory, "hoistGearBlockOilSeal")
+        ),
+        visualMainPulley = VisualMainPulley(
+            pulleyGroove = getResultStatus(visualCategory, "mainPulleyPulleyGroove"),
+            pulleyGrooveLip = getResultStatus(visualCategory, "mainPulleyPulleyGrooveLip"),
+            pulleyPin = getResultStatus(visualCategory, "mainPulleyPulleyPin"),
+            bearing = getResultStatus(visualCategory, "mainPulleyBearing"),
+            pulleyGuard = getResultStatus(visualCategory, "mainPulleyPulleyGuard"),
+            wireRopeGuard = getResultStatus(visualCategory, "mainPulleyWireRopeGuard")
+        ),
+        visualMainHook = VisualMainHook(
+            swivelNutAndBearing = getResultStatus(visualCategory, "mainHookVisualSwivelNutAndBearing"),
+            trunnion = getResultStatus(visualCategory, "mainHookVisualTrunnion"),
+            safetyLatch = getResultStatus(visualCategory, "mainHookVisualSafetyLatch")
+        ),
+        visualAuxiliaryHook = VisualAuxiliaryHook(
+            freeFallWeight = getResultStatus(visualCategory, "auxiliaryHookVisualFreeFallWeight"),
+            swivelNutAndBearing = getResultStatus(visualCategory, "auxiliaryHookVisualSwivelNutAndBearing"),
+            safetyLatch = getResultStatus(visualCategory, "auxiliaryHookVisualSafetyLatch")
+        ),
+        visualMainWireRope = VisualWireRope(
+            corrosion = getResultStatus(visualCategory, "mainWireRopeVisualCorrosion"),
+            wear = getResultStatus(visualCategory, "mainWireRopeVisualWear"),
+            breakage = getResultStatus(visualCategory, "mainWireRopeVisualBreakage"),
+            deformation = getResultStatus(visualCategory, "mainWireRopeVisualDeformation")
+        ),
+        visualAuxiliaryWireRope = VisualWireRope(
+            corrosion = getResultStatus(visualCategory, "auxiliaryWireRopeVisualCorrosion"),
+            wear = getResultStatus(visualCategory, "auxiliaryWireRopeVisualWear"),
+            breakage = getResultStatus(visualCategory, "auxiliaryWireRopeVisualBreakage"),
+            deformation = getResultStatus(visualCategory, "auxiliaryWireRopeVisualDeformation")
+        ),
+        visualLimitSwitch = VisualLimitSwitch(
+            longTravel = getResultStatus(visualCategory, "limitSwitchLsLongTravel"),
+            crossTravel = getResultStatus(visualCategory, "limitSwitchLsCrossTravel"),
+            hoisting = getResultStatus(visualCategory, "limitSwitchLsHoisting")
+        ),
+        visualInternalCombustionEngine = VisualInternalCombustionEngine(
+            coolingSystem = getResultStatus(visualCategory, "internalCombustionEngineCoolingSystem"),
+            lubricationSystem = getResultStatus(visualCategory, "internalCombustionEngineLubricationSystem"),
+            engineMounting = getResultStatus(visualCategory, "internalCombustionEngineEngineMounting"),
+            safetyGuardEquipment = getResultStatus(visualCategory, "internalCombustionEngineSafetyGuardEquipment"),
+            exhaustSystem = getResultStatus(visualCategory, "internalCombustionEngineExhaustSystem"),
+            fuelSystem = getResultStatus(visualCategory, "internalCombustionEngineFuelSystem"),
+            powerTransmissionSystem = getResultStatus(visualCategory, "internalCombustionEnginePowerTransmissionSystem"),
+            battery = getResultStatus(visualCategory, "internalCombustionEngineBattery"),
+            starterMotor = getResultStatus(visualCategory, "internalCombustionEngineStarterMotor"),
+            wiringInstallation = getResultStatus(visualCategory, "internalCombustionEngineWiringInstallation"),
+            turbocharger = getResultStatus(visualCategory, "internalCombustionEngineTurbocharger")
+        ),
+        visualHydraulic = VisualHydraulic(
+            pump = getResultStatus(visualCategory, "hydraulicHydraulicPump"),
+            lines = getResultStatus(visualCategory, "hydraulicHydraulicLines"),
+            filter = getResultStatus(visualCategory, "hydraulicHydraulicFilter"),
+            tank = getResultStatus(visualCategory, "hydraulicHydraulicTank"),
+            mainWinchMotor = getResultStatus(visualCategory, "hydraulicMotorMainWinchMotor"),
+            auxiliaryWinchMotor = getResultStatus(visualCategory, "hydraulicMotorAuxiliaryWinchMotor"),
+            boomWinchMotor = getResultStatus(visualCategory, "hydraulicMotorBoomWinchMotor"),
+            swingMotor = getResultStatus(visualCategory, "hydraulicMotorSwingMotor")
+        ),
+        visualControlValve = VisualControlValve(
+            reliefValve = getResultStatus(visualCategory, "controlValveReliefValve"),
+            mainWinchValve = getResultStatus(visualCategory, "controlValveMainWinchValve"),
+            auxiliaryWinchValve = getResultStatus(visualCategory, "controlValveAuxiliaryWinchValve"),
+            boomWinchValve = getResultStatus(visualCategory, "controlValveBoomWinchValve"),
+            boomMovementValve = getResultStatus(visualCategory, "controlValveBoomMovementValve"),
+            steeringCylinderValve = getResultStatus(visualCategory, "controlValveSteeringCylinderValve"),
+            axleOscillationValve = getResultStatus(visualCategory, "controlValveAxleOscillationValve"),
+            outriggerMovementValve = getResultStatus(visualCategory, "controlValveOutriggerMovementValve")
+        ),
+        visualHydraulicCylinder = VisualHydraulicCylinder(
+            boomMovementCylinder = getResultStatus(visualCategory, "hydraulicCylinderBoomMovementCylinder"),
+            outriggerCylinder = getResultStatus(visualCategory, "hydraulicCylinderOutriggerCylinder"),
+            steeringWheelCylinder = getResultStatus(visualCategory, "hydraulicCylinderSteeringWheelCylinder"),
+            axleOscillationCylinder = getResultStatus(visualCategory, "hydraulicCylinderAxleOscillationCylinder"),
+            telescopicCylinder = getResultStatus(visualCategory, "hydraulicCylinderTelescopicCylinder")
+        ),
+        visualPneumatic = VisualPneumatic(
+            compressor = getResultStatus(visualCategory, "pneumaticCompressor"),
+            tankAndSafetyValve = getResultStatus(visualCategory, "pneumaticTankAndSafetyValve"),
+            pressurizedAirLines = getResultStatus(visualCategory, "pneumaticPressurizedAirLines"),
+            airFilter = getResultStatus(visualCategory, "pneumaticAirFilter"),
+            controlValve = getResultStatus(visualCategory, "pneumaticControlValve")
+        ),
+        visualOperatorCabin = VisualOperatorCabin(
+            safetyLadder = getResultStatus(visualCategory, "operatorCabinSafetyLadder"),
+            door = getResultStatus(visualCategory, "operatorCabinDoor"),
+            window = getResultStatus(visualCategory, "operatorCabinWindow"),
+            fanAc = getResultStatus(visualCategory, "operatorCabinFanAc"),
+            controlLeversButtons = getResultStatus(visualCategory, "operatorCabinControlLeversButtons"),
+            pendantControl = getResultStatus(visualCategory, "operatorCabinPendantControl"),
+            lighting = getResultStatus(visualCategory, "operatorCabinLighting"),
+            hornSignalAlarm = getResultStatus(visualCategory, "operatorCabinHornSignalAlarm"),
+            fuse = getResultStatus(visualCategory, "operatorCabinFuse"),
+            communicationDevice = getResultStatus(visualCategory, "operatorCabinCommunicationDevice"),
+            fireExtinguisher = getResultStatus(visualCategory, "operatorCabinFireExtinguisher"),
+            operatingSigns = getResultStatus(visualCategory, "operatorCabinOperatingSigns"),
+            ignitionKeyMasterSwitch = getResultStatus(visualCategory, "operatorCabinIgnitionKeyMasterSwitch"),
+            buttonsHandlesLevers = getResultStatus(visualCategory, "operatorCabinButtonsHandlesLevers")
+        ),
+        visualElectricalComponents = VisualElectricalComponents(
+            panelConductorConnector = getResultStatus(visualCategory, "electricalComponentsPanelConductorConnector"),
+            conductorProtection = getResultStatus(visualCategory, "electricalComponentsConductorProtection"),
+            motorInstallationSafetySystem = getResultStatus(visualCategory, "electricalComponentsMotorInstallationSafetySystem"),
+            groundingSystem = getResultStatus(visualCategory, "electricalComponentsGroundingSystem"),
+            installation = getResultStatus(visualCategory, "electricalComponentsInstallation")
+        ),
+        visualSafetyDevices = VisualSafetyDevices(
+            ladderHandrail = getResultStatus(visualCategory, "safetyDevicesLadderHandrail"),
+            engineOilLubricantPressure = getResultStatus(visualCategory, "safetyDevicesEngineOilLubricantPressure"),
+            hydraulicOilPressure = getResultStatus(visualCategory, "safetyDevicesHydraulicOilPressure"),
+            airPressure = getResultStatus(visualCategory, "safetyDevicesAirPressure"),
+            amperemeter = getResultStatus(visualCategory, "safetyDevicesAmperemeter"),
+            voltage = getResultStatus(visualCategory, "safetyDevicesVoltage"),
+            engineTemperature = getResultStatus(visualCategory, "safetyDevicesEngineTemperature"),
+            transmissionTemperature = getResultStatus(visualCategory, "safetyDevicesTransmissionTemperature"),
+            converterOilTemperaturePressure = getResultStatus(visualCategory, "safetyDevicesConverterOilTemperaturePressure"),
+            converterSpeedometerIndicator = getResultStatus(visualCategory, "safetyDevicesSpeedometerIndicator"),
+            converterRotaryLamp = getResultStatus(visualCategory, "safetyDevicesRotaryLamp"),
+            converterMainHoistRopeUpDownLimit = getResultStatus(visualCategory, "safetyDevicesMainHoistRopeUpDownLimit"),
+            converterAuxiliaryHoistRopeUpDownLimit = getResultStatus(visualCategory, "safetyDevicesAuxiliaryHoistRopeUpDownLimit"),
+            converterSwingMotionLimit = getResultStatus(visualCategory, "safetyDevicesSwingMotionLimit"),
+            converterLevelIndicator = getResultStatus(visualCategory, "safetyDevicesLevelIndicator"),
+            converterLoadWeightIndicator = getResultStatus(visualCategory, "safetyDevicesLoadWeightIndicator"),
+            converterLoadChart = getResultStatus(visualCategory, "safetyDevicesLoadChart"),
+            converterAnemometerWindSpeed = getResultStatus(visualCategory, "safetyDevicesAnemometerWindSpeed"),
+            converterBoomAngleIndicator = getResultStatus(visualCategory, "safetyDevicesBoomAngleIndicator"),
+            converterAirPressureIndicator = getResultStatus(visualCategory, "safetyDevicesAirPressureIndicator"),
+            converterHydraulicPressureIndicator = getResultStatus(visualCategory, "safetyDevicesHydraulicPressureIndicator"),
+            converterSafetyValves = getResultStatus(visualCategory, "safetyDevicesSafetyValves"),
+            converterMainWindingDrumSafetyLock = getResultStatus(visualCategory, "safetyDevicesMainWindingDrumSafetyLock"),
+            converterAuxiliaryWindingDrumSafetyLock = getResultStatus(visualCategory, "safetyDevicesAuxiliaryWindingDrumSafetyLock"),
+            converterTelescopicMotionLimit = getResultStatus(visualCategory, "safetyDevicesTelescopicMotionLimit"),
+            converterLightningArrester = getResultStatus(visualCategory, "safetyDevicesLightningArrester"),
+            converterLiftingHeightIndicator = getResultStatus(visualCategory, "safetyDevicesLiftingHeightIndicator")
+        ),
 
-        // --- NDE ---
-        ndtWireRopeMainLoadSpecDiameter = getCheckItemValue(ndeCategory, "wireRope_main_specDiameter"),
-        ndtWireRopeMainLoadActualDiameter = getCheckItemValue(ndeCategory, "wireRope_main_actualDiameter"),
-        ndtWireRopeMainLoadConstruction = getCheckItemValue(ndeCategory, "wireRope_main_construction"),
-        ndtWireRopeMainLoadType = getCheckItemValue(ndeCategory, "wireRope_main_type"),
-        ndtWireRopeMainLoadLength = getCheckItemValue(ndeCategory, "wireRope_main_length"),
-        ndtWireRopeMainLoadAge = getCheckItemValue(ndeCategory, "wireRope_main_age"),
-        ndtWireRopeMainLoadResult = getResultStatus(ndeCategory, "wireRope_main_result"),
-        ndtWireRopeAuxiliaryLoadSpecDiameter = getCheckItemValue(ndeCategory, "wireRope_aux_specDiameter"),
-        ndtWireRopeAuxiliaryLoadActualDiameter = getCheckItemValue(ndeCategory, "wireRope_aux_actualDiameter"),
-        ndtWireRopeAuxiliaryLoadConstruction = getCheckItemValue(ndeCategory, "wireRope_aux_construction"),
-        ndtWireRopeAuxiliaryLoadType = getCheckItemValue(ndeCategory, "wireRope_aux_type"),
-        ndtWireRopeAuxiliaryLoadLength = getCheckItemValue(ndeCategory, "wireRope_aux_length"),
-        ndtWireRopeAuxiliaryLoadAge = getCheckItemValue(ndeCategory, "wireRope_aux_age"),
-        ndtWireRopeAuxiliaryLoadResult = getResultStatus(ndeCategory, "wireRope_aux_result"),
-        ndtWireRopeBoomHoistSpecDiameter = getCheckItemValue(ndeCategory, "wireRope_boom_specDiameter"),
-        ndtWireRopeBoomHoistActualDiameter = getCheckItemValue(ndeCategory, "wireRope_boom_actualDiameter"),
-        ndtWireRopeBoomHoistConstruction = getCheckItemValue(ndeCategory, "wireRope_boom_construction"),
-        ndtWireRopeBoomHoistType = getCheckItemValue(ndeCategory, "wireRope_boom_type"),
-        ndtWireRopeBoomHoistLength = getCheckItemValue(ndeCategory, "wireRope_boom_length"),
-        ndtWireRopeBoomHoistAge = getCheckItemValue(ndeCategory, "wireRope_boom_age"),
-        ndtWireRopeBoomHoistResult = getResultStatus(ndeCategory, "wireRope_boom_result"),
-        ndtBoomType = getCheckItemValue(ndeCategory, "boom_type"),
-        ndtBoomNdtType = getCheckItemValue(ndeCategory, "boom_ndtType"),
-        ndtBoomInspection1Part = getCheckItemValue(ndeCategory, "boom_inspection1_part"),
-        ndtBoomInspection1Location = getCheckItemValue(ndeCategory, "boom_inspection1_location"),
-        ndtBoomInspection1Result = getResultStatus(ndeCategory, "boom_inspection1_result"),
-        ndtBoomInspection2Part = getCheckItemValue(ndeCategory, "boom_inspection2_part"),
-        ndtBoomInspection2Location = getCheckItemValue(ndeCategory, "boom_inspection2_location"),
-        ndtBoomInspection2Result = getResultStatus(ndeCategory, "boom_inspection2_result"),
-        ndtBoomInspection3Part = getCheckItemValue(ndeCategory, "boom_inspection3_part"),
-        ndtBoomInspection3Location = getCheckItemValue(ndeCategory, "boom_inspection3_location"),
-        ndtBoomInspection3Result = getResultStatus(ndeCategory, "boom_inspection3_result"),
-        ndtMainHookNdtType = getCheckItemValue(ndeCategory, "mainHook_ndtType"),
-        ndtMainHookSpecificationA = getCheckItemValue(ndeCategory, "mainHook_spec_a"),
-        ndtMainHookSpecificationB = getCheckItemValue(ndeCategory, "mainHook_spec_b"),
-        ndtMainHookSpecificationC = getCheckItemValue(ndeCategory, "mainHook_spec_c"),
-        ndtMainHookSpecificationD = getCheckItemValue(ndeCategory, "mainHook_spec_d"),
-        ndtMainHookSpecificationE = getCheckItemValue(ndeCategory, "mainHook_spec_e"),
-        ndtMainHookSpecificationF = getCheckItemValue(ndeCategory, "mainHook_spec_f"),
-        ndtMainHookSpecificationG = getCheckItemValue(ndeCategory, "mainHook_spec_g"),
-        ndtMainHookSpecificationH = getCheckItemValue(ndeCategory, "mainHook_spec_h"),
-        ndtMainHookSpecificationResult = getResultStatus(ndeCategory, "mainHook_spec_result"),
-        ndtMainHookMeasurementResultsA = getCheckItemValue(ndeCategory, "mainHook_measure_a"),
-        ndtMainHookMeasurementResultsB = getCheckItemValue(ndeCategory, "mainHook_measure_b"),
-        ndtMainHookMeasurementResultsC = getCheckItemValue(ndeCategory, "mainHook_measure_c"),
-        ndtMainHookMeasurementResultsD = getCheckItemValue(ndeCategory, "mainHook_measure_d"),
-        ndtMainHookMeasurementResultsE = getCheckItemValue(ndeCategory, "mainHook_measure_e"),
-        ndtMainHookMeasurementResultsF = getCheckItemValue(ndeCategory, "mainHook_measure_f"),
-        ndtMainHookMeasurementResultsG = getCheckItemValue(ndeCategory, "mainHook_measure_g"),
-        ndtMainHookMeasurementResultsH = getCheckItemValue(ndeCategory, "mainHook_measure_h"),
-        ndtMainHookMeasurementResultsResult = getResultStatus(ndeCategory, "mainHook_measure_result"),
-        ndtMainHookToleranceMeasureA = getCheckItemValue(ndeCategory, "mainHook_tolerance_a"),
-        ndtMainHookToleranceMeasureB = getCheckItemValue(ndeCategory, "mainHook_tolerance_b"),
-        ndtMainHookToleranceMeasureC = getCheckItemValue(ndeCategory, "mainHook_tolerance_c"),
-        ndtMainHookToleranceMeasureD = getCheckItemValue(ndeCategory, "mainHook_tolerance_d"),
-        ndtMainHookToleranceMeasureE = getCheckItemValue(ndeCategory, "mainHook_tolerance_e"),
-        ndtMainHookToleranceMeasureF = getCheckItemValue(ndeCategory, "mainHook_tolerance_f"),
-        ndtMainHookToleranceMeasureG = getCheckItemValue(ndeCategory, "mainHook_tolerance_g"),
-        ndtMainHookToleranceMeasureH = getCheckItemValue(ndeCategory, "mainHook_tolerance_h"),
-        ndtMainHookToleranceMeasureResult = getResultStatus(ndeCategory, "mainHook_tolerance_result"),
-        ndtAuxiliaryHookNdtType = getCheckItemValue(ndeCategory, "auxHook_ndtType"),
-        ndtAuxiliaryHookSpecificationA = getCheckItemValue(ndeCategory, "auxHook_spec_a"),
-        ndtAuxiliaryHookSpecificationB = getCheckItemValue(ndeCategory, "auxHook_spec_b"),
-        ndtAuxiliaryHookSpecificationC = getCheckItemValue(ndeCategory, "auxHook_spec_c"),
-        ndtAuxiliaryHookSpecificationD = getCheckItemValue(ndeCategory, "auxHook_spec_d"),
-        ndtAuxiliaryHookSpecificationE = getCheckItemValue(ndeCategory, "auxHook_spec_e"),
-        ndtAuxiliaryHookSpecificationF = getCheckItemValue(ndeCategory, "auxHook_spec_f"),
-        ndtAuxiliaryHookSpecificationG = getCheckItemValue(ndeCategory, "auxHook_spec_g"),
-        ndtAuxiliaryHookSpecificationH = getCheckItemValue(ndeCategory, "auxHook_spec_h"),
-        ndtAuxiliaryHookSpecificationResult = getResultStatus(ndeCategory, "auxHook_spec_result"),
-        ndtAuxiliaryHookMeasurementResultsA = getCheckItemValue(ndeCategory, "auxHook_measure_a"),
-        ndtAuxiliaryHookMeasurementResultsB = getCheckItemValue(ndeCategory, "auxHook_measure_b"),
-        ndtAuxiliaryHookMeasurementResultsC = getCheckItemValue(ndeCategory, "auxHook_measure_c"),
-        ndtAuxiliaryHookMeasurementResultsD = getCheckItemValue(ndeCategory, "auxHook_measure_d"),
-        ndtAuxiliaryHookMeasurementResultsE = getCheckItemValue(ndeCategory, "auxHook_measure_e"),
-        ndtAuxiliaryHookMeasurementResultsF = getCheckItemValue(ndeCategory, "auxHook_measure_f"),
-        ndtAuxiliaryHookMeasurementResultsG = getCheckItemValue(ndeCategory, "auxHook_measure_g"),
-        ndtAuxiliaryHookMeasurementResultsH = getCheckItemValue(ndeCategory, "auxHook_measure_h"),
-        ndtAuxiliaryHookMeasurementResultsResult = getResultStatus(ndeCategory, "auxHook_measure_result"),
-        ndtAuxiliaryHookToleranceMeasureA = getCheckItemValue(ndeCategory, "auxHook_tolerance_a"),
-        ndtAuxiliaryHookToleranceMeasureB = getCheckItemValue(ndeCategory, "auxHook_tolerance_b"),
-        ndtAuxiliaryHookToleranceMeasureC = getCheckItemValue(ndeCategory, "auxHook_tolerance_c"),
-        ndtAuxiliaryHookToleranceMeasureD = getCheckItemValue(ndeCategory, "auxHook_tolerance_d"),
-        ndtAuxiliaryHookToleranceMeasureE = getCheckItemValue(ndeCategory, "auxHook_tolerance_e"),
-        ndtAuxiliaryHookToleranceMeasureF = getCheckItemValue(ndeCategory, "auxHook_tolerance_f"),
-        ndtAuxiliaryHookToleranceMeasureG = getCheckItemValue(ndeCategory, "auxHook_tolerance_g"),
-        ndtAuxiliaryHookToleranceMeasureH = getCheckItemValue(ndeCategory, "auxHook_tolerance_h"),
-        ndtAuxiliaryHookToleranceMeasureResult = getResultStatus(ndeCategory, "auxHook_tolerance_result"),
-        ndtMainDrumNdtType = getCheckItemValue(ndeCategory, "mainDrum_ndtType"),
-        ndtMainDrumSpecificationA = getCheckItemValue(ndeCategory, "mainDrum_spec_a"),
-        ndtMainDrumSpecificationB = getCheckItemValue(ndeCategory, "mainDrum_spec_b"),
-        ndtMainDrumSpecificationC = getCheckItemValue(ndeCategory, "mainDrum_spec_c"),
-        ndtMainDrumSpecificationD = getCheckItemValue(ndeCategory, "mainDrum_spec_d"),
-        ndtMainDrumSpecificationE = getCheckItemValue(ndeCategory, "mainDrum_spec_e"),
-        ndtMainDrumSpecificationF = getCheckItemValue(ndeCategory, "mainDrum_spec_f"),
-        ndtMainDrumSpecificationG = getCheckItemValue(ndeCategory, "mainDrum_spec_g"),
-        ndtMainDrumSpecificationResult = getResultStatus(ndeCategory, "mainDrum_spec_result"),
-        ndtMainDrumMeasurementResultsA = getCheckItemValue(ndeCategory, "mainDrum_measure_a"),
-        ndtMainDrumMeasurementResultsB = getCheckItemValue(ndeCategory, "mainDrum_measure_b"),
-        ndtMainDrumMeasurementResultsC = getCheckItemValue(ndeCategory, "mainDrum_measure_c"),
-        ndtMainDrumMeasurementResultsD = getCheckItemValue(ndeCategory, "mainDrum_measure_d"),
-        ndtMainDrumMeasurementResultsE = getCheckItemValue(ndeCategory, "mainDrum_measure_e"),
-        ndtMainDrumMeasurementResultsF = getCheckItemValue(ndeCategory, "mainDrum_measure_f"),
-        ndtMainDrumMeasurementResultsG = getCheckItemValue(ndeCategory, "mainDrum_measure_g"),
-        ndtMainDrumMeasurementResultsResult = getResultStatus(ndeCategory, "mainDrum_measure_result"),
-        ndtAuxiliaryDrumNdtType = getCheckItemValue(ndeCategory, "auxDrum_ndtType"),
-        ndtAuxiliaryDrumSpecificationA = getCheckItemValue(ndeCategory, "auxDrum_spec_a"),
-        ndtAuxiliaryDrumSpecificationB = getCheckItemValue(ndeCategory, "auxDrum_spec_b"),
-        ndtAuxiliaryDrumSpecificationC = getCheckItemValue(ndeCategory, "auxDrum_spec_c"),
-        ndtAuxiliaryDrumSpecificationD = getCheckItemValue(ndeCategory, "auxDrum_spec_d"),
-        ndtAuxiliaryDrumSpecificationE = getCheckItemValue(ndeCategory, "auxDrum_spec_e"),
-        ndtAuxiliaryDrumSpecificationF = getCheckItemValue(ndeCategory, "auxDrum_spec_f"),
-        ndtAuxiliaryDrumSpecificationG = getCheckItemValue(ndeCategory, "auxDrum_spec_g"),
-        ndtAuxiliaryDrumSpecificationResult = getResultStatus(ndeCategory, "auxDrum_spec_result"),
-        ndtAuxiliaryDrumMeasurementResultsA = getCheckItemValue(ndeCategory, "auxDrum_measure_a"),
-        ndtAuxiliaryDrumMeasurementResultsB = getCheckItemValue(ndeCategory, "auxDrum_measure_b"),
-        ndtAuxiliaryDrumMeasurementResultsC = getCheckItemValue(ndeCategory, "auxDrum_measure_c"),
-        ndtAuxiliaryDrumMeasurementResultsD = getCheckItemValue(ndeCategory, "auxDrum_measure_d"),
-        ndtAuxiliaryDrumMeasurementResultsE = getCheckItemValue(ndeCategory, "auxDrum_measure_e"),
-        ndtAuxiliaryDrumMeasurementResultsF = getCheckItemValue(ndeCategory, "auxDrum_measure_f"),
-        ndtAuxiliaryDrumMeasurementResultsG = getCheckItemValue(ndeCategory, "auxDrum_measure_g"),
-        ndtAuxiliaryDrumMeasurementResultsResult = getResultStatus(ndeCategory, "auxDrum_measure_result"),
-        ndtMainPulleySpecificationA = getCheckItemValue(ndeCategory, "mainPulley_spec_a"),
-        ndtMainPulleySpecificationB = getCheckItemValue(ndeCategory, "mainPulley_spec_b"),
-        ndtMainPulleySpecificationC = getCheckItemValue(ndeCategory, "mainPulley_spec_c"),
-        ndtMainPulleySpecificationD = getCheckItemValue(ndeCategory, "mainPulley_spec_d"),
-        ndtMainPulleySpecificationE = getCheckItemValue(ndeCategory, "mainPulley_spec_e"),
-        ndtMainPulleySpecificationResult = getResultStatus(ndeCategory, "mainPulley_spec_result"),
-        ndtMainPulleyMeasurementResultsA = getCheckItemValue(ndeCategory, "mainPulley_measure_a"),
-        ndtMainPulleyMeasurementResultsB = getCheckItemValue(ndeCategory, "mainPulley_measure_b"),
-        ndtMainPulleyMeasurementResultsC = getCheckItemValue(ndeCategory, "mainPulley_measure_c"),
-        ndtMainPulleyMeasurementResultsD = getCheckItemValue(ndeCategory, "mainPulley_measure_d"),
-        ndtMainPulleyMeasurementResultsE = getCheckItemValue(ndeCategory, "mainPulley_measure_e"),
-        ndtMainPulleyMeasurementResultsResult = getResultStatus(ndeCategory, "mainPulley_measure_result"),
-        ndtAuxiliaryPulleySpecificationA = getCheckItemValue(ndeCategory, "auxPulley_spec_a"),
-        ndtAuxiliaryPulleySpecificationB = getCheckItemValue(ndeCategory, "auxPulley_spec_b"),
-        ndtAuxiliaryPulleySpecificationC = getCheckItemValue(ndeCategory, "auxPulley_spec_c"),
-        ndtAuxiliaryPulleySpecificationD = getCheckItemValue(ndeCategory, "auxPulley_spec_d"),
-        ndtAuxiliaryPulleySpecificationE = getCheckItemValue(ndeCategory, "auxPulley_spec_e"),
-        ndtAuxiliaryPulleySpecificationResult = getResultStatus(ndeCategory, "auxPulley_spec_result"),
-        ndtAuxiliaryPulleyMeasurementResultsA = getCheckItemValue(ndeCategory, "auxPulley_measure_a"),
-        ndtAuxiliaryPulleyMeasurementResultsB = getCheckItemValue(ndeCategory, "auxPulley_measure_b"),
-        ndtAuxiliaryPulleyMeasurementResultsC = getCheckItemValue(ndeCategory, "auxPulley_measure_c"),
-        ndtAuxiliaryPulleyMeasurementResultsD = getCheckItemValue(ndeCategory, "auxPulley_measure_d"),
-        ndtAuxiliaryPulleyMeasurementResultsE = getCheckItemValue(ndeCategory, "auxPulley_measure_e"),
-        ndtAuxiliaryPulleyMeasurementResultsResult = getResultStatus(ndeCategory, "auxPulley_measure_result"),
+        // NDE
+        ndtSteelWireRope = NdtSteelWireRope(
+            ndtType = getCheckItemValue("nde_wireRope", "ndtType"),
+            ropes = ndeWireRopeItems
+        ),
+        ndtBoom = NdtBoom(
+            boomType = getCheckItemValue("nde_boom", "boomType"),
+            ndtType = getCheckItemValue("nde_boom", "ndtType"),
+            inspections = ndeBoomItems
+        ),
+        ndtMainHook = NdtHook(
+            ndtType = getCheckItemValue("nde_mainHook", "ndtType"),
+            capacity = getCheckItemValue("nde_mainHook", "hookCapacity"),
+            specification = NdtSpecification(
+                a = getCheckItemValue("nde_mainHook", "spec_a"), b = getCheckItemValue("nde_mainHook", "spec_b"),
+                c = getCheckItemValue("nde_mainHook", "spec_c"), d = getCheckItemValue("nde_mainHook", "spec_d"),
+                e = getCheckItemValue("nde_mainHook", "spec_e"), f = getCheckItemValue("nde_mainHook", "spec_f"),
+                g = getCheckItemValue("nde_mainHook", "spec_g"), h = getCheckItemValue("nde_mainHook", "spec_h"),
+                result = getResultStatus("nde_mainHook", "spec_finding")
+            ),
+            measurementResults = NdtMeasurement(
+                a = getCheckItemValue("nde_mainHook", "result_a"), b = getCheckItemValue("nde_mainHook", "result_b"),
+                c = getCheckItemValue("nde_mainHook", "result_c"), d = getCheckItemValue("nde_mainHook", "result_d"),
+                e = getCheckItemValue("nde_mainHook", "result_e"), f = getCheckItemValue("nde_mainHook", "result_f"),
+                g = getCheckItemValue("nde_mainHook", "result_g"), h = getCheckItemValue("nde_mainHook", "result_h"),
+                result = getResultStatus("nde_mainHook", "result_finding")
+            ),
+            toleranceMeasure = NdtMeasurement(
+                a = getCheckItemValue("nde_mainHook", "tolerance_a"), b = getCheckItemValue("nde_mainHook", "tolerance_b"),
+                c = getCheckItemValue("nde_mainHook", "tolerance_c"), d = getCheckItemValue("nde_mainHook", "tolerance_d"),
+                e = getCheckItemValue("nde_mainHook", "tolerance_e"), f = getCheckItemValue("nde_mainHook", "tolerance_f"),
+                g = getCheckItemValue("nde_mainHook", "tolerance_g"), h = getCheckItemValue("nde_mainHook", "tolerance_h"),
+                result = getResultStatus("nde_mainHook", "tolerance_finding")
+            )
+        ),
+        ndtAuxiliaryHook = NdtHook(
+            ndtType = getCheckItemValue("nde_auxHook", "ndtType"),
+            capacity = getCheckItemValue("nde_auxHook", "hookCapacity"),
+            specification = NdtSpecification(
+                a = getCheckItemValue("nde_auxHook", "spec_a"), b = getCheckItemValue("nde_auxHook", "spec_b"),
+                c = getCheckItemValue("nde_auxHook", "spec_c"), d = getCheckItemValue("nde_auxHook", "spec_d"),
+                e = getCheckItemValue("nde_auxHook", "spec_e"), f = getCheckItemValue("nde_auxHook", "spec_f"),
+                g = getCheckItemValue("nde_auxHook", "spec_g"), h = getCheckItemValue("nde_auxHook", "spec_h"),
+                result = getResultStatus("nde_auxHook", "spec_finding")
+            ),
+            measurementResults = NdtMeasurement(
+                a = getCheckItemValue("nde_auxHook", "result_a"), b = getCheckItemValue("nde_auxHook", "result_b"),
+                c = getCheckItemValue("nde_auxHook", "result_c"), d = getCheckItemValue("nde_auxHook", "result_d"),
+                e = getCheckItemValue("nde_auxHook", "result_e"), f = getCheckItemValue("nde_auxHook", "result_f"),
+                g = getCheckItemValue("nde_auxHook", "result_g"), h = getCheckItemValue("nde_auxHook", "result_h"),
+                result = getResultStatus("nde_auxHook", "result_finding")
+            ),
+            toleranceMeasure = NdtMeasurement(
+                a = getCheckItemValue("nde_auxHook", "tolerance_a"), b = getCheckItemValue("nde_auxHook", "tolerance_b"),
+                c = getCheckItemValue("nde_auxHook", "tolerance_c"), d = getCheckItemValue("nde_auxHook", "tolerance_d"),
+                e = getCheckItemValue("nde_auxHook", "tolerance_e"), f = getCheckItemValue("nde_auxHook", "tolerance_f"),
+                g = getCheckItemValue("nde_auxHook", "tolerance_g"), h = getCheckItemValue("nde_auxHook", "tolerance_h"),
+                result = getResultStatus("nde_auxHook", "tolerance_finding")
+            )
+        ),
+        ndtMainDrum = NdtDrum(
+            ndtType = getCheckItemValue("nde_mainDrum", "ndtType"),
+            capacity = "", // Not available in domain model
+            specification = NdtSpecification(
+                a = getCheckItemValue("nde_mainDrum", "spec_a"), b = getCheckItemValue("nde_mainDrum", "spec_b"),
+                c = getCheckItemValue("nde_mainDrum", "spec_c"), d = getCheckItemValue("nde_mainDrum", "spec_d"),
+                e = getCheckItemValue("nde_mainDrum", "spec_e"), f = getCheckItemValue("nde_mainDrum", "spec_f"),
+                g = getCheckItemValue("nde_mainDrum", "spec_g"), h = "",
+                result = getResultStatus("nde_mainDrum", "spec_finding")
+            ),
+            measurementResults = NdtMeasurement(
+                a = getCheckItemValue("nde_mainDrum", "result_a"), b = getCheckItemValue("nde_mainDrum", "result_b"),
+                c = getCheckItemValue("nde_mainDrum", "result_c"), d = getCheckItemValue("nde_mainDrum", "result_d"),
+                e = getCheckItemValue("nde_mainDrum", "result_e"), f = getCheckItemValue("nde_mainDrum", "result_f"),
+                g = getCheckItemValue("nde_mainDrum", "result_g"), h = "",
+                result = getResultStatus("nde_mainDrum", "result_finding")
+            )
+        ),
+        ndtAuxiliaryDrum = NdtDrum(
+            ndtType = getCheckItemValue("nde_auxDrum", "ndtType"),
+            capacity = "", // Not available in domain model
+            specification = NdtSpecification(
+                a = getCheckItemValue("nde_auxDrum", "spec_a"), b = getCheckItemValue("nde_auxDrum", "spec_b"),
+                c = getCheckItemValue("nde_auxDrum", "spec_c"), d = getCheckItemValue("nde_auxDrum", "spec_d"),
+                e = getCheckItemValue("nde_auxDrum", "spec_e"), f = getCheckItemValue("nde_auxDrum", "spec_f"),
+                g = getCheckItemValue("nde_auxDrum", "spec_g"), h = "",
+                result = getResultStatus("nde_auxDrum", "spec_finding")
+            ),
+            measurementResults = NdtMeasurement(
+                a = getCheckItemValue("nde_auxDrum", "result_a"), b = getCheckItemValue("nde_auxDrum", "result_b"),
+                c = getCheckItemValue("nde_auxDrum", "result_c"), d = getCheckItemValue("nde_auxDrum", "result_d"),
+                e = getCheckItemValue("nde_auxDrum", "result_e"), f = getCheckItemValue("nde_auxDrum", "result_f"),
+                g = getCheckItemValue("nde_auxDrum", "result_g"), h = "",
+                result = getResultStatus("nde_auxDrum", "result_finding")
+            )
+        ),
+        ndtMainPulley = NdtPulley(
+            ndtType = getCheckItemValue("nde_mainPulley", "ndtType"),
+            capacity = "", // Not available in domain model
+            specification = NdtSpecification(
+                a = getCheckItemValue("nde_mainPulley", "spec_a"), b = getCheckItemValue("nde_mainPulley", "spec_b"),
+                c = getCheckItemValue("nde_mainPulley", "spec_c"), d = getCheckItemValue("nde_mainPulley", "spec_d"),
+                e = getCheckItemValue("nde_mainPulley", "spec_e"), f = "", g = "", h = "",
+                result = getResultStatus("nde_mainPulley", "spec_finding")
+            ),
+            measurementResults = NdtMeasurement(
+                a = getCheckItemValue("nde_mainPulley", "result_a"), b = getCheckItemValue("nde_mainPulley", "result_b"),
+                c = getCheckItemValue("nde_mainPulley", "result_c"), d = getCheckItemValue("nde_mainPulley", "result_d"),
+                e = getCheckItemValue("nde_mainPulley", "result_e"), f = "", g = "", h = "",
+                result = getResultStatus("nde_mainPulley", "result_finding")
+            )
+        ),
+        ndtAuxiliaryPulley = NdtPulley(
+            ndtType = getCheckItemValue("nde_auxPulley", "ndtType"),
+            capacity = "", // Not available in domain model
+            specification = NdtSpecification(
+                a = getCheckItemValue("nde_auxPulley", "spec_a"), b = getCheckItemValue("nde_auxPulley", "spec_b"),
+                c = getCheckItemValue("nde_auxPulley", "spec_c"), d = getCheckItemValue("nde_auxPulley", "spec_d"),
+                e = getCheckItemValue("nde_auxPulley", "spec_e"), f = "", g = "", h = "",
+                result = getResultStatus("nde_auxPulley", "spec_finding")
+            ),
+            measurementResults = NdtMeasurement(
+                a = getCheckItemValue("nde_auxPulley", "result_a"), b = getCheckItemValue("nde_auxPulley", "result_b"),
+                c = getCheckItemValue("nde_auxPulley", "result_c"), d = getCheckItemValue("nde_auxPulley", "result_d"),
+                e = getCheckItemValue("nde_auxPulley", "result_e"), f = "", g = "", h = "",
+                result = getResultStatus("nde_auxPulley", "result_finding")
+            )
+        ),
 
-        // --- Testing ---
-        testingFunctionHoistingLoweringResult = getResultStatus(funcTestCategory, "hoistingLowering"),
-        testingFunctionExtendedRectractedBoomResult = getResultStatus(funcTestCategory, "extendedRetractedBoom"),
-        testingFunctionExtendedRectractedOutriggerResult = getResultStatus(funcTestCategory, "extendedRetractedOutrigger"),
-        testingFunctionSwingSlewingResult = getResultStatus(funcTestCategory, "swingSlewing"),
-        testingFunctionAntiTwoBlockResult = getResultStatus(funcTestCategory, "antiTwoBlock"),
-        testingFunctionBoomStopResult = getResultStatus(funcTestCategory, "boomStop"),
-        testingFunctionAnemometerWindSpeedResult = getResultStatus(funcTestCategory, "anemometerWindSpeed"),
-        testingFunctionBrakeLockingDeviceResult = getResultStatus(funcTestCategory, "brakeLockingDevice"),
-        testingFunctionLoadMomentIndicatorResult = getResultStatus(funcTestCategory, "loadMomentIndicator"),
-        testingFunctionTurnSignalResult = getResultStatus(funcTestCategory, "turnSignal"),
-        testingFunctionDrivingLightsResult = getResultStatus(funcTestCategory, "drivingLights"),
-        testingFunctionLoadIndicatorLightResult = getResultStatus(funcTestCategory, "loadIndicatorLight"),
-        testingFunctionRotaryLampResult = getResultStatus(funcTestCategory, "rotaryLamp"),
-        testingFunctionHornResult = getResultStatus(funcTestCategory, "horn"),
-        testingFunctionSwingAlarmResult = getResultStatus(funcTestCategory, "swingAlarm"),
-        testingFunctionReverseAlarmResult = getResultStatus(funcTestCategory, "reverseAlarm"),
-        testingFunctionOverloadAlarmResult = getResultStatus(funcTestCategory, "overloadAlarm"),
+        // Testing
+        testingFunction = TestingFunction(
+            hoistingLowering = getResultStatus(funcTestCategory, "hoistingLowering"),
+            extendedRetractedBoom = getResultStatus(funcTestCategory, "extendedRetractedBoom"),
+            extendedRetractedOutrigger = getResultStatus(funcTestCategory, "extendedRetractedOutrigger"),
+            swingSlewing = getResultStatus(funcTestCategory, "swingSlewing"),
+            antiTwoBlock = getResultStatus(funcTestCategory, "antiTwoBlock"),
+            boomStop = getResultStatus(funcTestCategory, "boomStop"),
+            anemometerWindSpeed = getResultStatus(funcTestCategory, "anemometerWindSpeed"),
+            brakeLockingDevice = getResultStatus(funcTestCategory, "brakeLockingDevice"),
+            loadMomentIndicator = getResultStatus(funcTestCategory, "loadMomentIndicator"),
+            turnSignal = getResultStatus(funcTestCategory, "turnSignal"),
+            drivingLights = getResultStatus(funcTestCategory, "drivingLights"),
+            loadIndicatorLight = getResultStatus(funcTestCategory, "loadIndicatorLight"),
+            rotaryLamp = getResultStatus(funcTestCategory, "rotaryLamp"),
+            horn = getResultStatus(funcTestCategory, "horn"),
+            swingAlarm = getResultStatus(funcTestCategory, "swingAlarm"),
+            reverseAlarm = getResultStatus(funcTestCategory, "reverseAlarm"),
+            overloadAlarm = getResultStatus(funcTestCategory, "overloadAlarm")
+        ),
 
         dynamicMainHookTests = checkItemsByCategory.keys.filter { it.startsWith("testing_load_dynamic_main_item_") }.mapNotNull {
             val index = it.substringAfterLast('_').toIntOrNull()

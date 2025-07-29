@@ -297,13 +297,14 @@ data class DieselPanelControl(
     @SerializedName("powerInfo") val powerInfo: DieselPowerInfo
 )
 
+// Updated DieselVoltage - changed from Int to String to match JSON
 data class DieselVoltage(
-    @SerializedName("rs") val rs: Int,
-    @SerializedName("rt") val rt: Int,
-    @SerializedName("st") val st: Int,
-    @SerializedName("rn") val rn: Int,
-    @SerializedName("rg") val rg: Int,
-    @SerializedName("ng") val ng: Int
+    @SerializedName("rs") val rs: String,
+    @SerializedName("rt") val rt: String,
+    @SerializedName("st") val st: String,
+    @SerializedName("rn") val rn: String,
+    @SerializedName("rg") val rg: String,
+    @SerializedName("ng") val ng: String
 )
 
 data class DieselPowerInfo(
@@ -319,14 +320,15 @@ data class DieselAmpere(
     @SerializedName("t") val t: Int
 )
 
+// Updated DieselMcbCalculation - changed voltage and some fields to String to match JSON
 data class DieselMcbCalculation(
-    @SerializedName("phase") val phase: Int,
+    @SerializedName("phase") val phase: String, // Changed from Int to String
     @SerializedName("voltage") val voltage: String, // String karena "220/380"
-    @SerializedName("cosQ") val cosQ: Double,
-    @SerializedName("generatorPowerKva") val generatorPowerKva: Int,
-    @SerializedName("generatorPowerKw") val generatorPowerKw: Int,
-    @SerializedName("resultCalculation") val resultCalculation: Int,
-    @SerializedName("requirementCalculation") val requirementCalculation: Int,
+    @SerializedName("cosQ") val cosQ: String, // Changed from Double to String
+    @SerializedName("generatorPowerKva") val generatorPowerKva: String, // Changed from Int to String
+    @SerializedName("generatorPowerKw") val generatorPowerKw: String, // Changed from Int to String
+    @SerializedName("resultCalculation") val resultCalculation: String, // Changed from Int to String
+    @SerializedName("requirementCalculation") val requirementCalculation: String, // Changed from Int to String
     @SerializedName("conclusion") val conclusion: String
 )
 
@@ -344,8 +346,8 @@ data class DieselLightingMeasurement(
     @SerializedName("pointD") val pointD: DieselMeasurementPoint
 )
 
-// Reusable data class for measurement points (noise/lighting)
+// Updated DieselMeasurementPoint - changed result from Double to String to match JSON
 data class DieselMeasurementPoint(
-    @SerializedName("result") val result: Double,
+    @SerializedName("result") val result: String, // Changed from Double to String
     @SerializedName("status") val status: String
 )
