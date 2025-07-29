@@ -1,6 +1,9 @@
 package com.nakersolutionid.nakersolutionid.domain.repository
 
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.DownloadInfo
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import kotlinx.coroutines.flow.Flow
@@ -16,4 +19,7 @@ interface IReportRepository {
     suspend fun syncUpdateInspection(): Boolean
     fun getAllReports(): Flow<List<History>>
     suspend fun deleteReport(id: Long)
+    suspend fun getDownloadInfo(id: Long): Resource<DownloadInfo>
+    suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String)
+    fun getApiPath(subInspectionType: SubInspectionType, documentType: DocumentType): String
 }

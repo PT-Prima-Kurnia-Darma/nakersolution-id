@@ -35,6 +35,7 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.PUBTViewModel
 import com.nakersolutionid.nakersolutionid.features.settings.SettingsViewModel
 import com.nakersolutionid.nakersolutionid.features.signup.SignUpViewModel
 import com.nakersolutionid.nakersolutionid.utils.AppExecutors
+import com.nakersolutionid.nakersolutionid.workers.DownloadWorker
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import com.nakersolutionid.nakersolutionid.workers.SyncReportWorker
 import com.nakersolutionid.nakersolutionid.workers.SyncUpdateReportWorker
@@ -63,9 +64,10 @@ val databaseModule = module {
 
 val workerModule = module {
     single { WorkManager.getInstance(androidContext()) }
-    single { SyncManager(get()) }
+    single { SyncManager(get(), get(), get()) }
     worker { SyncReportWorker(get(), get(), get()) }
     worker { SyncUpdateReportWorker(get(), get(), get()) }
+    worker { DownloadWorker(get(), get(), get()) }
 }
 
 val useCaseModule = module {

@@ -62,7 +62,9 @@ fun InspectionEntity.toDomain(): InspectionDomain {
         inspectorName = this.inspectorName,
         status = this.status,
         isSynced = this.isSynced,
-        isEdited = this.isEdited
+        isEdited = this.isEdited,
+        isDownloaded = this.isDownloaded,
+        filePath = this.filePath
     )
 }
 
@@ -85,7 +87,10 @@ fun InspectionEntity.toHistory(): History {
         ownerName = this.ownerName,
         createdAt = this.createdAt,
         reportDate = this.reportDate,
-        isSynced = this.isSynced
+        isSynced = this.isSynced,
+        isEdited = this.isEdited,
+        isDownloaded = this.isDownloaded,
+        filePath = this.filePath
     )
 }
 
@@ -195,7 +200,9 @@ fun InspectionDomain.toEntity(): InspectionEntity {
         inspectorName = this.inspectorName,
         status = this.status,
         isSynced = this.isSynced,
-        isEdited = this.isEdited
+        isEdited = this.isEdited,
+        isDownloaded = this.isDownloaded,
+        filePath = this.filePath
     )
 }
 

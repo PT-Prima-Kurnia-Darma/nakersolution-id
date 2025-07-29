@@ -31,4 +31,5 @@ class LocalDataSource(private val inspectionDao: InspectionDao) {
     suspend fun updateSyncStatus(id: Long, isSynced: Boolean) = inspectionDao.updateSyncStatus(id, isSynced)
 
     suspend fun deleteInspection(id: Long) = inspectionDao.deleteInspectionWithDetails(id)
+    suspend fun updateDownloadStatus(id: Long, isDownloaded: Boolean, filePath: String) = inspectionDao.updateDownloadStatus(id, isDownloaded, filePath)
 }

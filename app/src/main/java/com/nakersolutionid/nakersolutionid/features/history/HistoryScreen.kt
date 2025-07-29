@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,11 +52,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
@@ -64,9 +67,11 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import com.nakersolutionid.nakersolutionid.utils.DownloadState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
+import java.io.File
 
 // Data class for holding the selected filter state
 data class FilterState(
@@ -83,6 +88,7 @@ fun HistoryScreen(
     onBackClick: () -> Unit,
     onEditClick: (History) -> Unit = {},
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val activeFilters by viewModel.filterState.collectAsStateWithLifecycle()
@@ -92,6 +98,25 @@ fun HistoryScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var historyToDelete by remember { mutableStateOf<History?>(null) }
     val lazyListState = rememberLazyListState()
+
+    fun shareFile(filePath: String) {
+        val file = File(filePath)
+        // Pastikan authority sama dengan yang ada di AndroidManifest.xml
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = context.contentResolver.getType(uri) ?: "*/*"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(Intent.createChooser(intent, "Bagikan Laporan"))
+    }
+
+    // TAMBAHKAN BLOK LaunchedEffect INI
+    LaunchedEffect(Unit) {
+        viewModel.shareEvent.collect { filePath ->
+            shareFile(filePath) // Panggil fungsi share yang sudah ada
+        }
+    }
 
     LaunchedEffect(uiState.triggerSync) {
         viewModel.triggerSync()
@@ -137,15 +162,20 @@ fun HistoryScreen(
                     items = uiState.histories,
                     key = { it.id }
                 ) { history ->
+                    val downloadState = uiState.downloadStates[history.id] ?: DownloadState.Idle
                     HistoryItem(
                         modifier = Modifier.animateItem(),
                         history = history,
+                        downloadState = downloadState, // KIRIM STATE KE ITEM
                         onDeleteClick = {
                             historyToDelete = history
                             showDeleteDialog = true
                         },
                         onDownloadClick = {
-                            // TODO: Implement download functionality
+                            viewModel.downloadReport(history) // Panggil fungsi baru
+                        },
+                        onShareClick = { filePath ->
+                            shareFile(filePath) // Panggil fungsi share
                         },
                         onEditClick = {
                             onEditClick(history)
@@ -174,7 +204,7 @@ fun HistoryScreen(
             DeleteConfirmationDialog(
                 historyToDelete = historyToDelete!!,
                 onConfirm = {
-                    viewModel.deleteReport(historyToDelete!!.id)
+                    viewModel.deleteReport(historyToDelete!!) // Kirim seluruh objek
                     showDeleteDialog = false
                     historyToDelete = null
                 },

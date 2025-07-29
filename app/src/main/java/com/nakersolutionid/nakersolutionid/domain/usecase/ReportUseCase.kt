@@ -12,4 +12,5 @@ interface ReportUseCase {
     suspend fun getInspection(id: Long): InspectionWithDetailsDomain?
     fun getAllReports(): Flow<List<History>>
     suspend fun deleteReport(id: Long)
+    suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String)
 }

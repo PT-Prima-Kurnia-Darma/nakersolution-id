@@ -1,6 +1,7 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,14 +15,23 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.SyncProblem
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,13 +44,16 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import com.nakersolutionid.nakersolutionid.utils.DownloadState
 import com.nakersolutionid.nakersolutionid.utils.Utils
 
 @Composable
 fun HistoryItem(
     history: History,
+    downloadState: DownloadState, // TERIMA STATE BARU
     onDeleteClick: () -> Unit,
     onDownloadClick: () -> Unit,
+    onShareClick: (String) -> Unit, // TERIMA LAMBDA BARU
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -123,7 +136,11 @@ fun HistoryItem(
 
                 // Tombol Aksi
                 ActionButton(icon = Icons.Default.Delete, description = "Delete", onClick = onDeleteClick)
-                ActionButton(icon = Icons.Default.Download, description = "Download", onClick = onDownloadClick)
+                DownloadActionButton(
+                    downloadState = downloadState,
+                    onDownloadClick = onDownloadClick,
+                    onShareClick = onShareClick
+                )
                 ActionButton(icon = Icons.Default.Edit, description = "Edit", onClick = onEditClick)
             }
         }
@@ -166,6 +183,63 @@ private fun ActionButton(
     }
 }
 
+// Bisa diletakkan di file HistoryItem.kt atau file terpisah
+@Composable
+fun DownloadActionButton(
+    downloadState: DownloadState,
+    onDownloadClick: () -> Unit,
+    onShareClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    /*val scope = rememberCoroutineScope()
+    var hasTriggeredInitialShare by remember { mutableStateOf(false) }
+
+    // Trigger share otomatis HANYA saat transisi dari Downloading ke Downloaded
+    LaunchedEffect(downloadState) {
+        if (downloadState is DownloadState.Downloaded && !hasTriggeredInitialShare) {
+            onShareClick(downloadState.filePath)
+            hasTriggeredInitialShare = true
+        }
+        // Reset trigger jika state kembali ke idle/downloading
+        if (downloadState !is DownloadState.Downloaded) {
+            hasTriggeredInitialShare = false
+        }
+    }*/
+
+    Box(
+        modifier = modifier.size(48.dp), // Beri ukuran tetap agar UI tidak "loncat"
+        contentAlignment = Alignment.Center
+    ) {
+        when (downloadState) {
+            is DownloadState.Idle -> {
+                IconButton(onClick = onDownloadClick) {
+                    Icon(
+                        imageVector = Icons.Default.Download,
+                        contentDescription = "Download",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+            is DownloadState.Downloading -> {
+                CircularProgressIndicator(
+                    progress = { downloadState.progress / 100f },
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp
+                )
+            }
+            is DownloadState.Downloaded -> {
+                IconButton(onClick = { onShareClick(downloadState.filePath) }) {
+                    Icon(
+                        imageVector = Icons.Filled.Share, // Gunakan Share Icon
+                        contentDescription = "Share",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -191,6 +265,8 @@ private fun HistoryItemPreview() {
             onDeleteClick = {},
             onDownloadClick = {},
             onEditClick = {},
+            downloadState = DownloadState.Idle,
+            onShareClick = {},
         )
     }
 }

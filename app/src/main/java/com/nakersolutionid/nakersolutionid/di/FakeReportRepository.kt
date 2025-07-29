@@ -4,6 +4,7 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.DownloadInfo
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
@@ -76,5 +77,24 @@ class FakeReportRepository : IReportRepository {
 
     override suspend fun deleteReport(id: Long) {
         null
+    }
+
+    override suspend fun getDownloadInfo(id: Long): Resource<DownloadInfo> {
+        return Resource.Success(DownloadInfo("", "", ""))
+    }
+
+    override suspend fun updateDownloadedStatus(
+        id: Long,
+        isDownloaded: Boolean,
+        filePath: String
+    ) {
+        null
+    }
+
+    override fun getApiPath(
+        subInspectionType: SubInspectionType,
+        documentType: DocumentType
+    ): String {
+        return ""
     }
 }

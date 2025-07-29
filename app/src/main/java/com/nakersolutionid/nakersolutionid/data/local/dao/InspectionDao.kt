@@ -83,6 +83,9 @@ interface InspectionDao {
     @Query("UPDATE inspections SET is_synced = :isSynced WHERE id = :id")
     suspend fun updateSyncStatus(id: Long, isSynced: Boolean)
 
+    @Query("UPDATE inspections SET is_downloaded = :isDownloaded, file_path = :filePath WHERE id = :id")
+    suspend fun updateDownloadStatus(id: Long, isDownloaded: Boolean, filePath: String)
+
     /**
      * Deletes an inspection and all its related data by ID.
      * Due to foreign key constraints, related data will be automatically deleted.

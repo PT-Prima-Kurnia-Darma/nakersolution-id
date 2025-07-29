@@ -17,4 +17,5 @@ class ReportInteraction(private val reportRepository: IReportRepository) : Repor
     override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? = reportRepository.getInspection(id)
     override fun getAllReports(): Flow<List<History>> = reportRepository.getAllReports()
     override suspend fun deleteReport(id: Long) = reportRepository.deleteReport(id)
+    override suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String) = reportRepository.updateDownloadedStatus(id, isDownloaded, filePath)
 }

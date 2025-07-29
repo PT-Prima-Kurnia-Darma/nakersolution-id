@@ -92,6 +92,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.mapper.toPubtBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.mapper.toPubtReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiPaths
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
+import com.nakersolutionid.nakersolutionid.domain.model.DownloadInfo
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
@@ -281,7 +282,7 @@ class ReportRepository(
         localDataSource.updateSyncStatus(id, isSynced)
     }
 
-    private fun getApiPath(subInspectionType: SubInspectionType, documentType: DocumentType): String {
+    override fun getApiPath(subInspectionType: SubInspectionType, documentType: DocumentType): String {
         val reportPathMap = mapOf(
             SubInspectionType.Elevator to ApiPaths.LAPORAN_ELEVATOR,
             SubInspectionType.Escalator to ApiPaths.LAPORAN_ESKALATOR,
@@ -735,4 +736,23 @@ class ReportRepository(
             localDataSource.deleteInspection(id)
         }
     }
+
+    override suspend fun getDownloadInfo(id: Long): Resource<DownloadInfo> {
+        val data = localDataSource.getInspection(id).firstOrNull()
+        if (data == null) {
+            return Resource.Error("Data not found")
+        }
+
+        val path = getApiPath(data.inspectionEntity.subInspectionType, data.inspectionEntity.documentType)
+        if (path.isEmpty()) {
+            return Resource.Error("Path not found")
+        }
+
+        val token = "Bearer ${userPreference.getUserToken() ?: ""}"
+        val extraId = if (data.inspectionEntity.documentType == DocumentType.BAP) data.inspectionEntity.moreExtraId else data.inspectionEntity.extraId
+
+        return Resource.Success(DownloadInfo(path, token, extraId))
+    }
+
+    override suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String) = localDataSource.updateDownloadStatus(id, isDownloaded, filePath)
 }

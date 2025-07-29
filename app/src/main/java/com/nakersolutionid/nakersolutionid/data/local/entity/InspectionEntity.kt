@@ -117,7 +117,13 @@ data class InspectionEntity(
     val isSynced: Boolean = false,
 
     @ColumnInfo(name = "is_edited")
-    val isEdited: Boolean = false
+    val isEdited: Boolean = false,
+
+    @ColumnInfo(name = "is_downloaded")
+    val isDownloaded: Boolean = false,
+
+    @ColumnInfo(name = "file_path")
+    val filePath: String = ""
 )
 
 /**

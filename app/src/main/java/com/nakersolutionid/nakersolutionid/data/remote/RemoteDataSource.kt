@@ -371,30 +371,5 @@ class RemoteDataSource(val apiServices: ApiServices) {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-
-    fun downloadDocument(
-        token: String,
-        path: String,
-        extraId: String
-    ): Flow<ApiResponse<ResponseBody>> {
-        return flow {
-            val result: ApiResponse<ResponseBody> = try {
-                val response: Response<ResponseBody> =
-                    apiServices.downloadDocument("Bearer $token", path, extraId)
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        ApiResponse.Success(it)
-                    } ?: ApiResponse.Error("Response body is null")
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    val parsedError = Gson().fromJson(errorBody, ErrorResponse::class.java)
-                    ApiResponse.Error(parsedError?.message ?: "Parsing JSON response failed")
-                }
-            } catch (e: Exception) {
-                ApiResponse.Error(e.message ?: "An unexpected error occurred")
-            }
-            emit(result)
-        }.flowOn(Dispatchers.IO)
-    }
     // endregion
 }
