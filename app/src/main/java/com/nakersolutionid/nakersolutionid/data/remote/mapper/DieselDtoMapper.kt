@@ -290,11 +290,11 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
             ),
             powerInfo = DieselPowerInfo(
                 frequency = getCheckItemValue(testCategory, "elec_power_freq"),
-                cosQ = getCheckItemValue(testCategory, "elec_power_cosQ").toDoubleOrNull() ?: 0.0,
+                cosQ = getCheckItemValue(testCategory, "elec_power_cosQ"),
                 ampere = DieselAmpere(
-                    r = getCheckItemValue(testCategory, "elec_power_ampR").toIntOrNull() ?: 0,
-                    s = getCheckItemValue(testCategory, "elec_power_ampS").toIntOrNull() ?: 0,
-                    t = getCheckItemValue(testCategory, "elec_power_ampT").toIntOrNull() ?: 0
+                    r = getCheckItemValue(testCategory, "elec_power_ampR"),
+                    s = getCheckItemValue(testCategory, "elec_power_ampS"),
+                    t = getCheckItemValue(testCategory, "elec_power_ampT")
                 ),
                 result = getCheckItemValue(testCategory, "elec_power_remarks")
             )
@@ -569,10 +569,10 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     addCheckItem(testCategory, "elec_panel_voltRG", elec.voltage.rg)
     addCheckItem(testCategory, "elec_panel_voltNG", elec.voltage.ng)
     addCheckItem(testCategory, "elec_power_freq", elec.powerInfo.frequency)
-    addCheckItem(testCategory, "elec_power_cosQ", elec.powerInfo.cosQ.toString())
-    addCheckItem(testCategory, "elec_power_ampR", elec.powerInfo.ampere.r.toString())
-    addCheckItem(testCategory, "elec_power_ampS", elec.powerInfo.ampere.s.toString())
-    addCheckItem(testCategory, "elec_power_ampT", elec.powerInfo.ampere.t.toString())
+    addCheckItem(testCategory, "elec_power_cosQ", elec.powerInfo.cosQ)
+    addCheckItem(testCategory, "elec_power_ampR", elec.powerInfo.ampere.r)
+    addCheckItem(testCategory, "elec_power_ampS", elec.powerInfo.ampere.s)
+    addCheckItem(testCategory, "elec_power_ampT", elec.powerInfo.ampere.t)
     addCheckItem(testCategory, "elec_power_remarks", elec.powerInfo.result)
 
     val mcbCategory = "mcb_calculation"

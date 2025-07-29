@@ -309,15 +309,15 @@ data class DieselVoltage(
 
 data class DieselPowerInfo(
     @SerializedName("frequency") val frequency: String, // String karena "50.1 HZ"
-    @SerializedName("cosQ") val cosQ: Double,
+    @SerializedName("cosQ") val cosQ: String,
     @SerializedName("ampere") val ampere: DieselAmpere,
     @SerializedName("result") val result: String
 )
 
 data class DieselAmpere(
-    @SerializedName("r") val r: Int,
-    @SerializedName("s") val s: Int,
-    @SerializedName("t") val t: Int
+    @SerializedName("r") val r: String,
+    @SerializedName("s") val s: String,
+    @SerializedName("t") val t: String
 )
 
 // Updated DieselMcbCalculation - changed voltage and some fields to String to match JSON
