@@ -1092,10 +1092,11 @@ fun InspectionWithDetailsDomain.toGantryCraneBapRequest(): GantryCraneBapRequest
         examinationType = this.inspection.examinationType,
         inspectionType = this.inspection.inspectionType.toDisplayString(),
         inspectionDate = this.inspection.reportDate ?: "",
+        equipmentType = this.inspection.equipmentType,
         createdAt = this.inspection.createdAt ?: "",
         extraId = this.inspection.id,
         generalData = generalData,
         technicalData = technicalData,
-        inspectionResult = inspectionResult
+        inspectionResult = inspectionResult,
     )
 }
