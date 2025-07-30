@@ -3,6 +3,7 @@ package com.nakersolutionid.nakersolutionid.data.remote.mapper
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselAmpere
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapReportData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapRequest
@@ -333,7 +334,7 @@ fun InspectionWithDetailsDomain.toDieselReportRequest(): DieselReportRequest {
     return DieselReportRequest(
         examinationType = inspection.examinationType,
         extraId = inspection.id,
-        inspectionType = inspection.inspectionType.name,
+        inspectionType = inspection.inspectionType.toDisplayString(),
         createdAt = inspection.createdAt ?: "",
         inspectionDate = inspection.reportDate ?: "",
         generalData = generalData,
@@ -372,7 +373,7 @@ fun DieselReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
         extraId = this.id,
-        moreExtraId = this.id,
+        moreExtraId = "",
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.PTP,
         subInspectionType = SubInspectionType.Motor_Diesel,
@@ -633,7 +634,7 @@ fun DieselBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.PTP,
         subInspectionType = SubInspectionType.Motor_Diesel,
-        equipmentType = "Motor Diesel",
+        equipmentType = "",
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
         ownerAddress = this.generalData.companyLocation,

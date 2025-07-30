@@ -3,6 +3,7 @@ package com.nakersolutionid.nakersolutionid.data.remote.mapper
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.data.remote.dto.gantrycrane.*
 import com.nakersolutionid.nakersolutionid.domain.model.*
 
@@ -470,9 +471,9 @@ fun InspectionWithDetailsDomain.toGantryCraneReportRequest(): GantryCraneReportR
 
     return GantryCraneReportRequest(
         examinationType = this.inspection.examinationType,
-        inspectionType = this.inspection.inspectionType.name,
+        inspectionType = this.inspection.inspectionType.toDisplayString(),
         createdAt = this.inspection.createdAt ?: "",
-        extraId = this.inspection.extraId.toLongOrNull() ?: 0L,
+        extraId = this.inspection.id,
         equipmentType = this.inspection.equipmentType,
         generalData = generalData,
         technicalData = technicalData,
@@ -491,11 +492,11 @@ fun InspectionWithDetailsDomain.toGantryCraneReportRequest(): GantryCraneReportR
  * This mapping reconstructs the domain model from the DTO by flattening all data into check items.
  */
 fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    val inspectionId = this.id.toLongOrNull() ?: 0L
+    val inspectionId = this.extraId
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = this.extraId.toString(),
+        extraId = this.id,
         moreExtraId = "",
         documentType = DocumentType.LAPORAN,
         inspectionType = InspectionType.PAA,
@@ -945,12 +946,12 @@ fun GantryCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
  * This mapping reconstructs the domain model from the DTO.
  */
 fun GantryCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    val inspectionId = this.id.toLongOrNull() ?: 0L
+    val inspectionId = this.extraId
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = this.extraId.toString(),
-        moreExtraId = "",
+        extraId = this.laporanId,
+        moreExtraId = this.id,
         documentType = DocumentType.BAP,
         inspectionType = InspectionType.PAA,
         subInspectionType = SubInspectionType.Gantry_Crane,
@@ -1087,12 +1088,12 @@ fun InspectionWithDetailsDomain.toGantryCraneBapRequest(): GantryCraneBapRequest
     )
 
     return GantryCraneBapRequest(
-        laporanId = this.inspection.id.toString(),
+        laporanId = this.inspection.extraId,
         examinationType = this.inspection.examinationType,
-        inspectionType = this.inspection.inspectionType.name,
+        inspectionType = this.inspection.inspectionType.toDisplayString(),
         inspectionDate = this.inspection.reportDate ?: "",
         createdAt = this.inspection.createdAt ?: "",
-        extraId = this.inspection.extraId.toLongOrNull() ?: 0L,
+        extraId = this.inspection.id,
         generalData = generalData,
         technicalData = technicalData,
         inspectionResult = inspectionResult
