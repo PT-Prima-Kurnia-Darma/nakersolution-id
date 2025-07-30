@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ml.MLData
 import com.nakersolutionid.nakersolutionid.domain.model.DownloadInfo
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
@@ -26,4 +27,5 @@ interface IReportRepository {
     suspend fun getDownloadInfo(id: Long): Resource<DownloadInfo>
     suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String)
     fun getApiPath(subInspectionType: SubInspectionType, documentType: DocumentType): String
+    fun getMLResult(inspection: InspectionWithDetailsDomain): Flow<Resource<MLData>>
 }

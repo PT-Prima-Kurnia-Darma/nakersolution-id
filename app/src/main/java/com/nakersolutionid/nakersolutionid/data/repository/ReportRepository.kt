@@ -7,6 +7,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.database.AppDatabase
@@ -15,6 +17,7 @@ import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataMediator
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
@@ -59,6 +62,7 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapReq
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineReportRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ml.MLData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapSingleReportResponseData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneReportRequest
@@ -333,6 +337,34 @@ class ReportRepository(
         }
     }
 
+    override fun getMLResult(inspection: InspectionWithDetailsDomain): Flow<Resource<MLData>> = flow {
+        emit(Resource.Loading())
+
+        val secret = BuildConfig.ML_API
+        val jsonElement: JsonElement = when (inspection.inspection.subInspectionType) {
+            SubInspectionType.Elevator -> gson.toJsonTree(inspection.toElevatorReportRequest())
+            SubInspectionType.Escalator -> gson.toJsonTree(inspection.toEscalatorReportRequest())
+            SubInspectionType.Forklift -> gson.toJsonTree(inspection.toForkliftReportRequest())
+            SubInspectionType.Mobile_Crane -> gson.toJsonTree(inspection.toMobileCraneReportRequest())
+            SubInspectionType.Overhead_Crane -> gson.toJsonTree(inspection.toOverheadCraneReportRequest())
+            SubInspectionType.Gantry_Crane -> gson.toJsonTree(inspection.toGantryCraneReportRequest())
+            SubInspectionType.Gondola -> gson.toJsonTree(inspection.toGondolaReportRequest())
+            SubInspectionType.Electrical -> gson.toJsonTree(inspection.toElectricalReportRequest())
+            SubInspectionType.Lightning_Conductor -> gson.toJsonTree(inspection.toLightningReportRequest())
+            SubInspectionType.General_PUBT -> gson.toJsonTree(inspection.toPubtReportRequest())
+            SubInspectionType.Fire_Protection -> gson.toJsonTree(inspection.toIpkReportRequest())
+            SubInspectionType.Motor_Diesel -> gson.toJsonTree(inspection.toDieselReportRequest())
+            SubInspectionType.Machine -> gson.toJsonTree(inspection.toMachineReportRequest())
+        }
+
+        val response = remoteDataSource.getMLResult(secret, jsonElement)
+        when (response) {
+            is ApiResponse.Empty -> null
+            is ApiResponse.Error -> emit(Resource.Error(response.errorMessage))
+            is ApiResponse.Success -> emit(Resource.Success(response.data))
+        }
+    }
+
     private suspend fun handleSyncSuccess(data: Any, failCounter: () -> Unit) {
         try {
             val innerData = (data as? BaseApiResponse<*>)?.data
@@ -527,7 +559,9 @@ class ReportRepository(
                     domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
                 }
                 is MobileCraneBapSingleReportResponseData -> {
+                    Log.d("ReportRepository", "Here: Mobile Crane")
                     val domain = innerData.bap.toInspectionWithDetailsDomain()
+                    Log.d("ReportRepository", "Here: ${domain.inspection.subInspectionType.toDisplayString()}")
                     domain.copy(inspection = domain.inspection.copy(id = innerData.bap.extraId, extraId = innerData.bap.laporanId, moreExtraId = innerData.bap.id))
                 }
                 is OverheadCraneBapSingleReportResponseData -> {

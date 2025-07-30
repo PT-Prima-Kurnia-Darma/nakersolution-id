@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.domain.usecase
 
 import androidx.paging.PagingData
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ml.MLData
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.history.FilterState
@@ -17,4 +18,5 @@ interface ReportUseCase {
     suspend fun deleteReport(id: Long)
     suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String)
     fun getDownloadedReports(): Flow<List<History>>
+    fun getMLResult(inspection: InspectionWithDetailsDomain): Flow<Resource<MLData>>
 }

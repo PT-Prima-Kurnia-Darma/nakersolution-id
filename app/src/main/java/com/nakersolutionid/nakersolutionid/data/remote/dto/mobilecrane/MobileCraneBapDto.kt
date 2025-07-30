@@ -35,7 +35,6 @@ data class MobileCraneBapReportData(
     @SerializedName("generalData") val generalData: MobileCraneBapGeneralData,
     @SerializedName("technicalData") val technicalData: MobileCraneBapTechnicalData,
     @SerializedName("inspectionResult") val inspectionResult: MobileCraneBapInspectionResult,
-    @SerializedName("signature") val signature: MobileCraneBapSignature,
     @SerializedName("subInspectionType") val subInspectionType: String, // From response JSON
     @SerializedName("documentType") val documentType: String // From response JSON
 )
@@ -92,8 +91,4 @@ data class MobileCraneBapLoadTest(
 data class MobileCraneBapNdtTest(
     @SerializedName("method") val method: String,
     @SerializedName("isResultGood") val isResultGood: Boolean
-)
-
-data class MobileCraneBapSignature(
-    @SerializedName("companyName") val companyName: String
 )

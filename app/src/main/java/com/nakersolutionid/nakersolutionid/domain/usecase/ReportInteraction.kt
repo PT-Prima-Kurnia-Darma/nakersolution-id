@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.domain.usecase
 
 import androidx.paging.PagingData
 import com.nakersolutionid.nakersolutionid.data.Resource
+import com.nakersolutionid.nakersolutionid.data.remote.dto.ml.MLData
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
@@ -27,4 +28,5 @@ class ReportInteraction(private val reportRepository: IReportRepository) : Repor
     override suspend fun deleteReport(id: Long) = reportRepository.deleteReport(id)
     override suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String) = reportRepository.updateDownloadedStatus(id, isDownloaded, filePath)
     override fun getDownloadedReports(): Flow<List<History>> = reportRepository.getDownloadedReports()
+    override fun getMLResult(inspection: InspectionWithDetailsDomain): Flow<Resource<MLData>> = reportRepository.getMLResult(inspection)
 }

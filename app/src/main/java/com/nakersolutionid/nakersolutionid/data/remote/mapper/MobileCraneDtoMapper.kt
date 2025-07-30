@@ -12,7 +12,6 @@ import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCra
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapNdtTest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapReportData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapRequest
-import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapSignature
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapTechnicalData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneBapVisualCheck
 import com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane.MobileCraneDynamicHookTest
@@ -141,9 +140,6 @@ fun MobileCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
     val ndtTest = functional.ndtTest
     addStringCheckItem(BapCategories.NDT_TEST, "method", ndtTest.method)
     addBooleanCheckItem(BapCategories.NDT_TEST, "isResultGood", ndtTest.isResultGood)
-
-    // --- Map Signature ---
-    addStringCheckItem(BapCategories.SIGNATURE, "companyName", this.signature.companyName)
 
     // --- Main Inspection Domain Object ---
     val inspectionDomain = InspectionDomain(

@@ -13,6 +13,7 @@ import com.nakersolutionid.nakersolutionid.data.preference.SettingsPreference
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
+import com.nakersolutionid.nakersolutionid.data.remote.network.MLApiServices
 import com.nakersolutionid.nakersolutionid.data.repository.ReportRepository
 import com.nakersolutionid.nakersolutionid.data.repository.SettingsRepository
 import com.nakersolutionid.nakersolutionid.data.repository.UserRepository
@@ -49,6 +50,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -78,15 +80,19 @@ val useCaseModule = module {
 }
 
 val networkModule = module {
-    // Main
     single<Gson> { GsonBuilder().create() }
 
+    // region Main
     single<OkHttpClient> {
         val hostname = BuildConfig.HOSTNAME
+        val mlHostName = BuildConfig.ML_HOSTNAME
         val certificatePinner = CertificatePinner.Builder()
             .add(hostname, "sha256/qpKwP/9PATGLiBmrkRPGfU1stGY5FlEWC8siPM+Cxug=")
             .add(hostname, "sha256/YPtHaftLw6/0vnc2BnNKGF54xiCA28WFcccjkA4ypCM=")
             .add(hostname, "sha256/hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=")
+            .add(mlHostName, "sha256/47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=")
+            .add(mlHostName, "sha256/YPtHaftLw6/0vnc2BnNKGF54xiCA28WFcccjkA4ypCM=")
+            .add(mlHostName, "sha256/hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=")
             .build()
         val loggingInterceptor = if(BuildConfig.DEBUG) {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -110,14 +116,25 @@ val networkModule = module {
     single<ApiServices> {
         get<Retrofit>().create(ApiServices::class.java)
     }
+    // endregion
 
-    // ML
-
+    // region ML
+    single<Retrofit>(named("MLRetrofit")) {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.ML_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(get())
+            .build()
+    }
+    single<MLApiServices> {
+        get<Retrofit>(named("MLRetrofit")).create(MLApiServices::class.java)
+    }
+    // endregion
 }
 
 val repositoryModule = module {
     single { LocalDataSource(get(), get()) }
-    single { RemoteDataSource(get()) }
+    single { RemoteDataSource(get(), get()) }
     single { AppExecutors() }
     single<IUserRepository> { UserRepository(get(), get(), get(), get()) }
     single<ISettingsRepository> { SettingsRepository(get()) }
