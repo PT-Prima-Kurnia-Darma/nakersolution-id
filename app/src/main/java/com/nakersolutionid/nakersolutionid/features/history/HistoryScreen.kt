@@ -235,8 +235,12 @@ fun HistoryScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
-                    contentPadding = PaddingValues(all = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally // Center content like the progress indicator
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
                 ) {
                     // Condition 1: Initial loading state
                     if (lazyPagingItems.loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) {
