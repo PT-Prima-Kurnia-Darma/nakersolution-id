@@ -267,7 +267,6 @@ fun InspectionWithDetailsDomain.toMachineBapRequest(): MachineBapRequest {
 // DTO Response -> Domain Model
 // =================================================================================================
 fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    Log.d("syncInspection", "Start mapping machine report data into domain")
     val inspectionId = this.extraId // Local DB ID from server response
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
 
@@ -327,7 +326,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         isSynced = true,
         isEdited = false
     )
-    Log.d("syncInspection", "Inspection domain created")
     // General Data
     addCheckItem("general_data", "userInCharge", this.generalData.userInCharge)
     addCheckItem("general_data", "subcontractorPersonInCharge", this.generalData.subcontractorPersonInCharge)
@@ -458,8 +456,6 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     this.conclusionAndRecommendation.recommendations.split("\n").filter { it.isNotBlank() }.forEach {
         findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.RECOMMENDATION))
     }
-
-    Log.d("syncInspection", "Mapping machine into domain done")
 
     return InspectionWithDetailsDomain(
         inspection = inspectionDomain,

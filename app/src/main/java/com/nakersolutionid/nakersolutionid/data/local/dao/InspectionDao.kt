@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -55,12 +56,43 @@ interface InspectionDao {
         return inspectionId
     }
 
+    @Transaction
+    suspend fun insertAllInspectionsWithDetails(inspections: List<InspectionWithDetails>) {
+        for (details in inspections) {
+            insertInspectionWithDetails(
+                details.inspectionEntity,
+                details.checkItems,
+                details.findings,
+                details.testResults
+            )
+        }
+    }
+
+    @Transaction
+    @Query("""
+        SELECT * FROM inspections
+        WHERE
+            (:query IS NULL OR :query = '' OR rowid IN (
+                SELECT rowid FROM inspections_fts WHERE inspections_fts MATCH :query
+            ))
+            AND (:documentType IS NULL OR document_type = :documentType)
+            AND (:inspectionType IS NULL OR inspection_type = :inspectionType)
+            AND (:subInspectionType IS NULL OR sub_inspection_type = :subInspectionType)
+        ORDER BY created_at DESC
+    """)
+    fun searchAllInspectionsPaged(
+        query: String?,
+        documentType: String?,
+        inspectionType: String?,
+        subInspectionType: String?
+    ): PagingSource<Int, InspectionWithDetails>
+
     /**
      * Fetches a single complete inspectionEntity report by its ID.
      * @Transaction ensures all related data is loaded in a single, consistent operation.
      */
     @Transaction
-    @Query("SELECT * FROM inspections WHERE id = :id")
+    @Query("SELECT * FROM inspections WHERE rowid = :id")
     fun getInspectionWithDetails(id: Long): Flow<InspectionWithDetails>
 
     /**
@@ -78,12 +110,19 @@ interface InspectionDao {
     fun getAllUnsyncedInspectionsWithDetails(): Flow<List<InspectionWithDetails>>
 
     /**
+     * Fetches all inspection reports that have been downloaded.
+     */
+    @Transaction
+    @Query("SELECT * FROM inspections WHERE is_downloaded = 1 ORDER BY created_at DESC")
+    fun getDownloadedInspectionsWithDetails(): Flow<List<InspectionWithDetails>>
+
+    /**
      * Efficiently updates only the sync status of an inspection by its ID.
      */
-    @Query("UPDATE inspections SET is_synced = :isSynced WHERE id = :id")
+    @Query("UPDATE inspections SET is_synced = :isSynced WHERE rowid = :id")
     suspend fun updateSyncStatus(id: Long, isSynced: Boolean)
 
-    @Query("UPDATE inspections SET is_downloaded = :isDownloaded, file_path = :filePath WHERE id = :id")
+    @Query("UPDATE inspections SET is_downloaded = :isDownloaded, file_path = :filePath WHERE rowid = :id")
     suspend fun updateDownloadStatus(id: Long, isDownloaded: Boolean, filePath: String)
 
     /**
@@ -91,14 +130,10 @@ interface InspectionDao {
      * Due to foreign key constraints, related data will be automatically deleted.
      */
     @Transaction
-    suspend fun deleteInspectionWithDetails(id: Long) {
-        deleteCheckItems(id)
-        deleteFindings(id)
-        deleteTestResults(id)
-        deleteInspection(id)
-    }
+    @Query("DELETE FROM inspections WHERE rowid = :id")
+    suspend fun deleteInspectionWithDetails(id: Long) // Renamed from deleteInspection for clarity
 
-    @Query("DELETE FROM inspections WHERE id = :id")
+    @Query("DELETE FROM inspections WHERE rowid = :id")
     suspend fun deleteInspection(id: Long)
 
     @Query("DELETE FROM inspection_check_items WHERE inspection_id = :inspectionId")
@@ -109,4 +144,8 @@ interface InspectionDao {
 
     @Query("DELETE FROM inspection_test_results WHERE inspection_id = :inspectionId")
     suspend fun deleteTestResults(inspectionId: Long)
+
+    // In InspectionDao.kt
+    @Query("DELETE FROM inspections")
+    suspend fun clearAllInspections()
 }

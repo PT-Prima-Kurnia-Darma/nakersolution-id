@@ -6,6 +6,10 @@ import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionFinding
 import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionTestResult
 import com.nakersolutionid.nakersolutionid.data.local.entity.InspectionWithDetails
 import com.nakersolutionid.nakersolutionid.data.local.entity.Manufacturer
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
+import com.nakersolutionid.nakersolutionid.data.local.utils.toDocumentType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toInspectionType
+import com.nakersolutionid.nakersolutionid.data.local.utils.toSubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
@@ -40,9 +44,9 @@ fun InspectionEntity.toDomain(): InspectionDomain {
         id = this.id,
         extraId = this.extraId,
         moreExtraId = this.moreExtraId,
-        documentType = this.documentType,
-        inspectionType = this.inspectionType,
-        subInspectionType = this.subInspectionType,
+        documentType = this.documentType.toDocumentType()!!,
+        inspectionType = this.inspectionType.toInspectionType()!!,
+        subInspectionType = this.subInspectionType.toSubInspectionType()!!,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.ownerName,
@@ -79,9 +83,9 @@ fun InspectionEntity.toHistory(): History {
         id = this.id,
         extraId = this.extraId,
         moreExtraId = this.moreExtraId,
-        documentType = this.documentType,
-        inspectionType = this.inspectionType,
-        subInspectionType = this.subInspectionType,
+        documentType = this.documentType.toDocumentType()!!,
+        inspectionType = this.inspectionType.toInspectionType()!!,
+        subInspectionType = this.subInspectionType.toSubInspectionType()!!,
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.ownerName,
@@ -178,9 +182,9 @@ fun InspectionDomain.toEntity(): InspectionEntity {
         id = this.id, // 0 untuk data baru, akan di-generate otomatis oleh Room
         extraId = this.extraId,
         moreExtraId = this.moreExtraId,
-        documentType = this.documentType,
-        inspectionType = this.inspectionType,
-        subInspectionType = this.subInspectionType,
+        documentType = this.documentType.toDisplayString(),
+        inspectionType = this.inspectionType.toDisplayString(),
+        subInspectionType = this.subInspectionType.toDisplayString(),
         equipmentType = this.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.ownerName,

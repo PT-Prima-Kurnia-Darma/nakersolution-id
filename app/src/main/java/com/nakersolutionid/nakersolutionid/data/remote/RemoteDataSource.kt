@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.BaseApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ErrorResponse
+import com.nakersolutionid.nakersolutionid.data.remote.dto.common.GetAllAuditResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
@@ -372,4 +373,7 @@ class RemoteDataSource(val apiServices: ApiServices) {
         }.flowOn(Dispatchers.IO)
     }
     // endregion
+
+    suspend fun getAllAudits(token: String, page: Int, size: Int): Response<GetAllAuditResponse> =
+        apiServices.getAllAudits(token, page, size)
 }

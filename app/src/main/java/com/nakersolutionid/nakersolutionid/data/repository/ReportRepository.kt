@@ -1,14 +1,22 @@
 package com.nakersolutionid.nakersolutionid.data.repository
 
 import android.util.Log
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.google.gson.Gson
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
+import com.nakersolutionid.nakersolutionid.data.local.database.AppDatabase
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toDomain
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toEntity
 import com.nakersolutionid.nakersolutionid.data.local.mapper.toHistory
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.preference.UserPreference
+import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataMediator
 import com.nakersolutionid.nakersolutionid.data.remote.RemoteDataSource
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.BaseApiResponse
 import com.nakersolutionid.nakersolutionid.data.remote.dto.diesel.DieselBapRequest
@@ -96,6 +104,7 @@ import com.nakersolutionid.nakersolutionid.domain.model.DownloadInfo
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
+import com.nakersolutionid.nakersolutionid.features.history.FilterState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -105,11 +114,13 @@ import kotlinx.coroutines.flow.map
 class ReportRepository(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val userPreference: UserPreference
+    private val userPreference: UserPreference,
+    private val appDatabase: AppDatabase,
+    private val gson: Gson
 ) : IReportRepository {
-    override suspend fun saveReport(request: InspectionWithDetailsDomain) {
+    override suspend fun saveReport(request: InspectionWithDetailsDomain): Long {
         val inspectionWithDetails = request.toEntity()
-        localDataSource.insertInspection(
+        return localDataSource.insertInspection(
             inspectionEntity = inspectionWithDetails.inspectionEntity,
             checkItems = inspectionWithDetails.checkItems,
             findings = inspectionWithDetails.findings,
@@ -714,46 +725,78 @@ class ReportRepository(
         return true
     }
 
-    override fun getAllReports(): Flow<List<History>> {
-        return localDataSource.getAllInspectionsWithDetails().map { it ->
-            it.map {
-                it.inspectionEntity.toHistory()
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getAllReports(query: String, filters: FilterState): Flow<PagingData<History>> {
+        // Determine if any search or filter is currently active.
+        val sanitizedQuery = sanitizeSearchQuery(query)
+        val isSearchOrFilterActive = sanitizedQuery != null || filters.documentType != null || filters.inspectionType != null || filters.subInspectionType != null
+
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+
+            // Use the RemoteMediator ONLY when the user is not searching.
+            remoteMediator = if (isSearchOrFilterActive) null else RemoteDataMediator(
+                userPreference = userPreference,
+                localDataSource = localDataSource,
+                remoteDataSource = remoteDataSource,
+                appDatabase = appDatabase,
+                gson = gson
+            ),
+            pagingSourceFactory = {
+                // This PagingSource will now be the sole source during a search.
+                localDataSource.searchAllInspectionsPaged(sanitizeSearchQuery(query), filters)
             }
-        }
+        ).flow.map { paging -> paging.map { it.inspectionEntity.toHistory() } }
     }
 
+    override fun getDownloadedReports(): Flow<List<History>> =
+        localDataSource.getDownloadedInspectionsWithDetails().map { list -> list.map { it.inspectionEntity.toHistory() } }
+
     override suspend fun deleteReport(id: Long) {
-        val data = localDataSource.getInspection(id).firstOrNull() ?: return
-        if (!data.inspectionEntity.isSynced) {
+        val data = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull() ?: return
+        if (!data.inspection.isSynced) {
             localDataSource.deleteInspection(id)
             return
         }
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
-        val path = getApiPath(data.inspectionEntity.subInspectionType, data.inspectionEntity.documentType)
+        val path = getApiPath(data.inspection.subInspectionType, data.inspection.documentType)
         if (path.isEmpty()) return
-        val extraId = if (data.inspectionEntity.documentType == DocumentType.BAP) data.inspectionEntity.moreExtraId else data.inspectionEntity.extraId
+        val extraId = if (data.inspection.documentType == DocumentType.BAP) data.inspection.moreExtraId else data.inspection.extraId
         val apiResponse = remoteDataSource.deleteReport(token, path, extraId).first()
-        if (apiResponse is ApiResponse.Success) {
-            localDataSource.deleteInspection(id)
+        when (apiResponse) {
+            ApiResponse.Empty -> null
+            is ApiResponse.Error -> throw Exception(apiResponse.errorMessage)
+            is ApiResponse.Success -> localDataSource.deleteInspection(id)
         }
     }
 
     override suspend fun getDownloadInfo(id: Long): Resource<DownloadInfo> {
-        val data = localDataSource.getInspection(id).firstOrNull()
+        val data = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull()
         if (data == null) {
             return Resource.Error("Data not found")
         }
 
-        val path = getApiPath(data.inspectionEntity.subInspectionType, data.inspectionEntity.documentType)
+        val path = getApiPath(data.inspection.subInspectionType, data.inspection.documentType)
         if (path.isEmpty()) {
             return Resource.Error("Path not found")
         }
 
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
-        val extraId = if (data.inspectionEntity.documentType == DocumentType.BAP) data.inspectionEntity.moreExtraId else data.inspectionEntity.extraId
+        val extraId = if (data.inspection.documentType == DocumentType.BAP) data.inspection.moreExtraId else data.inspection.extraId
 
         return Resource.Success(DownloadInfo(path, token, extraId))
     }
 
     override suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String) = localDataSource.updateDownloadStatus(id, isDownloaded, filePath)
+
+    private fun sanitizeSearchQuery(query: String): String? {
+        if (query.isBlank()) return null
+
+        return query
+            .trim()
+            .lowercase()
+            .replace(Regex("""["'`^|*()<>]"""), " ")  // remove risky FTS chars
+            .split(Regex("\\s+"))                    // split by whitespace
+            .joinToString(" ") { "$it*" }            // add wildcard per token
+    }
 }
