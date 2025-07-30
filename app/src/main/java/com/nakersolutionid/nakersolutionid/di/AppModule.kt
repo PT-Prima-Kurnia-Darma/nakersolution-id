@@ -1,7 +1,11 @@
 package com.nakersolutionid.nakersolutionid.di
 
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.WorkManager
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.nakersolutionid.nakersolutionid.BuildConfig
 import com.nakersolutionid.nakersolutionid.data.local.LocalDataSource
 import com.nakersolutionid.nakersolutionid.data.local.database.AppDatabase
@@ -38,7 +42,6 @@ import com.nakersolutionid.nakersolutionid.utils.AppExecutors
 import com.nakersolutionid.nakersolutionid.workers.DownloadWorker
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import com.nakersolutionid.nakersolutionid.workers.SyncReportWorker
-import com.nakersolutionid.nakersolutionid.workers.SyncUpdateReportWorker
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -53,11 +56,10 @@ import java.util.concurrent.TimeUnit
 
 val databaseModule = module {
     factory { get<AppDatabase>().inspectionDao() }
+    factory { get<AppDatabase>().remoteKeyDao() }
     single {
-        Room.databaseBuilder(
-            androidContext(),
-            AppDatabase::class.java, "app.db"
-        ).fallbackToDestructiveMigration(false)
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "app.db")
+            .fallbackToDestructiveMigration(true)
             .build()
     }
 }
@@ -66,7 +68,6 @@ val workerModule = module {
     single { WorkManager.getInstance(androidContext()) }
     single { SyncManager(get(), get(), get()) }
     worker { SyncReportWorker(get(), get(), get()) }
-    worker { SyncUpdateReportWorker(get(), get(), get()) }
     worker { DownloadWorker(get(), get(), get()) }
 }
 
@@ -77,6 +78,9 @@ val useCaseModule = module {
 }
 
 val networkModule = module {
+    // Main
+    single<Gson> { GsonBuilder().create() }
+
     single<OkHttpClient> {
         val hostname = BuildConfig.HOSTNAME
         val certificatePinner = CertificatePinner.Builder()
@@ -106,15 +110,18 @@ val networkModule = module {
     single<ApiServices> {
         get<Retrofit>().create(ApiServices::class.java)
     }
+
+    // ML
+
 }
 
 val repositoryModule = module {
-    single { LocalDataSource(get()) }
+    single { LocalDataSource(get(), get()) }
     single { RemoteDataSource(get()) }
     single { AppExecutors() }
     single<IUserRepository> { UserRepository(get(), get(), get(), get()) }
     single<ISettingsRepository> { SettingsRepository(get()) }
-    single<IReportRepository> { ReportRepository(get(), get(), get()) }
+    single<IReportRepository> { ReportRepository(get(), get(), get(), get(), get()) }
 }
 
 val preferenceModule = module {

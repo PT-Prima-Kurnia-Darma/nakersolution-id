@@ -1,20 +1,21 @@
 package com.nakersolutionid.nakersolutionid.di
 
+import androidx.paging.PagingData
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
-import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.DownloadInfo
 import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
+import com.nakersolutionid.nakersolutionid.features.history.FilterState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeReportRepository : IReportRepository {
-    override suspend fun saveReport(request: InspectionWithDetailsDomain) {
-        return
+    override suspend fun saveReport(request: InspectionWithDetailsDomain): Long {
+        return 0L
     }
 
     override fun createReport(report: InspectionWithDetailsDomain): Flow<Resource<String>> {
@@ -40,39 +41,12 @@ class FakeReportRepository : IReportRepository {
     override suspend fun syncInspection(): Boolean = true
     override suspend fun syncUpdateInspection(): Boolean = true
 
-    override fun getAllReports(): Flow<List<History>> {
-        return flowOf(
-            listOf(
-                History(
-                    id = 0,
-                    extraId = "A",
-                    moreExtraId = "B",
-                    documentType = DocumentType.LAPORAN,
-                    inspectionType = InspectionType.EE,
-                    subInspectionType = SubInspectionType.Elevator,
-                    equipmentType = "Elevator Penumpang",
-                    examinationType = "Pemeriksaan Berkala",
-                    ownerName = "PT. Perindo",
-                    createdAt = "2025-07-06T15:22:10.123Z",
-                    reportDate = "Kamis, 24 Desember 2025",
-                    isSynced = false
-                ),
-                History(
-                    id = 1,
-                    extraId = "B",
-                    moreExtraId = "C",
-                    documentType = DocumentType.LAPORAN,
-                    inspectionType = InspectionType.EE,
-                    subInspectionType = SubInspectionType.Elevator,
-                    equipmentType = "Elevator Penumpang",
-                    examinationType = "Pemeriksaan Berkala",
-                    ownerName = "PT. Perindo",
-                    createdAt = "2025-07-06T15:22:10.123Z",
-                    reportDate = "Kamis, 27 Desember 2023",
-                    isSynced = true
-                )
-            )
-        )
+    override fun getAllReports(query: String, filters: FilterState): Flow<PagingData<History>> {
+        return flowOf(PagingData.empty())
+    }
+
+    override fun getDownloadedReports(): Flow<List<History>> {
+        return flowOf(emptyList())
     }
 
     override suspend fun deleteReport(id: Long) {
