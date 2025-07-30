@@ -255,6 +255,7 @@ class ILPPViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
