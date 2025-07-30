@@ -26,7 +26,7 @@ class SyncManager(
         private const val DOWNLOAD_WORK_TAG = "download_work"
     }
 
-    fun startSync() {
+    fun startSync(): UUID {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -47,6 +47,8 @@ class SyncManager(
             ExistingWorkPolicy.REPLACE,
             syncRequest
         )
+
+        return syncRequest.id
     }
 
     suspend fun startDownload(id: Long): UUID? {
