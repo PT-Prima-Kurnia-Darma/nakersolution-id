@@ -144,7 +144,6 @@ class PAAViewModel(
 
     private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
         try {
-            Log.d("PUBTViewModel", "Creating report")
             reportUseCase.createReport(inspection).collect { result ->
                 _paaUiState.update { it.copy(result = result) }
             }

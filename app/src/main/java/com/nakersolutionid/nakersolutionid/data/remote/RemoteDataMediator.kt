@@ -76,6 +76,7 @@ class RemoteDataMediator(
             val page = when (loadType) {
                 LoadType.REFRESH -> {
                     // On refresh, start from the first page.
+                    Log.d("RemoteDataMediator", "Refreshing data...")
                     1
                 }
                 LoadType.PREPEND -> {
@@ -183,6 +184,7 @@ class RemoteDataMediator(
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     // On refresh, clear old data.
+                    Log.d("RemoteDataMediator", "Clearing old data...")
                     localDataSource.clearAllInspections()
                     localDataSource.clearRemoteKeys()
                 }

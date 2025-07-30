@@ -509,7 +509,6 @@ class ReportRepository(
                     domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
                 }
                 is MachineSingleReportResponseData -> {
-                    Log.d("syncInspection", "syncInspection: Machine")
                     val domain = innerData.laporan.toInspectionWithDetailsDomain()
                     domain.copy(inspection = domain.inspection.copy(id = innerData.laporan.extraId, extraId = innerData.laporan.id))
                 }
@@ -571,7 +570,6 @@ class ReportRepository(
             }
 
             return if (responseType != null) {
-                Log.i("syncInspection", "syncInspection: Success")
                 saveReport(responseType)
                 true
             } else {
