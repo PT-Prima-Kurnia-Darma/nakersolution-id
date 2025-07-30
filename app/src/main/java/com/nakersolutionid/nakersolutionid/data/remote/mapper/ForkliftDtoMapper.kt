@@ -438,7 +438,9 @@ fun InspectionWithDetailsDomain.toForkliftBapRequest(): ForkliftBapRequest {
         extraId = this.inspection.id,
         generalData = generalData,
         technicalData = technicalData,
-        inspectionResult = inspectionResult
+        inspectionResult = inspectionResult,
+        equipmentType = this.inspection.equipmentType,
+        inspectionType = this.inspection.inspectionType.toDisplayString()
     )
 }
 

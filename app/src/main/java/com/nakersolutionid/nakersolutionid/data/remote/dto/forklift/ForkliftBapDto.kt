@@ -8,6 +8,8 @@ data class ForkliftBapRequest(
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("extraId") val extraId: Long,
+    @SerializedName("equipmentType") val equipmentType: String,
+    @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("generalData") val generalData: ForkliftBapGeneralData,
     @SerializedName("technicalData") val technicalData: ForkliftBapTechnicalData,
     @SerializedName("inspectionResult") val inspectionResult: ForkliftBapInspectionResult
