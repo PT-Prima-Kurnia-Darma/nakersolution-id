@@ -13,7 +13,6 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralM
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralUiState
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toGeneralUiState
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.persistentListOf

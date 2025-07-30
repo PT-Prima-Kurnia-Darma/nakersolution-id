@@ -43,7 +43,6 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.Ove
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.OverheadCraneUiState
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toOverheadCraneUiState
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.persistentListOf

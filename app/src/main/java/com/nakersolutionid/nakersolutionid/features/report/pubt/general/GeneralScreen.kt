@@ -33,7 +33,6 @@ fun GeneralScreen(
     val report = uiState.inspectionReport
     val onDataChange = viewModel::onGeneralReportChange
 
-    var showMeasurementDialog by remember { mutableStateOf(false) }
     var showSummaryDialog by remember { mutableStateOf(false) }
     var showRecommendationDialog by remember { mutableStateOf(false) }
 

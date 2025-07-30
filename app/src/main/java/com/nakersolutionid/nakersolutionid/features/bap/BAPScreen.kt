@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -73,14 +72,12 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.domain.model.History
+import com.nakersolutionid.nakersolutionid.features.history.FilterState
+import com.nakersolutionid.nakersolutionid.ui.components.EmptyScreen
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
-import com.nakersolutionid.nakersolutionid.features.history.FilterState
-import com.nakersolutionid.nakersolutionid.features.history.HistoryItem
-import com.nakersolutionid.nakersolutionid.ui.components.EmptyScreen
-import com.nakersolutionid.nakersolutionid.utils.DownloadState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -90,7 +87,6 @@ fun BAPScreen(
     onBackClick: () -> Unit,
     onItemClick: (Long, SubInspectionType, DocumentType) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val activeFilters by viewModel.filterState.collectAsStateWithLifecycle()
 

@@ -16,7 +16,6 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.Diese
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toDieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.persistentListOf

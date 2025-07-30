@@ -164,7 +164,6 @@ fun InspectionWithDetailsDomain.toLightningProtectionUiState(): LightningProtect
         val item = findCheck(cat, name)
         val parts = item?.result?.split('|', limit = 2) ?: listOf("")
         val condition = parts[0]
-        val remarks = parts.getOrNull(1) ?: ""
         return LightningProtectionConditionResult(
             good = condition == "Baik",
             fair = condition == "Kurang Baik",

@@ -1,30 +1,23 @@
 package com.nakersolutionid.nakersolutionid.features.report.ilpp
 
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
-import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.toElectricalUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingMeasurementItem
-import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toLightningProtectionUiState
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,12 +25,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.internal.immutableListOf
 
-class ILPPViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class ILPPViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _ilppUiState = MutableStateFlow(ILPPUiState())
     val ilppUiState: StateFlow<ILPPUiState> = _ilppUiState.asStateFlow()
 
@@ -270,7 +259,7 @@ class ILPPViewModel(
         onLightningReportChange(report.copy(testingResults = updatedResults))
     }
 
-    fun addGroundingTestItem(item: LightningProtectionGroundingTestItem) = viewModelScope.launch {
+    /*fun addGroundingTestItem(item: LightningProtectionGroundingTestItem) = viewModelScope.launch {
         val report = _lightningUiState.value.inspectionReport
         val testingResults = report.testingResults
         val newItems = (testingResults.groundingResistanceTest + item).toImmutableList()
@@ -284,7 +273,7 @@ class ILPPViewModel(
         val newItems = testingResults.groundingResistanceTest.toMutableList().apply { removeAt(index) }.toImmutableList()
         val updatedResults = testingResults.copy(groundingResistanceTest = newItems)
         onLightningReportChange(report.copy(testingResults = updatedResults))
-    }
+    }*/
 
     fun addLightningRecommendation(item: String) = viewModelScope.launch {
         val report = _lightningUiState.value.inspectionReport

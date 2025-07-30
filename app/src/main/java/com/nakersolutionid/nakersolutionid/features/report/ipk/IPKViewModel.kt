@@ -8,8 +8,6 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
-import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionAlarmInstallationItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionHydrantOperationalTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionInspectionReport
@@ -17,9 +15,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.Fi
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toFireProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,10 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class IPKViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class IPKViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _ipkUiState = MutableStateFlow(IPKUiState())
     val ipkUiState: StateFlow<IPKUiState> = _ipkUiState.asStateFlow()
 

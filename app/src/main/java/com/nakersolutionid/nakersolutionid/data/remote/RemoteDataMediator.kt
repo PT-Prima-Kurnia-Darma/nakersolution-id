@@ -108,7 +108,7 @@ class RemoteDataMediator(
             if (dataJson.isJsonArray) {
                 val inspectionArrayJson = dataJson.asJsonArray
 
-                for ((index, inspectionJson) in inspectionArrayJson.withIndex()) {
+                for ((_, inspectionJson) in inspectionArrayJson.withIndex()) {
                     if (inspectionJson.isJsonObject) {
                         val inspection = inspectionJson.asJsonObject
                         val documentType = inspection.get("documentType")?.asString

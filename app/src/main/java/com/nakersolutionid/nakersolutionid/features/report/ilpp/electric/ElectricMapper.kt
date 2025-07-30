@@ -292,7 +292,7 @@ fun InspectionWithDetailsDomain.toElectricalUiState(): ElectricalUiState {
     val internalViews = this.checkItems
         .filter { it.category == ElectricalCategory.SDP_VISUAL_INTERNAL }
         .groupBy { it.itemName.substringBefore(":").replace("Lantai ", "").toIntOrNull() }
-        .mapNotNull { (floor, items) ->
+        .mapNotNull { (floor, _) ->
             if (floor == null) return@mapNotNull null
             val prefix = "Lantai $floor: "
             val cat = ElectricalCategory.SDP_VISUAL_INTERNAL
