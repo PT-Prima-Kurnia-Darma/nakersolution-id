@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.features.bap
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -74,6 +76,9 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
 import com.nakersolutionid.nakersolutionid.features.history.FilterState
+import com.nakersolutionid.nakersolutionid.features.history.HistoryItem
+import com.nakersolutionid.nakersolutionid.ui.components.EmptyScreen
+import com.nakersolutionid.nakersolutionid.utils.DownloadState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -147,24 +152,56 @@ fun BAPScreen(
                 onQueryChange = viewModel::onSearchQueryChange,
                 onClear = { viewModel.onSearchQueryChange("") }
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            ) {
-                // Use the new items extension for LazyPagingItems.
-                items(
-                    count = lazyPagingItems.itemCount,
-                    key = lazyPagingItems.itemKey { it.id } // Use Paging's key for stable IDs.
-                ) { index ->
-                    val history = lazyPagingItems[index]
-                    if (history != null) {
-                        BAPItem(
-                            modifier = Modifier.animateItem(),
-                            history = history,
-                            onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
-                        )
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Show loading for initial load or refresh
+                if (lazyPagingItems.loadState.refresh is LoadState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                    )
+                } else if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+                    EmptyScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = lazyListState,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        ),
+                    ) {
+                        // Use the new items extension for LazyPagingItems.
+                        items(
+                            count = lazyPagingItems.itemCount,
+                            key = lazyPagingItems.itemKey { it.id } // Use Paging's key for stable IDs.
+                        ) { index ->
+                            val history = lazyPagingItems[index]
+                            if (history != null) {
+                                BAPItem(
+                                    modifier = Modifier.animateItem(),
+                                    history = history,
+                                    onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
+                                )
+                            }
+                        }
+                        // Show loading indicator for append
+                        if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
                     }
                 }
             }
