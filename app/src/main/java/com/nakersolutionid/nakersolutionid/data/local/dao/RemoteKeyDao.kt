@@ -8,15 +8,12 @@ import com.nakersolutionid.nakersolutionid.data.local.entity.RemoteKeyEntity
 
 @Dao
 interface RemoteKeyDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(remoteKey: List<RemoteKeyEntity>)
+    @Insert
+    suspend fun insertKey(remoteKey: RemoteKeyEntity)
 
-    @Query("SELECT * FROM remote_keys WHERE inspectionId = :id")
-    suspend fun getRemoteKeyByInspectionId(id: Long): RemoteKeyEntity?
+    @Query("SELECT * FROM remote_keys ORDER BY id DESC LIMIT 1")
+    suspend fun getLatestKey(): RemoteKeyEntity?
 
     @Query("DELETE FROM remote_keys")
-    suspend fun clearRemoteKeys()
-
-    @Query("SELECT createdAt FROM remote_keys ORDER BY createdAt DESC LIMIT 1")
-    suspend fun getCreationTime(): Long?
+    suspend fun clearAllRemoteKeys()
 }

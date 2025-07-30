@@ -53,8 +53,7 @@ class LocalDataSource(
             subInspectionType = filters.subInspectionType?.toDisplayString()
         )
     fun getDownloadedInspectionsWithDetails(): Flow<List<InspectionWithDetails>> = inspectionDao.getDownloadedInspectionsWithDetails()
-    suspend fun insertAll(remoteKey: List<RemoteKeyEntity>) = remoteKeyDao.insertAll(remoteKey)
-    suspend fun getRemoteKeyByInspectionId(id: Long): RemoteKeyEntity? = remoteKeyDao.getRemoteKeyByInspectionId(id)
-    suspend fun clearRemoteKeys() = remoteKeyDao.clearRemoteKeys()
-    suspend fun getCreationTime(): Long? = remoteKeyDao.getCreationTime()
+    suspend fun insertKey(remoteKey: RemoteKeyEntity) = remoteKeyDao.insertKey(remoteKey)
+    suspend fun getLatestKey(): RemoteKeyEntity? = remoteKeyDao.getLatestKey()
+    suspend fun clearAllRemoteKeys() = remoteKeyDao.clearAllRemoteKeys()
 }

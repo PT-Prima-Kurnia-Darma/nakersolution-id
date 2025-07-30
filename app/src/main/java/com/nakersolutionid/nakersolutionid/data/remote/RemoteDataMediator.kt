@@ -58,9 +58,9 @@ class RemoteDataMediator(
     private val gson: Gson
 ) : RemoteMediator<Int, InspectionWithDetails>() {
     override suspend fun initialize(): InitializeAction {
-        val cacheTimeout = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+        val cacheTimeout = TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES)
 
-        return if (System.currentTimeMillis() - (localDataSource.getCreationTime() ?: 0) < cacheTimeout) {
+        return if (System.currentTimeMillis() - (localDataSource.getLatestKey()?.createdAt ?: 0) < cacheTimeout) {
             InitializeAction.SKIP_INITIAL_REFRESH
         } else {
             InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -74,33 +74,16 @@ class RemoteDataMediator(
         return try {
             // 1. Determine the page to load
             val page = when (loadType) {
-                LoadType.REFRESH -> {
-                    // On refresh, start from the first page.
-                    Log.d("RemoteDataMediator", "Refreshing data...")
-                    1
-                }
-                LoadType.PREPEND -> {
-                    // We don't support prepending in this example.
-                    return MediatorResult.Success(endOfPaginationReached = true)
-                }
+                LoadType.REFRESH -> 1
+                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    // Get the remote key for the last item in the list.
-                    val lastItem = state.lastItemOrNull()
-
-                    // 💡 FIX: This check solves the race condition.
-                    // If lastItem is null, it means REFRESH is likely still running.
-                    // We return 'false' to let the Paging library know it should try again later.
-                    if (lastItem == null) {
-                        return MediatorResult.Success(endOfPaginationReached = false)
-                    }
-
-                    val remoteKey = localDataSource.getRemoteKeyByInspectionId(lastItem.inspectionEntity.id)
-                        ?: return MediatorResult.Error(IOException("Remote key for last item not found"))
-
-                    // If nextKey is null, we have reached the end.
-                    remoteKey.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    val nextKey = localDataSource.getLatestKey()?.nextKey
+                    Log.i("RemoteDataMediator", "APPEND -> nextKey: $nextKey")
+                    if (nextKey == null) return MediatorResult.Success(endOfPaginationReached = true)
+                    nextKey
                 }
             }
+
 
             // 2. Fetch data from the network
             val token = "Bearer ${userPreference.getUserToken() ?: ""}"
@@ -178,44 +161,18 @@ class RemoteDataMediator(
             }
 
             val endOfPaginationReached = page >= auditResponse.paging.totalPages
-            Log.d("RemoteDataMediator", "Page: $page, Size: ${state.config.pageSize}, Total Pages: ${auditResponse.paging.totalPages} ,End of Pagination: $endOfPaginationReached")
+            Log.i("RemoteDataMediator", "End of Pagination ($page >= ${auditResponse.paging.totalPages}, Total Items: ${auditResponse.paging.totalItems}): $endOfPaginationReached")
 
-            // 4. Save the data and remote keys into the database
-            appDatabase.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    // On refresh, clear old data.
-                    Log.d("RemoteDataMediator", "Clearing old data...")
-                    localDataSource.clearAllInspections()
-                    localDataSource.clearRemoteKeys()
-                }
+            val inspectionEntityList = inspectionList.map { it.toEntity() }
+            localDataSource.insertAllInspectionsWithDetails(inspectionEntityList)
 
-                val prevKey = if (page == 1) null else page - 1
-                val nextKey = if (endOfPaginationReached) null else page + 1
-
-                // Create a mutable list to hold the correctly formed keys
-                val newRemoteKeys = mutableListOf<RemoteKeyEntity>()
-
-                // Iterate through each fetched report
-                for (inspectionDomain in inspectionList) {
-                    val inspectionEntity = inspectionDomain.toEntity()
-
-                    // Insert a single inspection and get its newly generated ID back.
-                    // This requires using a DAO method that returns the ID.
-                    // Assuming localDataSource.insertInspection returns the new Long ID.
-                    val newId = localDataSource.insertInspection(
-                        inspectionEntity.inspectionEntity,
-                        inspectionEntity.checkItems,
-                        inspectionEntity.findings,
-                        inspectionEntity.testResults
-                    )
-
-                    // Create the remote key using the CORRECT, newly generated ID
-                    newRemoteKeys.add(RemoteKeyEntity(inspectionId = newId, prevKey = prevKey, nextKey = nextKey))
-                }
-
-                // Now, insert all the correctly created remote keys into the database
-                localDataSource.insertAll(newRemoteKeys)
+            if (loadType == LoadType.REFRESH) {
+                localDataSource.clearAllRemoteKeys()
             }
+
+            val nextKey = if (endOfPaginationReached) null else page + 1
+
+            localDataSource.insertKey(RemoteKeyEntity(nextKey = nextKey))
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
 
