@@ -31,10 +31,10 @@ class EEViewModel(
     private val _eeUiState = MutableStateFlow(EEUiState())
     val eeUiState: StateFlow<EEUiState> = _eeUiState.asStateFlow()
 
-    private val _elevatorUiState = MutableStateFlow(Dummy.getDummyElevatorUiState())
+    private val _elevatorUiState = MutableStateFlow(ElevatorUiState.createDummyElevatorUiState())
     val elevatorUiState: StateFlow<ElevatorUiState> = _elevatorUiState.asStateFlow()
 
-    private val _eskalatorUiState = MutableStateFlow(Dummy.getDummyEskalatorUiState())
+    private val _eskalatorUiState = MutableStateFlow(EskalatorUiState.createDummyEskalatorUiState())
     val eskalatorUiState: StateFlow<EskalatorUiState> = _eskalatorUiState.asStateFlow()
 
     // Track current report ID for edit mode
@@ -54,6 +54,51 @@ class EEViewModel(
                     triggerSaving(escalatorInspection, isInternetAvailable)
                 }
                 else -> null
+            }
+        }
+    }
+
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Elevator -> {
+                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
+                    collectMlResult(elevatorInspection)
+                }
+                SubInspectionType.Escalator -> {
+                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
+                    collectMlResult(escalatorInspection)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onUpdateState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onUpdateState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.joinToString("\n") ?: ""
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Elevator -> _elevatorUiState.update {
+                            it.copy(
+                                conclusion = conclusion,
+                                recommendation = recommendation
+                            )
+                        }
+                        SubInspectionType.Escalator -> _eskalatorUiState.update {
+                            it.copy(
+                                eskalatorData = it.eskalatorData.copy(conclusion = conclusion)
+                            )
+                        }
+                        else -> null
+                    }
+                    onUpdateState { it.copy(mlLoading = false) }
+                }
             }
         }
     }
