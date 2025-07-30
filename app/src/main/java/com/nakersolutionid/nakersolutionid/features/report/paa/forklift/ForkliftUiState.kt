@@ -11,7 +11,261 @@ import kotlinx.collections.immutable.persistentListOf
 @Immutable
 data class ForkliftUiState(
     val forkliftInspectionReport: ForkliftInspectionReport = ForkliftInspectionReport()
-)
+) {
+    companion object {
+        fun createDummyForkliftUiState(): ForkliftUiState {
+            return ForkliftUiState(
+                forkliftInspectionReport = ForkliftInspectionReport(
+                    extraId = "FL-001",
+                    moreExtraId = "BATCH-FL-XYZ",
+                    equipmentType = "Forklift",
+                    examinationType = "Annual Inspection",
+                    generalData = ForkliftGeneralData(
+                        owner = "Warehouse Logistics Inc.",
+                        address = "15 Logistics Way, Distribution City, USA",
+                        user = "Warehouse Operations Dept.",
+                        personInCharge = "Mike Johnson",
+                        unitLocation = "Warehouse Bay 3",
+                        operatorName = "Sarah Connor",
+                        driveType = "Electric",
+                        manufacturer = "LiftMaster Corp.",
+                        brandType = "Model X",
+                        yearOfManufacture = "2019",
+                        serialNumber = "FL-XM98765",
+                        liftingCapacity = "2500 kg",
+                        intendedUse = "Material Handling",
+                        permitNumber = "FL-PERMIT-1122",
+                        equipmentHistory = "Regular maintenance performed."
+                    ),
+                    technicalData = ForkliftTechnicalData(
+                        specifications = ForkliftSpecifications(
+                            serialNumber = "FL-XM98765",
+                            capacity = "2500 kg",
+                            attachment = "Standard Fork",
+                            forkDimension = "1070 x 100 x 40 mm"
+                        ),
+                        speed = ForkliftSpeed(
+                            lifting = "0.4 m/s",
+                            lowering = "0.5 m/s",
+                            travelling = "12 km/h"
+                        ),
+                        primeMover = ForkliftPrimeMover(
+                            revolution = "3000 RPM",
+                            brandType = "BrandE Electric Motor",
+                            serialNumber = "EM-ABC123",
+                            yearOfManufacture = "2019",
+                            power = "5 kW",
+                            numberOfCylinders = "N/A (Electric)"
+                        ),
+                        dimensions = ForkliftDimensions(
+                            length = "2.5 m",
+                            width = "1.2 m",
+                            height = "2.1 m",
+                            forkLiftingHeight = "4.5 m"
+                        ),
+                        tirePressure = ForkliftTirePressure(
+                            driveWheel = "5.5 Bar",
+                            steeringWheel = "5.0 Bar"
+                        ),
+                        driveWheel = ForkliftWheel(size = "12 inch", type = "Solid Rubber"),
+                        steeringWheel = ForkliftWheel(size = "10 inch", type = "Solid Rubber"),
+                        travellingBrake = ForkliftWheel(size = "N/A", type = "Electric Brake"),
+                        hydraulicPump = ForkliftHydraulicPump(
+                            pressure = "150 Bar",
+                            type = "Gear Pump",
+                            reliefValve = "Set at 160 Bar"
+                        )
+                    ),
+                    visualInspection = ForkliftVisualInspection(
+                        chassisReinforcementCorrosion = ForkliftInspectionResult(status = true, result = "No significant corrosion"),
+                        chassisReinforcementCracks = ForkliftInspectionResult(status = false, result = "No cracks found"),
+                        chassisReinforcementDeformation = ForkliftInspectionResult(status = false, result = "No deformation observed"),
+                        counterweightCorrosion = ForkliftInspectionResult(status = true, result = "Minor surface corrosion on bottom"),
+                        counterweightCondition = ForkliftInspectionResult(status = true, result = "Securely mounted"),
+                        otherEquipmentFloorDeck = ForkliftInspectionResult(status = true, result = "Clean and intact"),
+                        otherEquipmentStairs = ForkliftInspectionResult(status = true, result = "Good condition"),
+                        otherEquipmentBindingBolts = ForkliftInspectionResult(status = true, result = "All bolts tight"),
+                        otherEquipmentOperatorSeat = ForkliftInspectionResult(status = true, result = "Suspension intact"),
+                        primeMoverCoolingSystem = ForkliftInspectionResult(status = true, result = "Coolant level adequate"),
+                        primeMoverLubricantSystem = ForkliftInspectionResult(status = true, result = "Oil level OK"),
+                        primeMoverFuelSystem = ForkliftInspectionResult(status = true, result = "No leaks"),
+                        primeMoverAirIntakeSystem = ForkliftInspectionResult(status = true, result = "Filter clean"),
+                        primeMoverExhaustSystem = ForkliftInspectionResult(status = true, result = "No excessive smoke"),
+                        primeMoverStarterSystem = ForkliftInspectionResult(status = true, result = "Starts reliably"),
+                        primeMoverElectricalBattery = ForkliftInspectionResult(status = true, result = "Charged and clean terminals"),
+                        primeMoverElectricalStartingDynamo = ForkliftInspectionResult(status = true, result = "Functional"),
+                        primeMoverElectricalAlternator = ForkliftInspectionResult(status = true, result = "Charging voltage normal"),
+                        primeMoverElectricalBatteryCable = ForkliftInspectionResult(status = true, result = "Secure connections"),
+                        primeMoverElectricalWiring = ForkliftInspectionResult(status = true, result = "No visible damage"),
+                        primeMoverElectricalLighting = ForkliftInspectionResult(status = true, result = "Headlights and taillights operational"),
+                        primeMoverElectricalSafetyLights = ForkliftInspectionResult(status = true, result = "Warning beacon functional"),
+                        primeMoverElectricalHorn = ForkliftInspectionResult(status = true, result = "Audible"),
+                        primeMoverElectricalFuse = ForkliftInspectionResult(status = true, result = "All fuses intact"),
+                        dashboardTemperatureIndicator = ForkliftInspectionResult(status = true, result = "Reading within normal range"),
+                        dashboardEngineOilPressure = ForkliftInspectionResult(status = true, result = "Indicator light off when running"),
+                        dashboardHydraulicPressure = ForkliftInspectionResult(status = true, result = "Gauge reading OK"),
+                        dashboardHourMeter = ForkliftInspectionResult(status = true, result = "Shows 4500 hours"),
+                        dashboardGlowPlug = ForkliftInspectionResult(status = true, result = "Indicator operational"),
+                        dashboardFuelIndicator = ForkliftInspectionResult(status = true, result = "Reading accurate"),
+                        dashboardLoadIndicator = ForkliftInspectionResult(status = true, result = "Working"),
+                        dashboardLoadChart = ForkliftInspectionResult(status = true, result = "Visible and legible"),
+                        dashboardAmpereMeter = ForkliftInspectionResult(status = true, result = "Reading within normal range"),
+                        powerTrainSteeringWheel = ForkliftInspectionResult(status = true, result = "No excessive play"),
+                        powerTrainSteeringRod = ForkliftInspectionResult(status = true, result = "No damage"),
+                        powerTrainSteeringGearBox = ForkliftInspectionResult(status = true, result = "No visible leaks"),
+                        powerTrainSteeringPitmanArm = ForkliftInspectionResult(status = true, result = "Secure"),
+                        powerTrainSteeringDragLink = ForkliftInspectionResult(status = true, result = "Secure"),
+                        powerTrainSteeringTieRod = ForkliftInspectionResult(status = true, result = "Secure"),
+                        powerTrainSteeringLubrication = ForkliftInspectionResult(status = true, result = "Grease points serviced"),
+                        powerTrainWheelFront = ForkliftInspectionResult(status = true, result = "Good tread, no damage"),
+                        powerTrainWheelRear = ForkliftInspectionResult(status = true, result = "Good tread, no damage"),
+                        powerTrainWheelBindingBolts = ForkliftInspectionResult(status = true, result = "All tight"),
+                        powerTrainWheelHub = ForkliftInspectionResult(status = true, result = "No cracks"),
+                        powerTrainWheelLubrication = ForkliftInspectionResult(status = true, result = "Wheel bearings greased"),
+                        powerTrainWheelMechanicalEquipment = ForkliftInspectionResult(status = true, result = "Hubs in good condition"),
+                        powerTrainClutchHousing = ForkliftInspectionResult(status = true, result = "No visible leaks"),
+                        powerTrainClutchCondition = ForkliftInspectionResult(status = true, result = "Engages smoothly"),
+                        powerTrainClutchTransmissionOil = ForkliftInspectionResult(status = true, result = "Level OK"),
+                        powerTrainClutchTransmissionLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        powerTrainClutchConnectingShaft = ForkliftInspectionResult(status = true, result = "Secure"),
+                        powerTrainClutchMechanicalEquipment = ForkliftInspectionResult(status = true, result = "No visible damage"),
+                        powerTrainDifferentialHousing = ForkliftInspectionResult(status = true, result = "No visible leaks"),
+                        powerTrainDifferentialCondition = ForkliftInspectionResult(status = true, result = "No abnormal noise"),
+                        powerTrainDifferentialOil = ForkliftInspectionResult(status = true, result = "Level OK"),
+                        powerTrainDifferentialLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        powerTrainDifferentialConnectingShaft = ForkliftInspectionResult(status = true, result = "Secure"),
+                        powerTrainBrakeMainCondition = ForkliftInspectionResult(status = true, result = "Effective stopping power"),
+                        powerTrainBrakeHandbrakeCondition = ForkliftInspectionResult(status = true, result = "Holds firmly"),
+                        powerTrainBrakeEmergencyCondition = ForkliftInspectionResult(status = true, result = "Functional"),
+                        powerTrainBrakeLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        powerTrainBrakeMechanicalComponents = ForkliftInspectionResult(status = true, result = "No visible damage"),
+                        powerTrainTransmissionHousing = ForkliftInspectionResult(status = true, result = "No visible leaks"),
+                        powerTrainTransmissionOil = ForkliftInspectionResult(status = true, result = "Level OK"),
+                        powerTrainTransmissionLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        powerTrainTransmissionMechanicalEquipment = ForkliftInspectionResult(status = true, result = "No visible damage"),
+                        attachmentMastWear = ForkliftInspectionResult(status = true, result = "Minor wear on chain rollers"),
+                        attachmentMastCracks = ForkliftInspectionResult(status = false, result = "No cracks found"),
+                        attachmentMastDeformation = ForkliftInspectionResult(status = false, result = "No deformation observed"),
+                        attachmentMastLubrication = ForkliftInspectionResult(status = true, result = "Lubrication points serviced"),
+                        attachmentMastShaftAndBearing = ForkliftInspectionResult(status = true, result = "Good condition"),
+                        attachmentLiftChainCondition = ForkliftInspectionResult(status = true, result = "No visible wear or damage"),
+                        attachmentLiftChainDeformation = ForkliftInspectionResult(status = false, result = "No deformation observed"),
+                        attachmentLiftChainLubrication = ForkliftInspectionResult(status = true, result = "Chain lubricated"),
+                        personalBasketWorkFloorCorrosion = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketWorkFloorCracks = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketWorkFloorDeformation = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketWorkFloorBinding = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketFrameCorrosion = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketFrameCracks = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketFrameDeformation = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketFrameCrossBracing = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketFrameDiagonalBracing = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketBindingBoltCorrosion = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketBindingBoltCracks = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketBindingBoltDeformation = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketBindingBoltBinding = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketDoorCorrosion = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketDoorCracks = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketDoorDeformation = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketDoorBinding = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailCracks = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailWear = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailRailStraightness = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailRailJoint = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailAlignmentBetweenRails = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailGapBetweenRailJoints = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailRailFastener = ForkliftInspectionResult(status = false, result = "N/A"),
+                        personalBasketHandrailRailStopper = ForkliftInspectionResult(status = false, result = "N/A"),
+                        hydraulicTankLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        hydraulicTankOilLevel = ForkliftInspectionResult(status = true, result = "Level adequate"),
+                        hydraulicTankOilCondition = ForkliftInspectionResult(status = true, result = "Clean"),
+                        hydraulicTankSuctionLineCondition = ForkliftInspectionResult(status = true, result = "No kinks or damage"),
+                        hydraulicTankReturnLineCondition = ForkliftInspectionResult(status = true, result = "No kinks or damage"),
+                        hydraulicPumpLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        hydraulicPumpSuctionLineCondition = ForkliftInspectionResult(status = true, result = "No restrictions"),
+                        hydraulicPumpPressureLineCondition = ForkliftInspectionResult(status = true, result = "No visible damage"),
+                        hydraulicPumpFunction = ForkliftInspectionResult(status = true, result = "Operates smoothly"),
+                        hydraulicPumpAbnormalNoise = ForkliftInspectionResult(status = false, result = "No abnormal noise"),
+                        controlValveLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        controlValveLineCondition = ForkliftInspectionResult(status = true, result = "All lines connected"),
+                        controlValveReliefValveFunction = ForkliftInspectionResult(status = true, result = "Operates correctly"),
+                        controlValveAbnormalNoise = ForkliftInspectionResult(status = false, result = "No abnormal noise"),
+                        controlValveLiftCylinderFunction = ForkliftInspectionResult(status = true, result = "Operates smoothly"),
+                        controlValveTiltCylinderFunction = ForkliftInspectionResult(status = true, result = "Operates smoothly"),
+                        controlValveSteeringCylinderFunction = ForkliftInspectionResult(status = true, result = "Operates smoothly"),
+                        actuatorLeakage = ForkliftInspectionResult(status = false, result = "No leaks observed"),
+                        actuatorLineCondition = ForkliftInspectionResult(status = true, result = "All lines connected"),
+                        actuatorAbnormalNoise = ForkliftInspectionResult(status = false, result = "No abnormal noise")
+                    ),
+                    nonDestructiveExamination = ForkliftNde(
+                        liftingChainInspection = ForkliftNdeChainInspection(
+                            items = persistentListOf(
+                                ForkliftNdeChainItem(
+                                    chain = "Main Lift Chain", typeAndConstruction = "Alloy Steel, Welded",
+                                    standardPitchMm = "12.7", measuredPitchMm = "12.75",
+                                    standardPinMm = "8.0", measuredPinMm = "8.05",
+                                    remarks = "Within acceptable wear limits"
+                                )
+                            )
+                        ),
+                        forkNDT = ForkliftNdeFork(
+                            ndtType = "Dye Penetrant Testing",
+                            items = persistentListOf(
+                                ForkliftNdeForkItem(
+                                    partInspected = "Fork Tip", location = "300mm from tip",
+                                    finding = ForkliftInspectionResult(status = false, result = "No cracks detected")
+                                )
+                            )
+                        )
+                    ),
+                    testing = ForkliftTesting(
+                        engineOnInspection = ForkliftEngineOnInspection(
+                            dynamoStarter = ForkliftInspectionResult(status = true, result = "Operational"),
+                            instrumentIndicatorFunction = ForkliftInspectionResult(status = true, result = "All indicators functional"),
+                            electricalEquipmentFunction = ForkliftInspectionResult(status = true, result = "All systems operational"),
+                            engineOilLeakage = ForkliftInspectionResult(status = false, result = "No leaks"),
+                            fuelLeakage = ForkliftInspectionResult(status = false, result = "No leaks"),
+                            coolantLeakage = ForkliftInspectionResult(status = false, result = "No leaks"),
+                            hydraulicOilLeakage = ForkliftInspectionResult(status = false, result = "No leaks"),
+                            transmissionOilLeakage = ForkliftInspectionResult(status = false, result = "No leaks"),
+                            finalDriveOilLeakage = ForkliftInspectionResult(status = false, result = "No leaks"),
+                            brakeFluidLeakage = ForkliftInspectionResult(status = false, result = "No leaks"),
+                            clutchFunction = ForkliftInspectionResult(status = true, result = "Smooth engagement"),
+                            transmissionFunction = ForkliftInspectionResult(status = true, result = "Smooth gear changes"),
+                            brakeFunction = ForkliftInspectionResult(status = true, result = "Effective and smooth"),
+                            hornAlarmFunction = ForkliftInspectionResult(status = true, result = "Audible"),
+                            lightsFunction = ForkliftInspectionResult(status = true, result = "All lights working"),
+                            hydraulicSystemFunction = ForkliftInspectionResult(status = true, result = "Operates smoothly under load"),
+                            powerSteeringFunction = ForkliftInspectionResult(status = true, result = "Responsive"),
+                            liftCylinderFunction = ForkliftInspectionResult(status = true, result = "Smooth and controlled lift"),
+                            tiltCylinderFunction = ForkliftInspectionResult(status = true, result = "Smooth tilt action"),
+                            exhaustGasCondition = ForkliftInspectionResult(status = true, result = "Low smoke, normal color"),
+                            controlLeversFunction = ForkliftInspectionResult(status = true, result = "Smooth and precise"),
+                            engineNoise = ForkliftInspectionResult(status = true, result = "Normal running noise"),
+                            turbochargerNoise = ForkliftInspectionResult(status = true, result = "Normal whistling sound"),
+                            transmissionNoise = ForkliftInspectionResult(status = true, result = "No abnormal noise"),
+                            hydraulicPumpNoise = ForkliftInspectionResult(status = true, result = "Slight hum, normal"),
+                            guardNoise = ForkliftInspectionResult(status = true, result = "No rattling or loose parts")
+                        ),
+                        loadTest = ForkliftLoadTest(
+                            items = persistentListOf(
+                                ForkliftLoadTestItem(
+                                    forkLiftingHeight = "4.0 m", testLoad = "2500 kg",
+                                    travelingSpeed = "8 km/h", movement = "Forward & Backward",
+                                    result = "OK", remarks = "Stable during test"
+                                )
+                            )
+                        )
+                    ),
+                    conclusion = ForkliftConclusion(
+                        summary = persistentListOf("The forklift is in good working condition and passed all safety and operational tests."),
+                        recommendations = persistentListOf("Continue with scheduled preventive maintenance.", "Monitor wear on the main lift chain rollers.")
+                    )
+                )
+            )
+        }
+    }
+}
 
 @Immutable
 data class ForkliftInspectionReport(

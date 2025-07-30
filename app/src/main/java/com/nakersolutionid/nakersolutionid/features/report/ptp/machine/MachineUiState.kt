@@ -15,7 +15,164 @@ import kotlinx.collections.immutable.persistentListOf
 data class ProductionMachineUiState(
     val isLoading: Boolean = false,
     val inspectionReport: ProductionMachineInspectionReport = ProductionMachineInspectionReport()
-)
+) {
+    companion object {
+        fun createDummyProductionMachineUiState(): ProductionMachineUiState {
+            return ProductionMachineUiState(
+                isLoading = false,
+                inspectionReport = ProductionMachineInspectionReport(
+                    extraId = "EXP-12345",
+                    moreExtraId = "MEXP-67890",
+                    equipmentType = "CNC Lathe",
+                    examinationType = "Pre-Use Inspection",
+                    generalData = ProductionMachineGeneralData(
+                        driveType = "Electric Motor",
+                        ownerName = "PT. Maju Mundur",
+                        ownerAddress = "Jl. Industri No. 1, Jakarta",
+                        userInCharge = "Budi Santoso",
+                        userAddressInCharge = "Jl. Karyawan No. 5, Jakarta",
+                        subcontractorPersonInCharge = "Agus Salim",
+                        unitLocation = "Workshop A, Floor 2",
+                        brandType = "XYZ Machining",
+                        serialNumberUnitNumber = "CNCL-987654",
+                        manufacturer = "XYZ Corp",
+                        locationAndYearOfManufacture = "Germany, 2022",
+                        motorPower = "15 kW",
+                        intendedUse = "Precision Metal Machining",
+                        pjk3SkpNo = "PJK3-001",
+                        ak3SkpNo = "AK3-002",
+                        usagePermitNumber = "UP-003",
+                        operatorName = "Citra Lestari",
+                        equipmentHistory = "Regular maintenance performed every 6 months. No major breakdowns."
+                    ),
+                    technicalData = ProductionMachineTechnicalData(
+                        type = "Horizontal CNC Lathe",
+                        maxFeederSpeed = "12 m/min",
+                        maxPlateWidth = "N/A",
+                        plateThickness = "N/A",
+                        maxPlateWeight = "N/A",
+                        maxInnerCoilDiameter = "N/A",
+                        maxOuterCoilDiameter = "N/A",
+                        driveMotor = "Siemens 15kW",
+                        motorPowerKw = "15",
+                        brandAndSerial = "XYZ Machining, CNCL-987654",
+                        locationAndYear = "Workshop A, 2022",
+                        machineDimensions = ProductionMachineDimensions(
+                            weightKg = "5000",
+                            overallDimension = "3m x 2m x 2m"
+                        ),
+                        foundationDimensions = ProductionMachineFoundationDimensions(
+                            dim = "2.5m x 1.5m x 0.5m",
+                            distance = "1m from wall",
+                            vibrationDamperType = "Rubber Mounts",
+                            weightKg1 = "2000",
+                            weightKg2 = "500"
+                        )
+                    ),
+                    visualInspection = ProductionMachineVisualInspection(
+                        foundationCondition = ProductionMachineConditionResult(isGood = true, remarks = "No visible cracks or damage."),
+                        foundationBearingCondition = ProductionMachineConditionResult(isGood = true, remarks = "Bearing surfaces are clean and lubricated."),
+                        mainFrameCondition = ProductionMachineConditionResult(isGood = true, remarks = "Frame is rigid and free from deformation."),
+                        braceFrameCondition = ProductionMachineConditionResult(isGood = true, remarks = "Braces are secure."),
+                        rollerCondition = ProductionMachineConditionResult(isGood = true, remarks = "Rollers are smooth and show no wear."),
+                        controlPanelCondition = ProductionMachineConditionResult(isGood = true, remarks = "Panel is clean, buttons responsive."),
+                        displayCondition = ProductionMachineConditionResult(isGood = true, remarks = "Display is clear and readable."),
+                        operationButtonsCondition = ProductionMachineConditionResult(isGood = true, remarks = "All buttons function correctly."),
+                        electricalVoltage = ProductionMachineConditionResult(isGood = true, remarks = "Within acceptable range."),
+                        electricalPower = ProductionMachineConditionResult(isGood = true, remarks = "Stable."),
+                        electricalPhase = ProductionMachineConditionResult(isGood = true, remarks = "3-phase detected."),
+                        electricalFrequency = ProductionMachineConditionResult(isGood = true, remarks = "50 Hz."),
+                        electricalCurrent = ProductionMachineConditionResult(isGood = true, remarks = "Normal operational current."),
+                        electricalPanel = ProductionMachineConditionResult(isGood = true, remarks = "Clean and organized."),
+                        electricalConductor = ProductionMachineConditionResult(isGood = true, remarks = "Cables are properly insulated and secured."),
+                        electricalInsulation = ProductionMachineConditionResult(isGood = true, remarks = "Good insulation resistance."),
+                        safetyLimitSwitchUp = ProductionMachineConditionResult(isGood = true, remarks = "Functioning correctly."),
+                        safetyLimitSwitchDown = ProductionMachineConditionResult(isGood = true, remarks = "Functioning correctly."),
+                        safetyGrounding = ProductionMachineConditionResult(isGood = true, remarks = "Effective grounding."),
+                        safetyGuard = ProductionMachineConditionResult(isGood = true, remarks = "All guards in place and secure."),
+                        safetyStampLock = ProductionMachineConditionResult(isGood = true, remarks = "Lock mechanism operational."),
+                        safetyPressureIndicator = ProductionMachineConditionResult(isGood = true, remarks = "Indicator shows normal pressure."),
+                        safetyEmergencyStop = ProductionMachineConditionResult(isGood = true, remarks = "Emergency stop button functions."),
+                        safetyHandSensor = ProductionMachineConditionResult(isGood = true, remarks = "Hand sensor is responsive.")
+                    ),
+                    testingAndMeasurement = ProductionMachineTestingAndMeasurement(
+                        functionalTests = ProductionMachineFunctionalTests(
+                            safetyGrounding = ProductionMachineTestResult(isMet = true, remarks = "Grounding resistance < 1 Ohm."),
+                            safetyGuard = ProductionMachineTestResult(isMet = true, remarks = "All safety guards engage stop function."),
+                            safetyRoller = ProductionMachineTestResult(isMet = true, remarks = "Rollers rotate freely."),
+                            safetyEmergencyStop = ProductionMachineTestResult(isMet = true, remarks = "Machine stops immediately."),
+                            speedTest = ProductionMachineTestResult(isMet = true, remarks = "Max speed achieved and stable."),
+                            functionTest = ProductionMachineTestResult(isMet = true, remarks = "All operational modes work as expected."),
+                            weldJointTest = ProductionMachineTestResult(isMet = true, remarks = "N/A for this machine."),
+                            vibrationTest = ProductionMachineTestResult(isMet = true, remarks = "Vibration levels within acceptable limits."),
+                            lightingTest = ProductionMachineTestResult(isMet = true, remarks = "Adequate lighting."),
+                            noiseTest = ProductionMachineTestResult(isMet = true, remarks = "Noise levels within permissible limits.")
+                        ),
+                        electricalMeasurements = ProductionMachineElectricalMeasurements(
+                            panelControlDrawing = ProductionMachinePanelControlDrawing(
+                                ka = "100A",
+                                voltageRS = "380V",
+                                voltageRT = "380V",
+                                voltageST = "380V",
+                                voltageRN = "220V",
+                                voltageRG = "220V",
+                                voltageNG = "0V"
+                            ),
+                            powerInfo = ProductionMachinePowerInfo(
+                                frequency = "50 Hz",
+                                cosQ = "0.85",
+                                ampereR = "15A",
+                                ampereS = "16A",
+                                ampereT = "15.5A",
+                                remarks = "Power consumption stable during operation."
+                            )
+                        )
+                    ),
+                    foundationAnalysis = ProductionMachineFoundationAnalysis(
+                        machineWeight = ProductionMachineWeight(
+                            actualTon = "5.0",
+                            additionalMaterialTon = "1.0",
+                            totalTon = "6.0"
+                        ),
+                        minFoundationWeight = ProductionMachineMinFoundationWeight(
+                            calculation = "Machine Weight * 2",
+                            resultTon = "12.0"
+                        ),
+                        foundationHeight = ProductionMachineFoundationHeight(
+                            formula = "Berat Pondasi = Panjang x Lebar x Tinggi x Berat Jenis Pondasi",
+                            calculation = "12000 kg / (2.5m * 1.5m * 2400 kg/m^3)",
+                            resultMeter = "0.42"
+                        ),
+                        summary = "The foundation meets the minimum weight requirements and dimensions are adequate for machine stability."
+                    ),
+                    noiseMeasurement = ProductionMachineNoiseMeasurement(
+                        pointA = ProductionMachineMeasurementPoint(result = "75 dB", analysis = "Below permissible limit."),
+                        pointB = ProductionMachineMeasurementPoint(result = "78 dB", analysis = "Below permissible limit."),
+                        pointC = ProductionMachineMeasurementPoint(result = "76 dB", analysis = "Below permissible limit."),
+                        pointD = ProductionMachineMeasurementPoint(result = "77 dB", analysis = "Below permissible limit.")
+                    ),
+                    lightingMeasurement = ProductionMachineLightingMeasurement(
+                        pointA = ProductionMachineMeasurementPoint(result = "500 lux", analysis = "Adequate lighting level."),
+                        pointB = ProductionMachineMeasurementPoint(result = "520 lux", analysis = "Adequate lighting level."),
+                        pointC = ProductionMachineMeasurementPoint(result = "510 lux", analysis = "Adequate lighting level."),
+                        pointD = ProductionMachineMeasurementPoint(result = "530 lux", analysis = "Adequate lighting level.")
+                    ),
+                    conclusion = ProductionMachineConclusion(
+                        summary = persistentListOf(
+                            "The production machine is in good working condition.",
+                            "All safety features are functional.",
+                            "Electrical and mechanical parameters are within specifications."
+                        ),
+                        requirements = persistentListOf(
+                            "Continue regular lubrication schedule.",
+                            "Conduct detailed internal inspection every 12 months."
+                        )
+                    )
+                )
+            )
+        }
+    }
+}
 
 @Immutable
 data class ProductionMachineInspectionReport(

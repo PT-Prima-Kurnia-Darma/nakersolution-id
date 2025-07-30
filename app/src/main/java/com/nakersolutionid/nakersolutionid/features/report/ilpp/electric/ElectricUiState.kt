@@ -12,7 +12,196 @@ import kotlinx.collections.immutable.persistentListOf
 data class ElectricalUiState(
     val isLoading: Boolean = false,
     val electricalInspectionReport: ElectricalInspectionReport = ElectricalInspectionReport()
-)
+) {
+    companion object {
+        fun createDummyElectricalUiState(): ElectricalUiState {
+            return ElectricalUiState(
+                isLoading = false,
+                electricalInspectionReport = ElectricalInspectionReport(
+                    extraId = "ELECT-001",
+                    moreExtraId = "BATCH-XYZ-ELECT",
+                    generalData = ElectricalGeneralData(
+                        companyName = "Tech Solutions Inc.",
+                        companyAddress = "101 Innovation Drive, Tech City, USA",
+                        installationType = "Industrial Facility",
+                        examinationType = "Routine Inspection",
+                        businessField = "Manufacturing",
+                        safetyServiceProvider = "SafeSys Corp",
+                        ohsExpert = "Jane Smith",
+                        permitNumber = "ELECT-PERMIT-5555",
+                        inspectionDate = "2023-10-27",
+                        inspectionLocation = "Main Plant Area"
+                    ),
+                    technicalData = ElectricalTechnicalData(
+                        powerSource = ElectricalPowerSource(
+                            plnKva = "1000 KVA",
+                            dieselGeneratorKva = "500 KVA"
+                        ),
+                        loadSystem = ElectricalLoadSystem(
+                            totalInstalledLoadWatt = "800000 W",
+                            lightingPowerWatt = "100000 W",
+                            powerLoadWatt = "700000 W"
+                        ),
+                        currentVoltageType = "AC, 3 Phase, 400V"
+                    ),
+                    initialDocumentVerification = ElectricalInitialDocumentVerification(
+                        singleLineDiagram = ElectricalVerificationResult(isAvailable = true, remarks = "Complete"),
+                        layout = ElectricalVerificationResult(isAvailable = true, remarks = "Approved"),
+                        usagePermitCertificate = ElectricalVerificationResult(isAvailable = true, remarks = "Valid"),
+                        technicianLicense = ElectricalVerificationResult(isAvailable = true, remarks = "Certified")
+                    ),
+                    inspectionAndTesting = ElectricalInspectionAndTesting(
+                        documentExaminationPart1 = ElectricalDocumentExaminationPart1(
+                            planningHasPermit = ElectricalTestResult(result = true, method = "Review"),
+                            locationMapExists = ElectricalTestResult(result = true, method = "Review"),
+                            singleLineDiagramExists = ElectricalTestResult(result = true, method = "Review"),
+                            layoutDiagramExists = ElectricalTestResult(result = true, method = "Review"),
+                            wiringDiagramExists = ElectricalTestResult(result = true, method = "Review"),
+                            areaClarificationDrawingExists = ElectricalTestResult(result = true, method = "Review"),
+                            panelComponentListExists = ElectricalTestResult(result = true, method = "Review"),
+                            shortCircuitCalculationExists = ElectricalTestResult(result = true, method = "Review"),
+                            manualBookExists = ElectricalTestResult(result = true, method = "Review"),
+                            maintenanceAndOperationBookExists = ElectricalTestResult(result = true, method = "Review"),
+                            warningSignsInstalled = ElectricalTestResult(result = true, method = "Visual"),
+                            manufacturerCertificationExists = ElectricalTestResult(result = true, method = "Review"),
+                            equipmentTechnicalSpecsExists = ElectricalTestResult(result = true, method = "Review"),
+                            equipmentCertificationAndSpecsExists = ElectricalTestResult(result = true, method = "Review"),
+                            powerRecapitulationCalculationExists = ElectricalTestResult(result = true, method = "Review"),
+                            dailyRecordExists = ElectricalTestResult(result = true, method = "Review"),
+                            panelCoverCondition = ElectricalTestResult(result = true, method = "Visual"),
+                            otherSupportingDataExists = ElectricalTestResult(result = true, method = "Review"),
+                            hasPanelPointCount = ElectricalTestResult(result = true, method = "Review")
+                        ),
+                        documentExaminationPart2 = ElectricalDocumentExaminationPart2(
+                            unitConstructionLvmdpSdp = ElectricalTestResult(result = true, method = "Visual"),
+                            mountingAndPlacement = ElectricalTestResult(result = true, method = "Visual"),
+                            nameplateVerification = ElectricalTestResult(result = true, method = "Visual"),
+                            areaClassification = ElectricalTestResult(result = true, method = "Visual"),
+                            protectionAgainstElectricShock = ElectricalTestResult(result = true, method = "Visual"),
+                            radiationProtection = ElectricalTestResult(result = true, method = "Visual"),
+                            panelDoorStaysOpen = ElectricalTestResult(result = true, method = "Test"),
+                            boltsAndScrewsTightened = ElectricalTestResult(result = true, method = "Visual"),
+                            busbarInsulation = ElectricalTestResult(result = true, method = "Visual"),
+                            busbarClearance = ElectricalTestResult(result = true, method = "Visual"),
+                            cableInstallation = ElectricalTestResult(result = true, method = "Visual"),
+                            panelDoorCableProtection = ElectricalTestResult(result = true, method = "Visual"),
+                            fuseReplacementSafety = ElectricalTestResult(result = true, method = "Visual"),
+                            cableTerminalProtection = ElectricalTestResult(result = true, method = "Visual"),
+                            measuringInstrumentsMarking = ElectricalTestResult(result = true, method = "Visual"),
+                            equipmentAndTerminalLabeling = ElectricalTestResult(result = true, method = "Visual"),
+                            incomingOutgoingCableInstallation = ElectricalTestResult(result = true, method = "Visual"),
+                            busbarSize = ElectricalTestResult(result = true, method = "Visual"),
+                            busbarCleanliness = ElectricalTestResult(result = true, method = "Visual"),
+                            busbarPhaseMarking = ElectricalTestResult(result = true, method = "Visual"),
+                            groundingCableInstallation = ElectricalTestResult(result = true, method = "Visual"),
+                            panelDoorInstallation = ElectricalTestResult(result = true, method = "Visual"),
+                            sparepartsSpecificationCompliance = ElectricalTestResult(result = true, method = "Review"),
+                            safetyFacilitiesAndDangerSigns = ElectricalTestResult(result = true, method = "Visual"),
+                            circuitBreakerDataCheck = ElectricalTestResult(result = true, method = "Review"),
+                            circuitBreakerCurrentRating = ElectricalTestResult(result = true, method = "Review"),
+                            circuitBreakerVoltageRating = ElectricalTestResult(result = true, method = "Review"),
+                            circuitBreakerInterruptingRating = ElectricalTestResult(result = true, method = "Review"),
+                            circuitBreakerControlVoltage = ElectricalTestResult(result = true, method = "Review"),
+                            circuitBreakerManufacturer = ElectricalTestResult(result = true, method = "Review"),
+                            circuitBreakerType = ElectricalTestResult(result = true, method = "Review"),
+                            circuitBreakerSerialNumber = ElectricalTestResult(result = true, method = "Review")
+                        ),
+                        mainTesting = ElectricalMainTesting(
+                            insulationResistance = ElectricalTestResult(result = true, method = "Megger Test"),
+                            groundingResistance = ElectricalTestResult(result = true, method = "Earth Tester"),
+                            circuitBreakerEquipment = ElectricalTestResult(result = true, method = "Trip Test"),
+                            currentTransformer = ElectricalTestResult(result = true, method = "Ratio Test"),
+                            voltageTransformer = ElectricalTestResult(result = true, method = "Ratio Test"),
+                            measuringInstrument = ElectricalTestResult(result = true, method = "Calibration Check"),
+                            fuseRating = ElectricalTestResult(result = true, method = "Visual"),
+                            mechanicalBreaker = ElectricalTestResult(result = true, method = "Operation Test"),
+                            cableTerminal = ElectricalTestResult(result = true, method = "Torque Check"),
+                            terminalMarking = ElectricalTestResult(result = true, method = "Visual"),
+                            interlockSystem = ElectricalTestResult(result = true, method = "Functional Test"),
+                            auxiliarySwitch = ElectricalTestResult(result = true, method = "Functional Test"),
+                            mechanicalTripFunction = ElectricalTestResult(result = true, method = "Test"),
+                            overloadTripTest = ElectricalTestResult(result = true, method = "Test"),
+                            reversePowerRelayTest = ElectricalTestResult(result = true, method = "Test"),
+                            reverseCurrentRelayTest = ElectricalTestResult(result = true, method = "Test"),
+                            breakerTripTest = ElectricalTestResult(result = true, method = "Test"),
+                            temperatureMeasurement = ElectricalTestResult(result = true, method = "Thermal Camera"),
+                            indicatorLightFunction = ElectricalTestResult(result = true, method = "Test"),
+                            meterDeviationTest = ElectricalTestResult(result = true, method = "Test"),
+                            synchronizationFunctionTest = ElectricalTestResult(result = true, method = "Test"),
+                            conductorAmpacity = ElectricalTestResult(result = true, method = "Calculation Check"),
+                            protectionRating = ElectricalTestResult(result = true, method = "Review"),
+                            voltageDrop = ElectricalTestResult(result = true, method = "Calculation Check"),
+                            lossConnection = ElectricalTestResult(result = true, method = "Visual")
+                        ),
+                        sdpVisualInspection = ElectricalSdpVisualInspection(
+                            frontView = ElectricalSdpFrontView(
+                                panelIndicatorLights = ElectricalTestResult(result = true, method = "Visual"),
+                                panelDoorClearance = ElectricalTestResult(result = true, method = "Visual"),
+                                lighting = ElectricalTestResult(result = true, method = "Visual"),
+                                lightingProductionRoom = ElectricalTestResult(result = true, method = "Visual"),
+                                lightingOffice = ElectricalTestResult(result = true, method = "Visual"),
+                                lightingMainPanel = ElectricalTestResult(result = true, method = "Visual"),
+                                lightingWarehouse = ElectricalTestResult(result = true, method = "Visual"),
+                                unusedItemsClearance = ElectricalTestResult(result = true, method = "Visual"),
+                                dangerSignOnMainPanelDoor = ElectricalTestResult(result = true, method = "Visual")
+                            ),
+                            internalViews = persistentListOf(
+                                ElectricalSdpInternalViewItem(
+                                    floor = 1,
+                                    inspections = ElectricalSdpInternalInspections(
+                                        touchVoltageProtectionCover = ElectricalTestResult(result = true, method = "Visual"),
+                                        sldAndMaintenanceCard = ElectricalTestResult(result = true, method = "Visual"),
+                                        bondingCable = ElectricalTestResult(result = true, method = "Visual"),
+                                        labeling = ElectricalTestResult(result = true, method = "Visual"),
+                                        cableColorCode = ElectricalTestResult(result = true, method = "Visual"),
+                                        panelCleanliness = ElectricalTestResult(result = true, method = "Visual"),
+                                        installationNeatness = ElectricalTestResult(result = true, method = "Visual")
+                                    )
+                                ),
+                                ElectricalSdpInternalViewItem(
+                                    floor = 2,
+                                    inspections = ElectricalSdpInternalInspections(
+                                        touchVoltageProtectionCover = ElectricalTestResult(result = true, method = "Visual"),
+                                        sldAndMaintenanceCard = ElectricalTestResult(result = true, method = "Visual"),
+                                        bondingCable = ElectricalTestResult(result = true, method = "Visual"),
+                                        labeling = ElectricalTestResult(result = true, method = "Visual"),
+                                        cableColorCode = ElectricalTestResult(result = true, method = "Visual"),
+                                        panelCleanliness = ElectricalTestResult(result = true, method = "Visual"),
+                                        installationNeatness = ElectricalTestResult(result = true, method = "Visual")
+                                    )
+                                )
+                            ),
+                            terminalSystem = ElectricalSdpTerminalSystem(
+                                busbar = ElectricalTestResult(result = true, method = "Visual"),
+                                breaker = ElectricalTestResult(result = true, method = "Visual"),
+                                cableLugs = ElectricalTestResult(result = true, method = "Visual"),
+                                groundingSystem = ElectricalTestResult(result = true, method = "Visual"),
+                                busbarToBusbarDistance = ElectricalTestResult(result = true, method = "Visual")
+                            )
+                        ),
+                        sdpTesting = ElectricalSdpTesting(
+                            voltagePhaseRSTN = ElectricalTestResult(result = true, method = "Voltage Measurement"),
+                            currentPhaseRSTN = ElectricalTestResult(result = true, method = "Current Measurement"),
+                            meteringFunction = ElectricalTestResult(result = true, method = "Test"),
+                            panelLabeling = ElectricalTestResult(result = true, method = "Visual"),
+                            dangerSignOnPanelDoor = ElectricalTestResult(result = true, method = "Visual"),
+                            selectorSwitchAndLock = ElectricalTestResult(result = true, method = "Test"),
+                            conductorTerminalHeat = ElectricalTestResult(result = true, method = "Thermal Imaging"),
+                            groundingTest = ElectricalTestResult(result = true, method = "Resistance Test"),
+                            mainConductorAmpacity = ElectricalTestResult(result = true, method = "Calculation"),
+                            mainProtectionRating = ElectricalTestResult(result = true, method = "Review")
+                        )
+                    ),
+                    conclusion = ElectricalConclusion(
+                        findings = persistentListOf("All systems appear to be in good working order."),
+                        summary = persistentListOf("The electrical installation meets safety and operational standards."),
+                        recommendations = persistentListOf("Continue regular maintenance schedule.")
+                    )
+                )
+            )
+        }
+    }
+}
 
 @Immutable
 data class ElectricalInspectionReport(
