@@ -2,9 +2,9 @@ package com.nakersolutionid.nakersolutionid.features.history
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -61,6 +62,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,13 +71,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.domain.model.History
+import com.nakersolutionid.nakersolutionid.ui.components.EmptyScreen
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import com.nakersolutionid.nakersolutionid.utils.DownloadState
 import kotlinx.coroutines.launch
@@ -103,7 +105,8 @@ fun HistoryScreen(
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val activeFilters by viewModel.filterState.collectAsStateWithLifecycle()
 
-    val lazyPagingItems: LazyPagingItems<History> = viewModel.historyPagingData.collectAsLazyPagingItems()
+    val lazyPagingItems: LazyPagingItems<History> =
+        viewModel.historyPagingData.collectAsLazyPagingItems()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -178,14 +181,6 @@ fun HistoryScreen(
         }
     }
 
-    /*// This effect correctly scrolls the list to the top AFTER the data has been updated
-    // from a search or filter action, providing a better user experience.
-    LaunchedEffect(uiState.histories) {
-        if (searchQuery.isNotEmpty() || activeFilters != FilterState()) {
-            lazyListState.animateScrollToItem(0)
-        }
-    }*/
-
     Scaffold(
         topBar = {
             HistoryAppBar(
@@ -214,38 +209,69 @@ fun HistoryScreen(
                 onQueryChange = viewModel::onSearchQueryChange,
                 onClear = { viewModel.onSearchQueryChange("") }
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            ) {
-                // Use the new items extension for LazyPagingItems
-                items(
-                    count = lazyPagingItems.itemCount,
-                    key = lazyPagingItems.itemKey { it.id } // Use Paging's key provider
-                ) { index ->
-                    val history = lazyPagingItems[index]
-                    if (history != null) {
-                        val downloadState = uiState.downloadStates[history.id] ?: DownloadState.Idle
-                        HistoryItem(
-                            modifier = Modifier.animateItem(),
-                            history = history,
-                            downloadState = downloadState,
-                            onDeleteClick = {
-                                historyToDelete = history
-                                showDeleteDialog = true
-                            },
-                            onDownloadClick = {
-                                viewModel.downloadReport(history)
-                            },
-                            onShareClick = { filePath ->
-                                 openOrShareFile(context, filePath)
-                            },
-                            onEditClick = {
-                                onEditClick(history)
-                            },
-                        )
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Show loading for initial load or refresh
+                if (lazyPagingItems.loadState.refresh is LoadState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                    )
+                } else if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+                    EmptyScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = lazyListState,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        ),
+                    ) {
+                        items(
+                            count = lazyPagingItems.itemCount,
+                        ) { index ->
+                            val history = lazyPagingItems[index]
+                            if (history != null) {
+                                val downloadState =
+                                    uiState.downloadStates[history.id] ?: DownloadState.Idle
+                                HistoryItem(
+                                    modifier = Modifier.animateItem(),
+                                    history = history,
+                                    downloadState = downloadState,
+                                    onDeleteClick = {
+                                        historyToDelete = history
+                                        showDeleteDialog = true
+                                    },
+                                    onDownloadClick = {
+                                        viewModel.downloadReport(history)
+                                    },
+                                    onShareClick = { filePath ->
+                                        openOrShareFile(context, filePath)
+                                    },
+                                    onEditClick = {
+                                        onEditClick(history)
+                                    },
+                                )
+                            }
+                        }
+                        // Show loading indicator for append
+                        if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -407,7 +433,8 @@ fun FilterSheet(
                         onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
                     ) {
                         TextField(
-                            value = selectedFilters.subInspectionType?.toDisplayString() ?: "Pilih Opsi...",
+                            value = selectedFilters.subInspectionType?.toDisplayString()
+                                ?: "Pilih Opsi...",
                             onValueChange = {},
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
@@ -423,7 +450,8 @@ fun FilterSheet(
                             DropdownMenuItem(
                                 text = { Text("Hapus Pilihan", fontStyle = FontStyle.Italic) },
                                 onClick = {
-                                    selectedFilters = selectedFilters.copy(subInspectionType = null)
+                                    selectedFilters =
+                                        selectedFilters.copy(subInspectionType = null)
                                     isDropdownExpanded = false
                                 }
                             )
@@ -431,7 +459,8 @@ fun FilterSheet(
                                 DropdownMenuItem(
                                     text = { Text(type.toDisplayString()) },
                                     onClick = {
-                                        selectedFilters = selectedFilters.copy(subInspectionType = type)
+                                        selectedFilters =
+                                            selectedFilters.copy(subInspectionType = type)
                                         isDropdownExpanded = false
                                     }
                                 )
@@ -476,7 +505,10 @@ fun FilterSheet(
 
 @Composable
 private fun FilterSection(title: String, content: @Composable () -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,

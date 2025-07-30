@@ -732,7 +732,7 @@ class ReportRepository(
         val isSearchOrFilterActive = sanitizedQuery != null || filters.documentType != null || filters.inspectionType != null || filters.subInspectionType != null
 
         return Pager(
-            config = PagingConfig(pageSize = 10),
+            config = PagingConfig(pageSize = 5, prefetchDistance = 1),
 
             // Use the RemoteMediator ONLY when the user is not searching.
             remoteMediator = if (isSearchOrFilterActive) null else RemoteDataMediator(
