@@ -151,7 +151,7 @@ fun MobileCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDeta
         extraId = this.laporanId,
         moreExtraId = this.id, // Store BAP's own ID here
         documentType = DocumentType.BAP,
-        inspectionType = InspectionType.PAA, // Assuming PAA, adjust if needed
+        inspectionType = InspectionType.PAA,
         subInspectionType = SubInspectionType.Mobile_Crane,
         equipmentType = "", // Not available in BAP DTO
         examinationType = this.examinationType,
@@ -198,7 +198,8 @@ fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest
     val generalData = MobileCraneBapGeneralData(
         ownerName = this.inspection.ownerName ?: "",
         ownerAddress = this.inspection.ownerAddress ?: "",
-        userAddress = this.inspection.usageLocation ?: ""
+        userAddress = this.inspection.usageLocation ?: "",
+        inspectionType = this.inspection.inspectionType.toDisplayString()
     )
 
     val technicalData = MobileCraneBapTechnicalData(
@@ -247,9 +248,10 @@ fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest
         functionalTest = functionalTest
     )
 
-    val signature = MobileCraneBapSignature(
-        companyName = getValue(BapCategories.SIGNATURE, "companyName")
-    )
+    // Note: Signature is no longer part of the request DTO
+    // val signature = MobileCraneBapSignature(
+    //     companyName = getValue(BapCategories.SIGNATURE, "companyName")
+    // )
 
     return MobileCraneBapRequest(
         laporanId = this.inspection.extraId,
@@ -259,8 +261,8 @@ fun InspectionWithDetailsDomain.toMobileCraneBapRequest(): MobileCraneBapRequest
         createdAt = this.inspection.createdAt ?: "",
         generalData = generalData,
         technicalData = technicalData,
-        inspectionResult = inspectionResult,
-        signature = signature
+        inspectionResult = inspectionResult
+        // UPDATE: Remove signature from the request object
     )
 }
 

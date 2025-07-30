@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.data.remote.dto.mobilecrane
 
 import com.google.gson.annotations.SerializedName
 
+// Perubahan: Menghapus field 'signature' karena tidak ada di Joi schema
 data class MobileCraneBapRequest(
     @SerializedName("laporanId") val laporanId: String,
     @SerializedName("examinationType") val examinationType: String,
@@ -10,8 +11,7 @@ data class MobileCraneBapRequest(
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("generalData") val generalData: MobileCraneBapGeneralData,
     @SerializedName("technicalData") val technicalData: MobileCraneBapTechnicalData,
-    @SerializedName("inspectionResult") val inspectionResult: MobileCraneBapInspectionResult,
-    @SerializedName("signature") val signature: MobileCraneBapSignature,
+    @SerializedName("inspectionResult") val inspectionResult: MobileCraneBapInspectionResult
 )
 
 // Data DTO for single Mobile Crane BAP response
@@ -40,10 +40,12 @@ data class MobileCraneBapReportData(
     @SerializedName("documentType") val documentType: String // From response JSON
 )
 
+// Perubahan: Menambahkan field 'inspectionType' sesuai Joi schema
 data class MobileCraneBapGeneralData(
     @SerializedName("ownerName") val ownerName: String,
     @SerializedName("ownerAddress") val ownerAddress: String,
-    @SerializedName("userAddress") val userAddress: String
+    @SerializedName("userAddress") val userAddress: String,
+    @SerializedName("inspectionType") val inspectionType: String
 )
 
 data class MobileCraneBapTechnicalData(
