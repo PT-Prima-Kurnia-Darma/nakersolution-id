@@ -1,5 +1,6 @@
 package com.nakersolutionid.nakersolutionid.data.remote.dto.common
 
+import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 
 // Base API Response DTO for all API calls
@@ -19,6 +20,20 @@ data class ResultStatus(
 data class ErrorResponse(
     @SerializedName("status") val status: String,
     @SerializedName("message") val message: String
+)
+
+data class GetAllAuditResponse(
+    @SerializedName("status") val status: String,
+    @SerializedName("message") val message: String,
+    @SerializedName("data") val data: JsonElement,
+    @SerializedName("paging") val paging: Paging
+)
+
+data class Paging(
+    @SerializedName("totalItems") val totalItems: Int,
+    @SerializedName("totalPages") val totalPages: Int,
+    @SerializedName("currentPage") val currentPage: Int,
+    @SerializedName("pageSize") val pageSize: Int
 )
 
 /*

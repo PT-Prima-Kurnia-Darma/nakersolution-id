@@ -60,25 +60,35 @@ class EEViewModel(
 
     private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
         val isEditMode = _eeUiState.value.editMode
+
+        val id = saveReport(inspection)
+
+        if (id == null) {
+            return
+        }
+
         if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
             if (isEditMode) {
-                if (isSynced) updateReport(inspection) else saveReport(inspection)
+                if (isSynced) updateReport(cloudInspection)
             } else {
-                createReport(inspection)
+                createReport(cloudInspection)
             }
         } else {
-            saveReport(inspection)
+            _eeUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
         }
     }
 
-    suspend fun saveReport(inspection: InspectionWithDetailsDomain) {
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain): Long? {
         try {
-            reportUseCase.saveReport(inspection)
-            _eeUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+            val id = reportUseCase.saveReport(inspection)
+            return id
         } catch(_: SQLiteConstraintException) {
             _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
         } catch (_: Exception) {
             _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
         }
     }
 

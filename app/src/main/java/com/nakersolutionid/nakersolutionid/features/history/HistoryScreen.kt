@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.features.history
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -97,6 +102,8 @@ fun HistoryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val activeFilters by viewModel.filterState.collectAsStateWithLifecycle()
+
+    val lazyPagingItems: LazyPagingItems<History> = viewModel.historyPagingData.collectAsLazyPagingItems()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -137,11 +144,11 @@ fun HistoryScreen(
     }
 
     LaunchedEffect(uiState.error) {
-        val msg = uiState.error
-        msg?.let {
+        uiState.error?.let { message ->
             scope.launch {
-                snackbarHostState.showSnackbar(it, duration = SnackbarDuration.Short)
+                snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
             }
+            viewModel.onUpdateUiState { it.copy(error = null) }
         }
     }
 
@@ -156,13 +163,28 @@ fun HistoryScreen(
         viewModel.triggerSync()
     }
 
-    // This effect correctly scrolls the list to the top AFTER the data has been updated
+    LaunchedEffect(lazyPagingItems.loadState) {
+        val errorState = lazyPagingItems.loadState.source.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.source.prepend as? LoadState.Error
+            ?: lazyPagingItems.loadState.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.prepend as? LoadState.Error
+        errorState?.let {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = it.error.message ?: "Terjadi kesalahan",
+                    duration = SnackbarDuration.Short,
+                )
+            }
+        }
+    }
+
+    /*// This effect correctly scrolls the list to the top AFTER the data has been updated
     // from a search or filter action, providing a better user experience.
     LaunchedEffect(uiState.histories) {
         if (searchQuery.isNotEmpty() || activeFilters != FilterState()) {
             lazyListState.animateScrollToItem(0)
         }
-    }
+    }*/
 
     Scaffold(
         topBar = {
@@ -189,7 +211,7 @@ fun HistoryScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 query = searchQuery,
-                onQueryChange = { newQuery -> viewModel.onSearchQueryChange(newQuery) },
+                onQueryChange = viewModel::onSearchQueryChange,
                 onClear = { viewModel.onSearchQueryChange("") }
             )
             LazyColumn(
@@ -198,29 +220,33 @@ fun HistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
             ) {
+                // Use the new items extension for LazyPagingItems
                 items(
-                    items = uiState.histories,
-                    key = { it.id }
-                ) { history ->
-                    val downloadState = uiState.downloadStates[history.id] ?: DownloadState.Idle
-                    HistoryItem(
-                        modifier = Modifier.animateItem(),
-                        history = history,
-                        downloadState = downloadState, // KIRIM STATE KE ITEM
-                        onDeleteClick = {
-                            historyToDelete = history
-                            showDeleteDialog = true
-                        },
-                        onDownloadClick = {
-                            viewModel.downloadReport(history) // Panggil fungsi baru
-                        },
-                        onShareClick = { filePath ->
-                            openOrShareFile(context, filePath) // Panggil fungsi share
-                        },
-                        onEditClick = {
-                            onEditClick(history)
-                        },
-                    )
+                    count = lazyPagingItems.itemCount,
+                    key = lazyPagingItems.itemKey { it.id } // Use Paging's key provider
+                ) { index ->
+                    val history = lazyPagingItems[index]
+                    if (history != null) {
+                        val downloadState = uiState.downloadStates[history.id] ?: DownloadState.Idle
+                        HistoryItem(
+                            modifier = Modifier.animateItem(),
+                            history = history,
+                            downloadState = downloadState,
+                            onDeleteClick = {
+                                historyToDelete = history
+                                showDeleteDialog = true
+                            },
+                            onDownloadClick = {
+                                viewModel.downloadReport(history)
+                            },
+                            onShareClick = { filePath ->
+                                 openOrShareFile(context, filePath)
+                            },
+                            onEditClick = {
+                                onEditClick(history)
+                            },
+                        )
+                    }
                 }
             }
         }

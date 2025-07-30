@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,6 +38,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -55,22 +59,21 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
-
-// Data class for holding the selected filter state
-data class FilterState(
-    val inspectionType: InspectionType? = null,
-    val documentType: DocumentType? = null,
-    val subInspectionType: SubInspectionType? = null
-)
+import com.nakersolutionid.nakersolutionid.features.history.FilterState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -84,15 +87,35 @@ fun BAPScreen(
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val activeFilters by viewModel.filterState.collectAsStateWithLifecycle()
 
+    // Collect the PagingData flow from the ViewModel.
+    val lazyPagingItems: LazyPagingItems<History> = viewModel.historyPagingData.collectAsLazyPagingItems()
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     // This effect correctly scrolls the list to the top AFTER the data has been updated
     // from a search or filter action, providing a better user experience.
-    LaunchedEffect(uiState.histories) {
+    /*LaunchedEffect(uiState.histories) {
         if (searchQuery.isNotEmpty() || activeFilters != FilterState()) {
             lazyListState.animateScrollToItem(0)
+        }
+    }*/
+
+    LaunchedEffect(lazyPagingItems.loadState) {
+        val errorState = lazyPagingItems.loadState.source.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.source.prepend as? LoadState.Error
+            ?: lazyPagingItems.loadState.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.prepend as? LoadState.Error
+        errorState?.let {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = it.error.message ?: "Terjadi kesalahan",
+                    duration = SnackbarDuration.Short,
+                )
+            }
         }
     }
 
@@ -101,6 +124,12 @@ fun BAPScreen(
             BAPAppBar(
                 onBackClick = { onBackClick() },
                 onFilterClick = { showBottomSheet = true }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding()
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -115,7 +144,7 @@ fun BAPScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 query = searchQuery,
-                onQueryChange = { newQuery -> viewModel.onSearchQueryChange(newQuery) },
+                onQueryChange = viewModel::onSearchQueryChange,
                 onClear = { viewModel.onSearchQueryChange("") }
             )
             LazyColumn(
@@ -124,15 +153,19 @@ fun BAPScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
             ) {
+                // Use the new items extension for LazyPagingItems.
                 items(
-                    items = uiState.histories,
-                    key = { it.id }
-                ) { history ->
-                    BAPItem(
-                        modifier = Modifier.animateItem(),
-                        history = history,
-                        onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
-                    )
+                    count = lazyPagingItems.itemCount,
+                    key = lazyPagingItems.itemKey { it.id } // Use Paging's key for stable IDs.
+                ) { index ->
+                    val history = lazyPagingItems[index]
+                    if (history != null) {
+                        BAPItem(
+                            modifier = Modifier.animateItem(),
+                            history = history,
+                            onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
+                        )
+                    }
                 }
             }
         }

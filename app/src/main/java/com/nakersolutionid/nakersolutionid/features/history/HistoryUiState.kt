@@ -5,7 +5,6 @@ import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.utils.DownloadState
 
 data class HistoryUiState(
-    val histories: List<History> = emptyList(),
     val isLoading: Boolean = false,
     val historyResult: Resource<String>? = null,
     val error: String? = null,
