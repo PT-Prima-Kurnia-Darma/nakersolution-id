@@ -13,6 +13,7 @@ interface ReportUseCase {
     fun updateReport(report: InspectionWithDetailsDomain): Flow<Resource<String>>
     suspend fun getInspection(id: Long): InspectionWithDetailsDomain?
     fun getAllReports(query: String, filters: FilterState): Flow<PagingData<History>>
+    fun getAllReports(query: String, filters: FilterState, fromBapScreen: Boolean): Flow<PagingData<History>>
     suspend fun deleteReport(id: Long)
     suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String)
     fun getDownloadedReports(): Flow<List<History>>

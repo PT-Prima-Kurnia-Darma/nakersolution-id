@@ -45,6 +45,14 @@ class FakeReportRepository : IReportRepository {
         return flowOf(PagingData.empty())
     }
 
+    override fun getAllReports(
+        query: String,
+        filters: FilterState,
+        fromBapScreen: Boolean
+    ): Flow<PagingData<History>> {
+        return flowOf(PagingData.empty())
+    }
+
     override fun getDownloadedReports(): Flow<List<History>> {
         return flowOf(emptyList())
     }

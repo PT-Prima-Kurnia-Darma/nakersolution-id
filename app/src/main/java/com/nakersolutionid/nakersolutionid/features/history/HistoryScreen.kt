@@ -49,6 +49,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -113,6 +115,8 @@ fun HistoryScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var historyToDelete by remember { mutableStateOf<History?>(null) }
     val lazyListState = rememberLazyListState()
+    val refreshState = rememberPullToRefreshState()
+    var isManualRefresh by remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -144,6 +148,13 @@ fun HistoryScreen(
         }
 
         context.startActivity(chooserIntent)
+    }
+
+    LaunchedEffect(lazyPagingItems.loadState.refresh) {
+        // Jika statusnya sudah tidak loading, reset flag manual refresh.
+        if (lazyPagingItems.loadState.refresh !is LoadState.Loading) {
+            isManualRefresh = false
+        }
     }
 
     LaunchedEffect(uiState.error) {
@@ -209,66 +220,77 @@ fun HistoryScreen(
                 onQueryChange = viewModel::onSearchQueryChange,
                 onClear = { viewModel.onSearchQueryChange("") }
             )
-            Box(modifier = Modifier.fillMaxSize()) {
-                // Show loading for initial load or refresh
-                if (lazyPagingItems.loadState.refresh is LoadState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                    )
-                } else if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
-                    EmptyScreen(
-                        modifier = Modifier.fillMaxSize(),
-                        message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyListState,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 16.dp
-                        ),
-                    ) {
-                        items(
-                            count = lazyPagingItems.itemCount,
-                        ) { index ->
-                            val history = lazyPagingItems[index]
-                            if (history != null) {
-                                val downloadState =
-                                    uiState.downloadStates[history.id] ?: DownloadState.Idle
-                                HistoryItem(
-                                    modifier = Modifier.animateItem(),
-                                    history = history,
-                                    downloadState = downloadState,
-                                    onDeleteClick = {
-                                        historyToDelete = history
-                                        showDeleteDialog = true
-                                    },
-                                    onDownloadClick = {
-                                        viewModel.downloadReport(history)
-                                    },
-                                    onShareClick = { filePath ->
-                                        openOrShareFile(context, filePath)
-                                    },
-                                    onEditClick = {
-                                        onEditClick(history)
-                                    },
-                                )
+            PullToRefreshBox(
+                isRefreshing = isManualRefresh,
+                onRefresh = {
+                    scope.launch {
+                        isManualRefresh = true
+                        lazyPagingItems.refresh()
+                    }
+                },
+                state = refreshState
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    // Show loading for initial load or refresh
+                    if (lazyPagingItems.loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) { // ✨ PERUBAHAN DI SINI
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                        )
+                    } else if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+                        EmptyScreen(
+                            modifier = Modifier.fillMaxSize(),
+                            message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
+                        )
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = lazyListState,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(
+                                start = 16.dp,
+                                end = 16.dp,
+                                bottom = 16.dp
+                            ),
+                        ) {
+                            items(
+                                count = lazyPagingItems.itemCount,
+                            ) { index ->
+                                val history = lazyPagingItems[index]
+                                if (history != null) {
+                                    val downloadState =
+                                        uiState.downloadStates[history.id] ?: DownloadState.Idle
+                                    HistoryItem(
+                                        modifier = Modifier.animateItem(),
+                                        history = history,
+                                        downloadState = downloadState,
+                                        onDeleteClick = {
+                                            historyToDelete = history
+                                            showDeleteDialog = true
+                                        },
+                                        onDownloadClick = {
+                                            viewModel.downloadReport(history)
+                                        },
+                                        onShareClick = { filePath ->
+                                            openOrShareFile(context, filePath)
+                                        },
+                                        onEditClick = {
+                                            onEditClick(history)
+                                        },
+                                    )
+                                }
                             }
-                        }
-                        // Show loading indicator for append
-                        if (lazyPagingItems.loadState.append is LoadState.Loading) {
-                            item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
+                            // Show loading indicator for append
+                            if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
                                 }
                             }
                         }

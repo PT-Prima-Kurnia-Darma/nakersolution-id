@@ -20,6 +20,7 @@ interface IReportRepository {
     suspend fun syncInspection(): Boolean
     suspend fun syncUpdateInspection(): Boolean
     fun getAllReports(query: String, filters: FilterState): Flow<PagingData<History>>
+    fun getAllReports(query: String, filters: FilterState, fromBapScreen: Boolean): Flow<PagingData<History>>
     fun getDownloadedReports(): Flow<List<History>>
     suspend fun deleteReport(id: Long)
     suspend fun getDownloadInfo(id: Long): Resource<DownloadInfo>

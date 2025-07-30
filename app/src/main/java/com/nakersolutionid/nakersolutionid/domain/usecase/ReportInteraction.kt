@@ -18,6 +18,12 @@ class ReportInteraction(private val reportRepository: IReportRepository) : Repor
     )
     override suspend fun getInspection(id: Long): InspectionWithDetailsDomain? = reportRepository.getInspection(id)
     override fun getAllReports(query: String, filters: FilterState): Flow<PagingData<History>> = reportRepository.getAllReports(query, filters)
+    override fun getAllReports(
+        query: String,
+        filters: FilterState,
+        fromBapScreen: Boolean
+    ): Flow<PagingData<History>> = reportRepository.getAllReports(query, filters, fromBapScreen)
+
     override suspend fun deleteReport(id: Long) = reportRepository.deleteReport(id)
     override suspend fun updateDownloadedStatus(id: Long, isDownloaded: Boolean, filePath: String) = reportRepository.updateDownloadedStatus(id, isDownloaded, filePath)
     override fun getDownloadedReports(): Flow<List<History>> = reportRepository.getDownloadedReports()

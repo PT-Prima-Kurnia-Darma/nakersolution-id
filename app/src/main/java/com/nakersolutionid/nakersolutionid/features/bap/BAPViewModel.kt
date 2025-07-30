@@ -37,7 +37,7 @@ class BAPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     ) { query, filters ->
         Pair(query, filters)
     }.flatMapLatest { (query, filters) ->
-        reportUseCase.getAllReports(query, filters)
+        reportUseCase.getAllReports(query, filters, true)
     }.cachedIn(viewModelScope)
 
 

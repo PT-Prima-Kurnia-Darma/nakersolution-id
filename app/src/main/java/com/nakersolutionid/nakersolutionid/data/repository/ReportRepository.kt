@@ -749,6 +749,34 @@ class ReportRepository(
         ).flow.map { paging -> paging.map { it.inspectionEntity.toHistory() } }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getAllReports(
+        query: String,
+        filters: FilterState,
+        fromBapScreen: Boolean
+    ): Flow<PagingData<History>> {
+        // Determine if any search or filter is currently active.
+        val sanitizedQuery = sanitizeSearchQuery(query)
+        val isSearchOrFilterActive = sanitizedQuery != null || filters.inspectionType != null || filters.subInspectionType != null
+
+        return Pager(
+            config = PagingConfig(pageSize = 5, prefetchDistance = 1),
+
+            // Use the RemoteMediator ONLY when the user is not searching.
+            remoteMediator = if (isSearchOrFilterActive) null else RemoteDataMediator(
+                userPreference = userPreference,
+                localDataSource = localDataSource,
+                remoteDataSource = remoteDataSource,
+                appDatabase = appDatabase,
+                gson = gson
+            ),
+            pagingSourceFactory = {
+                // This PagingSource will now be the sole source during a search.
+                localDataSource.searchAllInspectionsPaged(sanitizeSearchQuery(query), filters)
+            }
+        ).flow.map { paging -> paging.map { it.inspectionEntity.toHistory() } }
+    }
+
     override fun getDownloadedReports(): Flow<List<History>> =
         localDataSource.getDownloadedInspectionsWithDetails().map { list -> list.map { it.inspectionEntity.toHistory() } }
 
