@@ -72,17 +72,19 @@ fun InspectionWithDetailsDomain.toLightningBapRequest(): LightningBapRequest {
         addressUsageLocation = this.inspection.addressUsageLocation ?: ""
     )
 
+    // --- PERBAIKAN DI SINI ---
+    // Menyesuaikan dengan DTO baru dimana semua field teknis adalah String.
     val technicalData = LightningBapTechnicalData(
         conductorType = findTestResult("Jenis Instalasi"),
         serialNumber = this.inspection.serialNumber ?: "",
-        buildingHeight = findTestResult("Tinggi Bangunan (m)").toIntOrNull() ?: 0,
-        buildingArea = findTestResult("Luas Bangunan (m2)").toIntOrNull() ?: 0,
-        receiverHeight = findTestResult("Tinggi Penerima (m)").toIntOrNull() ?: 0,
-        receiverCount = findTestResult("Jumlah Penerima").toIntOrNull() ?: 0,
-        groundElectrodeCount = findTestResult("Jumlah Elektroda Tanah").toIntOrNull() ?: 0,
+        buildingHeight = findTestResult("Tinggi Bangunan (m)"),
+        buildingArea = findTestResult("Luas Bangunan (m2)"),
+        receiverHeight = findTestResult("Tinggi Penerima (m)"),
+        receiverCount = findTestResult("Jumlah Penerima"),
+        groundElectrodeCount = findTestResult("Jumlah Elektroda Tanah"),
         conductorDescription = findTestResult("Deskripsi Konduktor (mm)"),
-        installer = findTestResult("Tahun Pemasangan"), // DTO installer, UI Year
-        groundingResistance = findTestResult("Tahanan Pembumian (Ohm)").toDoubleOrNull() ?: 0.0
+        installer = findTestResult("Tahun Pemasangan"),
+        groundingResistance = findTestResult("Tahanan Pembumian (Ohm)")
     )
 
     val visualInspection = LightningBapVisualInspection(
@@ -96,18 +98,20 @@ fun InspectionWithDetailsDomain.toLightningBapRequest(): LightningBapRequest {
 
     val measurement = LightningBapMeasurement(
         conductorContinuityResult = if (findBoolItem(LightningBAPCategory.TESTING, "Hasil kontinuitas konduktor baik")) "Baik" else "Tidak Baik",
-        // --- PERBAIKAN DI SINI ---
-        // Mengambil nilai pengukuran dari domain model, tidak lagi hardcoded.
         measuredGroundingResistance = findTestResult("Hasil Ukur Tahanan Pembumian (BAP)"),
         measuredGroundingResistanceResult = findBoolItem(LightningBAPCategory.TESTING, "Hasil pengukuran tahanan pembumian baik")
     )
 
+    // --- PERBAIKAN DI SINI ---
+    // Menyesuaikan dengan DTO Request yang baru, menambahkan createdAt dan inspectionType.
     return LightningBapRequest(
         laporanId = this.inspection.extraId,
         examinationType = this.inspection.examinationType,
         inspectionDate = this.inspection.reportDate ?: "",
         equipmentType = this.inspection.equipmentType,
         extraId = this.inspection.id,
+        createdAt = this.inspection.createdAt ?: "",
+        inspectionType = this.inspection.inspectionType.toDisplayString(),
         generalData = generalData,
         technicalData = technicalData,
         testResults = LightningBapTestResults(visualInspection, measurement)
@@ -158,18 +162,16 @@ fun LightningBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetail
     val testResults = mutableListOf<InspectionTestResultDomain>()
     this.technicalData.let {
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jenis Instalasi", result = it.conductorType, notes = null))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tinggi Bangunan (m)", result = it.buildingHeight.toString(), notes = null))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Luas Bangunan (m2)", result = it.buildingArea.toString(), notes = null))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tinggi Penerima (m)", result = it.receiverHeight.toString(), notes = null))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jumlah Penerima", result = it.receiverCount.toString(), notes = null))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jumlah Elektroda Tanah", result = it.groundElectrodeCount.toString(), notes = null))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tinggi Bangunan (m)", result = it.buildingHeight, notes = null))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Luas Bangunan (m2)", result = it.buildingArea, notes = null))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tinggi Penerima (m)", result = it.receiverHeight, notes = null))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jumlah Penerima", result = it.receiverCount, notes = null))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Jumlah Elektroda Tanah", result = it.groundElectrodeCount, notes = null))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Deskripsi Konduktor (mm)", result = it.conductorDescription, notes = null))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tahun Pemasangan", result = it.installer, notes = null))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tahanan Pembumian (Ohm)", result = it.groundingResistance.toString(), notes = null))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Tahanan Pembumian (Ohm)", result = it.groundingResistance, notes = null))
     }
 
-    // --- PERBAIKAN DI SINI ---
-    // Menyimpan nilai pengukuran dari DTO ke domain model agar tidak hilang.
     this.testResults.measurement.let {
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = "Hasil Ukur Tahanan Pembumian (BAP)", result = it.measuredGroundingResistance, notes = null))
     }
@@ -254,8 +256,6 @@ fun InspectionWithDetailsDomain.toLightningReportRequest(): LightningReportReque
         controlBox = findConditionItem(catPhysical, "Bak Kontrol"),
         groundingSystem = findConditionItem(catPhysical, "System Pentanahan"),
         conductorToGroundConnection = findConditionItem(catPhysical, "Down conductor tersambung langsung ke permukaan"),
-        // --- PERBAIKAN DI SINI ---
-        // Mengambil catatan dari domain model, tidak lagi hardcoded.
         notes = findTest("Pemeriksaan Fisik - Catatan")
     )
 
@@ -423,8 +423,6 @@ fun LightningReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Visual - Penghantar Penurunan", it.downConductorCheck, null))
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Visual - Pembumian dan Sambungan Ukur", it.groundingAndTestJoint, null))
     }
-    // --- PERBAIKAN DI SINI ---
-    // Menyimpan catatan umum dari DTO ke domain model agar tidak hilang.
     this.physicalInspection.let {
         testResults.add(InspectionTestResultDomain(0, inspectionId, "Pemeriksaan Fisik - Catatan", it.notes, null))
     }

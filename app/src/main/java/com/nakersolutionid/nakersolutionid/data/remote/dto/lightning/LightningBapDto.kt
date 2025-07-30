@@ -8,6 +8,8 @@ data class LightningBapRequest(
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("equipmentType") val equipmentType: String,
     @SerializedName("extraId") val extraId: Long,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("generalData") val generalData: LightningBapGeneralData,
     @SerializedName("technicalData") val technicalData: LightningBapTechnicalData,
     @SerializedName("testResults") val testResults: LightningBapTestResults
@@ -49,14 +51,14 @@ data class LightningBapGeneralData(
 data class LightningBapTechnicalData(
     @SerializedName("conductorType") val conductorType: String,
     @SerializedName("serialNumber") val serialNumber: String,
-    @SerializedName("buildingHeight") val buildingHeight: Int,
-    @SerializedName("buildingArea") val buildingArea: Int,
-    @SerializedName("receiverHeight") val receiverHeight: Int,
-    @SerializedName("receiverCount") val receiverCount: Int,
-    @SerializedName("groundElectrodeCount") val groundElectrodeCount: Int,
+    @SerializedName("buildingHeight") val buildingHeight: String,
+    @SerializedName("buildingArea") val buildingArea: String,
+    @SerializedName("receiverHeight") val receiverHeight: String,
+    @SerializedName("receiverCount") val receiverCount: String,
+    @SerializedName("groundElectrodeCount") val groundElectrodeCount: String,
     @SerializedName("conductorDescription") val conductorDescription: String,
     @SerializedName("installer") val installer: String,
-    @SerializedName("groundingResistance") val groundingResistance: Double // Ini adalah Double di JSON (tidak pakai kutip)
+    @SerializedName("groundingResistance") val groundingResistance: String
 )
 
 data class LightningBapTestResults(
@@ -75,6 +77,6 @@ data class LightningBapVisualInspection(
 
 data class LightningBapMeasurement(
     @SerializedName("conductorContinuityResult") val conductorContinuityResult: String,
-    @SerializedName("measuredGroundingResistance") val measuredGroundingResistance: String, // Ini adalah String di JSON ("0,30")
+    @SerializedName("measuredGroundingResistance") val measuredGroundingResistance: String,
     @SerializedName("measuredGroundingResistanceResult") val measuredGroundingResistanceResult: Boolean
 )
