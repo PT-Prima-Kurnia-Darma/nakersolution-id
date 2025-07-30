@@ -8,6 +8,8 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionAlarmInstallationItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionHydrantOperationalTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionInspectionReport
@@ -18,6 +20,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.to
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,12 +35,52 @@ class IPKViewModel(
     private val _ipkUiState = MutableStateFlow(IPKUiState())
     val ipkUiState: StateFlow<IPKUiState> = _ipkUiState.asStateFlow()
 
-    private val _fireProtectionUiState = MutableStateFlow(Dummy.getDummyFireProtectionUiState())
+    private val _fireProtectionUiState = MutableStateFlow(FireProtectionUiState.createDummyFireProtectionUiState())
     val fireProtectionUiState: StateFlow<FireProtectionUiState> = _fireProtectionUiState.asStateFlow()
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
     private var isSynced = false
+
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Fire_Protection -> {
+                    val elevatorInspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime, _ipkUiState.value.editMode, currentReportId)
+                    collectMlResult(elevatorInspection)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onIPKUpdateState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onIPKUpdateState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Fire_Protection -> _fireProtectionUiState.update { ui ->
+                            ui.copy(
+                                inspectionReport = ui.inspectionReport.copy(
+                                    conclusion = ui.inspectionReport.conclusion.copy(
+                                        recommendations = recommendation,
+                                        summary = conclusion
+                                    )
+                                )
+                            )
+                        }
+                        else -> null
+                    }
+                    onIPKUpdateState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
 
     fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {

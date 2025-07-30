@@ -6,6 +6,8 @@ import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDom
 
 data class IPKUiState(
     val isLoading: Boolean = false,
+    val mlLoading: Boolean = false,
+    val mlResult: String? = null,
     val result: Resource<String>? = null,
     val editLoadResult: Resource<String>? = null,
     val loadedEquipmentType: SubInspectionType? = null,

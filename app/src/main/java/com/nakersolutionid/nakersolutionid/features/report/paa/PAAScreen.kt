@@ -7,14 +7,20 @@ import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -30,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -112,6 +119,14 @@ fun PAAScreen(
         }
     }
 
+    // Update selected filter when equipment type is loaded for edit mode
+    LaunchedEffect(paaUiState.mlResult) {
+        paaUiState.mlResult?.let { msg ->
+            scope.launch { snackbarHostState.showSnackbar(msg) }
+            viewModel.onUpdatePAAState { it.copy(mlResult = null) }
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -166,7 +181,7 @@ fun PAAScreen(
                 SubInspectionType.Forklift -> {
                     ForkliftScreen(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .weight(1f)
                             .padding(top = 8.dp)
                             .imePadding(),
                         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -176,7 +191,7 @@ fun PAAScreen(
                 SubInspectionType.Mobile_Crane -> {
                     MobileCraneScreen(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .weight(1f)
                             .padding(top = 8.dp)
                             .imePadding(),
                         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -186,7 +201,7 @@ fun PAAScreen(
                 SubInspectionType.Overhead_Crane -> {
                     OverheadCraneScreen(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .weight(1f)
                             .padding(top = 8.dp)
                             .imePadding(),
                         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -196,7 +211,7 @@ fun PAAScreen(
                 SubInspectionType.Gantry_Crane -> {
                     GantryCraneScreen(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .weight(1f)
                             .padding(top = 8.dp)
                             .imePadding(),
                         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -206,14 +221,36 @@ fun PAAScreen(
                 SubInspectionType.Gondola -> {
                     GondolaScreen(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .weight(1f)
                             .padding(top = 8.dp)
                             .imePadding(),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
                 }
-                else -> null
+                else -> {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { viewModel.onGetMLResult(selectedFilter) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+            ) {
+                if (paaUiState.mlLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text(
+                        text = "Dapatkan Kesimpulan dan Rekomendasi",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
             }
         }
     }

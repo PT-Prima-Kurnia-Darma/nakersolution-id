@@ -8,6 +8,8 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalUiState
@@ -22,12 +24,15 @@ import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toLigh
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.internal.immutableListOf
 
 class ILPPViewModel(
     private val reportUseCase: ReportUseCase,
@@ -36,15 +41,69 @@ class ILPPViewModel(
     private val _ilppUiState = MutableStateFlow(ILPPUiState())
     val ilppUiState: StateFlow<ILPPUiState> = _ilppUiState.asStateFlow()
 
-    private val _electricalUiState = MutableStateFlow(Dummy.getDummyElectricUiState())
+    private val _electricalUiState = MutableStateFlow(ElectricalUiState.createDummyElectricalUiState())
     val electricalUiState: StateFlow<ElectricalUiState> = _electricalUiState.asStateFlow()
 
-    private val _lightningUiState = MutableStateFlow(Dummy.getDummyLightningUiState())
+    private val _lightningUiState = MutableStateFlow(LightningProtectionUiState.createDummyLightningProtectionUiState())
     val lightningUiState: StateFlow<LightningProtectionUiState> = _lightningUiState.asStateFlow()
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
     private var isSynced = false
+
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Electrical -> {
+                    val elevatorInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
+                    collectMlResult(elevatorInspection)
+                }
+                SubInspectionType.Lightning_Conductor -> {
+                    val escalatorInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
+                    collectMlResult(escalatorInspection)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onILPPUpdateState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onILPPUpdateState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Electrical -> _electricalUiState.update { ui ->
+                            ui.copy(
+                                electricalInspectionReport = ui.electricalInspectionReport.copy(
+                                    conclusion = ui.electricalInspectionReport.conclusion.copy(
+                                        recommendations = recommendation,
+                                        summary = persistentListOf(conclusion)
+                                    )
+                                )
+                            )
+                        }
+                        SubInspectionType.Lightning_Conductor -> _lightningUiState.update { ui ->
+                            ui.copy(
+                                inspectionReport = ui.inspectionReport.copy(
+                                    conclusion = ui.inspectionReport.conclusion.copy(
+                                        recommendations = recommendation,
+                                        summary = conclusion
+                                    )
+                                )
+                            )
+                        }
+                        else -> null
+                    }
+                    onILPPUpdateState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
 
     fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {

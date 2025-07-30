@@ -10,5 +10,7 @@ data class PTPUiState(
     val editLoadResult: Resource<String>? = null,
     val loadedEquipmentType: SubInspectionType? = null,
     val inspectionWithDetailsDomain: InspectionWithDetailsDomain? = null,
-    val editMode: Boolean = false
+    val editMode: Boolean = false,
+    val mlLoading: Boolean = false,
+    val mlResult: String? = null,
 )

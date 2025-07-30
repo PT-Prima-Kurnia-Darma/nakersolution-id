@@ -46,6 +46,7 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toO
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -64,20 +65,79 @@ class PAAViewModel(
     private var currentReportId: Long? = null
     private var isSynced = false
 
-    private val _forkliftUiState = MutableStateFlow(Dummy.getDummyForkliftUiState())
+    private val _forkliftUiState = MutableStateFlow(ForkliftUiState.createDummyForkliftUiState())
     val forkliftUiState: StateFlow<ForkliftUiState> = _forkliftUiState.asStateFlow()
 
-    private val _gantryCraneUiState = MutableStateFlow(Dummy.getDummyGantryCraneUiState())
+    private val _gantryCraneUiState = MutableStateFlow(GantryCraneUiState.createDummyGantryCraneUiState())
     val gantryCraneUiState: StateFlow<GantryCraneUiState> = _gantryCraneUiState.asStateFlow()
 
-    private val _gondolaUiState = MutableStateFlow(Dummy.getDummyGondolaUiState())
+    private val _gondolaUiState = MutableStateFlow(GondolaUiState.createDummyGondolaUiState())
     val gondolaUiState: StateFlow<GondolaUiState> = _gondolaUiState.asStateFlow()
 
-    private val _mobileCraneUiState = MutableStateFlow(Dummy.getDummyMobileCraneUiState())
+    private val _mobileCraneUiState = MutableStateFlow(MobileCraneUiState.createDummyMobileCraneUiState())
     val mobileCraneUiState: StateFlow<MobileCraneUiState> = _mobileCraneUiState.asStateFlow()
 
-    private val _overheadCraneUiState = MutableStateFlow(Dummy.getDummyOverheadCraneUiState())
+    private val _overheadCraneUiState = MutableStateFlow(OverheadCraneUiState.createDummyOverheadCraneUiState())
     val overheadCraneUiState: StateFlow<OverheadCraneUiState> = _overheadCraneUiState.asStateFlow()
+
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            val inspection = when (selectedIndex) {
+                SubInspectionType.Forklift -> _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
+                SubInspectionType.Mobile_Crane -> _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
+                SubInspectionType.Overhead_Crane -> _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
+                SubInspectionType.Gantry_Crane -> _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
+                SubInspectionType.Gondola -> _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, currentReportId)
+                else -> null
+            }
+            inspection?.let { collectMlResult(it) }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> {
+                    onUpdatePAAState { it.copy(mlResult = data.message, mlLoading = false) }
+                }
+                is Resource.Loading -> onUpdatePAAState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Forklift -> {
+                            val report = _forkliftUiState.value.forkliftInspectionReport
+                            val updatedConclusion = report.conclusion.copy(summary = persistentListOf(conclusion), recommendations = recommendation)
+                            onForkliftReportDataChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        SubInspectionType.Mobile_Crane -> {
+                            val report = _mobileCraneUiState.value.mobileCraneInspectionReport
+                            val updatedConclusion = report.conclusion.copy(summary = persistentListOf(conclusion), recommendations = recommendation)
+                            onMobileCraneReportDataChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        SubInspectionType.Overhead_Crane -> {
+                            val report = _overheadCraneUiState.value.overheadCraneInspectionReport
+                            val updatedConclusion = report.conclusion.copy(summary = persistentListOf(conclusion), recommendations = recommendation)
+                            onOverheadCraneReportDataChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        SubInspectionType.Gantry_Crane -> {
+                            val report = _gantryCraneUiState.value.gantryCraneInspectionReport
+                            val updatedConclusion = report.conclusion.copy(summary = persistentListOf(conclusion), recommendations = recommendation)
+                            onGantryCraneReportDataChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        SubInspectionType.Gondola -> {
+                            val report = _gondolaUiState.value.gondolaInspectionReport
+                            val updatedConclusion = report.conclusion.copy(summary = persistentListOf(conclusion), recommendations = recommendation)
+                            onGondolaReportDataChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        else -> {}
+                    }
+                    onUpdatePAAState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
 
     fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {

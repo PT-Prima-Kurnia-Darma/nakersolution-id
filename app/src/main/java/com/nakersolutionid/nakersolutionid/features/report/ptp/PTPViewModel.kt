@@ -19,6 +19,7 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toIns
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,15 +34,65 @@ class PTPViewModel(
     private val _ptpUiState = MutableStateFlow(PTPUiState())
     val ptpUiState: StateFlow<PTPUiState> = _ptpUiState.asStateFlow()
 
-    private val _machineUiState = MutableStateFlow(Dummy.getDummyProductionMachineUiState())
+    private val _machineUiState = MutableStateFlow(ProductionMachineUiState.createDummyProductionMachineUiState())
     val machineUiState: StateFlow<ProductionMachineUiState> = _machineUiState.asStateFlow()
 
-    private val _motorDieselUiState = MutableStateFlow(Dummy.getDummyDieselMotorUiState())
+    private val _motorDieselUiState = MutableStateFlow(DieselMotorUiState.createDummyDieselMotorUiState())
     val motorDieselUiState: StateFlow<DieselMotorUiState> = _motorDieselUiState.asStateFlow()
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
     private var isSynced = false
+
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Machine -> {
+                    val inspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
+                    collectMlResult(inspection)
+                }
+                SubInspectionType.Motor_Diesel -> {
+                    val inspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
+                    collectMlResult(inspection)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onUpdatePTPState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onUpdatePTPState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Machine -> {
+                            val report = _machineUiState.value.inspectionReport
+                            val updatedConclusion = report.conclusion.copy(
+                                summary = persistentListOf(conclusion),
+                                requirements = recommendation
+                            )
+                            onMachineReportChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        SubInspectionType.Motor_Diesel -> {
+                            val report = _motorDieselUiState.value.inspectionReport
+                            val updatedConclusion = report.conclusion.copy(
+                                summary = persistentListOf(conclusion),
+                                requirements = recommendation
+                            )
+                            onMotorDieselReportChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        else -> {}
+                    }
+                    onUpdatePTPState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
 
     fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {

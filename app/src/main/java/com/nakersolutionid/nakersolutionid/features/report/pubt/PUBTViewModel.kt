@@ -16,6 +16,7 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toInspec
 import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,12 +37,52 @@ class PUBTViewModel(
     private val _pubtUiState = MutableStateFlow(PUBTUiState())
     val pubtUiState: StateFlow<PUBTUiState> = _pubtUiState.asStateFlow()
 
-    private val _generalUiState = MutableStateFlow(Dummy.getDummyGeneralUiState())
+    private val _generalUiState = MutableStateFlow(GeneralUiState.createDummyGeneralUiState())
     val generalUiState: StateFlow<GeneralUiState> = _generalUiState.asStateFlow()
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
     private var isSynced = false
+
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.General_PUBT -> {
+                    val inspection = _generalUiState.value.toInspectionWithDetailsDomain(currentTime, _pubtUiState.value.editMode, currentReportId)
+                    collectMlResult(inspection)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> {
+                    onUpdatePUBTState { it.copy(mlResult = data.message, mlLoading = false) }
+                }
+                is Resource.Loading -> onUpdatePUBTState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.General_PUBT -> {
+                            val report = _generalUiState.value.inspectionReport
+                            val updatedConclusion = report.conclusion.copy(
+                                summary = persistentListOf(conclusion),
+                                recommendations = recommendation
+                            )
+                            onGeneralReportChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        else -> {}
+                    }
+                    onUpdatePUBTState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
 
     fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {
