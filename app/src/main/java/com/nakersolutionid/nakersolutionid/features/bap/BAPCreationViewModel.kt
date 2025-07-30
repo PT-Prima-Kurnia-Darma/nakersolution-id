@@ -56,17 +56,13 @@ import com.nakersolutionid.nakersolutionid.features.bap.pubt.PubtBAPUiState
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.bap.pubt.toPubtBAPReport
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class BAPCreationViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class BAPCreationViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(BAPCreationUiState())
     val uiState: StateFlow<BAPCreationUiState> = _uiState.asStateFlow()
 

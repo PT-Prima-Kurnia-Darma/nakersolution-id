@@ -153,11 +153,11 @@ val viewModelModule = module {
     viewModel { SettingsViewModel(get(), get()) }
     viewModel { HistoryViewModel(get(), get()) }
     viewModel { BAPViewModel(get()) }
-    viewModel { BAPCreationViewModel(get(), get()) }
-    viewModel { EEViewModel(get(), get()) }
-    viewModel { PAAViewModel(get(), get()) }
-    viewModel { ILPPViewModel(get(), get()) }
-    viewModel { PTPViewModel(get(), get()) }
-    viewModel { IPKViewModel(get(), get()) }
-    viewModel { PUBTViewModel(get(), get()) }
+    viewModel { BAPCreationViewModel(get()) }
+    viewModel { EEViewModel(get()) }
+    viewModel { PAAViewModel(get()) }
+    viewModel { ILPPViewModel(get()) }
+    viewModel { PTPViewModel(get()) }
+    viewModel { IPKViewModel(get()) }
+    viewModel { PUBTViewModel(get()) }
 }

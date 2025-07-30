@@ -1,7 +1,6 @@
 package com.nakersolutionid.nakersolutionid.features.report.paa
 
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
@@ -44,7 +43,6 @@ import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.Ove
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.overheadcrane.toOverheadCraneUiState
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,10 +51,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PAAViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _paaUiState = MutableStateFlow(PAAUiState())
     val paaUiState: StateFlow<PAAUiState> = _paaUiState.asStateFlow()
 

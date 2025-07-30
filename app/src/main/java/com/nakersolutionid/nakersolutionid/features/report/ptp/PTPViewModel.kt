@@ -26,10 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PTPViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _ptpUiState = MutableStateFlow(PTPUiState())
     val ptpUiState: StateFlow<PTPUiState> = _ptpUiState.asStateFlow()
 

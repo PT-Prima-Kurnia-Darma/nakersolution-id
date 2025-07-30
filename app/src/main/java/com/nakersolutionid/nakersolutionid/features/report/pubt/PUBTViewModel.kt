@@ -14,7 +14,6 @@ import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralU
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toGeneralUiState
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,10 +28,7 @@ enum class MeasurementResultType {
     BUTTON_HEAD
 }
 
-class PUBTViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _pubtUiState = MutableStateFlow(PUBTUiState())
     val pubtUiState: StateFlow<PUBTUiState> = _pubtUiState.asStateFlow()
 
