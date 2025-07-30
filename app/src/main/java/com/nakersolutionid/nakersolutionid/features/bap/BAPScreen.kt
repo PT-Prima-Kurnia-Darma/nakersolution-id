@@ -166,62 +166,65 @@ fun BAPScreen(
             PullToRefreshBox(
                 isRefreshing = isManualRefresh,
                 onRefresh = {
+                    isManualRefresh = true
                     scope.launch {
-                        isManualRefresh = true
                         lazyPagingItems.refresh()
                     }
                 },
                 state = refreshState
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    // Show loading for initial load or refresh
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    ),
+                ) {
                     if (lazyPagingItems.loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) { // ✨ PERUBAHAN DI SINI
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                        )
-                    } else if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
-                        EmptyScreen(
-                            modifier = Modifier.fillMaxSize(),
-                            message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
-                        )
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            state = lazyListState,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(
-                                start = 16.dp,
-                                end = 16.dp,
-                                bottom = 16.dp
-                            ),
-                        ) {
-                            // Use the new items extension for LazyPagingItems.
-                            items(
-                                count = lazyPagingItems.itemCount,
-                                key = lazyPagingItems.itemKey { it.id } // Use Paging's key for stable IDs.
-                            ) { index ->
-                                val history = lazyPagingItems[index]
-                                if (history != null) {
-                                    BAPItem(
-                                        modifier = Modifier.animateItem(),
-                                        history = history,
-                                        onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
-                                    )
-                                }
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                             }
-                            // Show loading indicator for append
-                            if (lazyPagingItems.loadState.append is LoadState.Loading) {
-                                item {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        CircularProgressIndicator()
-                                    }
-                                }
+                        }
+                    }
+
+                    if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) { // Use fillParentMaxSize
+                                EmptyScreen(
+                                    modifier = Modifier.fillMaxSize(),
+                                    message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
+                                )
+                            }
+                        }
+                    }
+
+                    items(
+                        count = lazyPagingItems.itemCount,
+                        key = lazyPagingItems.itemKey { it.id } // Use Paging's key for stable IDs.
+                    ) { index ->
+                        val history = lazyPagingItems[index]
+                        if (history != null) {
+                            BAPItem(
+                                modifier = Modifier.animateItem(),
+                                history = history,
+                                onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
+                            )
+                        }
+                    }
+                    // Show loading indicator for append
+                    if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
                             }
                         }
                     }

@@ -73,6 +73,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
@@ -223,75 +224,81 @@ fun HistoryScreen(
             PullToRefreshBox(
                 isRefreshing = isManualRefresh,
                 onRefresh = {
+                    isManualRefresh = true
                     scope.launch {
-                        isManualRefresh = true
                         lazyPagingItems.refresh()
                     }
                 },
                 state = refreshState
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    // Show loading for initial load or refresh
-                    if (lazyPagingItems.loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) { // ✨ PERUBAHAN DI SINI
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                        )
-                    } else if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
-                        EmptyScreen(
-                            modifier = Modifier.fillMaxSize(),
-                            message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
-                        )
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            state = lazyListState,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(
-                                start = 16.dp,
-                                end = 16.dp,
-                                bottom = 16.dp
-                            ),
-                        ) {
-                            items(
-                                count = lazyPagingItems.itemCount,
-                            ) { index ->
-                                val history = lazyPagingItems[index]
-                                if (history != null) {
-                                    val downloadState =
-                                        uiState.downloadStates[history.id] ?: DownloadState.Idle
-                                    HistoryItem(
-                                        modifier = Modifier.animateItem(),
-                                        history = history,
-                                        downloadState = downloadState,
-                                        onDeleteClick = {
-                                            historyToDelete = history
-                                            showDeleteDialog = true
-                                        },
-                                        onDownloadClick = {
-                                            viewModel.downloadReport(history)
-                                        },
-                                        onShareClick = { filePath ->
-                                            openOrShareFile(context, filePath)
-                                        },
-                                        onEditClick = {
-                                            onEditClick(history)
-                                        },
-                                    )
-                                }
+                // The LazyColumn is now the direct child, making the pull gesture always available.
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    contentPadding = PaddingValues(all = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally // Center content like the progress indicator
+                ) {
+                    // Condition 1: Initial loading state
+                    if (lazyPagingItems.loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                             }
-                            // Show loading indicator for append
-                            if (lazyPagingItems.loadState.append is LoadState.Loading) {
-                                item {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        CircularProgressIndicator()
-                                    }
-                                }
+                        }
+                    }
+
+                    // Condition 2: Empty state
+                    if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) { // Use fillParentMaxSize
+                                EmptyScreen(
+                                    modifier = Modifier.align(Alignment.Center), // Align the content
+                                    message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
+                                )
+                            }
+                        }
+                    }
+
+                    // Condition 3: Display list items
+                    items(
+                        count = lazyPagingItems.itemCount,
+                        key = lazyPagingItems.itemKey { it.id }
+                    ) { index ->
+                        val history = lazyPagingItems[index]
+                        if (history != null) {
+                            val downloadState =
+                                uiState.downloadStates[history.id] ?: DownloadState.Idle
+                            HistoryItem(
+                                modifier = Modifier.animateItem(),
+                                history = history,
+                                downloadState = downloadState,
+                                onDeleteClick = {
+                                    historyToDelete = history
+                                    showDeleteDialog = true
+                                },
+                                onDownloadClick = {
+                                    viewModel.downloadReport(history)
+                                },
+                                onShareClick = { filePath ->
+                                    openOrShareFile(context, filePath)
+                                },
+                                onEditClick = {
+                                    onEditClick(history)
+                                },
+                            )
+                        }
+                    }
+
+                    // Condition 4: Loading more items (pagination)
+                    if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
                             }
                         }
                     }
