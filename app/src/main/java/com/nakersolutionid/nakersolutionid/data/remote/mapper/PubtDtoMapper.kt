@@ -40,13 +40,13 @@ fun InspectionWithDetailsDomain.toPubtBapRequest(): PubtBapRequest {
         manufacturer = this.inspection.manufacturer?.name ?: "",
         countryAndYearOfManufacture = this.inspection.manufacturer?.year ?: "",
         serialNumberUnitNumber = this.inspection.serialNumber ?: "",
-        fuelType = findTestResult(PubtMappingKeys.BAP.TestName.FUEL_TYPE),
-        operatingPressure = findTestResult(PubtMappingKeys.BAP.TestName.PRESSURE_VESSEL_CONTENT),
-        designPressureKgCm2 = findTestResult(PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE).toIntOrNull() ?: 0,
-        maxAllowableWorkingPressure = findTestResult(PubtMappingKeys.BAP.TestName.MAX_WORKING_PRESSURE).toIntOrNull() ?: 0,
-        technicalDataShellMaterial = findTestResult(PubtMappingKeys.BAP.TestName.MATERIAL_TYPE),
-        safetyValveType = findTestResult(PubtMappingKeys.BAP.TestName.SAFETY_VALVE_TYPE),
-        volumeLiters = findTestResult(PubtMappingKeys.BAP.TestName.VOLUME_LITERS).toIntOrNull() ?: 0
+        fuelType = findTestResult(PubtMappingKeys.BAP.TestName.FUEL_TYPE), //
+        operatingPressure = findTestResult(PubtMappingKeys.BAP.TestName.PRESSURE_VESSEL_CONTENT), //
+        designPressureKgCm2 = findTestResult(PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE), //
+        maxAllowableWorkingPressure = findTestResult(PubtMappingKeys.BAP.TestName.MAX_WORKING_PRESSURE), //
+        technicalDataShellMaterial = findTestResult(PubtMappingKeys.BAP.TestName.MATERIAL_TYPE), //
+        safetyValveType = findTestResult(PubtMappingKeys.BAP.TestName.SAFETY_VALVE_TYPE), //
+        volumeLiters = findTestResult(PubtMappingKeys.BAP.TestName.VOLUME_LITERS) //
     )
 
     val visualInspection = PubtBapVisualInspection(
@@ -136,11 +136,11 @@ fun PubtBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     this.technicalData.let {
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.FUEL_TYPE, result = it.fuelType, notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.PRESSURE_VESSEL_CONTENT, result = it.operatingPressure, notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE, result = it.designPressureKgCm2.toString(), notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.MAX_WORKING_PRESSURE, result = it.maxAllowableWorkingPressure.toString(), notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.DESIGN_PRESSURE, result = it.designPressureKgCm2, notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.MAX_WORKING_PRESSURE, result = it.maxAllowableWorkingPressure, notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.MATERIAL_TYPE, result = it.technicalDataShellMaterial, notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
         testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.SAFETY_VALVE_TYPE, result = it.safetyValveType, notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
-        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.VOLUME_LITERS, result = it.volumeLiters.toString(), notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
+        testResults.add(InspectionTestResultDomain(inspectionId = inspectionId, testName = PubtMappingKeys.BAP.TestName.VOLUME_LITERS, result = it.volumeLiters, notes = PubtMappingKeys.BAP.Category.TECHNICAL_DATA))
     }
 
     return InspectionWithDetailsDomain(
