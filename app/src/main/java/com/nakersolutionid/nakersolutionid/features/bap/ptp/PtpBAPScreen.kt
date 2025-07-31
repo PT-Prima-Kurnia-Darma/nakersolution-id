@@ -91,8 +91,8 @@ fun PtpBAPScreen(
             ExpandableSection(title = "DATA TEKNIK") {
                 FormTextField(label = "Merk / Tipe", value = data.brandOrType, onValueChange = { onDataChange(report.copy(technicalData = data.copy(brandOrType = it))) })
                 FormTextField(label = "Pabrik Pembuat", value = data.manufacturer, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufacturer = it))) })
-                FormTextField(label = "Tahun Pembuatan", value = data.manufactureYear, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufactureYear = it))) })
-                FormTextField(label = "Negara Pembuat", value = data.manufactureCountry, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufactureCountry = it))) })
+                FormTextField(label = "Negara / Tahun Pembuatan", value = data.manufactureYear, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufactureYear = it))) })
+//                FormTextField(label = "Negara Pembuat", value = data.manufactureCountry, onValueChange = { onDataChange(report.copy(technicalData = data.copy(manufactureCountry = it))) })
                 FormTextField(label = "Nomor Seri", value = data.serialNumber, onValueChange = { onDataChange(report.copy(technicalData = data.copy(serialNumber = it))) })
                 FormTextField(label = "Deskripsi Kapasitas", value = data.capacityDescription, onValueChange = { onDataChange(report.copy(technicalData = data.copy(capacityDescription = it))) })
                 FormTextField(label = "Daya Motor Penggerak (KW)", value = data.driveMotorPowerKw, onValueChange = { onDataChange(report.copy(technicalData = data.copy(driveMotorPowerKw = it))) })

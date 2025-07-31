@@ -1,23 +1,36 @@
 package com.nakersolutionid.nakersolutionid.data.remote.mapper
 
+import android.util.Log
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineAdministration
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineAmpereMeasurement
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapReportData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineBapRequest
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineConclusionAndRecommendation
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalComponentsVisual
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalMeasurements
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalPanelComponents
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineEnvironmentalMeasurement
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineFoundationAnalysis
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineFoundationDimension
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineFrame
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineGeneralData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineHydraulicVisual
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineMeasurementPoint
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineMeasurementPoints
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachinePowerInfo
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineReportData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineReportRequest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSafetyDeviceTest
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSafetyDevicesVisual
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSpecification
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineStatusResultDetail
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineTechnicalData
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineTestingAndMeasurement
 import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineVisualInspection
+import com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineVoltageMeasurement
 import com.nakersolutionid.nakersolutionid.domain.model.FindingType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionCheckItemDomain
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionDomain
@@ -52,7 +65,7 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         val resultItem = getCheckItemValue(category, "${pointName}_result")
         val analysisItem = getCheckItemValue(category, "${pointName}_analysis")
         return MachineMeasurementPoint(
-            result = resultItem.toDoubleOrNull() ?: 0.0,
+            result = resultItem,
             status = analysisItem
         )
     }
@@ -79,7 +92,7 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
     )
 
     val technicalData = MachineTechnicalData(
-        machineSpecification = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSpecification(
+        machineSpecification = MachineSpecification(
             brandType = getCheckItemValue("technical_data", "type"),
             technicalDataMaxFeederSpeed = getCheckItemValue("technical_data", "maxFeederSpeed"),
             technicalDataMaxPlateWidth = getCheckItemValue("technical_data", "maxPlateWidth"),
@@ -88,25 +101,25 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
             technicalDataMaxInnerCoilDiameter = getCheckItemValue("technical_data", "maxInnerCoilDiameter"),
             technicalDataMaxOuterCoilDiameter = getCheckItemValue("technical_data", "maxOuterCoilDiameter"),
             technicalDataDriveMotor = getCheckItemValue("technical_data", "driveMotor"),
-            technicalDataDieselMotorPowerRpm = getCheckItemValue("technical_data", "motorPowerKw").toIntOrNull() ?: 0,
+            technicalDataDieselMotorPowerRpm = getCheckItemValue("technical_data", "motorPowerKw"),
             serialNumberUnitNumber = getCheckItemValue("technical_data", "brandAndSerial"),
             locationAndYearOfManufacture = getCheckItemValue("technical_data", "locationAndYear"),
-            technicalDataMachineWeight = getCheckItemValue("technical_data", "machineDim_weightKg").toIntOrNull() ?: 0,
+            technicalDataMachineWeight = getCheckItemValue("technical_data", "machineDim_weightKg"),
             technicalDataOverallDimension = getCheckItemValue("technical_data", "machineDim_overall")
         ),
-        foundationDimension = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineFoundationDimension(
+        foundationDimension = MachineFoundationDimension(
             technicalDataFoundationDim = getCheckItemValue("technical_data", "foundationDim_dim"),
             technicalDataFoundationDistance = getCheckItemValue("technical_data", "foundationDim_distance"),
             technicalDataVibrationDamperType = getCheckItemValue("technical_data", "foundationDim_vibrationDamper"),
-            technicalDataFoundationWeight1 = getCheckItemValue("technical_data", "foundationDim_weight1").toIntOrNull() ?: 0,
-            technicalDataFoundationWeight2 = getCheckItemValue("technical_data", "foundationDim_weight2").toIntOrNull() ?: 0
+            technicalDataFoundationWeight1 = getCheckItemValue("technical_data", "foundationDim_weight1"),
+            technicalDataFoundationWeight2 = getCheckItemValue("technical_data", "foundationDim_weight2")
         )
     )
 
     val visualInspection = MachineVisualInspection(
         foundation = getStatusResultDetail("visual_inspection", "foundationCondition"),
         foundationBearing = getStatusResultDetail("visual_inspection", "foundationBearingCondition"),
-        machineFrame = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineFrame(
+        machineFrame = MachineFrame(
             mainFrame = getStatusResultDetail("visual_inspection", "mainFrameCondition"),
             braceFrame = getStatusResultDetail("visual_inspection", "braceFrameCondition")
         ),
@@ -114,12 +127,12 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         controlPanel = getStatusResultDetail("visual_inspection", "controlPanelCondition"),
         display = getStatusResultDetail("visual_inspection", "displayCondition"),
         operationButtons = getStatusResultDetail("visual_inspection", "operationButtonsCondition"),
-        electricalComponents = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalComponentsVisual(
-            measurements = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalMeasurements(
-                electricVoltage = getCheckItemValue("visual_inspection", "electricalVoltage").toIntOrNull() ?: 0,
-                electricPhase = getCheckItemValue("visual_inspection", "electricalPhase").toIntOrNull() ?: 0,
-                electricFrequency = getCheckItemValue("visual_inspection", "electricalFrequency").toIntOrNull() ?: 0,
-                electricAmper = getCheckItemValue("visual_inspection", "electricalCurrent").toIntOrNull() ?: 0
+        electricalComponents = MachineElectricalComponentsVisual(
+            measurements = MachineElectricalMeasurements(
+                electricVoltage = getCheckItemValue("visual_inspection", "electricalVoltage"),
+                electricPhase = getCheckItemValue("visual_inspection", "electricalPhase"),
+                electricFrequency = getCheckItemValue("visual_inspection", "electricalFrequency"),
+                electricAmper = getCheckItemValue("visual_inspection", "electricalCurrent")
             ),
             voltage = getStatusResultDetail("visual_inspection", "electricalVoltage"),
             power = getStatusResultDetail("visual_inspection", "electricalPower"),
@@ -130,7 +143,7 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
             conductor = getStatusResultDetail("visual_inspection", "electricalConductor"),
             insulation = getStatusResultDetail("visual_inspection", "electricalInsulation")
         ),
-        safetyDevices = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSafetyDevicesVisual(
+        safetyDevices = MachineSafetyDevicesVisual(
             limitSwitchUp = getStatusResultDetail("visual_inspection", "safetyLimitSwitchUp"),
             limitSwitchDown = getStatusResultDetail("visual_inspection", "safetyLimitSwitchDown"),
             grounding = getStatusResultDetail("visual_inspection", "safetyGrounding"),
@@ -140,14 +153,14 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
             emergencyStop = getStatusResultDetail("visual_inspection", "safetyEmergencyStop"),
             handSensor = getStatusResultDetail("visual_inspection", "safetyHandSensor")
         ),
-        hydraulic = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineHydraulicVisual(
+        hydraulic = MachineHydraulicVisual(
             pump = getStatusResultDetail("visual_inspection", "hydraulicPumpCondition"),
             hose = getStatusResultDetail("visual_inspection", "hydraulicHoseCondition")
         )
     )
 
     val testingAndMeasurement = MachineTestingAndMeasurement(
-        safetyDeviceTest = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineSafetyDeviceTest(
+        safetyDeviceTest = MachineSafetyDeviceTest(
             grounding = getStatusResultDetail("testing", "func_safetyGrounding"),
             safetyGuard = getStatusResultDetail("testing", "func_safetyGuard"),
             roller = getStatusResultDetail("testing", "func_safetyRoller"),
@@ -161,23 +174,23 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         noiseTest = getStatusResultDetail("testing", "func_noiseTest")
     )
 
-    val electricalPanelComponents = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineElectricalPanelComponents(
+    val electricalPanelComponents = MachineElectricalPanelComponents(
         ka = getCheckItemValue("testing", "elec_panel_ka"),
-        voltage = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineVoltageMeasurement(
-            rs = getCheckItemValue("testing", "elec_panel_voltRS").toIntOrNull() ?: 0,
-            rt = getCheckItemValue("testing", "elec_panel_voltRT").toIntOrNull() ?: 0,
-            st = getCheckItemValue("testing", "elec_panel_voltST").toIntOrNull() ?: 0,
-            rn = getCheckItemValue("testing", "elec_panel_voltRN").toIntOrNull() ?: 0,
-            rg = getCheckItemValue("testing", "elec_panel_voltRG").toDoubleOrNull() ?: 0.0,
-            ng = getCheckItemValue("testing", "elec_panel_voltNG").toDoubleOrNull() ?: 0.0
+        voltage = MachineVoltageMeasurement(
+            rs = getCheckItemValue("testing", "elec_panel_voltRS"),
+            rt = getCheckItemValue("testing", "elec_panel_voltRT"),
+            st = getCheckItemValue("testing", "elec_panel_voltST"),
+            rn = getCheckItemValue("testing", "elec_panel_voltRN"),
+            rg = getCheckItemValue("testing", "elec_panel_voltRG"),
+            ng = getCheckItemValue("testing", "elec_panel_voltNG")
         ),
-        powerInfo = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachinePowerInfo(
-            frequency = getCheckItemValue("testing", "elec_power_freq").toDoubleOrNull() ?: 0.0,
-            cosQ = getCheckItemValue("testing", "elec_power_cosQ").toDoubleOrNull() ?: 0.0,
+        powerInfo = MachinePowerInfo(
+            frequency = getCheckItemValue("testing", "elec_power_freq"),
+            cosQ = getCheckItemValue("testing", "elec_power_cosQ"),
             ampere = MachineAmpereMeasurement(
-                r = getCheckItemValue("testing", "elec_power_ampR").toIntOrNull() ?: 0,
-                s = getCheckItemValue("testing", "elec_power_ampS").toIntOrNull() ?: 0,
-                t = getCheckItemValue("testing", "elec_power_ampT").toIntOrNull() ?: 0
+                r = getCheckItemValue("testing", "elec_power_ampR"),
+                s = getCheckItemValue("testing", "elec_power_ampS"),
+                t = getCheckItemValue("testing", "elec_power_ampT")
             ),
             result = getCheckItemValue("testing", "elec_power_remarks")
         )
@@ -188,18 +201,18 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         recommendations = this.findings.filter { it.type == FindingType.RECOMMENDATION }.joinToString("\n") { it.description }
     )
 
-    val administration = com.nakersolutionid.nakersolutionid.data.remote.dto.machine.MachineAdministration(
+    val administration = MachineAdministration(
         inspectionDate = inspection.reportDate ?: ""
     )
 
     val foundationAnalysis = MachineFoundationAnalysis(
-        actualWeight = getCheckItemValue("foundation_analysis", "machineWeight_actual").toDoubleOrNull() ?: 0.0,
-        additionalMeterials = getCheckItemValue("foundation_analysis", "machineWeight_additional").toIntOrNull() ?: 0,
-        totalWeight = getCheckItemValue("foundation_analysis", "machineWeight_total").toDoubleOrNull() ?: 0.0,
-        minimumFoundationWeight = getCheckItemValue("foundation_analysis", "minWeight_calculation").toDoubleOrNull() ?: 0.0,
-        totalMinimumFoundationWeight = getCheckItemValue("foundation_analysis", "minWeight_result").toDoubleOrNull() ?: 0.0,
-        foundationWeight = 0.0, // Data not present in domain model
-        heightFoundation = getCheckItemValue("foundation_analysis", "height_result").toDoubleOrNull() ?: 0.0,
+        actualWeight = getCheckItemValue("foundation_analysis", "machineWeight_actual"),
+        additionalMeterials = getCheckItemValue("foundation_analysis", "machineWeight_additional"),
+        totalWeight = getCheckItemValue("foundation_analysis", "machineWeight_total"),
+        minimumFoundationWeight = getCheckItemValue("foundation_analysis", "minWeight_calculation"),
+        totalMinimumFoundationWeight = getCheckItemValue("foundation_analysis", "minWeight_result"),
+        foundationWeight = "", // Data not present in domain model, default to empty
+        heightFoundation = getCheckItemValue("foundation_analysis", "height_result"),
         foundationAnalysisResult = getCheckItemValue("foundation_analysis", "summary")
     )
 
@@ -220,7 +233,7 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
 
     return MachineReportRequest(
         examinationType = inspection.examinationType,
-        extraId = inspection.id,
+        extraId = inspection.id, // This is the local DB ID
         inspectionType = inspection.inspectionType.name,
         createdAt = inspection.createdAt ?: "",
         generalData = generalData,
@@ -234,6 +247,7 @@ fun InspectionWithDetailsDomain.toMachineReportRequest(): MachineReportRequest {
         environmentalMeasurement = environmentalMeasurement
     )
 }
+
 
 /**
  * REFACTORED: Now uses the centralized BAP logic from PtpBAPMapper.
@@ -252,9 +266,8 @@ fun InspectionWithDetailsDomain.toMachineBapRequest(): MachineBapRequest {
 // =================================================================================================
 // DTO Response -> Domain Model
 // =================================================================================================
-// ... (rest of the file remains the same, no changes needed here)
 fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
-    val inspectionId = this.extraId
+    val inspectionId = this.extraId // Local DB ID from server response
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
 
     fun addCheckItem(category: String, itemName: String, value: String?) {
@@ -275,34 +288,34 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
                 inspectionId = inspectionId,
                 category = category,
                 itemName = itemName,
-                status = value.status ?: false,
+                status = value.status, // DTO now has non-nullable boolean
                 result = value.result
             )
         )
     }
 
     fun addMeasurementPointCheckItems(category: String, pointName: String, value: MachineMeasurementPoint) {
-        addCheckItem(category, "${pointName}_result", value.result.toString())
+        addCheckItem(category, "${pointName}_result", value.result)
         addCheckItem(category, "${pointName}_analysis", value.status)
     }
 
     val inspectionDomain = InspectionDomain(
         id = inspectionId,
-        extraId = this.id,
+        extraId = this.id, // Server's report ID
         moreExtraId = "",
-        documentType = DocumentType.valueOf(this.documentType),
-        inspectionType = InspectionType.valueOf(this.inspectionType),
-        subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
+        documentType = DocumentType.LAPORAN,
+        inspectionType = InspectionType.PTP,
+        subInspectionType = SubInspectionType.Machine,
         equipmentType = this.generalData.equipmentType,
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
         ownerAddress = this.generalData.companyLocation,
         usageLocation = this.generalData.unitLocation,
         addressUsageLocation = this.generalData.userAddressInCharge,
-        driveType = "",
+        driveType = "", // Not available in DTO
         serialNumber = this.generalData.serialNumberUnitNumber,
         permitNumber = this.generalData.usagePermitNumber,
-        capacity = "",
+        capacity = "", // Not available in DTO
         manufacturer = ManufacturerDomain(
             name = this.generalData.manufacturer,
             brandOrType = this.generalData.brandType,
@@ -310,9 +323,10 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         ),
         createdAt = this.createdAt,
         reportDate = this.administration.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
-
+    // General Data
     addCheckItem("general_data", "userInCharge", this.generalData.userInCharge)
     addCheckItem("general_data", "subcontractorPersonInCharge", this.generalData.subcontractorPersonInCharge)
     addCheckItem("general_data", "motorPower", this.generalData.technicalDataDieselMotorPowerRpm)
@@ -322,6 +336,7 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     addCheckItem("general_data", "operatorName", this.generalData.operatorName)
     addCheckItem("general_data", "equipmentHistory", this.generalData.equipmentHistory)
 
+    // Technical Data
     val techCategory = "technical_data"
     this.technicalData.machineSpecification.let { spec ->
         addCheckItem(techCategory, "type", spec.brandType)
@@ -332,20 +347,21 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         addCheckItem(techCategory, "maxInnerCoilDiameter", spec.technicalDataMaxInnerCoilDiameter)
         addCheckItem(techCategory, "maxOuterCoilDiameter", spec.technicalDataMaxOuterCoilDiameter)
         addCheckItem(techCategory, "driveMotor", spec.technicalDataDriveMotor)
-        addCheckItem(techCategory, "motorPowerKw", spec.technicalDataDieselMotorPowerRpm.toString())
+        addCheckItem(techCategory, "motorPowerKw", spec.technicalDataDieselMotorPowerRpm)
         addCheckItem(techCategory, "brandAndSerial", spec.serialNumberUnitNumber)
         addCheckItem(techCategory, "locationAndYear", spec.locationAndYearOfManufacture)
-        addCheckItem(techCategory, "machineDim_weightKg", spec.technicalDataMachineWeight.toString())
+        addCheckItem(techCategory, "machineDim_weightKg", spec.technicalDataMachineWeight)
         addCheckItem(techCategory, "machineDim_overall", spec.technicalDataOverallDimension)
     }
     this.technicalData.foundationDimension.let { found ->
         addCheckItem(techCategory, "foundationDim_dim", found.technicalDataFoundationDim)
         addCheckItem(techCategory, "foundationDim_distance", found.technicalDataFoundationDistance)
         addCheckItem(techCategory, "foundationDim_vibrationDamper", found.technicalDataVibrationDamperType)
-        addCheckItem(techCategory, "foundationDim_weight1", found.technicalDataFoundationWeight1.toString())
-        addCheckItem(techCategory, "foundationDim_weight2", found.technicalDataFoundationWeight2.toString())
+        addCheckItem(techCategory, "foundationDim_weight1", found.technicalDataFoundationWeight1)
+        addCheckItem(techCategory, "foundationDim_weight2", found.technicalDataFoundationWeight2)
     }
 
+    // Visual Inspection
     val visualCategory = "visual_inspection"
     addStatusResultCheckItem(visualCategory, "foundationCondition", this.visualInspection.foundation)
     addStatusResultCheckItem(visualCategory, "foundationBearingCondition", this.visualInspection.foundationBearing)
@@ -378,6 +394,7 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     addStatusResultCheckItem(visualCategory, "hydraulicPumpCondition", this.visualInspection.hydraulic.pump)
     addStatusResultCheckItem(visualCategory, "hydraulicHoseCondition", this.visualInspection.hydraulic.hose)
 
+    // Testing & Measurement
     val testCategory = "testing"
     this.testingAndMeasurement.safetyDeviceTest.let { safeTest ->
         addStatusResultCheckItem(testCategory, "func_safetyGrounding", safeTest.grounding)
@@ -392,33 +409,36 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     addStatusResultCheckItem(testCategory, "func_lightingTest", this.testingAndMeasurement.lightingTest)
     addStatusResultCheckItem(testCategory, "func_noiseTest", this.testingAndMeasurement.noiseTest)
 
+    // Electrical Panel Components
     this.electricalPanelComponents.let { elec ->
         addCheckItem(testCategory, "elec_panel_ka", elec.ka)
-        addCheckItem(testCategory, "elec_panel_voltRS", elec.voltage.rs.toString())
-        addCheckItem(testCategory, "elec_panel_voltRT", elec.voltage.rt.toString())
-        addCheckItem(testCategory, "elec_panel_voltST", elec.voltage.st.toString())
-        addCheckItem(testCategory, "elec_panel_voltRN", elec.voltage.rn.toString())
-        addCheckItem(testCategory, "elec_panel_voltRG", elec.voltage.rg.toString())
-        addCheckItem(testCategory, "elec_panel_voltNG", elec.voltage.ng.toString())
-        addCheckItem(testCategory, "elec_power_freq", elec.powerInfo.frequency.toString())
-        addCheckItem(testCategory, "elec_power_cosQ", elec.powerInfo.cosQ.toString())
-        addCheckItem(testCategory, "elec_power_ampR", elec.powerInfo.ampere.r.toString())
-        addCheckItem(testCategory, "elec_power_ampS", elec.powerInfo.ampere.s.toString())
-        addCheckItem(testCategory, "elec_power_ampT", elec.powerInfo.ampere.t.toString())
+        addCheckItem(testCategory, "elec_panel_voltRS", elec.voltage.rs)
+        addCheckItem(testCategory, "elec_panel_voltRT", elec.voltage.rt)
+        addCheckItem(testCategory, "elec_panel_voltST", elec.voltage.st)
+        addCheckItem(testCategory, "elec_panel_voltRN", elec.voltage.rn)
+        addCheckItem(testCategory, "elec_panel_voltRG", elec.voltage.rg)
+        addCheckItem(testCategory, "elec_panel_voltNG", elec.voltage.ng)
+        addCheckItem(testCategory, "elec_power_freq", elec.powerInfo.frequency)
+        addCheckItem(testCategory, "elec_power_cosQ", elec.powerInfo.cosQ)
+        addCheckItem(testCategory, "elec_power_ampR", elec.powerInfo.ampere.r)
+        addCheckItem(testCategory, "elec_power_ampS", elec.powerInfo.ampere.s)
+        addCheckItem(testCategory, "elec_power_ampT", elec.powerInfo.ampere.t)
         addCheckItem(testCategory, "elec_power_remarks", elec.powerInfo.result)
     }
 
+    // Foundation Analysis
     val foundCategory = "foundation_analysis"
     this.foundationAnalysis.let { found ->
-        addCheckItem(foundCategory, "machineWeight_actual", found.actualWeight.toString())
-        addCheckItem(foundCategory, "machineWeight_additional", found.additionalMeterials.toString())
-        addCheckItem(foundCategory, "machineWeight_total", found.totalWeight.toString())
-        addCheckItem(foundCategory, "minWeight_calculation", found.minimumFoundationWeight.toString())
-        addCheckItem(foundCategory, "minWeight_result", found.totalMinimumFoundationWeight.toString())
-        addCheckItem(foundCategory, "height_result", found.heightFoundation.toString())
+        addCheckItem(foundCategory, "machineWeight_actual", found.actualWeight)
+        addCheckItem(foundCategory, "machineWeight_additional", found.additionalMeterials)
+        addCheckItem(foundCategory, "machineWeight_total", found.totalWeight)
+        addCheckItem(foundCategory, "minWeight_calculation", found.minimumFoundationWeight)
+        addCheckItem(foundCategory, "minWeight_result", found.totalMinimumFoundationWeight)
+        addCheckItem(foundCategory, "height_result", found.heightFoundation)
         addCheckItem(foundCategory, "summary", found.foundationAnalysisResult)
     }
 
+    // Environmental Measurement
     addMeasurementPointCheckItems("noise_measurement", "pointA", this.environmentalMeasurement.noise.pointA)
     addMeasurementPointCheckItems("noise_measurement", "pointB", this.environmentalMeasurement.noise.pointB)
     addMeasurementPointCheckItems("noise_measurement", "pointC", this.environmentalMeasurement.noise.pointC)
@@ -428,6 +448,7 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
     addMeasurementPointCheckItems("lighting_measurement", "pointC", this.environmentalMeasurement.lighting.pointC)
     addMeasurementPointCheckItems("lighting_measurement", "pointD", this.environmentalMeasurement.lighting.pointD)
 
+    // Conclusion and Recommendations
     val findings = mutableListOf<InspectionFindingDomain>()
     this.conclusionAndRecommendation.conclusion.split("\n").filter { it.isNotBlank() }.forEach {
         findings.add(InspectionFindingDomain(inspectionId = inspectionId, description = it, type = FindingType.FINDING))
@@ -440,7 +461,7 @@ fun MachineReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         inspection = inspectionDomain,
         checkItems = checkItems,
         findings = findings,
-        testResults = emptyList()
+        testResults = emptyList() // BAP results are handled separately
     )
 }
 
@@ -451,9 +472,9 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         id = inspectionId,
         extraId = this.laporanId,
         moreExtraId = this.id, // API BAP ID
-        documentType = DocumentType.valueOf(this.documentType),
+        documentType = DocumentType.BAP,
         inspectionType = InspectionType.PTP,
-        subInspectionType = SubInspectionType.valueOf(this.subInspectionType),
+        subInspectionType = SubInspectionType.Machine,
         equipmentType = "", // Not present in BAP DTO
         examinationType = this.examinationType,
         ownerName = this.generalData.companyName,
@@ -468,7 +489,8 @@ fun MachineBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         ),
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

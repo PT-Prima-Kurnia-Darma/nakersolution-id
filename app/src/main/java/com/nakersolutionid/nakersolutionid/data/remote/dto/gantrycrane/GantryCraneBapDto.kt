@@ -7,6 +7,7 @@ data class GantryCraneBapRequest(
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
+    @SerializedName("equipmentType") val equipmentType: String, // Ditambahkan agar sesuai Joi schema
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("extraId") val extraId: Long,
     @SerializedName("generalData") val generalData: GantryCraneBapGeneralData,

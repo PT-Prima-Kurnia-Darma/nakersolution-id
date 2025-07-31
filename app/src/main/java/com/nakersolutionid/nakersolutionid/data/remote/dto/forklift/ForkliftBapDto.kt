@@ -8,9 +8,11 @@ data class ForkliftBapRequest(
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("extraId") val extraId: Long,
+    @SerializedName("equipmentType") val equipmentType: String,
+    @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("generalData") val generalData: ForkliftBapGeneralData,
     @SerializedName("technicalData") val technicalData: ForkliftBapTechnicalData,
-    @SerializedName("inspectionResult") val inspectionResult: ForkliftBapInspectionResult,
+    @SerializedName("inspectionResult") val inspectionResult: ForkliftBapInspectionResult
 )
 
 // Data DTO for single Forklift BAP response
@@ -25,6 +27,7 @@ data class ForkliftBapListReportResponseData(
 
 // Main DTO for Forklift BAP (used for create, update, and individual get)
 data class ForkliftBapReportData(
+    @SerializedName("id") val id: String, // From response JSON
     @SerializedName("laporanId") val laporanId: String,
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
@@ -34,7 +37,9 @@ data class ForkliftBapReportData(
     @SerializedName("technicalData") val technicalData: ForkliftBapTechnicalData,
     @SerializedName("inspectionResult") val inspectionResult: ForkliftBapInspectionResult,
     @SerializedName("equipmentType") val equipmentType: String, // From response JSON
-    @SerializedName("id") val id: String // From response JSON
+    @SerializedName("inspectionType") val inspectionType: String, // From response JSON
+    @SerializedName("subInspectionType") val subInspectionType: String, // From response JSON
+    @SerializedName("documentType") val documentType: String // From response JSON
 )
 
 data class ForkliftBapGeneralData(

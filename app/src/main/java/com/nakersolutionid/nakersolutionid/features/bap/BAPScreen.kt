@@ -2,6 +2,7 @@ package com.nakersolutionid.nakersolutionid.features.bap
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -11,9 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -37,8 +39,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,22 +62,22 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
+import com.nakersolutionid.nakersolutionid.domain.model.History
+import com.nakersolutionid.nakersolutionid.features.history.FilterState
+import com.nakersolutionid.nakersolutionid.ui.components.EmptyScreen
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
-
-// Data class for holding the selected filter state
-data class FilterState(
-    val inspectionType: InspectionType? = null,
-    val documentType: DocumentType? = null,
-    val subInspectionType: SubInspectionType? = null
-)
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -80,19 +87,47 @@ fun BAPScreen(
     onBackClick: () -> Unit,
     onItemClick: (Long, SubInspectionType, DocumentType) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val activeFilters by viewModel.filterState.collectAsStateWithLifecycle()
+
+    // Collect the PagingData flow from the ViewModel.
+    val lazyPagingItems: LazyPagingItems<History> = viewModel.historyPagingData.collectAsLazyPagingItems()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val refreshState = rememberPullToRefreshState()
+    var isManualRefresh by remember { mutableStateOf(false) }
 
     // This effect correctly scrolls the list to the top AFTER the data has been updated
     // from a search or filter action, providing a better user experience.
-    LaunchedEffect(uiState.histories) {
+    /*LaunchedEffect(uiState.histories) {
         if (searchQuery.isNotEmpty() || activeFilters != FilterState()) {
             lazyListState.animateScrollToItem(0)
+        }
+    }*/
+
+    LaunchedEffect(lazyPagingItems.loadState) {
+        val errorState = lazyPagingItems.loadState.source.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.source.prepend as? LoadState.Error
+            ?: lazyPagingItems.loadState.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.prepend as? LoadState.Error
+        errorState?.let {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = it.error.message ?: "Terjadi kesalahan",
+                    duration = SnackbarDuration.Short,
+                )
+            }
+        }
+    }
+
+    LaunchedEffect(lazyPagingItems.loadState.refresh) {
+        // Jika statusnya sudah tidak loading, reset flag manual refresh.
+        if (lazyPagingItems.loadState.refresh !is LoadState.Loading) {
+            isManualRefresh = false
         }
     }
 
@@ -101,6 +136,12 @@ fun BAPScreen(
             BAPAppBar(
                 onBackClick = { onBackClick() },
                 onFilterClick = { showBottomSheet = true }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding()
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -115,24 +156,74 @@ fun BAPScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 query = searchQuery,
-                onQueryChange = { newQuery -> viewModel.onSearchQueryChange(newQuery) },
+                onQueryChange = viewModel::onSearchQueryChange,
                 onClear = { viewModel.onSearchQueryChange("") }
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            PullToRefreshBox(
+                isRefreshing = isManualRefresh,
+                onRefresh = {
+                    isManualRefresh = true
+                    scope.launch {
+                        lazyPagingItems.refresh()
+                    }
+                },
+                state = refreshState
             ) {
-                items(
-                    items = uiState.histories,
-                    key = { it.id }
-                ) { history ->
-                    BAPItem(
-                        modifier = Modifier.animateItem(),
-                        history = history,
-                        onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
-                    )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    ),
+                ) {
+                    if (lazyPagingItems.loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) { // ✨ PERUBAHAN DI SINI
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                            }
+                        }
+                    }
+
+                    if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) { // Use fillParentMaxSize
+                                EmptyScreen(
+                                    modifier = Modifier.fillMaxSize(),
+                                    message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
+                                )
+                            }
+                        }
+                    }
+
+                    items(
+                        count = lazyPagingItems.itemCount,
+                        key = lazyPagingItems.itemKey { it.id } // Use Paging's key for stable IDs.
+                    ) { index ->
+                        val history = lazyPagingItems[index]
+                        if (history != null) {
+                            BAPItem(
+                                modifier = Modifier.animateItem(),
+                                history = history,
+                                onItemClick = { onItemClick(history.id, history.subInspectionType, history.documentType) }
+                            )
+                        }
+                    }
+                    // Show loading indicator for append
+                    if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
                 }
             }
         }

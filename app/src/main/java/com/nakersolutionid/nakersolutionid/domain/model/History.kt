@@ -3,6 +3,7 @@ package com.nakersolutionid.nakersolutionid.domain.model
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import java.util.UUID
 
 data class History(
     val id: Long,
@@ -16,5 +17,9 @@ data class History(
     val ownerName: String?,
     val createdAt: String?,
     val reportDate: String?,
-    val isSynced: Boolean
+    val isSynced: Boolean,
+    val uuid: UUID? = null,
+    val filePath: String? = null,
+    val isEdited: Boolean = false,
+    val isDownloaded: Boolean = false
 )

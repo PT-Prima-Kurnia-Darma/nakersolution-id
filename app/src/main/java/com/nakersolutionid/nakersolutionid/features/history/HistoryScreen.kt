@@ -1,7 +1,10 @@
 package com.nakersolutionid.nakersolutionid.features.history
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -11,9 +14,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,6 +26,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -38,9 +42,14 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,22 +60,31 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
 import com.nakersolutionid.nakersolutionid.data.local.utils.InspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.data.local.utils.toDisplayString
 import com.nakersolutionid.nakersolutionid.di.previewModule
 import com.nakersolutionid.nakersolutionid.domain.model.History
+import com.nakersolutionid.nakersolutionid.ui.components.EmptyScreen
 import com.nakersolutionid.nakersolutionid.ui.theme.NakersolutionidTheme
+import com.nakersolutionid.nakersolutionid.utils.DownloadState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplicationPreview
+import java.io.File
 
 // Data class for holding the selected filter state
 data class FilterState(
@@ -83,25 +101,93 @@ fun HistoryScreen(
     onBackClick: () -> Unit,
     onEditClick: (History) -> Unit = {},
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val activeFilters by viewModel.filterState.collectAsStateWithLifecycle()
+
+    val lazyPagingItems: LazyPagingItems<History> =
+        viewModel.historyPagingData.collectAsLazyPagingItems()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var historyToDelete by remember { mutableStateOf<History?>(null) }
     val lazyListState = rememberLazyListState()
+    val refreshState = rememberPullToRefreshState()
+    var isManualRefresh by remember { mutableStateOf(false) }
 
-    /*LaunchedEffect(Unit) {
-        viewModel.startSync()
-    }*/
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-    // This effect correctly scrolls the list to the top AFTER the data has been updated
-    // from a search or filter action, providing a better user experience.
-    LaunchedEffect(uiState.histories) {
-        if (searchQuery.isNotEmpty() || activeFilters != FilterState()) {
-            lazyListState.animateScrollToItem(0)
+    fun openOrShareFile(context: Context, filePath: String) {
+        val file = File(filePath)
+        // Ensure the authority matches what's in your AndroidManifest.xml
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+        val mimeType = context.contentResolver.getType(uri) ?: "*/*"
+
+        // 1. Create the Intent to VIEW the file (Open with...)
+        val viewIntent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, mimeType)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        // 2. Create the Intent to SEND the file (Share via...)
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = mimeType
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        // 3. Create a chooser that combines both intents
+        // The system will show apps for the primary intent (viewIntent)
+        // and add apps for the initial intents (shareIntent).
+        val chooserIntent = Intent.createChooser(viewIntent, "Buka atau Bagikan Laporan").apply {
+            putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(shareIntent))
+        }
+
+        context.startActivity(chooserIntent)
+    }
+
+    LaunchedEffect(lazyPagingItems.loadState.refresh) {
+        // Jika statusnya sudah tidak loading, reset flag manual refresh.
+        if (lazyPagingItems.loadState.refresh !is LoadState.Loading) {
+            isManualRefresh = false
+        }
+    }
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { message ->
+            scope.launch {
+                snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
+            }
+            viewModel.onUpdateUiState { it.copy(error = null) }
+        }
+    }
+
+    // TAMBAHKAN BLOK LaunchedEffect INI
+    LaunchedEffect(Unit) {
+        viewModel.shareEvent.collect { filePath ->
+            openOrShareFile(context, filePath) // Panggil fungsi share yang sudah ada
+        }
+    }
+
+    LaunchedEffect(uiState.triggerSync) {
+        viewModel.triggerSync()
+    }
+
+    LaunchedEffect(lazyPagingItems.loadState) {
+        val errorState = lazyPagingItems.loadState.source.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.source.prepend as? LoadState.Error
+            ?: lazyPagingItems.loadState.append as? LoadState.Error
+            ?: lazyPagingItems.loadState.prepend as? LoadState.Error
+        errorState?.let {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = it.error.message ?: "Terjadi kesalahan",
+                    duration = SnackbarDuration.Short,
+                )
+            }
         }
     }
 
@@ -110,6 +196,12 @@ fun HistoryScreen(
             HistoryAppBar(
                 onBackClick = { onBackClick() },
                 onFilterClick = { showBottomSheet = true }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding()
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -124,33 +216,94 @@ fun HistoryScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 query = searchQuery,
-                onQueryChange = { newQuery -> viewModel.onSearchQueryChange(newQuery) },
+                onQueryChange = viewModel::onSearchQueryChange,
                 onClear = { viewModel.onSearchQueryChange("") }
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            PullToRefreshBox(
+                isRefreshing = isManualRefresh,
+                onRefresh = {
+                    isManualRefresh = true
+                    scope.launch {
+                        lazyPagingItems.refresh()
+                    }
+                },
+                state = refreshState
             ) {
-                items(
-                    items = uiState.histories,
-                    key = { it.id }
-                ) { history ->
-                    HistoryItem(
-                        modifier = Modifier.animateItem(),
-                        history = history,
-                        onDeleteClick = {
-                            historyToDelete = history
-                            showDeleteDialog = true
-                        },
-                        onDownloadClick = {
-                            // TODO: Implement download functionality
-                        },
-                        onEditClick = {
-                            onEditClick(history)
-                        },
+                // The LazyColumn is now the direct child, making the pull gesture always available.
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
                     )
+                ) {
+                    // Condition 1: Initial loading state
+                    if (lazyPagingItems.loadState.refresh is LoadState.Loading && lazyPagingItems.itemCount == 0) {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                            }
+                        }
+                    }
+
+                    // Condition 2: Empty state
+                    if (lazyPagingItems.loadState.refresh is LoadState.NotLoading && lazyPagingItems.itemCount == 0) {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize()) { // Use fillParentMaxSize
+                                EmptyScreen(
+                                    modifier = Modifier.align(Alignment.Center), // Align the content
+                                    message = "Tidak ada riwayat yang ditemukan.\nCoba kata kunci atau filter yang berbeda."
+                                )
+                            }
+                        }
+                    }
+
+                    // Condition 3: Display list items
+                    items(
+                        count = lazyPagingItems.itemCount,
+                        key = lazyPagingItems.itemKey { it.id }
+                    ) { index ->
+                        val history = lazyPagingItems[index]
+                        if (history != null) {
+                            val downloadState =
+                                uiState.downloadStates[history.id] ?: DownloadState.Idle
+                            HistoryItem(
+                                modifier = Modifier.animateItem(),
+                                history = history,
+                                downloadState = downloadState,
+                                onDeleteClick = {
+                                    historyToDelete = history
+                                    showDeleteDialog = true
+                                },
+                                onDownloadClick = {
+                                    viewModel.downloadReport(history)
+                                },
+                                onShareClick = { filePath ->
+                                    openOrShareFile(context, filePath)
+                                },
+                                onEditClick = {
+                                    onEditClick(history)
+                                },
+                            )
+                        }
+                    }
+
+                    // Condition 4: Loading more items (pagination)
+                    if (lazyPagingItems.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -174,9 +327,10 @@ fun HistoryScreen(
             DeleteConfirmationDialog(
                 historyToDelete = historyToDelete!!,
                 onConfirm = {
-                    viewModel.deleteReport(historyToDelete!!.id)
+                    viewModel.deleteReport(historyToDelete!!) // Kirim seluruh objek
                     showDeleteDialog = false
                     historyToDelete = null
+                    lazyPagingItems.refresh()
                 },
                 onDismiss = {
                     showDeleteDialog = false
@@ -311,7 +465,8 @@ fun FilterSheet(
                         onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
                     ) {
                         TextField(
-                            value = selectedFilters.subInspectionType?.toDisplayString() ?: "Pilih Opsi...",
+                            value = selectedFilters.subInspectionType?.toDisplayString()
+                                ?: "Pilih Opsi...",
                             onValueChange = {},
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
@@ -327,7 +482,8 @@ fun FilterSheet(
                             DropdownMenuItem(
                                 text = { Text("Hapus Pilihan", fontStyle = FontStyle.Italic) },
                                 onClick = {
-                                    selectedFilters = selectedFilters.copy(subInspectionType = null)
+                                    selectedFilters =
+                                        selectedFilters.copy(subInspectionType = null)
                                     isDropdownExpanded = false
                                 }
                             )
@@ -335,7 +491,8 @@ fun FilterSheet(
                                 DropdownMenuItem(
                                     text = { Text(type.toDisplayString()) },
                                     onClick = {
-                                        selectedFilters = selectedFilters.copy(subInspectionType = type)
+                                        selectedFilters =
+                                            selectedFilters.copy(subInspectionType = type)
                                         isDropdownExpanded = false
                                     }
                                 )
@@ -380,7 +537,10 @@ fun FilterSheet(
 
 @Composable
 private fun FilterSection(title: String, content: @Composable () -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,

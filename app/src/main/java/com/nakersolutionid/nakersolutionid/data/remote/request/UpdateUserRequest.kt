@@ -1,8 +1,10 @@
 package com.nakersolutionid.nakersolutionid.data.remote.request
 
+import com.google.gson.annotations.SerializedName
+
 data class UpdateUserRequest(
-    val name: String?,
-    val username: String?,
-    val oldPassword: String?,
-    val newPassword: String?
+    @SerializedName("name") val name: String?,
+    @SerializedName("username") val username: String?,
+    @SerializedName("oldPassword") val oldPassword: String?,
+    @SerializedName("newPassword") val newPassword: String?
 )

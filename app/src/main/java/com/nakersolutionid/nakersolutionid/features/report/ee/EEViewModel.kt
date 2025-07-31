@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.ElevatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toElevatorUiState
@@ -14,61 +15,141 @@ import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.Eskalato
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.EskalatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toEskalatorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class EEViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class EEViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _eeUiState = MutableStateFlow(EEUiState())
     val eeUiState: StateFlow<EEUiState> = _eeUiState.asStateFlow()
 
-    private val _elevatorUiState = MutableStateFlow(Dummy.getDummyElevatorUiState())
+    private val _elevatorUiState = MutableStateFlow(ElevatorUiState.createDummyElevatorUiState())
     val elevatorUiState: StateFlow<ElevatorUiState> = _elevatorUiState.asStateFlow()
 
-    private val _eskalatorUiState = MutableStateFlow(Dummy.getDummyEskalatorUiState())
+    private val _eskalatorUiState = MutableStateFlow(EskalatorUiState.createDummyEskalatorUiState())
     val eskalatorUiState: StateFlow<EskalatorUiState> = _eskalatorUiState.asStateFlow()
 
     // Track current report ID for edit mode
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Elevator -> {
-                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(elevatorInspection)
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
+                    triggerSaving(elevatorInspection, isInternetAvailable)
                 }
                 SubInspectionType.Escalator -> {
-                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(escalatorInspection)
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _eeUiState.update { it.copy(elevatorResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
+                    triggerSaving(escalatorInspection, isInternetAvailable)
                 }
                 else -> null
             }
+        }
+    }
+
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Elevator -> {
+                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
+                    collectMlResult(elevatorInspection)
+                }
+                SubInspectionType.Escalator -> {
+                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, currentReportId)
+                    collectMlResult(escalatorInspection)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onUpdateState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onUpdateState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.joinToString("\n") ?: ""
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Elevator -> _elevatorUiState.update {
+                            it.copy(
+                                conclusion = conclusion,
+                                recommendation = recommendation
+                            )
+                        }
+                        SubInspectionType.Escalator -> _eskalatorUiState.update {
+                            it.copy(
+                                eskalatorData = it.eskalatorData.copy(conclusion = conclusion)
+                            )
+                        }
+                        else -> null
+                    }
+                    onUpdateState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _eeUiState.value.editMode
+
+        val id = saveReport(inspection)
+
+        if (id == null) {
+            return
+        }
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            if (isEditMode) {
+                if (isSynced) updateReport(cloudInspection)
+            } else {
+                createReport(cloudInspection)
+            }
+        } else {
+            _eeUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain): Long? {
+        try {
+            val id = reportUseCase.saveReport(inspection)
+            return id
+        } catch(_: SQLiteConstraintException) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        } catch (_: Exception) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _eeUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _eeUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _eeUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -112,6 +193,7 @@ class EEViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
 
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
@@ -145,18 +227,6 @@ class EEViewModel(
                     )
                 }
             }
-        }
-    }
-
-    fun startSync() {
-        if (_eeUiState.value.loadedEquipmentType != null) {
-            Log.d("EEViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _eeUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("EEViewModel", "Starting sync")
-            syncManager.startSync()
-            _eeUiState.update { it.copy(loadedEquipmentType = null) }
         }
     }
 }

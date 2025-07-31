@@ -44,7 +44,6 @@ fun InspectionWithDetailsDomain.toOverheadCraneBapRequest(): OverheadCraneBapReq
     val generalData = OverheadCraneBapGeneralData(
         ownerName = this.inspection.ownerName ?: "",
         ownerAddress = this.inspection.ownerAddress ?: "",
-        companyLocation = this.inspection.ownerAddress ?: "", // Assuming company location is owner address
         userInCharge = this.inspection.addressUsageLocation ?: "",
         unitLocation = this.inspection.usageLocation ?: ""
     )
@@ -69,7 +68,7 @@ fun InspectionWithDetailsDomain.toOverheadCraneBapRequest(): OverheadCraneBapReq
     val testing = OverheadCraneBapTesting(
         functionTest = getStatus(OverheadCraneBAPCategory.TESTING, "functionTest"),
         loadTest = OverheadCraneBapLoadTest(
-            loadTon = getValue(OverheadCraneBAPCategory.LOAD_TEST, "loadTon").toIntOrNull() ?: 0,
+            loadTon = getValue(OverheadCraneBAPCategory.LOAD_TEST, "loadTon"),
             isAbleToLift = getStatus(OverheadCraneBAPCategory.LOAD_TEST, "isAbleToLift"),
             hasLoadDrop = getStatus(OverheadCraneBAPCategory.LOAD_TEST, "hasLoadDrop")
         ),
@@ -145,7 +144,8 @@ fun OverheadCraneBapReportData.toInspectionWithDetailsDomain(): InspectionWithDe
         ),
         createdAt = this.createdAt,
         reportDate = this.reportHeader.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     return InspectionWithDetailsDomain(
@@ -851,7 +851,8 @@ fun OverheadCraneReportData.toInspectionWithDetailsDomain(): InspectionWithDetai
         ),
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     return InspectionWithDetailsDomain(

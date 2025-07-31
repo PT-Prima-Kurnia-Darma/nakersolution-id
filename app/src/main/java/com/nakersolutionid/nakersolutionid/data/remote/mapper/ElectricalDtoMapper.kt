@@ -50,7 +50,6 @@ private object ElectricalCategory {
 }
 
 private object ElectricBAPCategory {
-    const val TECHNICAL_DATA = "DATA TEKNIK" // ADDED: For consistency in BAP Test Results
     const val VISUAL_INSPECTION = "PEMERIKSAAN VISUAL"
     const val VISUAL_INSPECTION_PANEL_ROOM = "$VISUAL_INSPECTION - Kondisi Ruang Panel"
     const val TESTING = "PENGUJIAN"
@@ -152,7 +151,8 @@ fun ElectricalBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetai
         driveType = null,
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -335,11 +335,11 @@ fun InspectionWithDetailsDomain.toElectricalReportRequest(): ElectricalReportReq
     val sdpFloors = this.checkItems
         .filter { it.category == ElectricalCategory.SDP_VISUAL_INTERNAL }
         .groupBy { it.itemName.substringBefore(":").replace("Lantai ", "").toIntOrNull() }
-        .mapNotNull { (floor, items) ->
+        .mapNotNull { (floor, _) ->
             if (floor == null) return@mapNotNull null
             val prefix = "Lantai $floor: "
             ElectricalSdpFloor(
-                floorNumber = floor,
+                floorNumber = floor.toString(),
                 hasCover = findTestItemStatus(ElectricalCategory.SDP_VISUAL_INTERNAL, "${prefix}Cover Pelindung Tegangan Sentuh"),
                 hasSld = findTestItemStatus(ElectricalCategory.SDP_VISUAL_INTERNAL, "${prefix}Gambar SLD & Kartu Perawatan"),
                 hasBonding = findTestItemStatus(ElectricalCategory.SDP_VISUAL_INTERNAL, "${prefix}Kabel Bonding"),
@@ -427,6 +427,7 @@ fun ElectricalReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         reportDate = this.generalData.inspectionDate,
         createdAt = this.createdAt,
         isSynced = true,
+        isEdited = false,
         // The DTO for Report also doesn't contain a direct `driveType` or `currentVoltageType`
         // We will retrieve it from test results if available.
         driveType = null

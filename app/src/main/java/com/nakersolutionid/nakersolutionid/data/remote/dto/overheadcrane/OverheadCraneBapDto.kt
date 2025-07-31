@@ -44,12 +44,12 @@ data class OverheadCraneBapReportHeader(
     @SerializedName("equipmentType") val equipmentType: String
 )
 
+// Perubahan: Menghapus field 'companyLocation' karena tidak ada di Joi schema
 data class OverheadCraneBapGeneralData(
-    @SerializedName("companyLocation") val companyLocation: String,
     @SerializedName("userInCharge") val userInCharge: String,
     @SerializedName("ownerAddress") val ownerAddress: String,
     @SerializedName("unitLocation") val unitLocation: String,
-    @SerializedName("ownerName") val ownerName: String // From update_bap_body.json
+    @SerializedName("ownerName") val ownerName: String
 )
 
 data class OverheadCraneBapTechnicalData(
@@ -75,8 +75,9 @@ data class OverheadCraneBapTesting(
     @SerializedName("ndtTest") val ndtTest: OverheadCraneBapNdtTest
 )
 
+// Perubahan: Mengubah tipe data 'loadTon' dari Int ke String sesuai Joi schema
 data class OverheadCraneBapLoadTest(
-    @SerializedName("loadTon") val loadTon: Int,
+    @SerializedName("loadTon") val loadTon: String,
     @SerializedName("isAbleToLift") val isAbleToLift: Boolean,
     @SerializedName("hasLoadDrop") val hasLoadDrop: Boolean
 )

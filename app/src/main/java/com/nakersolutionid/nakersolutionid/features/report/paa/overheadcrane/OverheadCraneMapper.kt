@@ -17,6 +17,7 @@ import kotlinx.collections.immutable.toImmutableList
  */
 fun OverheadCraneUiState.toInspectionWithDetailsDomain(
     currentTime: String,
+    isEdited: Boolean,
     reportId: Long? = null
 ): InspectionWithDetailsDomain {
     val report = this.overheadCraneInspectionReport
@@ -63,7 +64,8 @@ fun OverheadCraneUiState.toInspectionWithDetailsDomain(
         nextInspectionDate = "",
         inspectorName = "",
         status = "",
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

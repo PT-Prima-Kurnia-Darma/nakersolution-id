@@ -1,9 +1,11 @@
 package com.nakersolutionid.nakersolutionid.data.local.entity
 
 import androidx.room.ColumnInfo
+import androidx.room.DatabaseView
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Fts4
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.nakersolutionid.nakersolutionid.data.local.utils.DocumentType
@@ -23,6 +25,7 @@ import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 @Entity(tableName = "inspections")
 data class InspectionEntity(
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name="rowid")
     val id: Long = 0,
 
     @ColumnInfo(name= "extra_id")
@@ -35,19 +38,19 @@ data class InspectionEntity(
      * e.g., "Laporan, BAP, Surat Keterangan Sementara, Sertifikat Sementara"
      */
     @ColumnInfo(name = "document_type")
-    val documentType: DocumentType,
+    val documentType: String,
 
     /**
      * e.g., "ILPP", "IPK", "PAA", "PUBT", "PTP", "EE"
      */
     @ColumnInfo(name = "inspection_type")
-    val inspectionType: InspectionType,
+    val inspectionType: String,
 
     /**
      * e.g., "Elevator, Escalator, Forklift, Bulldozer, Excavator, Instalasi Petir"
      */
     @ColumnInfo(name = "sub_inspection_type")
-    val subInspectionType: SubInspectionType,
+    val subInspectionType: String,
 
     /**
      * e.g., "Elevator Penumpang, Elevator Barang, Counterbalance Forklift, Order Picker"
@@ -114,7 +117,16 @@ data class InspectionEntity(
     val status: String? = null, // e.g., "LAIK", "Aman untuk dioperasikan"
 
     @ColumnInfo(name = "is_synced")
-    val isSynced: Boolean = false
+    val isSynced: Boolean = false,
+
+    @ColumnInfo(name = "is_edited")
+    val isEdited: Boolean = false,
+
+    @ColumnInfo(name = "is_downloaded")
+    val isDownloaded: Boolean = false,
+
+    @ColumnInfo(name = "file_path")
+    val filePath: String = ""
 )
 
 /**
@@ -138,7 +150,7 @@ data class Manufacturer(
     tableName = "inspection_check_items",
     foreignKeys = [ForeignKey(
         entity = InspectionEntity::class,
-        parentColumns = ["id"],
+        parentColumns = ["rowid"],
         childColumns = ["inspection_id"],
         onDelete = ForeignKey.CASCADE
     )]
@@ -170,7 +182,7 @@ data class InspectionCheckItem(
     tableName = "inspection_findings",
     foreignKeys = [ForeignKey(
         entity = InspectionEntity::class,
-        parentColumns = ["id"],
+        parentColumns = ["rowid"],
         childColumns = ["inspection_id"],
         onDelete = ForeignKey.CASCADE
     )]
@@ -202,7 +214,7 @@ enum class FindingType {
     tableName = "inspection_test_results",
     foreignKeys = [ForeignKey(
         entity = InspectionEntity::class,
-        parentColumns = ["id"],
+        parentColumns = ["rowid"],
         childColumns = ["inspection_id"],
         onDelete = ForeignKey.CASCADE
     )]
@@ -222,7 +234,79 @@ data class InspectionTestResult(
     val notes: String?
 )
 
+/**
+ * FTS4 virtual table that mirrors the InspectionEntity for full-text searching.
+ * The 'contentEntity' property links this virtual table to the actual data table.
+ */
+@Entity(tableName = "inspections_fts")
+@Fts4(contentEntity = InspectionEntity::class)
+data class InspectionFtsEntity(
+    @PrimaryKey
+    @ColumnInfo(name = "rowid")
+    val rowid: Int,
 
+    @ColumnInfo(name = "document_type")
+    val documentType: String,
+
+    @ColumnInfo(name = "inspection_type")
+    val inspectionType: String,
+
+    @ColumnInfo(name = "sub_inspection_type")
+    val subInspectionType: String,
+
+    @ColumnInfo(name = "equipment_type")
+    val equipmentType: String,
+
+    @ColumnInfo(name = "examination_type")
+    val examinationType: String,
+
+    @ColumnInfo(name = "owner_name")
+    val ownerName: String?,
+
+    @ColumnInfo(name = "owner_address")
+    val ownerAddress: String?,
+
+    @ColumnInfo(name = "usage_location")
+    val usageLocation: String?,
+
+    @ColumnInfo(name = "address_usage_location")
+    val addressUsageLocation: String?,
+
+    // --- Equipment Identification ---
+    @ColumnInfo(name = "drive_type")
+    val driveType: String?, // e.g., "Single Track", "Double Track, Gearless, Gasoline Forklift, Hydraulic Forklift"
+
+    @ColumnInfo(name = "serial_number")
+    val serialNumber: String?, // e.g., "123456789", "987654321, ELEV-JKT-2021-007, XXXXX-XX-JKT"
+
+    @ColumnInfo(name = "permit_number")
+    val permitNumber: String?, // e.g., "SKP-123/M/DJPPK/VII/2023"
+
+    @ColumnInfo(name = "capacity")
+    val capacity: String?, // e.g., "1250 kg / 18 orang, 5000 kg"
+
+    @ColumnInfo(name = "speed")
+    val speed: String?,
+
+    @ColumnInfo(name = "floor_served")
+    val floorServed: String?,
+
+    // --- Report Metadata ---
+    @ColumnInfo(name = "created_at")
+    val createdAt: String?,
+
+    @ColumnInfo(name = "report_date")
+    val reportDate: String?,
+
+    @ColumnInfo(name = "next_inspection_date")
+    val nextInspectionDate: String?,
+
+    @ColumnInfo(name = "inspector_name")
+    val inspectorName: String?,
+
+    @ColumnInfo(name = "status")
+    val status: String?
+)
 // --- RELATIONSHIP ENTITY ---
 
 /**
@@ -235,19 +319,19 @@ data class InspectionWithDetails(
     val inspectionEntity: InspectionEntity,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "rowid",
         entityColumn = "inspection_id"
     )
     val checkItems: List<InspectionCheckItem>,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "rowid",
         entityColumn = "inspection_id"
     )
     val findings: List<InspectionFinding>,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "rowid",
         entityColumn = "inspection_id"
     )
     val testResults: List<InspectionTestResult>

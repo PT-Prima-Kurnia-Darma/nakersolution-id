@@ -8,8 +8,8 @@ data class PubtBapRequest(
     @SerializedName("inspectionType") val inspectionType: String,
     @SerializedName("inspectionDate") val inspectionDate: String,
     @SerializedName("extraId") val extraId: Long,
-    @SerializedName("createdAt") val createdAt: String, // Dari JSON: "" atau timestamp
-    @SerializedName("equipmentType") val equipmentType: String, // Dari JSON: ""
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("equipmentType") val equipmentType: String,
     @SerializedName("generalData") val generalData: PubtBapGeneralData,
     @SerializedName("technicalData") val technicalData: PubtBapTechnicalData,
     @SerializedName("visualInspection") val visualInspection: PubtBapVisualInspection,
@@ -51,6 +51,7 @@ data class PubtBapGeneralData(
     @SerializedName("userAddress") val userAddress: String
 )
 
+// Perubahan: Mengubah tipe data Int menjadi String agar sesuai dengan Joi schema
 data class PubtBapTechnicalData(
     @SerializedName("brandType") val brandType: String,
     @SerializedName("manufacturer") val manufacturer: String,
@@ -58,11 +59,11 @@ data class PubtBapTechnicalData(
     @SerializedName("serialNumberUnitNumber") val serialNumberUnitNumber: String,
     @SerializedName("fuelType") val fuelType: String,
     @SerializedName("operatingPressure") val operatingPressure: String,
-    @SerializedName("designPressureKgCm2") val designPressureKgCm2: Int,
-    @SerializedName("maxAllowableWorkingPressure") val maxAllowableWorkingPressure: Int,
+    @SerializedName("designPressureKgCm2") val designPressureKgCm2: String,
+    @SerializedName("maxAllowableWorkingPressure") val maxAllowableWorkingPressure: String,
     @SerializedName("technicalDataShellMaterial") val technicalDataShellMaterial: String,
     @SerializedName("safetyValveType") val safetyValveType: String,
-    @SerializedName("volumeLiters") val volumeLiters: Int
+    @SerializedName("volumeLiters") val volumeLiters: String
 )
 
 data class PubtBapVisualInspection(

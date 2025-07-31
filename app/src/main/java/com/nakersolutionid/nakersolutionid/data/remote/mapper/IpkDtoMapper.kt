@@ -168,7 +168,8 @@ fun IpkBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomai
         serialNumber = this.technicalData.certificateNumber,
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -381,7 +382,8 @@ fun IpkReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDomain {
         permitNumber = this.generalData.certificateNumber,
         reportDate = this.generalData.inspectionDate,
         createdAt = this.createdAt,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

@@ -438,7 +438,9 @@ fun InspectionWithDetailsDomain.toForkliftBapRequest(): ForkliftBapRequest {
         extraId = this.inspection.id,
         generalData = generalData,
         technicalData = technicalData,
-        inspectionResult = inspectionResult
+        inspectionResult = inspectionResult,
+        equipmentType = this.inspection.equipmentType,
+        inspectionType = this.inspection.inspectionType.toDisplayString()
     )
 }
 
@@ -487,7 +489,8 @@ fun ForkliftReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDom
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = this.conclusion, // Conclusion can be used as status
-        isSynced = true // Data from network is considered synced
+        isSynced = true, // Data from network is considered synced
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -784,7 +787,8 @@ fun ForkliftBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetails
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = null, // BAP does not have a final conclusion/status field
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

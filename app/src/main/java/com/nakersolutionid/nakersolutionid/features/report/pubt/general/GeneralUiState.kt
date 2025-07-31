@@ -15,7 +15,209 @@ import kotlinx.collections.immutable.persistentListOf
 data class GeneralUiState(
     val isLoading: Boolean = false,
     val inspectionReport: GeneralInspectionReport = GeneralInspectionReport()
-)
+) {
+    companion object {
+        fun createDummyGeneralUiState(): GeneralUiState {
+            return GeneralUiState(
+                isLoading = false,
+                inspectionReport = GeneralInspectionReport(
+                    extraId = "GEN-11223",
+                    moreExtraId = "MGEN-44556",
+                    equipmentType = "Steam Boiler",
+                    examinationType = "Annual Inspection",
+                    generalData = GeneralData(
+                        ownerName = "PT. Jaya Abadi",
+                        ownerAddress = "Jl. Industri Raya No. 3, Bandung",
+                        user = "Andi Wijaya",
+                        userAddress = "Jl. Karyawan Tetap No. 4, Bandung",
+                        operatorName = "Siti Aminah",
+                        manufacturer = "Babcock & Wilcox",
+                        brandModelType = "Package Boiler FM-10",
+                        driveType = "Combustion",
+                        countryAndYearOfManufacture = "USA, 2019",
+                        serialNumber = "BW-PB-19001",
+                        designPressureKgCm2 = "15",
+                        maxAllowableWorkingPressureKgCm2 = "10",
+                        capacityKgH = "1000",
+                        steamTemperature = "180 °C",
+                        operatingPressureKgCm2 = "8",
+                        fuelType = "Natural Gas",
+                        intendedUse = "Process Steam Generation",
+                        permitNumber = "PB-2024-001",
+                        operatorCertificate = "OP-SA-005",
+                        equipmentHistory = "Last internal inspection 1 year ago. Boiler blowdown performed daily.",
+                        inspectionDate = "2025-07-30"
+                    ),
+                    technicalData = GeneralTechnicalData(
+                        shell = GeneralShell(
+                            numberOfRounds = "1",
+                            connectionMethod = "Welded",
+                            material = "SA-516 Gr. 70",
+                            pipeDiameterMm = "1500",
+                            thicknessMm = "8",
+                            bodyLengthMm = "3000"
+                        ),
+                        heads = GeneralHeads(
+                            type = "ASME F&D",
+                            topDiameterMm = "1500",
+                            topThicknessMm = "10",
+                            rearDiameterMm = "1300",
+                            rearThicknessMm = "9"
+                        ),
+                        tubePlate = GeneralTubePlate(
+                            frontDim1Mm = "1300",
+                            frontDim2Mm = "50",
+                            rearDim1Mm = "1300",
+                            rearDim2Mm = "50"
+                        ),
+                        furnace = GeneralFurnace(
+                            type = "Horizontal",
+                            material = "SA-210 Gr. A-1",
+                            outerDiameterMm = "1000",
+                            innerDiameterMm = "950",
+                            thicknessMm = "6"
+                        ),
+                        waterTubes = GeneralWaterTubes(
+                            firstPass = GeneralTubePass(diameterMm = "50", thicknessMm = "3", lengthMm = "2500", quantity = "100"),
+                            secondPass = GeneralTubePass(diameterMm = "50", thicknessMm = "3", lengthMm = "2000", quantity = "80"),
+                            stayTube = GeneralTubePass(diameterMm = "75", thicknessMm = "5", lengthMm = "1200", quantity = "10"),
+                            material = GeneralTubePass(diameterMm = "SA-210 Gr. A-1", thicknessMm = "", lengthMm = "", quantity = ""),
+                            connectionMethod = "Welded"
+                        )
+                    ),
+                    inspectionAndMeasurement = GeneralInspectionAndMeasurement(
+                        visualInspection = GeneralVisualInspection(
+                            steamEquipmentShellDrum = GeneralCheckResult(isMet = true, remarks = "No visible corrosion or deformation."),
+                            steamEquipmentFurnace = GeneralCheckResult(isMet = true, remarks = "Furnace interior clean."),
+                            steamEquipmentFireTubes = GeneralCheckResult(isMet = true, remarks = "Fire tubes are clean."),
+                            boilerDetailsChimney = GeneralCheckResult(isMet = true, remarks = "Chimney is structurally sound."),
+                            safetyValveRing = GeneralCheckResult(isMet = true, remarks = "Safety valve ring is intact."),
+                            pressureGaugeMark = GeneralCheckResult(isMet = true, remarks = "Pressure gauge marking is clear."),
+                            gaugeGlassTryCocks = GeneralCheckResult(isMet = true, remarks = "Try cocks are functioning."),
+                            waterLevelLowestMark = GeneralCheckResult(isMet = true, remarks = "Lowest water level mark is visible."),
+                            feedwaterPump = GeneralCheckResult(isMet = true, remarks = "Feedwater pump is clean."),
+                            controlWaterLevel = GeneralCheckResult(isMet = true, remarks = "Water level is stable."),
+                            controlSteamPressure = GeneralCheckResult(isMet = true, remarks = "Steam pressure is within operating range."),
+                            blowdownDesc = GeneralCheckResult(isMet = true, remarks = "Blowdown valve is operational."),
+                            manholeManhole = GeneralCheckResult(isMet = true, remarks = "Manhole cover is secure."),
+                            idMarkNameplate = GeneralCheckResult(isMet = true, remarks = "Nameplate is legible.")
+                        ),
+                        materialThickness = GeneralMaterialThickness(
+                            shellThicknessMm = GeneralValueResult(value = "8", remarks = "Nominal thickness."),
+                            shellDiameterMm = GeneralValueResult(value = "1500", remarks = "Nominal diameter."),
+                            headerDiameterMm = GeneralValueResult(value = "1300", remarks = "Nominal diameter."),
+                            headerThicknessMm = GeneralValueResult(value = "10", remarks = "Nominal thickness."),
+                            headerLengthMm = GeneralValueResult(value = "", remarks = ""),
+                            furnace1DiameterMm = GeneralValueResult(value = "1000", remarks = "Nominal diameter."),
+                            furnace1ThicknessMm = GeneralValueResult(value = "6", remarks = "Nominal thickness."),
+                            furnace1LengthMm = GeneralValueResult(value = "", remarks = ""),
+                            furnace2DiameterMm = GeneralValueResult(value = "", remarks = ""),
+                            furnace2ThicknessMm = GeneralValueResult(value = "", remarks = ""),
+                            furnace2LengthMm = GeneralValueResult(value = "", remarks = "")
+                        ),
+                        thicknessMeasurementSetup = GeneralThicknessMeasurementSetup(
+                            owner = "PT. Jaya Abadi",
+                            inspectionDate = "2025-07-30",
+                            project = "Annual Boiler Inspection",
+                            objectType = "Steam Boiler",
+                            workOrderNo = "WO-BOIL-2025-007",
+                            equipmentUsed = "Krautkramer USM 35S",
+                            methodUsed = "Ultrasonic Pulse Echo",
+                            probeType = "5 MHz",
+                            materialType = "Steel",
+                            probeStyle = "Dual Element",
+                            operatingTemp = "Ambient",
+                            surfaceCondition = "Cleaned",
+                            weldingProcess = "SMAW",
+                            laminatingCheck = "Yes",
+                            couplantUsed = "Glycerol"
+                        ),
+                        measurementResultsTopHead = GeneralMeasurementResultItem(
+                            position = "Top Head",
+                            nominalMm = "10",
+                            point1 = "9.8",
+                            point2 = "9.9",
+                            point3 = "9.7",
+                            minimum = "9.7",
+                            maximum = "9.9"
+                        ),
+                        measurementResultsShell = GeneralMeasurementResultItem(
+                            position = "Shell - Mid Section",
+                            nominalMm = "8",
+                            point1 = "7.9",
+                            point2 = "8.1",
+                            point3 = "7.8",
+                            minimum = "7.8",
+                            maximum = "8.1"
+                        ),
+                        measurementResultsButtonHead = GeneralMeasurementResultItem(
+                            position = "Rear Head",
+                            nominalMm = "9",
+                            point1 = "8.8",
+                            point2 = "8.9",
+                            point3 = "8.7",
+                            minimum = "8.7",
+                            maximum = "8.9"
+                        ),
+                        ndtTests = GeneralNdtTests(
+                            shell = GeneralNdtTestComponent(
+                                method = "UT",
+                                longitudinalWeldJoint = GeneralNdtResult(location = "Longitudinal Seam", isGood = true, remarks = "No Discontinuities Detected"),
+                                circumferentialWeldJoint = GeneralNdtResult(location = "Circumferential Seam", isGood = true, remarks = "No Discontinuities Detected")
+                            ),
+                            furnace = GeneralNdtTestComponent(
+                                method = "RT",
+                                longitudinalWeldJoint = GeneralNdtResult(location = "Furnace Seam", isGood = true, remarks = "Radiography shows acceptable weld quality.")
+                            ),
+                            fireTubes = GeneralNdtTestFireTubes(
+                                method = "VT",
+                                weldJointFront = GeneralNdtResult(location = "Fire Tube Weld (Front)", isGood = true, remarks = "Visual inspection clear."),
+                                weldJointRear = GeneralNdtResult(location = "Fire Tube Weld (Rear)", isGood = true, remarks = "Visual inspection clear.")
+                            )
+                        ),
+                        hydrotest = GeneralHydrotest(
+                            testPressureKgCm2 = "15",
+                            mawpKgCm2 = "10",
+                            testMedium = "Water",
+                            testDate = "2025-07-29",
+                            testResult = "Passed - No leaks observed"
+                        ),
+                        appendagesInspection = GeneralAppendagesInspection(
+                            pressureGauge = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Calibrated and functional."),
+                            manHole = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Gasket replaced."),
+                            safetyValve = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Set pressure confirmed."),
+                            mainSteamValve = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Operates smoothly."),
+                            levelGlassIndicator = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Clear visibility."),
+                            blowdownValve = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Operates freely."),
+                            feedwaterStopValve = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Holds pressure."),
+                            feedwaterInletValve = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Operates freely."),
+                            steamDrier = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Appears intact."),
+                            waterPump = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Pump is clean."),
+                            controlPanel = GeneralAppendageResult(quantity = "1", isGood = true, remarks = "Control panel is clean.")
+                        ),
+                        safetyValveTest = GeneralSafetyValveTest(
+                            header = "15 kg/cm²",
+                            startsToOpenKgCm2 = "15",
+                            valveInfo = "Set pressure confirmed by external calibration."
+                        )
+                    ),
+                    conclusion = GeneralConclusion(
+                        summary = persistentListOf(
+                            "The steam boiler is in good condition and meets operational requirements.",
+                            "All safety features and devices are functional.",
+                            "Material thickness readings are within acceptable limits."
+                        ),
+                        recommendations = persistentListOf(
+                            "Continue daily blowdown procedure.",
+                            "Perform monthly checks on safety valve.",
+                            "Schedule next internal inspection in 12 months."
+                        )
+                    )
+                )
+            )
+        }
+    }
+}
 
 @Immutable
 data class GeneralInspectionReport(

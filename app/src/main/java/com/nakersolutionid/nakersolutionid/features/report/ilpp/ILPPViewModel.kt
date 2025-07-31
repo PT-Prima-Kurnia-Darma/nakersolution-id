@@ -1,11 +1,11 @@
 package com.nakersolutionid.nakersolutionid.features.report.ilpp
 
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
@@ -13,14 +13,12 @@ import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.Electri
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.toElectricalUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingMeasurementItem
-import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionGroundingTestItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.LightningProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.lightning.toLightningProtectionUiState
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,53 +26,143 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ILPPViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class ILPPViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _ilppUiState = MutableStateFlow(ILPPUiState())
     val ilppUiState: StateFlow<ILPPUiState> = _ilppUiState.asStateFlow()
 
-    private val _electricalUiState = MutableStateFlow(Dummy.getDummyElectricUiState())
+    private val _electricalUiState = MutableStateFlow(ElectricalUiState.createDummyElectricalUiState())
     val electricalUiState: StateFlow<ElectricalUiState> = _electricalUiState.asStateFlow()
 
-    private val _lightningUiState = MutableStateFlow(Dummy.getDummyLightningUiState())
+    private val _lightningUiState = MutableStateFlow(LightningProtectionUiState.createDummyLightningProtectionUiState())
     val lightningUiState: StateFlow<LightningProtectionUiState> = _lightningUiState.asStateFlow()
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Electrical -> {
-                    val electricalInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _ilppUiState.update { it.copy(electricResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _ilppUiState.update { it.copy(electricResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _ilppUiState.update { it.copy(electricResult = Resource.Error("Laporan gagal disimpan")) }
+                    val elevatorInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
+                    collectMlResult(elevatorInspection)
+                }
+                SubInspectionType.Lightning_Conductor -> {
+                    val escalatorInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
+                    collectMlResult(escalatorInspection)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onILPPUpdateState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onILPPUpdateState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Electrical -> _electricalUiState.update { ui ->
+                            ui.copy(
+                                electricalInspectionReport = ui.electricalInspectionReport.copy(
+                                    conclusion = ui.electricalInspectionReport.conclusion.copy(
+                                        recommendations = recommendation,
+                                        summary = persistentListOf(conclusion)
+                                    )
+                                )
+                            )
+                        }
+                        SubInspectionType.Lightning_Conductor -> _lightningUiState.update { ui ->
+                            ui.copy(
+                                inspectionReport = ui.inspectionReport.copy(
+                                    conclusion = ui.inspectionReport.conclusion.copy(
+                                        recommendations = recommendation,
+                                        summary = conclusion
+                                    )
+                                )
+                            )
+                        }
+                        else -> null
                     }
+                    onILPPUpdateState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
+
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Electrical -> {
+                    val inspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
+                   triggerSaving(inspection, isInternetAvailable)
                 }
 
                 SubInspectionType.Lightning_Conductor -> {
-                    val lightningInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(lightningInspection)
-                        _ilppUiState.update { it.copy(lightningResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _ilppUiState.update { it.copy(lightningResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _ilppUiState.update { it.copy(lightningResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
             }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _ilppUiState.value.editMode
+
+        val id = saveReport(inspection)
+
+        if (id == null) {
+            return
+        }
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            if (isEditMode) {
+                if (isSynced) updateReport(cloudInspection)
+            } else {
+                createReport(cloudInspection)
+            }
+        } else {
+            _ilppUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain): Long? {
+        try {
+            val id = reportUseCase.saveReport(inspection)
+            return id
+        } catch(_: SQLiteConstraintException) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        } catch (_: Exception) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.createReport(inspection).collect { result ->
+                _ilppUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _ilppUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ilppUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -171,7 +259,7 @@ class ILPPViewModel(
         onLightningReportChange(report.copy(testingResults = updatedResults))
     }
 
-    fun addGroundingTestItem(item: LightningProtectionGroundingTestItem) = viewModelScope.launch {
+    /*fun addGroundingTestItem(item: LightningProtectionGroundingTestItem) = viewModelScope.launch {
         val report = _lightningUiState.value.inspectionReport
         val testingResults = report.testingResults
         val newItems = (testingResults.groundingResistanceTest + item).toImmutableList()
@@ -185,7 +273,7 @@ class ILPPViewModel(
         val newItems = testingResults.groundingResistanceTest.toMutableList().apply { removeAt(index) }.toImmutableList()
         val updatedResults = testingResults.copy(groundingResistanceTest = newItems)
         onLightningReportChange(report.copy(testingResults = updatedResults))
-    }
+    }*/
 
     fun addLightningRecommendation(item: String) = viewModelScope.launch {
         val report = _lightningUiState.value.inspectionReport
@@ -215,6 +303,7 @@ class ILPPViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
@@ -248,18 +337,6 @@ class ILPPViewModel(
                     )
                 }
             }
-        }
-    }
-
-    fun startSync() {
-        if (_ilppUiState.value.loadedEquipmentType != null) {
-            Log.d("ILPPViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _ilppUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("ILPPViewModel", "Starting sync")
-            syncManager.startSync()
-            _ilppUiState.update { it.copy(loadedEquipmentType = null) }
         }
     }
 }

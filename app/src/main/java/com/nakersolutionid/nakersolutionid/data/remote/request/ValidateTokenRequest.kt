@@ -1,5 +1,7 @@
 package com.nakersolutionid.nakersolutionid.data.remote.request
 
+import com.google.gson.annotations.SerializedName
+
 data class ValidateTokenRequest(
-    val token: String
+    @SerializedName("token") val token: String
 )

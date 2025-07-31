@@ -22,7 +22,7 @@ private object FireProtectionCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun FireProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+fun FireProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.inspectionReport
     val companyData = report.companyData
     val inspectionId: Long = reportId ?: 0
@@ -43,7 +43,8 @@ fun FireProtectionUiState.toInspectionWithDetailsDomain(currentTime: String, rep
         permitNumber = companyData.certificateNumber,
         reportDate = companyData.inspectionDate,
         createdAt = currentTime,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = createCheckItemsFromUiState(report, inspectionId)

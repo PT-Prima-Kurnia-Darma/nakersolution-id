@@ -16,7 +16,7 @@ private object ElectricBAPCategory {
     const val TESTING = "PENGUJIAN"
 }
 
-fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: String, id: Long?): InspectionWithDetailsDomain {
+fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, id: Long?): InspectionWithDetailsDomain {
     val inspectionId: Long = id ?: 0
 
     val inspectionDomain = InspectionDomain(
@@ -37,7 +37,8 @@ fun ElectricalInstallationBAPReport.toInspectionWithDetailsDomain(currentTime: S
         driveType = this.technicalData.electricCurrentType,
         createdAt = currentTime,
         reportDate = this.inspectionDate,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

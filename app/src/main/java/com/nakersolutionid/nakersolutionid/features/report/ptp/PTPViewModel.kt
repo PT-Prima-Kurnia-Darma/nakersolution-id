@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ptp.machine.ProductionMachineUiState
@@ -15,9 +16,9 @@ import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.Diese
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.DieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toDieselMotorUiState
 import com.nakersolutionid.nakersolutionid.features.report.ptp.motordiesel.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
 import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,53 +26,140 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PTPViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _ptpUiState = MutableStateFlow(PTPUiState())
     val ptpUiState: StateFlow<PTPUiState> = _ptpUiState.asStateFlow()
 
-    private val _machineUiState = MutableStateFlow(Dummy.getDummyProductionMachineUiState())
+    private val _machineUiState = MutableStateFlow(ProductionMachineUiState.createDummyProductionMachineUiState())
     val machineUiState: StateFlow<ProductionMachineUiState> = _machineUiState.asStateFlow()
 
-    private val _motorDieselUiState = MutableStateFlow(Dummy.getDummyDieselMotorUiState())
+    private val _motorDieselUiState = MutableStateFlow(DieselMotorUiState.createDummyDieselMotorUiState())
     val motorDieselUiState: StateFlow<DieselMotorUiState> = _motorDieselUiState.asStateFlow()
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Machine -> {
-                    val electricalInspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _ptpUiState.update { it.copy(machineResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _ptpUiState.update { it.copy(machineResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _ptpUiState.update { it.copy(machineResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
+                    collectMlResult(inspection)
                 }
-
                 SubInspectionType.Motor_Diesel -> {
-                    val electricalInspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(_: SQLiteConstraintException) {
-                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (_: Exception) {
-                        _ptpUiState.update { it.copy(motorDieselResult = Resource.Error("Laporan gagal disimpan")) }
-                    }
+                    val inspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
+                    collectMlResult(inspection)
                 }
                 else -> {}
             }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onUpdatePTPState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onUpdatePTPState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Machine -> {
+                            val report = _machineUiState.value.inspectionReport
+                            val updatedConclusion = report.conclusion.copy(
+                                summary = persistentListOf(conclusion),
+                                requirements = recommendation
+                            )
+                            onMachineReportChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        SubInspectionType.Motor_Diesel -> {
+                            val report = _motorDieselUiState.value.inspectionReport
+                            val updatedConclusion = report.conclusion.copy(
+                                summary = persistentListOf(conclusion),
+                                requirements = recommendation
+                            )
+                            onMotorDieselReportChange(report.copy(conclusion = updatedConclusion))
+                        }
+                        else -> {}
+                    }
+                    onUpdatePTPState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
+
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Machine -> {
+                    val inspection = _machineUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
+                }
+
+                SubInspectionType.Motor_Diesel -> {
+                    val inspection = _motorDieselUiState.value.toInspectionWithDetailsDomain(currentTime, _ptpUiState.value.editMode, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _ptpUiState.value.editMode
+
+        val id = saveReport(inspection)
+
+        if (id == null) {
+            return
+        }
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            if (isEditMode) {
+                if (isSynced) updateReport(cloudInspection)
+            } else {
+                createReport(cloudInspection)
+            }
+        } else {
+            _ptpUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain): Long? {
+        try {
+            val id = reportUseCase.saveReport(inspection)
+            return id
+        } catch(_: SQLiteConstraintException) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        } catch (_: Exception) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _ptpUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _ptpUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ptpUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -162,6 +250,7 @@ class PTPViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
@@ -195,18 +284,6 @@ class PTPViewModel(
                     )
                 }
             }
-        }
-    }
-
-    fun startSync() {
-        if (_ptpUiState.value.loadedEquipmentType != null) {
-            Log.d("PTPViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _ptpUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("PTPViewModel", "Starting sync")
-            syncManager.startSync()
-            _ptpUiState.update { it.copy(loadedEquipmentType = null) }
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
+import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionAlarmInstallationItem
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionHydrantOperationalTestItem
@@ -14,9 +15,8 @@ import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.Fi
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.FireProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toFireProtectionUiState
 import com.nakersolutionid.nakersolutionid.features.report.ipk.fireprotection.toInspectionWithDetailsDomain
-import com.nakersolutionid.nakersolutionid.utils.Dummy
 import com.nakersolutionid.nakersolutionid.utils.Utils.getCurrentTime
-import com.nakersolutionid.nakersolutionid.workers.SyncManager
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,37 +24,122 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class IPKViewModel(
-    private val reportUseCase: ReportUseCase,
-    private val syncManager: SyncManager
-) : ViewModel() {
+class IPKViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _ipkUiState = MutableStateFlow(IPKUiState())
     val ipkUiState: StateFlow<IPKUiState> = _ipkUiState.asStateFlow()
 
-    private val _fireProtectionUiState = MutableStateFlow(Dummy.getDummyFireProtectionUiState())
+    private val _fireProtectionUiState = MutableStateFlow(FireProtectionUiState.createDummyFireProtectionUiState())
     val fireProtectionUiState: StateFlow<FireProtectionUiState> = _fireProtectionUiState.asStateFlow()
 
     // Store the current report ID for editing
     private var currentReportId: Long? = null
+    private var isSynced = false
 
-    fun onSaveClick(selectedIndex: SubInspectionType) {
+    fun onGetMLResult(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()
             when (selectedIndex) {
                 SubInspectionType.Fire_Protection -> {
-                    val electricalInspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime, currentReportId)
-                    try {
-                        reportUseCase.saveReport(electricalInspection)
-                        _ipkUiState.update { it.copy(fireProtectionResult = Resource.Success("Laporan berhasil disimpan")) }
-                        startSync()
-                    } catch(e: SQLiteConstraintException) {
-                        _ipkUiState.update { it.copy(fireProtectionResult = Resource.Error("Laporan gagal disimpan")) }
-                    } catch (e: Exception) {
-                        _ipkUiState.update { it.copy(fireProtectionResult = Resource.Error("Laporan gagal disimpan")) }
+                    val elevatorInspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime, _ipkUiState.value.editMode, currentReportId)
+                    collectMlResult(elevatorInspection)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun collectMlResult(inspection: InspectionWithDetailsDomain) {
+        reportUseCase.getMLResult(inspection).collect { data ->
+            when (data) {
+                is Resource.Error -> onIPKUpdateState { it.copy(mlResult = data.message, mlLoading = false) }
+                is Resource.Loading -> onIPKUpdateState { it.copy(mlLoading = true) }
+                is Resource.Success -> {
+                    val conclusion = data.data?.conclusion ?: ""
+                    val recommendation = data.data?.recommendation?.toImmutableList() ?: persistentListOf()
+                    when (inspection.inspection.subInspectionType) {
+                        SubInspectionType.Fire_Protection -> _fireProtectionUiState.update { ui ->
+                            ui.copy(
+                                inspectionReport = ui.inspectionReport.copy(
+                                    conclusion = ui.inspectionReport.conclusion.copy(
+                                        recommendations = recommendation,
+                                        summary = conclusion
+                                    )
+                                )
+                            )
+                        }
+                        else -> null
                     }
+                    onIPKUpdateState { it.copy(mlLoading = false) }
+                }
+            }
+        }
+    }
+
+    fun onSaveClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Fire_Protection -> {
+                    val inspection = _fireProtectionUiState.value.toInspectionWithDetailsDomain(currentTime, _ipkUiState.value.editMode, currentReportId)
+                    triggerSaving(inspection, isInternetAvailable)
                 }
                 else -> {}
             }
+        }
+    }
+
+    private suspend fun triggerSaving(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val isEditMode = _ipkUiState.value.editMode
+
+        val id = saveReport(inspection)
+
+        if (id == null) {
+            return
+        }
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            if (isEditMode) {
+                if (isSynced) updateReport(cloudInspection)
+            } else {
+                createReport(cloudInspection)
+            }
+        } else {
+            _ipkUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        }
+    }
+
+    suspend fun saveReport(inspection: InspectionWithDetailsDomain): Long? {
+        try {
+            val id = reportUseCase.saveReport(inspection)
+            return id
+        } catch(_: SQLiteConstraintException) {
+            _ipkUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        } catch (_: Exception) {
+            _ipkUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+            return null
+        }
+    }
+
+    private suspend fun createReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            Log.d("PUBTViewModel", "Creating report")
+            reportUseCase.createReport(inspection).collect { result ->
+                _ipkUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ipkUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
+        }
+    }
+
+    private suspend fun updateReport(inspection: InspectionWithDetailsDomain) {
+        try {
+            reportUseCase.updateReport(inspection).collect { result ->
+                _ipkUiState.update { it.copy(result = result) }
+            }
+        } catch (_: Exception) {
+            _ipkUiState.update { it.copy(result = Resource.Error("Laporan gagal disimpan")) }
         }
     }
 
@@ -129,6 +214,7 @@ class IPKViewModel(
                 if (inspection != null) {
                     // Store the report ID for editing
                     currentReportId = reportId
+                    isSynced = inspection.inspection.isSynced
                     
                     // Extract the equipment type from the loaded inspection
                     val equipmentType = inspection.inspection.subInspectionType
@@ -161,18 +247,6 @@ class IPKViewModel(
                     )
                 }
             }
-        }
-    }
-
-    fun startSync() {
-        if (_ipkUiState.value.loadedEquipmentType != null) {
-            Log.d("IPKViewModel", "Starting sync update")
-            syncManager.startSyncUpdate()
-            _ipkUiState.update { it.copy(loadedEquipmentType = null) }
-        } else {
-            Log.d("IPKViewModel", "Starting sync")
-            syncManager.startSync()
-            _ipkUiState.update { it.copy(loadedEquipmentType = null) }
         }
     }
 }

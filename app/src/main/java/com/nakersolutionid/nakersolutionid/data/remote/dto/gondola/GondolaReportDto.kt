@@ -74,28 +74,28 @@ data class GondolaTechnicalData(
 )
 
 data class GondolaSpecification(
-    @SerializedName("supportMastHeight") val supportMastHeight: Int,
-    @SerializedName("frontBeamLength") val frontBeamLength: Int,
-    @SerializedName("middleBeamLength") val middleBeamLength: Int,
-    @SerializedName("rearBeamLength") val rearBeamLength: Int,
-    @SerializedName("balanceWeightDistance") val balanceWeightDistance: Int,
+    @SerializedName("supportMastHeight") val supportMastHeight: String,
+    @SerializedName("frontBeamLength") val frontBeamLength: String,
+    @SerializedName("middleBeamLength") val middleBeamLength: String,
+    @SerializedName("rearBeamLength") val rearBeamLength: String,
+    @SerializedName("balanceWeightDistance") val balanceWeightDistance: String,
     @SerializedName("capacity") val capacity: String,
     @SerializedName("speed") val speed: String,
     @SerializedName("platformSize") val platformSize: String,
-    @SerializedName("wireRopeDiameter") val wireRopeDiameter: Double
+    @SerializedName("wireRopeDiameter") val wireRopeDiameter: String
 )
 
 data class GondolaHoist(
     @SerializedName("model") val model: String,
-    @SerializedName("liftingCapacity") val liftingCapacity: Int,
+    @SerializedName("liftingCapacity") val liftingCapacity: String,
     @SerializedName("electricMotor") val electricMotor: GondolaElectricMotor
 )
 
 data class GondolaElectricMotor(
     @SerializedName("type") val type: String,
     @SerializedName("power") val power: String,
-    @SerializedName("voltage") val voltage: Int,
-    @SerializedName("voltageHz") val voltageHz: Int
+    @SerializedName("voltage") val voltage: String,
+    @SerializedName("voltageHz") val voltageHz: String
 )
 
 data class GondolaBrake(
@@ -105,15 +105,15 @@ data class GondolaBrake(
 )
 
 data class GondolaSuspensionMechanical(
-    @SerializedName("supportMastHeight") val supportMastHeight: Int,
-    @SerializedName("frontBeamLength") val frontBeamLength: Int,
+    @SerializedName("supportMastHeight") val supportMastHeight: String,
+    @SerializedName("frontBeamLength") val frontBeamLength: String,
     @SerializedName("material") val material: String
 )
 
 data class GondolaMachineWeight(
-    @SerializedName("totalPlatformWeight") val totalPlatformWeight: Int,
-    @SerializedName("suspensionMechanicalWeight") val suspensionMechanicalWeight: Int,
-    @SerializedName("balanceWeight") val balanceWeight: Int,
+    @SerializedName("totalPlatformWeight") val totalPlatformWeight: String,
+    @SerializedName("suspensionMechanicalWeight") val suspensionMechanicalWeight: String,
+    @SerializedName("balanceWeight") val balanceWeight: String,
     @SerializedName("totalMachineWeight") val totalMachineWeight: String
 )
 

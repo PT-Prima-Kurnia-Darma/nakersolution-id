@@ -26,7 +26,7 @@ private object ForkliftCategory {
 //                                  UI State -> Domain Model
 // =================================================================================================
 
-fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, reportId: Long? = null): InspectionWithDetailsDomain {
     val report = this.forkliftInspectionReport
     val general = report.generalData
     val inspectionId: Long = reportId ?: 0
@@ -48,15 +48,16 @@ fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, reportId:
         examinationType = report.examinationType,
         ownerName = general.owner,
         ownerAddress = general.address,
-        usageLocation = general.unitLocation,
-        addressUsageLocation = general.address,
+        usageLocation = general.user,
+        addressUsageLocation = general.unitLocation,
         driveType = general.driveType,
         serialNumber = general.serialNumber,
         permitNumber = general.permitNumber,
         capacity = general.liftingCapacity,
         manufacturer = manufacturer,
         createdAt = currentTime,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = createCheckItemsFromUiState(report, inspectionId)
@@ -146,7 +147,7 @@ fun InspectionWithDetailsDomain.toForkliftUiState(): ForkliftUiState {
     fun findCheck(cat: String, name: String) = this.checkItems.find { it.category == cat && it.itemName == name }?.let { ForkliftInspectionResult(status = !it.status, result = it.result ?: "") } ?: ForkliftInspectionResult()
 
     val generalData = ForkliftGeneralData(
-        owner = this.inspection.ownerName ?: "", address = this.inspection.ownerAddress ?: "", unitLocation = this.inspection.usageLocation ?: "", driveType = this.inspection.driveType ?: "", manufacturer = this.inspection.manufacturer?.name ?: "", brandType = this.inspection.manufacturer?.brandOrType ?: "", yearOfManufacture = this.inspection.manufacturer?.year ?: "", serialNumber = this.inspection.serialNumber ?: "", liftingCapacity = this.inspection.capacity ?: "", permitNumber = this.inspection.permitNumber ?: "", user = findTest("Pemakai"), personInCharge = findTest("Penanggung Jawab"), operatorName = findTest("Nama Operator"), intendedUse = findTest("Digunakan untuk"), equipmentHistory = findTest("Data Riwayat Pesawat")
+        owner = this.inspection.ownerName ?: "", address = this.inspection.ownerAddress ?: "", unitLocation = this.inspection.addressUsageLocation ?: "", driveType = this.inspection.driveType ?: "", manufacturer = this.inspection.manufacturer?.name ?: "", brandType = this.inspection.manufacturer?.brandOrType ?: "", yearOfManufacture = this.inspection.manufacturer?.year ?: "", serialNumber = this.inspection.serialNumber ?: "", liftingCapacity = this.inspection.capacity ?: "", permitNumber = this.inspection.permitNumber ?: "", user = this.inspection.usageLocation ?: "", personInCharge = findTest("Penanggung Jawab"), operatorName = findTest("Nama Operator"), intendedUse = findTest("Digunakan untuk"), equipmentHistory = findTest("Data Riwayat Pesawat")
     )
     val technicalData = ForkliftTechnicalData(
         specifications = ForkliftSpecifications(findTest("Spesifikasi - No. Seri"), findTest("Spesifikasi - Kapasitas"), findTest("Spesifikasi - Attachment"), findTest("Spesifikasi - Dimensi Garpu")),

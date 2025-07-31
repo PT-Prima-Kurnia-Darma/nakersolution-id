@@ -179,7 +179,8 @@ fun GondolaBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsD
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = null,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val visualCheck = this.inspectionResult.visualCheck
@@ -269,24 +270,24 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
 
     val technicalData = GondolaTechnicalData(
         gondolaSpecification = GondolaSpecification(
-            supportMastHeight = getString(ReportCategory.TECHNICAL_DATA, "spec_supportPoleHeight").toIntOrNull() ?: 0,
-            frontBeamLength = getString(ReportCategory.TECHNICAL_DATA, "spec_beam_front").toIntOrNull() ?: 0,
-            middleBeamLength = getString(ReportCategory.TECHNICAL_DATA, "spec_beam_middle").toIntOrNull() ?: 0,
-            rearBeamLength = getString(ReportCategory.TECHNICAL_DATA, "spec_beam_rear").toIntOrNull() ?: 0,
-            balanceWeightDistance = getString(ReportCategory.TECHNICAL_DATA, "spec_balanceWeightToBeamDistance").toIntOrNull() ?: 0,
+            supportMastHeight = getString(ReportCategory.TECHNICAL_DATA, "spec_supportPoleHeight"),
+            frontBeamLength = getString(ReportCategory.TECHNICAL_DATA, "spec_beam_front"),
+            middleBeamLength = getString(ReportCategory.TECHNICAL_DATA, "spec_beam_middle"),
+            rearBeamLength = getString(ReportCategory.TECHNICAL_DATA, "spec_beam_rear"),
+            balanceWeightDistance = getString(ReportCategory.TECHNICAL_DATA, "spec_balanceWeightToBeamDistance"),
             capacity = getString(ReportCategory.TECHNICAL_DATA, "spec_capacity"),
             speed = getString(ReportCategory.TECHNICAL_DATA, "spec_speed"),
             platformSize = "${getString(ReportCategory.TECHNICAL_DATA, "spec_platform_length")} x ${getString(ReportCategory.TECHNICAL_DATA, "spec_platform_width")} x ${getString(ReportCategory.TECHNICAL_DATA, "spec_platform_height")}",
-            wireRopeDiameter = getString(ReportCategory.TECHNICAL_DATA, "spec_wireRope").toDoubleOrNull() ?: 0.0
+            wireRopeDiameter = getString(ReportCategory.TECHNICAL_DATA, "spec_wireRope")
         ),
         hoist = GondolaHoist(
             model = getString(ReportCategory.TECHNICAL_DATA, "hoist_model"),
-            liftingCapacity = getString(ReportCategory.TECHNICAL_DATA, "hoist_liftingPower").toIntOrNull() ?: 0,
+            liftingCapacity = getString(ReportCategory.TECHNICAL_DATA, "hoist_liftingPower"),
             electricMotor = GondolaElectricMotor(
                 type = getString(ReportCategory.TECHNICAL_DATA, "hoist_motor_type"),
                 power = getString(ReportCategory.TECHNICAL_DATA, "hoist_motor_power"),
-                voltage = getString(ReportCategory.TECHNICAL_DATA, "hoist_motor_voltage").toIntOrNull() ?: 0,
-                voltageHz = getString(ReportCategory.TECHNICAL_DATA, "hoist_motor_voltageHz").toIntOrNull() ?: 0
+                voltage = getString(ReportCategory.TECHNICAL_DATA, "hoist_motor_voltage"),
+                voltageHz = getString(ReportCategory.TECHNICAL_DATA, "hoist_motor_voltageHz")
             )
         ),
         safetyLockType = getString(ReportCategory.TECHNICAL_DATA, "safetyLockType"),
@@ -296,14 +297,14 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
             capacity = getString(ReportCategory.TECHNICAL_DATA, "brake_capacity")
         ),
         suspensionMechanical = GondolaSuspensionMechanical(
-            supportMastHeight = getString(ReportCategory.TECHNICAL_DATA, "suspension_supportPoleHeight").toIntOrNull() ?: 0,
-            frontBeamLength = getString(ReportCategory.TECHNICAL_DATA, "suspension_frontBeamLength").toIntOrNull() ?: 0,
+            supportMastHeight = getString(ReportCategory.TECHNICAL_DATA, "suspension_supportPoleHeight"),
+            frontBeamLength = getString(ReportCategory.TECHNICAL_DATA, "suspension_frontBeamLength"),
             material = getString(ReportCategory.TECHNICAL_DATA, "suspension_material")
         ),
         machineWeight = GondolaMachineWeight(
-            totalPlatformWeight = getString(ReportCategory.TECHNICAL_DATA, "weight_platform").toIntOrNull() ?: 0,
-            suspensionMechanicalWeight = getString(ReportCategory.TECHNICAL_DATA, "weight_suspension").toIntOrNull() ?: 0,
-            balanceWeight = getString(ReportCategory.TECHNICAL_DATA, "weight_balance").toIntOrNull() ?: 0,
+            totalPlatformWeight = getString(ReportCategory.TECHNICAL_DATA, "weight_platform"),
+            suspensionMechanicalWeight = getString(ReportCategory.TECHNICAL_DATA, "weight_suspension"),
+            balanceWeight = getString(ReportCategory.TECHNICAL_DATA, "weight_balance"),
             totalMachineWeight = getString(ReportCategory.TECHNICAL_DATA, "weight_total")
         )
     )
@@ -388,10 +389,8 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
                     type = getItem(cat, "type"),
                     length = getItem(cat, "length"),
                     age = getItem(cat, "age"),
-                    // **FIX**: Map domain `defect` to DTO `defectFound` (boolean)
                     defectFound = defect.isNotBlank(),
-                    // **FIX**: Combine domain `defect` and `description` into DTO `result` to prevent data loss
-                    result = if (defect.isNotBlank() || description.isNotBlank()) "$defect - $description" else ""
+                    result = if (description.isNotBlank()) "$defect - $description" else defect
                 )
             }
         ),
@@ -404,10 +403,8 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
                 GondolaSuspensionStructureNdtItem(
                     part = getItem(cat, "inspectedPart"),
                     location = getItem(cat, "location"),
-                    // **FIX**: Map domain `defect` to DTO `defectFound` (boolean)
                     defectFound = defect.isNotBlank(),
-                    // **FIX**: Combine domain `defect` and `description` into DTO `result`
-                    result = if (defect.isNotBlank() || description.isNotBlank()) "$defect - $description" else ""
+                    result = if (description.isNotBlank()) "$defect - $description" else defect
                 )
             }
         ),
@@ -420,10 +417,8 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
                 GondolaCageNdtItem(
                     part = getItem(cat, "inspectedPart"),
                     location = getItem(cat, "location"),
-                    // **FIX**: Map domain `defect` to DTO `defectFound` (boolean)
                     defectFound = defect.isNotBlank(),
-                    // **FIX**: Combine domain `defect` and `description` into DTO `result`
-                    result = if (defect.isNotBlank() || description.isNotBlank()) "$defect - $description" else ""
+                    result = if (description.isNotBlank()) "$defect - $description" else defect
                 )
             }
         ),
@@ -435,10 +430,8 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
                 GondolaClampsNdtItem(
                     partCheck = getItem(cat, "inspectedPart"),
                     location = getItem(cat, "location"),
-                    // **FIX**: Map domain `defect` to DTO `defectFound` (boolean)
                     defectFound = defect.isNotBlank(),
-                    // **FIX**: Combine domain `defect` and `description` into DTO `result`
-                    result = if (defect.isNotBlank() || description.isNotBlank()) "$defect - $description" else ""
+                    result = if (description.isNotBlank()) "$defect - $description" else defect
                 )
             }
         )
@@ -451,9 +444,7 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
                 val cat = "${ReportCategory.TESTING_DYNAMIC_LOAD}_$index"
                 GondolaLoadTestItem(
                     loadPercentage = getItem(cat, "loadPercentage"),
-                    // **FIX**: Map domain `load` to DTO `loadDetails`
                     loadDetails = getItem(cat, "load"),
-                    // **FIX**: Map domain `description` to DTO `remarks`
                     remarks = getItem(cat, "description"),
                     result = getItem(cat, "result")
                 )
@@ -465,9 +456,7 @@ fun InspectionWithDetailsDomain.toGondolaReportRequest(): GondolaReportRequest {
                 val cat = "${ReportCategory.TESTING_STATIC_LOAD}_$index"
                 GondolaLoadTestItem(
                     loadPercentage = getItem(cat, "loadPercentage"),
-                    // **FIX**: Map domain `load` to DTO `loadDetails`
                     loadDetails = getItem(cat, "load"),
-                    // **FIX**: Map domain `description` to DTO `remarks`
                     remarks = getItem(cat, "description"),
                     result = getItem(cat, "result")
                 )
@@ -524,7 +513,8 @@ fun GondolaReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = this.conclusion,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -561,25 +551,26 @@ fun GondolaReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
 
     this.technicalData.let { tech ->
         tech.gondolaSpecification.let {
-            add(ReportCategory.TECHNICAL_DATA, "spec_supportPoleHeight", it.supportMastHeight.toString())
-            add(ReportCategory.TECHNICAL_DATA, "spec_beam_front", it.frontBeamLength.toString())
-            add(ReportCategory.TECHNICAL_DATA, "spec_beam_middle", it.middleBeamLength.toString())
-            add(ReportCategory.TECHNICAL_DATA, "spec_beam_rear", it.rearBeamLength.toString())
-            add(ReportCategory.TECHNICAL_DATA, "spec_balanceWeightToBeamDistance", it.balanceWeightDistance.toString())
+            add(ReportCategory.TECHNICAL_DATA, "spec_supportPoleHeight", it.supportMastHeight)
+            add(ReportCategory.TECHNICAL_DATA, "spec_beam_front", it.frontBeamLength)
+            add(ReportCategory.TECHNICAL_DATA, "spec_beam_middle", it.middleBeamLength)
+            add(ReportCategory.TECHNICAL_DATA, "spec_beam_rear", it.rearBeamLength)
+            add(ReportCategory.TECHNICAL_DATA, "spec_balanceWeightToBeamDistance", it.balanceWeightDistance)
             add(ReportCategory.TECHNICAL_DATA, "spec_capacity", it.capacity)
             add(ReportCategory.TECHNICAL_DATA, "spec_speed", it.speed)
             val platformParts = it.platformSize.split("x").map { part -> part.trim() }
             add(ReportCategory.TECHNICAL_DATA, "spec_platform_length", platformParts.getOrNull(0) ?: "")
             add(ReportCategory.TECHNICAL_DATA, "spec_platform_width", platformParts.getOrNull(1) ?: "")
             add(ReportCategory.TECHNICAL_DATA, "spec_platform_height", platformParts.getOrNull(2) ?: "")
-            add(ReportCategory.TECHNICAL_DATA, "spec_wireRope", it.wireRopeDiameter.toString())
+            add(ReportCategory.TECHNICAL_DATA, "spec_wireRope", it.wireRopeDiameter)
         }
         tech.hoist.let {
             add(ReportCategory.TECHNICAL_DATA, "hoist_model", it.model)
-            add(ReportCategory.TECHNICAL_DATA, "hoist_liftingPower", it.liftingCapacity.toString())
+            add(ReportCategory.TECHNICAL_DATA, "hoist_liftingPower", it.liftingCapacity)
             add(ReportCategory.TECHNICAL_DATA, "hoist_motor_type", it.electricMotor.type)
             add(ReportCategory.TECHNICAL_DATA, "hoist_motor_power", it.electricMotor.power)
-            add(ReportCategory.TECHNICAL_DATA, "hoist_motor_voltage", it.electricMotor.voltage.toString())
+            add(ReportCategory.TECHNICAL_DATA, "hoist_motor_voltage", it.electricMotor.voltage)
+            add(ReportCategory.TECHNICAL_DATA, "hoist_motor_voltageHz", it.electricMotor.voltageHz)
         }
         add(ReportCategory.TECHNICAL_DATA, "safetyLockType", tech.safetyLockType)
         tech.brake.let {
@@ -588,14 +579,14 @@ fun GondolaReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
             add(ReportCategory.TECHNICAL_DATA, "brake_capacity", it.capacity)
         }
         tech.suspensionMechanical.let {
-            add(ReportCategory.TECHNICAL_DATA, "suspension_supportPoleHeight", it.supportMastHeight.toString())
-            add(ReportCategory.TECHNICAL_DATA, "suspension_frontBeamLength", it.frontBeamLength.toString())
+            add(ReportCategory.TECHNICAL_DATA, "suspension_supportPoleHeight", it.supportMastHeight)
+            add(ReportCategory.TECHNICAL_DATA, "suspension_frontBeamLength", it.frontBeamLength)
             add(ReportCategory.TECHNICAL_DATA, "suspension_material", it.material)
         }
         tech.machineWeight.let {
-            add(ReportCategory.TECHNICAL_DATA, "weight_platform", it.totalPlatformWeight.toString())
-            add(ReportCategory.TECHNICAL_DATA, "weight_suspension", it.suspensionMechanicalWeight.toString())
-            add(ReportCategory.TECHNICAL_DATA, "weight_balance", it.balanceWeight.toString())
+            add(ReportCategory.TECHNICAL_DATA, "weight_platform", it.totalPlatformWeight)
+            add(ReportCategory.TECHNICAL_DATA, "weight_suspension", it.suspensionMechanicalWeight)
+            add(ReportCategory.TECHNICAL_DATA, "weight_balance", it.balanceWeight)
             add(ReportCategory.TECHNICAL_DATA, "weight_total", it.totalMachineWeight)
         }
     }
@@ -677,8 +668,6 @@ fun GondolaReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
             add(cat, "type", item.type)
             add(cat, "length", item.length)
             add(cat, "age", item.age)
-            // **FIX**: Unpack DTO `result` back into domain `defect` and `description`.
-            // While we cannot perfectly split them, we put the full content into description for review.
             add(cat, "defect", if(item.defectFound) "Defect Found" else "")
             add(cat, "description", item.result)
         }
@@ -712,20 +701,16 @@ fun GondolaReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDoma
         testing.dynamicLoadTest.items.forEachIndexed { i, item ->
             val cat = "${ReportCategory.TESTING_DYNAMIC_LOAD}_$i"
             add(cat, "loadPercentage", item.loadPercentage)
-            // **FIX**: Map DTO `loadDetails` back to domain `load`
             add(cat, "load", item.loadDetails)
             add(cat, "result", item.result)
-            // **FIX**: Map DTO `remarks` back to domain `description`
             add(cat, "description", item.remarks)
         }
         add(ReportCategory.TESTING_STATIC_LOAD, "note", testing.staticLoadTest.note)
         testing.staticLoadTest.items.forEachIndexed { i, item ->
             val cat = "${ReportCategory.TESTING_STATIC_LOAD}_$i"
             add(cat, "loadPercentage", item.loadPercentage)
-            // **FIX**: Map DTO `loadDetails` back to domain `load`
             add(cat, "load", item.loadDetails)
             add(cat, "result", item.result)
-            // **FIX**: Map DTO `remarks` back to domain `description`
             add(cat, "description", item.remarks)
         }
     }

@@ -118,7 +118,7 @@ fun String.toSubInspectionType(): SubInspectionType? {
         "Gantry Crane" -> SubInspectionType.Gantry_Crane
         "Gondola" -> SubInspectionType.Gondola
 
-        "Instalasi Petir" -> SubInspectionType.Electrical
+        "Instalasi Listrik" -> SubInspectionType.Electrical
         "Instalasi Penyalur Petir" -> SubInspectionType.Lightning_Conductor
 
         "Pesawat Uap dan Bejana Tekan" -> SubInspectionType.General_PUBT

@@ -41,7 +41,8 @@ data class ForkliftReportData(
     @SerializedName("inspectionAndTesting") val inspectionAndTesting: ForkliftInspectionAndTesting,
     @SerializedName("testingForklift") val testingForklift: ForkliftTestingForklift,
     @SerializedName("conclusion") val conclusion: String,
-    @SerializedName("recommendation") val recommendation: String
+    @SerializedName("recommendation") val recommendation: String,
+    @SerializedName("subInspectionType") val subInspectionType: String // From response JSON
 )
 
 data class ForkliftGeneralData(

@@ -39,7 +39,7 @@ private object ElevatorCategory {
 /**
  * Mengubah [ElevatorUiState] (dari UI) menjadi [InspectionWithDetailsDomain] (untuk data layer).
  */
-fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId: Long? = null): InspectionWithDetailsDomain {
+fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited: Boolean, reportId: Long? = null): InspectionWithDetailsDomain {
     val inspectionId: Long = reportId ?: 0
 
     val inspectionDomain = InspectionDomain(
@@ -69,7 +69,8 @@ fun ElevatorUiState.toInspectionWithDetailsDomain(currentTime: String, reportId:
         createdAt = currentTime,
         reportDate = this.generalData.inspectionDate,
         status = this.conclusion,
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

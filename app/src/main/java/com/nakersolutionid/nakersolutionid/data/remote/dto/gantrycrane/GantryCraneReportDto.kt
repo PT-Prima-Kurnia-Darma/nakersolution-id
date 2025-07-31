@@ -128,431 +128,284 @@ data class GantryCraneTechnicalData(
     @SerializedName("mediumTypetraversinglength") val mediumTypeTraversingLength: String
 )
 
-data class GantryCraneVisualInspection(
-    @SerializedName("anchorBoltscorrosionMemenuhi") val anchorBoltsCorrosionMemenuhi: Boolean,
-    @SerializedName("anchorBoltscorrosionTidakMemenuhi") val anchorBoltsCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("anchorBoltscorrosionResult") val anchorBoltsCorrosionResult: String,
-    @SerializedName("anchorBoltscracksMemenuhi") val anchorBoltsCracksMemenuhi: Boolean,
-    @SerializedName("anchorBoltscracksTidakMemenuhi") val anchorBoltsCracksTidakMemenuhi: Boolean,
-    @SerializedName("anchorBoltscracksResult") val anchorBoltsCracksResult: String,
-    @SerializedName("anchorBoltsdeformationMemenuhi") val anchorBoltsDeformationMemenuhi: Boolean,
-    @SerializedName("anchorBoltsdeformationTidakMemenuhi") val anchorBoltsDeformationTidakMemenuhi: Boolean,
-    @SerializedName("anchorBoltsdeformationResult") val anchorBoltsDeformationResult: String,
-    @SerializedName("anchorBoltsfasteningMemenuhi") val anchorBoltsFasteningMemenuhi: Boolean,
-    @SerializedName("anchorBoltsfasteningTidakMemenuhi") val anchorBoltsFasteningTidakMemenuhi: Boolean,
-    @SerializedName("anchorBoltsfasteningResult") val anchorBoltsFasteningResult: String,
-    @SerializedName("columnFramecorrosionMemenuhi") val columnFrameCorrosionMemenuhi: Boolean,
-    @SerializedName("columnFramecorrosionTidakMemenuhi") val columnFrameCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("columnFramecorrosionResult") val columnFrameCorrosionResult: String,
-    @SerializedName("columnFramecracksMemenuhi") val columnFrameCracksMemenuhi: Boolean,
-    @SerializedName("columnFramecracksTidakMemenuhi") val columnFrameCracksTidakMemenuhi: Boolean,
-    @SerializedName("columnFramecracksResult") val columnFrameCracksResult: String,
-    @SerializedName("columnFramedeformationMemenuhi") val columnFrameDeformationMemenuhi: Boolean,
-    @SerializedName("columnFramedeformationTidakMemenuhi") val columnFrameDeformationTidakMemenuhi: Boolean,
-    @SerializedName("columnFramedeformationResult") val columnFrameDeformationResult: String,
-    @SerializedName("columnFramefasteningMemenuhi") val columnFrameFasteningMemenuhi: Boolean,
-    @SerializedName("columnFramefasteningTidakMemenuhi") val columnFrameFasteningTidakMemenuhi: Boolean,
-    @SerializedName("columnFramefasteningResult") val columnFrameFasteningResult: String,
-    @SerializedName("columnFrametransverseReinforcementMemenuhi") val columnFrameTransverseReinforcementMemenuhi: Boolean,
-    @SerializedName("columnFrametransverseReinforcementTidakMemenuhi") val columnFrameTransverseReinforcementTidakMemenuhi: Boolean,
-    @SerializedName("columnFrametransverseReinforcementResult") val columnFrameTransverseReinforcementResult: String,
-    @SerializedName("columnFramediagonalReinforcementMemenuhi") val columnFrameDiagonalReinforcementMemenuhi: Boolean,
-    @SerializedName("columnFramediagonalReinforcementTidakMemenuhi") val columnFrameDiagonalReinforcementTidakMemenuhi: Boolean,
-    @SerializedName("columnFramediagonalReinforcementResult") val columnFrameDiagonalReinforcementResult: String,
-    @SerializedName("laddercorrosionMemenuhi") val ladderCorrosionMemenuhi: Boolean,
-    @SerializedName("laddercorrosionTidakMemenuhi") val ladderCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("laddercorrosionResult") val ladderCorrosionResult: String,
-    @SerializedName("laddercracksMemenuhi") val ladderCracksMemenuhi: Boolean,
-    @SerializedName("laddercracksTidakMemenuhi") val ladderCracksTidakMemenuhi: Boolean,
-    @SerializedName("laddercracksResult") val ladderCracksResult: String,
-    @SerializedName("ladderdeformationMemenuhi") val ladderDeformationMemenuhi: Boolean,
-    @SerializedName("ladderdeformationTidakMemenuhi") val ladderDeformationTidakMemenuhi: Boolean,
-    @SerializedName("ladderdeformationResult") val ladderDeformationResult: String,
-    @SerializedName("ladderfasteningMemenuhi") val ladderFasteningMemenuhi: Boolean,
-    @SerializedName("ladderfasteningTidakMemenuhi") val ladderFasteningTidakMemenuhi: Boolean,
-    @SerializedName("ladderfasteningResult") val ladderFasteningResult: String,
-    @SerializedName("workingFloorcorrosionMemenuhi") val workingFloorCorrosionMemenuhi: Boolean,
-    @SerializedName("workingFloorcorrosionTidakMemenuhi") val workingFloorCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("workingFloorcorrosionResult") val workingFloorCorrosionResult: String,
-    @SerializedName("workingFloorcracksMemenuhi") val workingFloorCracksMemenuhi: Boolean,
-    @SerializedName("workingFloorcracksTidakMemenuhi") val workingFloorCracksTidakMemenuhi: Boolean,
-    @SerializedName("workingFloorcracksResult") val workingFloorCracksResult: String,
-    @SerializedName("workingFloordeformationMemenuhi") val workingFloorDeformationMemenuhi: Boolean,
-    @SerializedName("workingFloordeformationTidakMemenuhi") val workingFloorDeformationTidakMemenuhi: Boolean,
-    @SerializedName("workingFloordeformationResult") val workingFloorDeformationResult: String,
-    @SerializedName("workingFloorfasteningMemenuhi") val workingFloorFasteningMemenuhi: Boolean,
-    @SerializedName("workingFloorfasteningTidakMemenuhi") val workingFloorFasteningTidakMemenuhi: Boolean,
-    @SerializedName("workingFloorfasteningResult") val workingFloorFasteningResult: String,
-    @SerializedName("railSupportBeamcorrosionMemenuhi") val railSupportBeamCorrosionMemenuhi: Boolean,
-    @SerializedName("railSupportBeamcorrosionTidakMemenuhi") val railSupportBeamCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("railSupportBeamcorrosionResult") val railSupportBeamCorrosionResult: String,
-    @SerializedName("railSupportBeamcracksMemenuhi") val railSupportBeamCracksMemenuhi: Boolean,
-    @SerializedName("railSupportBeamcracksTidakMemenuhi") val railSupportBeamCracksTidakMemenuhi: Boolean,
-    @SerializedName("railSupportBeamcracksResult") val railSupportBeamCracksResult: String,
-    @SerializedName("railSupportBeamdeformationMemenuhi") val railSupportBeamDeformationMemenuhi: Boolean,
-    @SerializedName("railSupportBeamdeformationTidakMemenuhi") val railSupportBeamDeformationTidakMemenuhi: Boolean,
-    @SerializedName("railSupportBeamdeformationResult") val railSupportBeamDeformationResult: String,
-    @SerializedName("railSupportBeamfasteningMemenuhi") val railSupportBeamFasteningMemenuhi: Boolean,
-    @SerializedName("railSupportBeamfasteningTidakMemenuhi") val railSupportBeamFasteningTidakMemenuhi: Boolean,
-    @SerializedName("railSupportBeamfasteningResult") val railSupportBeamFasteningResult: String,
-    @SerializedName("travelingRailcorrosionMemenuhi") val travelingRailCorrosionMemenuhi: Boolean,
-    @SerializedName("travelingRailcracksTidakMemenuhi") val travelingRailCracksTidakMemenuhi: Boolean,
-    @SerializedName("travelingRailcracksResult") val travelingRailCracksResult: String,
-    @SerializedName("travelingcracksMemenuhi") val travelingCracksMemenuhi: Boolean,
-    @SerializedName("travelingcracksTidakMemenuhi") val travelingCracksTidakMemenuhi: Boolean,
-    @SerializedName("travelingcracksResult") val travelingCracksResult: String,
-    @SerializedName("travelingrailConnectionMemenuhi") val travelingRailConnectionMemenuhi: Boolean,
-    @SerializedName("travelingrailConnectionTidakMemenuhi") val travelingRailConnectionTidakMemenuhi: Boolean,
-    @SerializedName("travelingrailConnectionResult") val travelingRailConnectionResult: String,
-    @SerializedName("travelingrailAlignmentMemenuhi") val travelingRailAlignmentMemenuhi: Boolean,
-    @SerializedName("travelingrailAlignmentTidakMemenuhi") val travelingRailAlignmentTidakMemenuhi: Boolean,
-    @SerializedName("travelingrailAlignmentResult") val travelingRailAlignmentResult: String,
-    @SerializedName("travelinginterRailAlignmentMemenuhi") val travelingInterRailAlignmentMemenuhi: Boolean,
-    @SerializedName("travelinginterRailAlignmentTidakMemenuhi") val travelingInterRailAlignmentTidakMemenuhi: Boolean,
-    @SerializedName("travelinginterRailAlignmentResult") val travelingInterRailAlignmentResult: String,
-    @SerializedName("travelinginterRailFlatnessMemenuhi") val travelingInterRailFlatnessMemenuhi: Boolean,
-    @SerializedName("travelinginterRailFlatnessTidakMemenuhi") val travelingInterRailFlatnessTidakMemenuhi: Boolean,
-    @SerializedName("travelinginterRailFlatnessResult") val travelingInterRailFlatnessResult: String,
-    @SerializedName("travelingrailConnectionGapMemenuhi") val travelingRailConnectionGapMemenuhi: Boolean,
-    @SerializedName("travelingrailConnectionGapTidakMemenuhi") val travelingRailConnectionGapTidakMemenuhi: Boolean,
-    @SerializedName("travelingrailConnectionGapResult") val travelingRailConnectionGapResult: String,
-    @SerializedName("travelingrailFastenerMemenuhi") val travelingRailFastenerMemenuhi: Boolean,
-    @SerializedName("travelingrailFastenerTidakMemenuhi") val travelingRailFastenerTidakMemenuhi: Boolean,
-    @SerializedName("travelingrailFastenerResult") val travelingRailFastenerResult: String,
-    @SerializedName("travelingrailStopperMemenuhi") val travelingRailStopperMemenuhi: Boolean,
-    @SerializedName("travelingrailStopperTidakMemenuhi") val travelingRailStopperTidakMemenuhi: Boolean,
-    @SerializedName("travelingrailStopperResult") val travelingRailStopperResult: String,
-    @SerializedName("traversingRailcorrosionMemenuhi") val traversingRailCorrosionMemenuhi: Boolean,
-    @SerializedName("traversingRailcorrosionTidakMemenuhi") val traversingRailCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailcorrosionResult") val traversingRailCorrosionResult: String,
-    @SerializedName("traversingRailcracksMemenuhi") val traversingRailCracksMemenuhi: Boolean,
-    @SerializedName("traversingRailcracksTidakMemenuhi") val traversingRailCracksTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailcracksResult") val traversingRailCracksResult: String,
-    @SerializedName("traversingRailrailConnectionMemenuhi") val traversingRailRailConnectionMemenuhi: Boolean,
-    @SerializedName("traversingRailrailConnectionTidakMemenuhi") val traversingRailRailConnectionTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailrailConnectionResult") val traversingRailRailConnectionResult: String,
-    @SerializedName("traversingRailrailAlignmentMemenuhi") val traversingRailRailAlignmentMemenuhi: Boolean,
-    @SerializedName("traversingRailrailAlignmentTidakMemenuhi") val traversingRailRailAlignmentTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailrailAlignmentResult") val traversingRailRailAlignmentResult: String,
-    @SerializedName("traversingRailinterRailAlignmentMemenuhi") val traversingRailInterRailAlignmentMemenuhi: Boolean,
-    @SerializedName("traversingRailinterRailAlignmentTidakMemenuhi") val traversingRailInterRailAlignmentTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailinterRailAlignmentResult") val traversingRailInterRailAlignmentResult: String,
-    @SerializedName("traversingRailinterRailFlatnessMemenuhi") val traversingRailInterRailFlatnessMemenuhi: Boolean,
-    @SerializedName("traversingRailinterRailFlatnessTidakMemenuhi") val traversingRailInterRailFlatnessTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailinterRailFlatnessResult") val traversingRailInterRailFlatnessResult: String,
-    @SerializedName("traversingRailrailConnectionGapMemenuhi") val traversingRailRailConnectionGapMemenuhi: Boolean,
-    @SerializedName("traversingRailrailConnectionGapTidakMemenuhi") val traversingRailRailConnectionGapTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailrailConnectionGapResult") val traversingRailRailConnectionGapResult: String,
-    @SerializedName("traversingRailrailFastenerMemenuhi") val traversingRailRailFastenerMemenuhi: Boolean,
-    @SerializedName("traversingRailrailFastenerTidakMemenuhi") val traversingRailRailFastenerTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailrailFastenerResult") val traversingRailRailFastenerResult: String,
-    @SerializedName("traversingRailrailStopperMemenuhi") val traversingRailRailStopperMemenuhi: Boolean,
-    @SerializedName("traversingRailrailStopperTidakMemenuhi") val traversingRailRailStopperTidakMemenuhi: Boolean,
-    @SerializedName("traversingRailrailStopperResult") val traversingRailRailStopperResult: String,
-    @SerializedName("girdercorrosionMemenuhi") val girderCorrosionMemenuhi: Boolean,
-    @SerializedName("girdercorrosionTidakMemenuhi") val girderCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("girdercorrosionResult") val girderCorrosionResult: String,
-    @SerializedName("girdercracksMemenuhi") val girderCracksMemenuhi: Boolean,
-    @SerializedName("girdercracksTidakMemenuhi") val girderCracksTidakMemenuhi: Boolean,
-    @SerializedName("girdercracksResult") val girderCracksResult: String,
-    @SerializedName("girdercamberMemenuhi") val girderCamberMemenuhi: Boolean,
-    @SerializedName("girdercamberTidakMemenuhi") val girderCamberTidakMemenuhi: Boolean,
-    @SerializedName("girdercamberResult") val girderCamberResult: String,
-    @SerializedName("girderConnectionMemenuhi") val girderConnectionMemenuhi: Boolean,
-    @SerializedName("girderConnectionTidakMemenuhi") val girderConnectionTidakMemenuhi: Boolean,
-    @SerializedName("girderConnectionResult") val girderConnectionResult: String,
-    @SerializedName("girderendGirderConnectionMemenuhi") val girderEndGirderConnectionMemenuhi: Boolean,
-    @SerializedName("girderendGirderConnectionTidakMemenuhi") val girderEndGirderConnectionTidakMemenuhi: Boolean,
-    @SerializedName("girderendGirderConnectionResult") val girderEndGirderConnectionResult: String,
-    @SerializedName("girdertruckMountingOnGirderMemenuhi") val girderTruckMountingOnGirderMemenuhi: Boolean,
-    @SerializedName("girdertruckMountingOnGirderTidakMemenuhi") val girderTruckMountingOnGirderTidakMemenuhi: Boolean,
-    @SerializedName("girdertruckMountingOnGirderResult") val girderTruckMountingOnGirderResult: String,
-    @SerializedName("travelingGearboxcorrosionMemenuhi") val travelingGearboxCorrosionMemenuhi: Boolean,
-    @SerializedName("travelingGearboxcorrosionTidakMemenuhi") val travelingGearboxCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("travelingGearboxcorrosionResult") val travelingGearboxCorrosionResult: String,
-    @SerializedName("travelingGearboxcracksMemenuhi") val travelingGearboxCracksMemenuhi: Boolean,
-    @SerializedName("travelingGearboxcracksTidakMemenuhi") val travelingGearboxCracksTidakMemenuhi: Boolean,
-    @SerializedName("travelingGearboxcracksResult") val travelingGearboxCracksResult: String,
-    @SerializedName("travelingGearboxlubricatingOilMemenuhi") val travelingGearboxLubricatingOilMemenuhi: Boolean,
-    @SerializedName("travelingGearboxlubricatingOilTidakMemenuhi") val travelingGearboxLubricatingOilTidakMemenuhi: Boolean,
-    @SerializedName("travelingGearboxlubricatingOilResult") val travelingGearboxLubricatingOilResult: String,
-    @SerializedName("travelingGearboxoilSealMemenuhi") val travelingGearboxOilSealMemenuhi: Boolean,
-    @SerializedName("travelingGearboxoilSealTidakMemenuhi") val travelingGearboxOilSealTidakMemenuhi: Boolean,
-    @SerializedName("travelingGearboxoilSealResult") val travelingGearboxOilSealResult: String,
-    @SerializedName("driveWheelswearMemenuhi") val driveWheelsWearMemenuhi: Boolean,
-    @SerializedName("driveWheelswearTidakMemenuhi") val driveWheelsWearTidakMemenuhi: Boolean,
-    @SerializedName("driveWheelswearResult") val driveWheelsWearResult: String,
-    @SerializedName("driveWheelscracksMemenuhi") val driveWheelsCracksMemenuhi: Boolean,
-    @SerializedName("driveWheelscracksTidakMemenuhi") val driveWheelsCracksTidakMemenuhi: Boolean,
-    @SerializedName("driveWheelscracksResult") val driveWheelsCracksResult: String,
-    @SerializedName("driveWheelsdeformationMemenuhi") val driveWheelsDeformationMemenuhi: Boolean,
-    @SerializedName("driveWheelsdeformationTidakMemenuhi") val driveWheelsDeformationTidakMemenuhi: Boolean,
-    @SerializedName("driveWheelsdeformationResult") val driveWheelsDeformationResult: String,
-    @SerializedName("driveWheelsflangeConditionMemenuhi") val driveWheelsFlangeConditionMemenuhi: Boolean,
-    @SerializedName("driveWheelsflangeConditionTidakMemenuhi") val driveWheelsFlangeConditionTidakMemenuhi: Boolean,
-    @SerializedName("driveWheelsflangeConditionResult") val driveWheelsFlangeConditionResult: String,
-    @SerializedName("driveWheelschainConditionMemenuhi") val driveWheelsChainConditionMemenuhi: Boolean,
-    @SerializedName("driveWheelschainConditionTidakMemenuhi") val driveWheelsChainConditionTidakMemenuhi: Boolean,
-    @SerializedName("driveWheelschainConditionResult") val driveWheelsChainConditionResult: String,
-    @SerializedName("idleWheelssafetyMemenuhi") val idleWheelsSafetyMemenuhi: Boolean,
-    @SerializedName("idleWheelssafetyTidakMemenuhi") val idleWheelsSafetyTidakMemenuhi: Boolean,
-    @SerializedName("idleWheelssafetyResult") val idleWheelsSafetyResult: String,
-    @SerializedName("idleWheelscracksMemenuhi") val idleWheelsCracksMemenuhi: Boolean,
-    @SerializedName("idleWheelscracksTidakMemenuhi") val idleWheelsCracksTidakMemenuhi: Boolean,
-    @SerializedName("idleWheelscracksResult") val idleWheelsCracksResult: String,
-    @SerializedName("idleWheelsdeformationMemenuhi") val idleWheelsDeformationMemenuhi: Boolean,
-    @SerializedName("idleWheelsdeformationTidakMemenuhi") val idleWheelsDeformationTidakMemenuhi: Boolean,
-    @SerializedName("idleWheelsdeformationResult") val idleWheelsDeformationResult: String,
-    @SerializedName("idleWheelsflangeConditionMemenuhi") val idleWheelsFlangeConditionMemenuhi: Boolean,
-    @SerializedName("idleWheelsflangeConditionTidakMemenuhi") val idleWheelsFlangeConditionTidakMemenuhi: Boolean,
-    @SerializedName("idleWheelsflangeConditionResult") val idleWheelsFlangeConditionResult: String,
-    @SerializedName("wheelConnectoralignmentMemenuhi") val wheelConnectorAlignmentMemenuhi: Boolean,
-    @SerializedName("wheelConnectoralignmentTidakMemenuhi") val wheelConnectorAlignmentTidakMemenuhi: Boolean,
-    @SerializedName("wheelConnectoralignmentResult") val wheelConnectorAlignmentResult: String,
-    @SerializedName("wheelConnectorcrossJointMemenuhi") val wheelConnectorCrossJointMemenuhi: Boolean,
-    @SerializedName("wheelConnectorcrossJointTidakMemenuhi") val wheelConnectorCrossJointTidakMemenuhi: Boolean,
-    @SerializedName("wheelConnectorcrossJointResult") val wheelConnectorCrossJointResult: String,
-    @SerializedName("wheelConnectorlubricationMemenuhi") val wheelConnectorLubricationMemenuhi: Boolean,
-    @SerializedName("wheelConnectorlubricationTidakMemenuhi") val wheelConnectorLubricationTidakMemenuhi: Boolean,
-    @SerializedName("wheelConnectorlubricationResult") val wheelConnectorLubricationResult: String,
-    @SerializedName("girderStopperconditionMemenuhi") val girderStopperConditionMemenuhi: Boolean,
-    @SerializedName("girderStopperconditionTidakMemenuhi") val girderStopperConditionTidakMemenuhi: Boolean,
-    @SerializedName("girderStopperconditionResult") val girderStopperConditionResult: String,
-    @SerializedName("girderStopperreinforcementMemenuhi") val girderStopperReinforcementMemenuhi: Boolean,
-    @SerializedName("girderStopperreinforcementTidakMemenuhi") val girderStopperReinforcementTidakMemenuhi: Boolean,
-    @SerializedName("girderStopperreinforcementResult") val girderStopperReinforcementResult: String,
-    @SerializedName("trolleyTraversingGearboxfasteningMemenuhi") val trolleyTraversingGearboxFasteningMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxfasteningTidakMemenuhi") val trolleyTraversingGearboxFasteningTidakMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxfasteningResult") val trolleyTraversingGearboxFasteningResult: String,
-    @SerializedName("trolleyTraversingGearboxcorrosionMemenuhi") val trolleyTraversingGearboxCorrosionMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxcorrosionTidakMemenuhi") val trolleyTraversingGearboxCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxcorrosionResult") val trolleyTraversingGearboxCorrosionResult: String,
-    @SerializedName("trolleyTraversingGearboxcracksMemenuhi") val trolleyTraversingGearboxCracksMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxcracksTidakMemenuhi") val trolleyTraversingGearboxCracksTidakMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxcracksResult") val trolleyTraversingGearboxCracksResult: String,
-    @SerializedName("trolleyTraversingGearboxlubricatingOilMemenuhi") val trolleyTraversingGearboxLubricatingOilMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxlubricatingOilTidakMemenuhi") val trolleyTraversingGearboxLubricatingOilTidakMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxlubricatingOilResult") val trolleyTraversingGearboxLubricatingOilResult: String,
-    @SerializedName("trolleyTraversingGearboxoilSealMemenuhi") val trolleyTraversingGearboxOilSealMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxoilSealTidakMemenuhi") val trolleyTraversingGearboxOilSealTidakMemenuhi: Boolean,
-    @SerializedName("trolleyTraversingGearboxoilSealResult") val trolleyTraversingGearboxOilSealResult: String,
-    @SerializedName("trolleyDriveWheelswearMemenuhi") val trolleyDriveWheelsWearMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelswearTidakMemenuhi") val trolleyDriveWheelsWearTidakMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelswearResult") val trolleyDriveWheelsWearResult: String,
-    @SerializedName("trolleyDriveWheelscracksMemenuhi") val trolleyDriveWheelsCracksMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelscracksTidakMemenuhi") val trolleyDriveWheelsCracksTidakMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelscracksResult") val trolleyDriveWheelsCracksResult: String,
-    @SerializedName("trolleyDriveWheelsdeformationMemenuhi") val trolleyDriveWheelsDeformationMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelsdeformationTidakMemenuhi") val trolleyDriveWheelsDeformationTidakMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelsdeformationResult") val trolleyDriveWheelsDeformationResult: String,
-    @SerializedName("trolleyDriveWheelsflangeConditionMemenuhi") val trolleyDriveWheelsFlangeConditionMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelsflangeConditionTidakMemenuhi") val trolleyDriveWheelsFlangeConditionTidakMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelsflangeConditionResult") val trolleyDriveWheelsFlangeConditionResult: String,
-    @SerializedName("trolleyDriveWheelschainConditionMemenuhi") val trolleyDriveWheelsChainConditionMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelschainConditionTidakMemenuhi") val trolleyDriveWheelsChainConditionTidakMemenuhi: Boolean,
-    @SerializedName("trolleyDriveWheelschainConditionResult") val trolleyDriveWheelsChainConditionResult: String,
-    @SerializedName("trolleyIdleWheelswearMemenuhi") val trolleyIdleWheelsWearMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelswearTidakMemenuhi") val trolleyIdleWheelsWearTidakMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelswearResult") val trolleyIdleWheelsWearResult: String,
-    @SerializedName("trolleyIdleWheelscracksMemenuhi") val trolleyIdleWheelsCracksMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelscracksTidakMemenuhi") val trolleyIdleWheelsCracksTidakMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelscracksResult") val trolleyIdleWheelsCracksResult: String,
-    @SerializedName("trolleyIdleWheelsdeformationMemenuhi") val trolleyIdleWheelsDeformationMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelsdeformationTidakMemenuhi") val trolleyIdleWheelsDeformationTidakMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelsdeformationResult") val trolleyIdleWheelsDeformationResult: String,
-    @SerializedName("trolleyIdleWheelsflangeConditionMemenuhi") val trolleyIdleWheelsFlangeConditionMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelsflangeConditionTidakMemenuhi") val trolleyIdleWheelsFlangeConditionTidakMemenuhi: Boolean,
-    @SerializedName("trolleyIdleWheelsflangeConditionResult") val trolleyIdleWheelsFlangeConditionResult: String,
-    @SerializedName("trolleyWheelConnectoralignmentMemenuhi") val trolleyWheelConnectorAlignmentMemenuhi: Boolean,
-    @SerializedName("trolleyWheelConnectoralignmentTidakMemenuhi") val trolleyWheelConnectorAlignmentTidakMemenuhi: Boolean,
-    @SerializedName("trolleyWheelConnectoralignmentResult") val trolleyWheelConnectorAlignmentResult: String,
-    @SerializedName("trolleyWheelConnectorcrossJointMemenuhi") val trolleyWheelConnectorCrossJointMemenuhi: Boolean,
-    @SerializedName("trolleyWheelConnectorcrossJointTidakMemenuhi") val trolleyWheelConnectorCrossJointTidakMemenuhi: Boolean,
-    @SerializedName("trolleyWheelConnectorcrossJointResult") val trolleyWheelConnectorCrossJointResult: String,
-    @SerializedName("trolleyWheelConnectorlubricationMemenuhi") val trolleyWheelConnectorLubricationMemenuhi: Boolean,
-    @SerializedName("trolleyWheelConnectorlubricationTidakMemenuhi") val trolleyWheelConnectorLubricationTidakMemenuhi: Boolean,
-    @SerializedName("trolleyWheelConnectorlubricationResult") val trolleyWheelConnectorLubricationResult: String,
-    @SerializedName("trolleyGirderStopperconditionMemenuhi") val trolleyGirderStopperConditionMemenuhi: Boolean,
-    @SerializedName("trolleyGirderStopperconditionTidakMemenuhi") val trolleyGirderStopperConditionTidakMemenuhi: Boolean,
-    @SerializedName("trolleyGirderStopperconditionResult") val trolleyGirderStopperConditionResult: String,
-    @SerializedName("trolleyGirderStopperreinforcementMemenuhi") val trolleyGirderStopperReinforcementMemenuhi: Boolean,
-    @SerializedName("trolleyGirderStopperreinforcementTidakMemenuhi") val trolleyGirderStopperReinforcementTidakMemenuhi: Boolean,
-    @SerializedName("trolleyGirderStopperreinforcementResult") val trolleyGirderStopperReinforcementResult: String,
-    @SerializedName("windingDrumgrooveMemenuhi") val windingDrumGrooveMemenuhi: Boolean,
-    @SerializedName("windingDrumgrooveTidakMemenuhi") val windingDrumGrooveTidakMemenuhi: Boolean,
-    @SerializedName("windingDrumgrooveResult") val windingDrumGrooveResult: String,
-    @SerializedName("windingDrumgrooveLipMemenuhi") val windingDrumGrooveLipMemenuhi: Boolean,
-    @SerializedName("windingDrumgrooveLipTidakMemenuhi") val windingDrumGrooveLipTidakMemenuhi: Boolean,
-    @SerializedName("windingDrumgrooveLipResult") val windingDrumGrooveLipResult: String,
-    @SerializedName("windingDrumflangesMemenuhi") val windingDrumFlangesMemenuhi: Boolean,
-    @SerializedName("windingDrumflangesTidakMemenuhi") val windingDrumFlangesTidakMemenuhi: Boolean,
-    @SerializedName("windingDrumflangesResult") val windingDrumFlangesResult: String,
-    @SerializedName("visualBrakeInspectionwearMemenuhi") val visualBrakeInspectionWearMemenuhi: Boolean,
-    @SerializedName("visualBrakeInspectionwearTidakMemenuhi") val visualBrakeInspectionWearTidakMemenuhi: Boolean,
-    @SerializedName("visualBrakeInspectionwearResult") val visualBrakeInspectionWearResult: String,
-    @SerializedName("visualBrakeInspectionadjustmentMemenuhi") val visualBrakeInspectionAdjustmentMemenuhi: Boolean,
-    @SerializedName("visualBrakeInspectionadjustmentTidakMemenuhi") val visualBrakeInspectionAdjustmentTidakMemenuhi: Boolean,
-    @SerializedName("visualBrakeInspectionadjustmentResult") val visualBrakeInspectionAdjustmentResult: String,
-    @SerializedName("hoistGearboxlubricationMemenuhi") val hoistGearboxLubricationMemenuhi: Boolean,
-    @SerializedName("hoistGearboxlubricationTidakMemenuhi") val hoistGearboxLubricationTidakMemenuhi: Boolean,
-    @SerializedName("hoistGearboxlubricationResult") val hoistGearboxLubricationResult: String,
-    @SerializedName("hoistGearboxoilSealMemenuhi") val hoistGearboxOilSealMemenuhi: Boolean,
-    @SerializedName("hoistGearboxoilSealTidakMemenuhi") val hoistGearboxOilSealTidakMemenuhi: Boolean,
-    @SerializedName("hoistGearboxoilSealResult") val hoistGearboxOilSealResult: String,
-    @SerializedName("pulleySprocketpulleyGrooveMemenuhi") val pulleySprocketPulleyGrooveMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyGrooveTidakMemenuhi") val pulleySprocketPulleyGrooveTidakMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyGrooveResult") val pulleySprocketPulleyGrooveResult: String,
-    @SerializedName("pulleySprocketpulleyLipMemenuhi") val pulleySprocketPulleyLipMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyLipTidakMemenuhi") val pulleySprocketPulleyLipTidakMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyLipResult") val pulleySprocketPulleyLipResult: String,
-    @SerializedName("pulleySprocketpulleyPinMemenuhi") val pulleySprocketPulleyPinMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyPinTidakMemenuhi") val pulleySprocketPulleyPinTidakMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyPinResult") val pulleySprocketPulleyPinResult: String,
-    @SerializedName("pulleySprocketbearingMemenuhi") val pulleySprocketBearingMemenuhi: Boolean,
-    @SerializedName("pulleySprocketbearingTidakMemenuhi") val pulleySprocketBearingTidakMemenuhi: Boolean,
-    @SerializedName("pulleySprocketbearingResult") val pulleySprocketBearingResult: String,
-    @SerializedName("pulleySprocketpulleyGuardMemenuhi") val pulleySprocketPulleyGuardMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyGuardTidakMemenuhi") val pulleySprocketPulleyGuardTidakMemenuhi: Boolean,
-    @SerializedName("pulleySprocketpulleyGuardResult") val pulleySprocketPulleyGuardResult: String,
-    @SerializedName("pulleySprocketropeChainGuardMemenuhi") val pulleySprocketRopeChainGuardMemenuhi: Boolean,
-    @SerializedName("pulleySprocketropeChainGuardTidakMemenuhi") val pulleySprocketRopeChainGuardTidakMemenuhi: Boolean,
-    @SerializedName("pulleySprocketropeChainGuardResult") val pulleySprocketRopeChainGuardResult: String,
-    @SerializedName("mainHookInspectionwearMemenuhi") val mainHookInspectionWearMemenuhi: Boolean,
-    @SerializedName("mainHookInspectionwearTidakMemenuhi") val mainHookInspectionWearTidakMemenuhi: Boolean,
-    @SerializedName("mainHookInspectionwearResult") val mainHookInspectionWearResult: String,
-    @SerializedName("mainHookInspectionhookOpeningGapMemenuhi") val mainHookInspectionHookOpeningGapMemenuhi: Boolean,
-    @SerializedName("mainHookInspectionhookOpeningGapTidakMemenuhi") val mainHookInspectionHookOpeningGapTidakMemenuhi: Boolean,
-    @SerializedName("mainHookInspectionhookOpeningGapResult") val mainHookInspectionHookOpeningGapResult: String,
-    @SerializedName("mainHookInspectionswivelNutAndBearingMemenuhi") val mainHookInspectionSwivelNutAndBearingMemenuhi: Boolean,
-    @SerializedName("mainHookInspectionswivelNutAndBearingTidakMemenuhi") val mainHookInspectionSwivelNutAndBearingTidakMemenuhi: Boolean,
-    @SerializedName("mainHookInspectionswivelNutAndBearingResult") val mainHookInspectionSwivelNutAndBearingResult: String,
-    @SerializedName("mainHookInspectiontrunnionMemenuhi") val mainHookInspectionTrunnionMemenuhi: Boolean,
-    @SerializedName("mainHookInspectiontrunnionTidakMemenuhi") val mainHookInspectionTrunnionTidakMemenuhi: Boolean,
-    @SerializedName("mainHookInspectiontrunnionResult") val mainHookInspectionTrunnionResult: String,
-    @SerializedName("auxiliaryHookInspectionwearMemenuhi") val auxiliaryHookInspectionWearMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectionwearTidakMemenuhi") val auxiliaryHookInspectionWearTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectionwearResult") val auxiliaryHookInspectionWearResult: String,
-    @SerializedName("auxiliaryHookInspectionhookOpeningGapMemenuhi") val auxiliaryHookInspectionHookOpeningGapMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectionhookOpeningGapTidakMemenuhi") val auxiliaryHookInspectionHookOpeningGapTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectionhookOpeningGapResult") val auxiliaryHookInspectionHookOpeningGapResult: String,
-    @SerializedName("auxiliaryHookInspectionswivelNutAndBearingMemenuhi") val auxiliaryHookInspectionSwivelNutAndBearingMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectionswivelNutAndBearingTidakMemenuhi") val auxiliaryHookInspectionSwivelNutAndBearingTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectionswivelNutAndBearingResult") val auxiliaryHookInspectionSwivelNutAndBearingResult: String,
-    @SerializedName("auxiliaryHookInspectiontrunnionMemenuhi") val auxiliaryHookInspectionTrunnionMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectiontrunnionTidakMemenuhi") val auxiliaryHookInspectionTrunnionTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryHookInspectiontrunnionResult") val auxiliaryHookInspectionTrunnionResult: String,
-    @SerializedName("mainWireRopeInspectioncorrosionMemenuhi") val mainWireRopeInspectionCorrosionMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectioncorrosionTidakMemenuhi") val mainWireRopeInspectionCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectioncorrosionResult") val mainWireRopeInspectionCorrosionResult: String,
-    @SerializedName("mainWireRopeInspectionwearMemenuhi") val mainWireRopeInspectionWearMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectionwearTidakMemenuhi") val mainWireRopeInspectionWearTidakMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectionwearResult") val mainWireRopeInspectionWearResult: String,
-    @SerializedName("mainWireRopeInspectionbreakageMemenuhi") val mainWireRopeInspectionBreakageMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectionbreakageTidakMemenuhi") val mainWireRopeInspectionBreakageTidakMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectionbreakageResult") val mainWireRopeInspectionBreakageResult: String,
-    @SerializedName("mainWireRopeInspectiondeformationMemenuhi") val mainWireRopeInspectionDeformationMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectiondeformationTidakMemenuhi") val mainWireRopeInspectionDeformationTidakMemenuhi: Boolean,
-    @SerializedName("mainWireRopeInspectiondeformationResult") val mainWireRopeInspectionDeformationResult: String,
-    @SerializedName("auxiliaryWireRopeInspectioncorrosionMemenuhi") val auxiliaryWireRopeInspectionCorrosionMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectioncorrosionTidakMemenuhi") val auxiliaryWireRopeInspectionCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectioncorrosionResult") val auxiliaryWireRopeInspectionCorrosionResult: String,
-    @SerializedName("auxiliaryWireRopeInspectionwearMemenuhi") val auxiliaryWireRopeInspectionWearMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectionwearTidakMemenuhi") val auxiliaryWireRopeInspectionWearTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectionwearResult") val auxiliaryWireRopeInspectionWearResult: String,
-    @SerializedName("auxiliaryWireRopeInspectionbreakageMemenuhi") val auxiliaryWireRopeInspectionBreakageMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectionbreakageTidakMemenuhi") val auxiliaryWireRopeInspectionBreakageTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectionbreakageResult") val auxiliaryWireRopeInspectionBreakageResult: String,
-    @SerializedName("auxiliaryWireRopeInspectiondeformationMemenuhi") val auxiliaryWireRopeInspectionDeformationMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectiondeformationTidakMemenuhi") val auxiliaryWireRopeInspectionDeformationTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryWireRopeInspectiondeformationResult") val auxiliaryWireRopeInspectionDeformationResult: String,
-    @SerializedName("mainChainInspectioncorrosionMemenuhi") val mainChainInspectionCorrosionMemenuhi: Boolean,
-    @SerializedName("mainChainInspectioncorrosionTidakMemenuhi") val mainChainInspectionCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("mainChainInspectioncorrosionResult") val mainChainInspectionCorrosionResult: String,
-    @SerializedName("mainChainInspectionwearMemenuhi") val mainChainInspectionWearMemenuhi: Boolean,
-    @SerializedName("mainChainInspectionwearTidakMemenuhi") val mainChainInspectionWearTidakMemenuhi: Boolean,
-    @SerializedName("mainChainInspectionwearResult") val mainChainInspectionWearResult: String,
-    @SerializedName("mainChainInspectioncrackOrBreakageMemenuhi") val mainChainInspectionCrackOrBreakageMemenuhi: Boolean,
-    @SerializedName("mainChainInspectioncrackOrBreakageTidakMemenuhi") val mainChainInspectionCrackOrBreakageTidakMemenuhi: Boolean,
-    @SerializedName("mainChainInspectioncrackOrBreakageResult") val mainChainInspectionCrackOrBreakageResult: String,
-    @SerializedName("mainChainInspectiondeformationMemenuhi") val mainChainInspectionDeformationMemenuhi: Boolean,
-    @SerializedName("mainChainInspectiondeformationTidakMemenuhi") val mainChainInspectionDeformationTidakMemenuhi: Boolean,
-    @SerializedName("mainChainInspectiondeformationResult") val mainChainInspectionDeformationResult: String,
-    @SerializedName("auxiliaryChainInspectioncorrosionMemenuhi") val auxiliaryChainInspectionCorrosionMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectioncorrosionTidakMemenuhi") val auxiliaryChainInspectionCorrosionTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectioncorrosionResult") val auxiliaryChainInspectionCorrosionResult: String,
-    @SerializedName("auxiliaryChainInspectionwearMemenuhi") val auxiliaryChainInspectionWearMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectionwearTidakMemenuhi") val auxiliaryChainInspectionWearTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectionwearResult") val auxiliaryChainInspectionWearResult: String,
-    @SerializedName("auxiliaryChainInspectioncrackOrBreakageMemenuhi") val auxiliaryChainInspectionCrackOrBreakageMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectioncrackOrBreakageTidakMemenuhi") val auxiliaryChainInspectionCrackOrBreakageTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectioncrackOrBreakageResult") val auxiliaryChainInspectionCrackOrBreakageResult: String,
-    @SerializedName("auxiliaryChainInspectiondeformationMemenuhi") val auxiliaryChainInspectionDeformationMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectiondeformationTidakMemenuhi") val auxiliaryChainInspectionDeformationTidakMemenuhi: Boolean,
-    @SerializedName("auxiliaryChainInspectiondeformationResult") val auxiliaryChainInspectionDeformationResult: String,
-    @SerializedName("limitSwitchlongTravelMemenuhi") val limitSwitchLongTravelMemenuhi: Boolean,
-    @SerializedName("limitSwitchlongTravelTidakMemenuhi") val limitSwitchLongTravelTidakMemenuhi: Boolean,
-    @SerializedName("limitSwitchlongTravelResult") val limitSwitchLongTravelResult: String,
-    @SerializedName("limitSwitchcrossTravelMemenuhi") val limitSwitchCrossTravelMemenuhi: Boolean,
-    @SerializedName("limitSwitchcrossTravelTidakMemenuhi") val limitSwitchCrossTravelTidakMemenuhi: Boolean,
-    @SerializedName("limitSwitchcrossTravelResult") val limitSwitchCrossTravelResult: String,
-    @SerializedName("limitSwitchhoistMemenuhi") val limitSwitchHoistMemenuhi: Boolean,
-    @SerializedName("limitSwitchhoistTidakMemenuhi") val limitSwitchHoistTidakMemenuhi: Boolean,
-    @SerializedName("limitSwitchhoistResult") val limitSwitchHoistResult: String,
-    @SerializedName("operatorCabinsafetyLadderMemenuhi") val operatorCabinSafetyLadderMemenuhi: Boolean,
-    @SerializedName("operatorCabinsafetyLadderTidakMemenuhi") val operatorCabinSafetyLadderTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinsafetyLadderResult") val operatorCabinSafetyLadderResult: String,
-    @SerializedName("operatorCabindoorMemenuhi") val operatorCabinDoorMemenuhi: Boolean,
-    @SerializedName("operatorCabindoorTidakMemenuhi") val operatorCabinDoorTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabindoorResult") val operatorCabinDoorResult: String,
-    @SerializedName("operatorCabinwindowMemenuhi") val operatorCabinWindowMemenuhi: Boolean,
-    @SerializedName("operatorCabinwindowTidakMemenuhi") val operatorCabinWindowTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinwindowResult") val operatorCabinWindowResult: String,
-    @SerializedName("operatorCabinfanOrACMemenuhi") val operatorCabinFanOrACMemenuhi: Boolean,
-    @SerializedName("operatorCabinfanOrACTidakMemenuhi") val operatorCabinFanOrACTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinfanOrACResult") val operatorCabinFanOrACResult: String,
-    @SerializedName("operatorCabincontrolLeversOrButtonsMemenuhi") val operatorCabinControlLeversOrButtonsMemenuhi: Boolean,
-    @SerializedName("operatorCabincontrolLeversOrButtonsTidakMemenuhi") val operatorCabinControlLeversOrButtonsTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabincontrolLeversOrButtonsResult") val operatorCabinControlLeversOrButtonsResult: String,
-    @SerializedName("operatorCabinpendantControlMemenuhi") val operatorCabinPendantControlMemenuhi: Boolean,
-    @SerializedName("operatorCabinpendantControlTidakMemenuhi") val operatorCabinPendantControlTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinpendantControlResult") val operatorCabinPendantControlResult: String,
-    @SerializedName("operatorCabinlightingMemenuhi") val operatorCabinLightingMemenuhi: Boolean,
-    @SerializedName("operatorCabinlightingTidakMemenuhi") val operatorCabinLightingTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinlightingResult") val operatorCabinLightingResult: String,
-    @SerializedName("operatorCabinhornMemenuhi") val operatorCabinHornMemenuhi: Boolean,
-    @SerializedName("operatorCabinhornTidakMemenuhi") val operatorCabinHornTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinhornResult") val operatorCabinHornResult: String,
-    @SerializedName("operatorCabinfuseProtectionMemenuhi") val operatorCabinFuseProtectionMemenuhi: Boolean,
-    @SerializedName("operatorCabinfuseProtectionTidakMemenuhi") val operatorCabinFuseProtectionTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinfuseProtectionResult") val operatorCabinFuseProtectionResult: String,
-    @SerializedName("operatorCabincommunicationDeviceMemenuhi") val operatorCabinCommunicationDeviceMemenuhi: Boolean,
-    @SerializedName("operatorCabincommunicationDeviceTidakMemenuhi") val operatorCabinCommunicationDeviceTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabincommunicationDeviceResult") val operatorCabinCommunicationDeviceResult: String,
-    @SerializedName("operatorCabinfireExtinguisherMemenuhi") val operatorCabinFireExtinguisherMemenuhi: Boolean,
-    @SerializedName("operatorCabinfireExtinguisherTidakMemenuhi") val operatorCabinFireExtinguisherTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinfireExtinguisherResult") val operatorCabinFireExtinguisherResult: String,
-    @SerializedName("operatorCabinoperationalSignsMemenuhi") val operatorCabinOperationalSignsMemenuhi: Boolean,
-    @SerializedName("operatorCabinoperationalSignsTidakMemenuhi") val operatorCabinOperationalSignsTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinoperationalSignsResult") val operatorCabinOperationalSignsResult: String,
-    @SerializedName("operatorCabinignitionOrMasterSwitchMemenuhi") val operatorCabinIgnitionOrMasterSwitchMemenuhi: Boolean,
-    @SerializedName("operatorCabinignitionOrMasterSwitchTidakMemenuhi") val operatorCabinIgnitionOrMasterSwitchTidakMemenuhi: Boolean,
-    @SerializedName("operatorCabinignitionOrMasterSwitchResult") val operatorCabinIgnitionOrMasterSwitchResult: String,
-    @SerializedName("electricalComponentspanelConductorConnectorMemenuhi") val electricalComponentsPanelConductorConnectorMemenuhi: Boolean,
-    @SerializedName("electricalComponentspanelConductorConnectorTidakMemenuhi") val electricalComponentsPanelConductorConnectorTidakMemenuhi: Boolean,
-    @SerializedName("electricalComponentspanelConductorConnectorResult") val electricalComponentsPanelConductorConnectorResult: String,
-    @SerializedName("electricalComponentsconductorProtectionMemenuhi") val electricalComponentsConductorProtectionMemenuhi: Boolean,
-    @SerializedName("electricalComponentsconductorProtectionTidakMemenuhi") val electricalComponentsConductorProtectionTidakMemenuhi: Boolean,
-    @SerializedName("electricalComponentsconductorProtectionResult") val electricalComponentsConductorProtectionResult: String,
-    @SerializedName("electricalComponentsmotorInstallationSafetySystemMemenuhi") val electricalComponentsMotorInstallationSafetySystemMemenuhi: Boolean,
-    @SerializedName("electricalComponentsmotorInstallationSafetySystemTidakMemenuhi") val electricalComponentsMotorInstallationSafetySystemTidakMemenuhi: Boolean,
-    @SerializedName("electricalComponentsmotorInstallationSafetySystemResult") val electricalComponentsMotorInstallationSafetySystemResult: String,
-    @SerializedName("electricalComponentsgroundingSystemMemenuhi") val electricalComponentsGroundingSystemMemenuhi: Boolean,
-    @SerializedName("electricalComponentsgroundingSystemTidakMemenuhi") val electricalComponentsGroundingSystemTidakMemenuhi: Boolean,
-    @SerializedName("electricalComponentsgroundingSystemResult") val electricalComponentsGroundingSystemResult: String,
-    @SerializedName("electricalComponentsinstallationMemenuhi") val electricalComponentsInstallationMemenuhi: Boolean,
-    @SerializedName("electricalComponentsinstallationTidakMemenuhi") val electricalComponentsInstallationTidakMemenuhi: Boolean,
-    @SerializedName("electricalComponentsinstallationResult") val electricalComponentsInstallationResult: String
+// --- NEW VISUAL INSPECTION DATA CLASSES ---
+
+data class GantryCraneVisualInspectionItem(
+    @SerializedName("status") val status: Boolean,
+    @SerializedName("result") val result: String
 )
+
+data class GantryCraneAnchorBolts(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("fastening") val fastening: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneColumnFrame(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("fastening") val fastening: GantryCraneVisualInspectionItem,
+    @SerializedName("transverseReinforcement") val transverseReinforcement: GantryCraneVisualInspectionItem,
+    @SerializedName("diagonalReinforcement") val diagonalReinforcement: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneLadder(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("fastening") val fastening: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneWorkingFloor(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("fastening") val fastening: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneFoundationAndStructure(
+    @SerializedName("anchorBolts") val anchorBolts: GantryCraneAnchorBolts,
+    @SerializedName("columnFrame") val columnFrame: GantryCraneColumnFrame,
+    @SerializedName("ladder") val ladder: GantryCraneLadder,
+    @SerializedName("workingFloor") val workingFloor: GantryCraneWorkingFloor
+)
+
+data class GantryCraneRailSupportBeam(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("fastening") val fastening: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTravelingRail(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("railConnection") val railConnection: GantryCraneVisualInspectionItem,
+    @SerializedName("railAlignment") val railAlignment: GantryCraneVisualInspectionItem,
+    @SerializedName("interRailAlignment") val interRailAlignment: GantryCraneVisualInspectionItem,
+    @SerializedName("interRailFlatness") val interRailFlatness: GantryCraneVisualInspectionItem,
+    @SerializedName("railConnectionGap") val railConnectionGap: GantryCraneVisualInspectionItem,
+    @SerializedName("railFastener") val railFastener: GantryCraneVisualInspectionItem,
+    @SerializedName("railStopper") val railStopper: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTraversingRail(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("railConnection") val railConnection: GantryCraneVisualInspectionItem,
+    @SerializedName("railAlignment") val railAlignment: GantryCraneVisualInspectionItem,
+    @SerializedName("interRailAlignment") val interRailAlignment: GantryCraneVisualInspectionItem,
+    @SerializedName("interRailFlatness") val interRailFlatness: GantryCraneVisualInspectionItem,
+    @SerializedName("railConnectionGap") val railConnectionGap: GantryCraneVisualInspectionItem,
+    @SerializedName("railFastener") val railFastener: GantryCraneVisualInspectionItem,
+    @SerializedName("railStopper") val railStopper: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneMechanismAndRail(
+    @SerializedName("railSupportBeam") val railSupportBeam: GantryCraneRailSupportBeam,
+    @SerializedName("travelingRail") val travelingRail: GantryCraneTravelingRail,
+    @SerializedName("traversingRail") val traversingRail: GantryCraneTraversingRail
+)
+
+data class GantryCraneGirder(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("camber") val camber: GantryCraneVisualInspectionItem,
+    @SerializedName("connection") val connection: GantryCraneVisualInspectionItem,
+    @SerializedName("endGirderConnection") val endGirderConnection: GantryCraneVisualInspectionItem,
+    @SerializedName("truckMountingOnGirder") val truckMountingOnGirder: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTravelingGearbox(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("lubricatingOil") val lubricatingOil: GantryCraneVisualInspectionItem,
+    @SerializedName("oilSeal") val oilSeal: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneDriveWheels(
+    @SerializedName("wear") val wear: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("flangeCondition") val flangeCondition: GantryCraneVisualInspectionItem,
+    @SerializedName("chainCondition") val chainCondition: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneIdleWheels(
+    @SerializedName("safety") val safety: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("flangeCondition") val flangeCondition: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneWheelConnector(
+    @SerializedName("alignment") val alignment: GantryCraneVisualInspectionItem,
+    @SerializedName("crossJoint") val crossJoint: GantryCraneVisualInspectionItem,
+    @SerializedName("lubrication") val lubrication: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneGirderStopper(
+    @SerializedName("condition") val condition: GantryCraneVisualInspectionItem,
+    @SerializedName("reinforcement") val reinforcement: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneGirderAndTrolley(
+    @SerializedName("girder") val girder: GantryCraneGirder,
+    @SerializedName("travelingGearbox") val travelingGearbox: GantryCraneTravelingGearbox,
+    @SerializedName("driveWheels") val driveWheels: GantryCraneDriveWheels,
+    @SerializedName("idleWheels") val idleWheels: GantryCraneIdleWheels,
+    @SerializedName("wheelConnector") val wheelConnector: GantryCraneWheelConnector,
+    @SerializedName("girderStopper") val girderStopper: GantryCraneGirderStopper
+)
+
+data class GantryCraneTrolleyTraversingGearbox(
+    @SerializedName("fastening") val fastening: GantryCraneVisualInspectionItem,
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("lubricatingOil") val lubricatingOil: GantryCraneVisualInspectionItem,
+    @SerializedName("oilSeal") val oilSeal: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTrolleyDriveWheels(
+    @SerializedName("wear") val wear: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("flangeCondition") val flangeCondition: GantryCraneVisualInspectionItem,
+    @SerializedName("chainCondition") val chainCondition: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTrolleyIdleWheels(
+    @SerializedName("wear") val wear: GantryCraneVisualInspectionItem,
+    @SerializedName("cracks") val cracks: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem,
+    @SerializedName("flangeCondition") val flangeCondition: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTrolleyWheelConnector(
+    @SerializedName("alignment") val alignment: GantryCraneVisualInspectionItem,
+    @SerializedName("crossJoint") val crossJoint: GantryCraneVisualInspectionItem,
+    @SerializedName("lubrication") val lubrication: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTrolleyGirderStopper(
+    @SerializedName("condition") val condition: GantryCraneVisualInspectionItem,
+    @SerializedName("reinforcement") val reinforcement: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneTrolleyMechanism(
+    @SerializedName("trolleyTraversingGearbox") val trolleyTraversingGearbox: GantryCraneTrolleyTraversingGearbox,
+    @SerializedName("trolleyDriveWheels") val trolleyDriveWheels: GantryCraneTrolleyDriveWheels,
+    @SerializedName("trolleyIdleWheels") val trolleyIdleWheels: GantryCraneTrolleyIdleWheels,
+    @SerializedName("trolleyWheelConnector") val trolleyWheelConnector: GantryCraneTrolleyWheelConnector,
+    @SerializedName("trolleyGirderStopper") val trolleyGirderStopper: GantryCraneTrolleyGirderStopper
+)
+
+data class GantryCraneWindingDrum(
+    @SerializedName("groove") val groove: GantryCraneVisualInspectionItem,
+    @SerializedName("grooveLip") val grooveLip: GantryCraneVisualInspectionItem,
+    @SerializedName("flanges") val flanges: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneVisualBrakeInspection(
+    @SerializedName("wear") val wear: GantryCraneVisualInspectionItem,
+    @SerializedName("adjustment") val adjustment: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneHoistGearbox(
+    @SerializedName("lubrication") val lubrication: GantryCraneVisualInspectionItem,
+    @SerializedName("oilSeal") val oilSeal: GantryCraneVisualInspectionItem
+)
+
+data class GantryCranePulleySprocket(
+    @SerializedName("pulleyGroove") val pulleyGroove: GantryCraneVisualInspectionItem,
+    @SerializedName("pulleyLip") val pulleyLip: GantryCraneVisualInspectionItem,
+    @SerializedName("pulleyPin") val pulleyPin: GantryCraneVisualInspectionItem,
+    @SerializedName("bearing") val bearing: GantryCraneVisualInspectionItem,
+    @SerializedName("pulleyGuard") val pulleyGuard: GantryCraneVisualInspectionItem,
+    @SerializedName("ropeChainGuard") val ropeChainGuard: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneHook(
+    @SerializedName("wear") val wear: GantryCraneVisualInspectionItem,
+    @SerializedName("hookOpeningGap") val hookOpeningGap: GantryCraneVisualInspectionItem,
+    @SerializedName("swivelNutAndBearing") val swivelNutAndBearing: GantryCraneVisualInspectionItem,
+    @SerializedName("trunnion") val trunnion: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneWireRope(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("wear") val wear: GantryCraneVisualInspectionItem,
+    @SerializedName("breakage") val breakage: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneChain(
+    @SerializedName("corrosion") val corrosion: GantryCraneVisualInspectionItem,
+    @SerializedName("wear") val wear: GantryCraneVisualInspectionItem,
+    @SerializedName("crackOrBreakage") val crackOrBreakage: GantryCraneVisualInspectionItem,
+    @SerializedName("deformation") val deformation: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneLiftingEquipment(
+    @SerializedName("windingDrum") val windingDrum: GantryCraneWindingDrum,
+    @SerializedName("visualBrakeInspection") val visualBrakeInspection: GantryCraneVisualBrakeInspection,
+    @SerializedName("hoistGearbox") val hoistGearbox: GantryCraneHoistGearbox,
+    @SerializedName("pulleySprocket") val pulleySprocket: GantryCranePulleySprocket,
+    @SerializedName("mainHook") val mainHook: GantryCraneHook,
+    @SerializedName("auxiliaryHook") val auxiliaryHook: GantryCraneHook,
+    @SerializedName("mainWireRope") val mainWireRope: GantryCraneWireRope,
+    @SerializedName("auxiliaryWireRope") val auxiliaryWireRope: GantryCraneWireRope,
+    @SerializedName("mainChain") val mainChain: GantryCraneChain,
+    @SerializedName("auxiliaryChain") val auxiliaryChain: GantryCraneChain
+)
+
+data class GantryCraneLimitSwitch(
+    @SerializedName("longTravel") val longTravel: GantryCraneVisualInspectionItem,
+    @SerializedName("crossTravel") val crossTravel: GantryCraneVisualInspectionItem,
+    @SerializedName("hoist") val hoist: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneOperatorCabin(
+    @SerializedName("safetyLadder") val safetyLadder: GantryCraneVisualInspectionItem,
+    @SerializedName("door") val door: GantryCraneVisualInspectionItem,
+    @SerializedName("window") val window: GantryCraneVisualInspectionItem,
+    @SerializedName("fanOrAC") val fanOrAC: GantryCraneVisualInspectionItem,
+    @SerializedName("controlLeversOrButtons") val controlLeversOrButtons: GantryCraneVisualInspectionItem,
+    @SerializedName("pendantControl") val pendantControl: GantryCraneVisualInspectionItem,
+    @SerializedName("lighting") val lighting: GantryCraneVisualInspectionItem,
+    @SerializedName("horn") val horn: GantryCraneVisualInspectionItem,
+    @SerializedName("fuseProtection") val fuseProtection: GantryCraneVisualInspectionItem,
+    @SerializedName("communicationDevice") val communicationDevice: GantryCraneVisualInspectionItem,
+    @SerializedName("fireExtinguisher") val fireExtinguisher: GantryCraneVisualInspectionItem,
+    @SerializedName("operationalSigns") val operationalSigns: GantryCraneVisualInspectionItem,
+    @SerializedName("ignitionOrMasterSwitch") val ignitionOrMasterSwitch: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneElectricalComponents(
+    @SerializedName("panelConductorConnector") val panelConductorConnector: GantryCraneVisualInspectionItem,
+    @SerializedName("conductorProtection") val conductorProtection: GantryCraneVisualInspectionItem,
+    @SerializedName("motorInstallationSafetySystem") val motorInstallationSafetySystem: GantryCraneVisualInspectionItem,
+    @SerializedName("groundingSystem") val groundingSystem: GantryCraneVisualInspectionItem,
+    @SerializedName("installation") val installation: GantryCraneVisualInspectionItem
+)
+
+data class GantryCraneControlAndSafetySystem(
+    @SerializedName("limitSwitch") val limitSwitch: GantryCraneLimitSwitch,
+    @SerializedName("operatorCabin") val operatorCabin: GantryCraneOperatorCabin,
+    @SerializedName("electricalComponents") val electricalComponents: GantryCraneElectricalComponents
+)
+
+data class GantryCraneVisualInspection(
+    @SerializedName("foundationAndStructure") val foundationAndStructure: GantryCraneFoundationAndStructure,
+    @SerializedName("mechanismAndRail") val mechanismAndRail: GantryCraneMechanismAndRail,
+    @SerializedName("girderAndTrolley") val girderAndTrolley: GantryCraneGirderAndTrolley,
+    @SerializedName("trolleyMechanism") val trolleyMechanism: GantryCraneTrolleyMechanism,
+    @SerializedName("liftingEquipment") val liftingEquipment: GantryCraneLiftingEquipment,
+    @SerializedName("controlAndSafetySystem") val controlAndSafetySystem: GantryCraneControlAndSafetySystem
+)
+
 
 data class GantryCraneNdt(
     @SerializedName("wireropeMethod") val wireropeMethod: String,

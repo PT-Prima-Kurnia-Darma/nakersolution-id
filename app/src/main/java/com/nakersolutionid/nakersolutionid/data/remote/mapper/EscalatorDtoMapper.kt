@@ -134,7 +134,8 @@ fun EscalatorBapReportData.toInspectionWithDetailsDomain(): InspectionWithDetail
         createdAt = this.createdAt,
         reportDate = this.inspectionDate,
         status = null,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()
@@ -341,7 +342,8 @@ fun EscalatorReportData.toInspectionWithDetailsDomain(): InspectionWithDetailsDo
         createdAt = this.createdAt,
         reportDate = this.generalData.inspectionDate,
         status = this.conclusion,
-        isSynced = true
+        isSynced = true,
+        isEdited = false
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

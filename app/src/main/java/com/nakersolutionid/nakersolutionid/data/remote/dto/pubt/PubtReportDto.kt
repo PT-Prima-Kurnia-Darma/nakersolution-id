@@ -52,11 +52,11 @@ data class PubtGeneralData(
     @SerializedName("brandType") val brandType: String,
     @SerializedName("countryAndYearOfManufacture") val countryAndYearOfManufacture: String,
     @SerializedName("serialNumberUnitNumber") val serialNumberUnitNumber: String,
-    @SerializedName("designPressure") val designPressure: Int,
-    @SerializedName("maxAllowableWorkingPressure") val maxAllowableWorkingPressure: Int,
-    @SerializedName("capacityWorkingLoad") val capacityWorkingLoad: Int,
+    @SerializedName("designPressure") val designPressure: String, // Changed from Int
+    @SerializedName("maxAllowableWorkingPressure") val maxAllowableWorkingPressure: String, // Changed from Int
+    @SerializedName("capacityWorkingLoad") val capacityWorkingLoad: String, // Changed from Int
     @SerializedName("steamTemperature") val steamTemperature: String,
-    @SerializedName("operatingPressure") val operatingPressure: Int,
+    @SerializedName("operatingPressure") val operatingPressure: String, // Changed from Int
     @SerializedName("fuelType") val fuelType: String,
     @SerializedName("intendedUse") val intendedUse: String,
     @SerializedName("permitNumber") val permitNumber: String,
@@ -73,12 +73,12 @@ data class PubtTechnicalData(
 )
 
 data class PubtShell(
-    @SerializedName("numberOfRounds") val numberOfRounds: Int,
+    @SerializedName("numberOfRounds") val numberOfRounds: String, // Changed from Int
     @SerializedName("connectionMethod") val connectionMethod: String,
     @SerializedName("material") val material: String,
-    @SerializedName("pipeDiameter") val pipeDiameter: Int,
-    @SerializedName("thickness") val thickness: Int,
-    @SerializedName("bodyLength") val bodyLength: Int,
+    @SerializedName("pipeDiameter") val pipeDiameter: String, // Changed from Int
+    @SerializedName("thickness") val thickness: String, // Changed from Int
+    @SerializedName("bodyLength") val bodyLength: String, // Changed from Int
     @SerializedName("heads") val heads: PubtHeads,
     @SerializedName("tubePlate") val tubePlate: PubtTubePlate
 )
@@ -89,8 +89,8 @@ data class PubtHeads(
 )
 
 data class PubtHeadDetail(
-    @SerializedName("diameter") val diameter: Int,
-    @SerializedName("thickness") val thickness: Int
+    @SerializedName("diameter") val diameter: String, // Changed from Int
+    @SerializedName("thickness") val thickness: String // Changed from Int
 )
 
 data class PubtTubePlate(
@@ -99,37 +99,37 @@ data class PubtTubePlate(
 )
 
 data class PubtTubePlateDetail(
-    @SerializedName("dim1") val dim1: String, // "1500 mm"
-    @SerializedName("dim2") val dim2: String // "22 mm"
+    @SerializedName("dim1") val dim1: String,
+    @SerializedName("dim2") val dim2: String
 )
 
 data class PubtFurnace(
     @SerializedName("type") val type: String,
     @SerializedName("material") val material: String,
-    @SerializedName("outerDiameter") val outerDiameter: Int,
-    @SerializedName("innerDiameter") val innerDiameter: Int,
-    @SerializedName("thickness") val thickness: Int
+    @SerializedName("outerDiameter") val outerDiameter: String, // Changed from Int
+    @SerializedName("innerDiameter") val innerDiameter: String, // Changed from Int
+    @SerializedName("thickness") val thickness: String // Changed from Int
 )
 
 data class PubtWaterTubes(
     @SerializedName("firstPass") val firstPass: PubtWaterTubePass,
     @SerializedName("secondPass") val secondPass: PubtWaterTubePass,
-    @SerializedName("stayTube") val stayTube: PubtWaterTubeStayMaterial, // JSON uses same structure for stayTube and material
-    @SerializedName("material") val material: PubtWaterTubeStayMaterial // JSON uses same structure for stayTube and material
+    @SerializedName("stayTube") val stayTube: PubtWaterTubeStayMaterial,
+    @SerializedName("material") val material: PubtWaterTubeStayMaterial
 )
 
 data class PubtWaterTubePass(
-    @SerializedName("diameter") val diameter: Double,
-    @SerializedName("thickness") val thickness: Double,
-    @SerializedName("length") val length: Int,
-    @SerializedName("quantity") val quantity: Int
+    @SerializedName("diameter") val diameter: String, // Changed from Double
+    @SerializedName("thickness") val thickness: String, // Changed from Double
+    @SerializedName("length") val length: String, // Changed from Int
+    @SerializedName("quantity") val quantity: String // Changed from Int
 )
 
-data class PubtWaterTubeStayMaterial( // Re-using structure based on JSON data
-    @SerializedName("diameter") val diameter: Int,
-    @SerializedName("thickness") val thickness: Int,
-    @SerializedName("length") val length: Int,
-    @SerializedName("quantity") val quantity: Int
+data class PubtWaterTubeStayMaterial(
+    @SerializedName("diameter") val diameter: String, // Changed from Int
+    @SerializedName("thickness") val thickness: String, // Changed from Int
+    @SerializedName("length") val length: String, // Changed from Int
+    @SerializedName("quantity") val quantity: String // Changed from Int
 )
 
 data class PubtInspectionAndMeasurement(
@@ -213,29 +213,29 @@ data class PubtMaterialThickness(
     @SerializedName("bodyShell") val bodyShell: PubtBodyShellThickness,
     @SerializedName("vaporReceiverHeader") val vaporReceiverHeader: PubtVaporReceiverHeaderThickness,
     @SerializedName("fireHallFurnance1") val fireHallFurnance1: PubtFurnaceThickness,
-    @SerializedName("fireHallFurnance2") val fireHallFurnance2: PubtFurnaceThickness // Same structure as furnace1
+    @SerializedName("fireHallFurnance2") val fireHallFurnance2: PubtFurnaceThickness
 )
 
 data class PubtBodyShellThickness(
-    @SerializedName("thickness") val thickness: String, // "18 mm"
-    @SerializedName("diameter") val diameter: String, // "1500 mm"
+    @SerializedName("thickness") val thickness: String,
+    @SerializedName("diameter") val diameter: String,
     @SerializedName("thicknessResult") val thicknessResult: String,
     @SerializedName("diameterResult") val diameterResult: String
 )
 
 data class PubtVaporReceiverHeaderThickness(
-    @SerializedName("thickness") val thickness: String, // "12"
-    @SerializedName("diameter") val diameter: String, // "12"
-    @SerializedName("length") val length: String, // "12"
+    @SerializedName("thickness") val thickness: String,
+    @SerializedName("diameter") val diameter: String,
+    @SerializedName("length") val length: String,
     @SerializedName("thicknessResult") val thicknessResult: String,
     @SerializedName("diameterResult") val diameterResult: String,
     @SerializedName("lengthResult") val lengthResult: String
 )
 
 data class PubtFurnaceThickness(
-    @SerializedName("thickness") val thickness: String, // "10 mm" or "12"
-    @SerializedName("diameter") val diameter: String, // "900 mm" or "12"
-    @SerializedName("length") val length: String, // "4500 mm" or "12"
+    @SerializedName("thickness") val thickness: String,
+    @SerializedName("diameter") val diameter: String,
+    @SerializedName("length") val length: String,
     @SerializedName("thicknessResult") val thicknessResult: String,
     @SerializedName("diameterResult") val diameterResult: String,
     @SerializedName("lengthResult") val lengthResult: String
@@ -266,12 +266,12 @@ data class PubtMeasurementResults(
 )
 
 data class PubtMeasurementDetail(
-    @SerializedName("nominal") val nominal: Int,
-    @SerializedName("point1") val point1: Double,
-    @SerializedName("point2") val point2: Double,
-    @SerializedName("point3") val point3: Double,
-    @SerializedName("minimum") val minimum: Double,
-    @SerializedName("maximum") val maximum: Double
+    @SerializedName("nominal") val nominal: String, // Changed from Int
+    @SerializedName("point1") val point1: String, // Changed from Double
+    @SerializedName("point2") val point2: String, // Changed from Double
+    @SerializedName("point3") val point3: String, // Changed from Double
+    @SerializedName("minimum") val minimum: String, // Changed from Double
+    @SerializedName("maximum") val maximum: String // Changed from Double
 )
 
 data class PubtNdt(
@@ -305,8 +305,8 @@ data class PubtNdtJoint(
 )
 
 data class PubtHydrotest(
-    @SerializedName("testPressure") val testPressure: Int,
-    @SerializedName("mawp") val mawp: Int,
+    @SerializedName("testPressure") val testPressure: String, // Changed from Int
+    @SerializedName("mawp") val mawp: String, // Changed from Int
     @SerializedName("testMedium") val testMedium: String,
     @SerializedName("testDate") val testDate: String,
     @SerializedName("testResult") val testResult: String
@@ -328,13 +328,13 @@ data class PubtAppendagesCheck(
 )
 
 data class PubtAppendageItem(
-    @SerializedName("quantity") val quantity: Int,
+    @SerializedName("quantity") val quantity: String, // Changed from Int
     @SerializedName("status") val status: Boolean,
     @SerializedName("result") val result: String
 )
 
 data class PubtSafetyValveTest(
     @SerializedName("header") val header: String,
-    @SerializedName("startsToOpen") val startsToOpen: Double,
+    @SerializedName("startsToOpen") val startsToOpen: String, // Changed from Double
     @SerializedName("valveInfo") val valveInfo: String
 )

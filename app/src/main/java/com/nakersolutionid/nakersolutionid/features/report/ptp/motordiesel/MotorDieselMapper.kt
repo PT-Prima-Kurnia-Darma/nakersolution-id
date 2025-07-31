@@ -16,7 +16,9 @@ import kotlinx.collections.immutable.toImmutableList
  * All UI state data is flattened into InspectionDomain, InspectionFindingDomain, or InspectionCheckItemDomain.
  */
 fun DieselMotorUiState.toInspectionWithDetailsDomain(
-    currentTime: String
+    currentTime: String,
+    isEdited: Boolean,
+    id: Long? = null
 ): InspectionWithDetailsDomain {
     val report = this.inspectionReport
     val generalData = report.generalData
@@ -29,7 +31,7 @@ fun DieselMotorUiState.toInspectionWithDetailsDomain(
     val conclusion = report.conclusion
 
     // Hardcoded values as requested
-    val inspectionId = 0L
+    val inspectionId = id ?: 0L
     val documentType = DocumentType.LAPORAN
     val inspectionType = InspectionType.PTP
     val subInspectionType = SubInspectionType.Motor_Diesel
@@ -64,7 +66,8 @@ fun DieselMotorUiState.toInspectionWithDetailsDomain(
         nextInspectionDate = "",
         inspectorName = "",
         status = "",
-        isSynced = false
+        isSynced = false,
+        isEdited = isEdited
     )
 
     val checkItems = mutableListOf<InspectionCheckItemDomain>()

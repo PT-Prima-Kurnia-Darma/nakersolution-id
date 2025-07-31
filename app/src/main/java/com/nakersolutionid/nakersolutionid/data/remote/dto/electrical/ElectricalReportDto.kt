@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 data class ElectricalReportRequest(
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionType") val inspectionType: String,
-    @SerializedName("extraid") val extraId: Long,
+    @SerializedName("extraId") val extraId: Long,
     @SerializedName("equipmentType") val equipmentType: String,
-    @SerializedName("createdaAt") val createdAt: String,
+    @SerializedName("createdAt") val createdAt: String,
     @SerializedName("generalData") val generalData: ElectricalGeneralData,
     @SerializedName("initialDocumentCheck") val initialDocumentCheck: ElectricalInitialDocumentCheck,
     @SerializedName("technicalData") val technicalData: ElectricalTechnicalData,
@@ -35,8 +35,8 @@ data class ElectricalReportData(
     @SerializedName("id") val id: String, // From response JSON
     @SerializedName("examinationType") val examinationType: String,
     @SerializedName("inspectionType") val inspectionType: String,
-    @SerializedName("extraid") val extraId: Long,
-    @SerializedName("createdaAt") val createdAt: String, // Note: Typo in JSON "createdaAt"
+    @SerializedName("extraId") val extraId: Long,
+    @SerializedName("createdAt") val createdAt: String, // Note: Typo in JSON "createdaAt"
     @SerializedName("equipmentType") val equipmentType: String,
     @SerializedName("generalData") val generalData: ElectricalGeneralData,
     @SerializedName("initialDocumentCheck") val initialDocumentCheck: ElectricalInitialDocumentCheck,
@@ -195,7 +195,7 @@ data class ElectricalSdpFront(
 )
 
 data class ElectricalSdpFloor(
-    @SerializedName("floorNumber") val floorNumber: Int,
+    @SerializedName("floorNumber") val floorNumber: String,
     @SerializedName("hasCover") val hasCover: Boolean,
     @SerializedName("hasSld") val hasSld: Boolean,
     @SerializedName("hasBonding") val hasBonding: Boolean,

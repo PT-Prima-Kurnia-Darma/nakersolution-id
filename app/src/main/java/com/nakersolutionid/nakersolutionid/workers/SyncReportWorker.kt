@@ -52,7 +52,7 @@ class SyncReportWorker(
                 Result.success()
             } else {
                 Result.failure(workDataOf(
-                    "message" to "Sync failed"
+                    "message" to "Terjadi kesalahan ketika sinkronisasi dengan server"
                 ))
             }
         }

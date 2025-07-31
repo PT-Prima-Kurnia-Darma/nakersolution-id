@@ -1,8 +1,7 @@
 package com.nakersolutionid.nakersolutionid.data.remote.network
 
 import com.nakersolutionid.nakersolutionid.data.remote.dto.common.BaseApiResponse
-import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorReportRequest
-import com.nakersolutionid.nakersolutionid.data.remote.dto.elevator.ElevatorSingleReportResponseData
+import com.nakersolutionid.nakersolutionid.data.remote.dto.common.GetAllAuditResponse
 import com.nakersolutionid.nakersolutionid.data.remote.request.LoginRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.RegisterRequest
 import com.nakersolutionid.nakersolutionid.data.remote.request.UpdateUserRequest
@@ -23,6 +22,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.Streaming
 
 interface ApiServices {
@@ -102,5 +102,12 @@ interface ApiServices {
         @Path("path", encoded = true) path: String,
         @Path("extraId") extraId: String
     ): Response<ResponseBody>
+
+    @GET("audits/all")
+    suspend fun getAllAudits(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Response<GetAllAuditResponse>
     // endregion
 }
