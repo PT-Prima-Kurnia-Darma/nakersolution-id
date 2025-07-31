@@ -143,6 +143,7 @@ fun ILPPScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .imePadding()
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -172,8 +173,7 @@ fun ILPPScreen(
                     ElectricScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
@@ -182,8 +182,7 @@ fun ILPPScreen(
                     LightningScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )

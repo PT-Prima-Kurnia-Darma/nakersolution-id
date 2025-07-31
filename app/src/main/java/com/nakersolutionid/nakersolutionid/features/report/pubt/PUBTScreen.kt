@@ -141,6 +141,7 @@ fun PUBTScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .imePadding()
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -170,8 +171,7 @@ fun PUBTScreen(
                     GeneralScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
@@ -180,6 +180,7 @@ fun PUBTScreen(
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = { viewModel.onGetMLResult(selectedFilter) },

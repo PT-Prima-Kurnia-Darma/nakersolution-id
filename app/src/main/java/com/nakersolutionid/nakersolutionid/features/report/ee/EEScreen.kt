@@ -155,6 +155,7 @@ fun EEScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .imePadding()
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -177,8 +178,7 @@ fun EEScreen(
                 ElevatorScreen(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(top = 8.dp)
-                        .imePadding(),
+                        .padding(top = 8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 )
@@ -188,8 +188,7 @@ fun EEScreen(
                 EskalatorScreen(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(top = 8.dp)
-                        .imePadding(),
+                        .padding(top = 8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 )

@@ -105,7 +105,10 @@ class HistoryViewModel(
                                 DownloadState.Idle
                             }
                         }
-                        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> DownloadState.Idle
+                        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                            onUpdateUiState { it.copy(error = workInfo.outputData.getString("error")) }
+                            DownloadState.Idle
+                        }
                         else -> null
                     }
 

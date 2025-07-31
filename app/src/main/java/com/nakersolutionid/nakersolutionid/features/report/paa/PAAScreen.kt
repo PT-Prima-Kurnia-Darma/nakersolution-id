@@ -150,6 +150,7 @@ fun PAAScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .imePadding()
         ) {
             LazyRow(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -182,8 +183,7 @@ fun PAAScreen(
                     ForkliftScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
@@ -192,8 +192,7 @@ fun PAAScreen(
                     MobileCraneScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
@@ -202,8 +201,7 @@ fun PAAScreen(
                     OverheadCraneScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
@@ -212,8 +210,7 @@ fun PAAScreen(
                     GantryCraneScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
@@ -222,8 +219,7 @@ fun PAAScreen(
                     GondolaScreen(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 8.dp)
-                            .imePadding(),
+                            .padding(top = 8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     )

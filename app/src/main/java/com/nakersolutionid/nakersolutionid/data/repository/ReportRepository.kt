@@ -109,10 +109,12 @@ import com.nakersolutionid.nakersolutionid.domain.model.History
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.repository.IReportRepository
 import com.nakersolutionid.nakersolutionid.features.history.FilterState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class ReportRepository(
@@ -356,6 +358,11 @@ class ReportRepository(
             SubInspectionType.Motor_Diesel -> gson.toJsonTree(inspection.toDieselReportRequest())
             SubInspectionType.Machine -> gson.toJsonTree(inspection.toMachineReportRequest())
         }
+
+        val newKey = "subInspectionType"
+        val newValue = inspection.inspection.subInspectionType.toDisplayString()
+
+        jsonElement.asJsonObject.addProperty(newKey, newValue)
 
         val response = remoteDataSource.getMLResult(secret, jsonElement)
         when (response) {
@@ -815,7 +822,6 @@ class ReportRepository(
     override suspend fun deleteReport(id: Long) {
         val data = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull() ?: return
         if (!data.inspection.isSynced) {
-            localDataSource.deleteInspection(id)
             return
         }
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
@@ -825,7 +831,10 @@ class ReportRepository(
         val apiResponse = remoteDataSource.deleteReport(token, path, extraId).first()
         when (apiResponse) {
             ApiResponse.Empty -> null
-            is ApiResponse.Error -> throw Exception(apiResponse.errorMessage)
+            is ApiResponse.Error -> {
+                localDataSource.updateSyncStatus(id, false)
+                throw Exception(apiResponse.errorMessage)
+            }
             is ApiResponse.Success -> localDataSource.deleteInspection(id)
         }
     }

@@ -167,6 +167,7 @@ class RemoteDataMediator(
             localDataSource.insertAllInspectionsWithDetails(inspectionEntityList)
 
             if (loadType == LoadType.REFRESH) {
+//                localDataSource.clearAllInspections()
                 localDataSource.clearAllRemoteKeys()
             }
 

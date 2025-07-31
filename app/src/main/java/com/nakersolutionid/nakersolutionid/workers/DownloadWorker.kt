@@ -6,12 +6,15 @@ import android.content.Context
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.google.gson.Gson
+import com.nakersolutionid.nakersolutionid.data.remote.dto.common.ErrorResponse
 import com.nakersolutionid.nakersolutionid.data.remote.network.ApiServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -95,17 +98,26 @@ class DownloadWorker(
                         Result.success(outputData)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Result.failure()
+                        Result.failure(workDataOf(
+                            "error" to "Download failed: ${e.message}"
+                        ))
                     } finally {
                         inputStream?.close()
                         outputStream?.close()
                     }
                 } else {
-                    Result.failure()
+                    val errorBody = response.body()?.toString()
+                    Log.e("DownloadWorker", "Download failed: $errorBody")
+                    val remote = Gson().fromJson(errorBody, ErrorResponse::class.java)
+                    Result.failure(workDataOf(
+                        "error" to "Download failed: ${remote.message}"
+                    ))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Result.failure()
+                Result.failure(workDataOf(
+                    "error" to "Download failed: ${e.message}"
+                ))
             }
         }
     }
