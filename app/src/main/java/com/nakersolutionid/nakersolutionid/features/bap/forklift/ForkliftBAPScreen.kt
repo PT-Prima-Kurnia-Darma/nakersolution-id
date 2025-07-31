@@ -101,7 +101,7 @@ fun ForkliftBAPScreen(
                     onValueChange = { onDataChange(report.copy(generalData = data.copy(ownerAddress = it))) }
                 )
                 FormTextField(
-                    label = "Penanggung Jawab Pengguna",
+                    label = "Perusahaan Pemakai",
                     value = data.userInCharge,
                     onValueChange = { onDataChange(report.copy(generalData = data.copy(userInCharge = it))) }
                 )

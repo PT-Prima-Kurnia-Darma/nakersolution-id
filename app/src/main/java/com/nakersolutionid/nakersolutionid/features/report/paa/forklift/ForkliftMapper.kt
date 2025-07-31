@@ -48,8 +48,8 @@ fun ForkliftUiState.toInspectionWithDetailsDomain(currentTime: String, isEdited:
         examinationType = report.examinationType,
         ownerName = general.owner,
         ownerAddress = general.address,
-        usageLocation = general.unitLocation,
-        addressUsageLocation = general.address,
+        usageLocation = general.user,
+        addressUsageLocation = general.unitLocation,
         driveType = general.driveType,
         serialNumber = general.serialNumber,
         permitNumber = general.permitNumber,
@@ -147,7 +147,7 @@ fun InspectionWithDetailsDomain.toForkliftUiState(): ForkliftUiState {
     fun findCheck(cat: String, name: String) = this.checkItems.find { it.category == cat && it.itemName == name }?.let { ForkliftInspectionResult(status = !it.status, result = it.result ?: "") } ?: ForkliftInspectionResult()
 
     val generalData = ForkliftGeneralData(
-        owner = this.inspection.ownerName ?: "", address = this.inspection.ownerAddress ?: "", unitLocation = this.inspection.usageLocation ?: "", driveType = this.inspection.driveType ?: "", manufacturer = this.inspection.manufacturer?.name ?: "", brandType = this.inspection.manufacturer?.brandOrType ?: "", yearOfManufacture = this.inspection.manufacturer?.year ?: "", serialNumber = this.inspection.serialNumber ?: "", liftingCapacity = this.inspection.capacity ?: "", permitNumber = this.inspection.permitNumber ?: "", user = findTest("Pemakai"), personInCharge = findTest("Penanggung Jawab"), operatorName = findTest("Nama Operator"), intendedUse = findTest("Digunakan untuk"), equipmentHistory = findTest("Data Riwayat Pesawat")
+        owner = this.inspection.ownerName ?: "", address = this.inspection.ownerAddress ?: "", unitLocation = this.inspection.addressUsageLocation ?: "", driveType = this.inspection.driveType ?: "", manufacturer = this.inspection.manufacturer?.name ?: "", brandType = this.inspection.manufacturer?.brandOrType ?: "", yearOfManufacture = this.inspection.manufacturer?.year ?: "", serialNumber = this.inspection.serialNumber ?: "", liftingCapacity = this.inspection.capacity ?: "", permitNumber = this.inspection.permitNumber ?: "", user = this.inspection.usageLocation ?: "", personInCharge = findTest("Penanggung Jawab"), operatorName = findTest("Nama Operator"), intendedUse = findTest("Digunakan untuk"), equipmentHistory = findTest("Data Riwayat Pesawat")
     )
     val technicalData = ForkliftTechnicalData(
         specifications = ForkliftSpecifications(findTest("Spesifikasi - No. Seri"), findTest("Spesifikasi - Kapasitas"), findTest("Spesifikasi - Attachment"), findTest("Spesifikasi - Dimensi Garpu")),
