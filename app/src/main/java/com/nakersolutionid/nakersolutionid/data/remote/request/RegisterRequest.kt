@@ -1,7 +1,9 @@
 package com.nakersolutionid.nakersolutionid.data.remote.request
 
+import com.google.gson.annotations.SerializedName
+
 data class RegisterRequest(
-    val name: String,
-    val username: String,
-    val password: String
+    @SerializedName("name") val name: String,
+    @SerializedName("username") val username: String,
+    @SerializedName("password") val password: String
 )
