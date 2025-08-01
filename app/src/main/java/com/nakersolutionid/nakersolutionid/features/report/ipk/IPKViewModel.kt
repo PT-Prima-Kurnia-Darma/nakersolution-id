@@ -30,7 +30,8 @@ class IPKViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _ipkUiState = MutableStateFlow(IPKUiState())
     val ipkUiState: StateFlow<IPKUiState> = _ipkUiState.asStateFlow()
 
-    private val _fireProtectionUiState = MutableStateFlow(FireProtectionUiState.createDummyFireProtectionUiState())
+//    private val _fireProtectionUiState = MutableStateFlow(FireProtectionUiState.createDummyFireProtectionUiState())
+    private val _fireProtectionUiState = MutableStateFlow(FireProtectionUiState())
     val fireProtectionUiState: StateFlow<FireProtectionUiState> = _fireProtectionUiState.asStateFlow()
 
     // Store the current report ID for editing

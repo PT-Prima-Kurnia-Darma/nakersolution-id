@@ -32,10 +32,12 @@ class PTPViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _ptpUiState = MutableStateFlow(PTPUiState())
     val ptpUiState: StateFlow<PTPUiState> = _ptpUiState.asStateFlow()
 
-    private val _machineUiState = MutableStateFlow(ProductionMachineUiState.createDummyProductionMachineUiState())
+//    private val _machineUiState = MutableStateFlow(ProductionMachineUiState.createDummyProductionMachineUiState())
+    private val _machineUiState = MutableStateFlow(ProductionMachineUiState())
     val machineUiState: StateFlow<ProductionMachineUiState> = _machineUiState.asStateFlow()
 
-    private val _motorDieselUiState = MutableStateFlow(DieselMotorUiState.createDummyDieselMotorUiState())
+//    private val _motorDieselUiState = MutableStateFlow(DieselMotorUiState.createDummyDieselMotorUiState())
+    private val _motorDieselUiState = MutableStateFlow(DieselMotorUiState())
     val motorDieselUiState: StateFlow<DieselMotorUiState> = _motorDieselUiState.asStateFlow()
 
     // Store the current report ID for editing

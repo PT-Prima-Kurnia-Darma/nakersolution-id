@@ -32,10 +32,12 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _ilppUiState = MutableStateFlow(ILPPUiState())
     val ilppUiState: StateFlow<ILPPUiState> = _ilppUiState.asStateFlow()
 
-    private val _electricalUiState = MutableStateFlow(ElectricalUiState.createDummyElectricalUiState())
+//    private val _electricalUiState = MutableStateFlow(ElectricalUiState.createDummyElectricalUiState())
+    private val _electricalUiState = MutableStateFlow(ElectricalUiState())
     val electricalUiState: StateFlow<ElectricalUiState> = _electricalUiState.asStateFlow()
 
-    private val _lightningUiState = MutableStateFlow(LightningProtectionUiState.createDummyLightningProtectionUiState())
+//    private val _lightningUiState = MutableStateFlow(LightningProtectionUiState.createDummyLightningProtectionUiState())
+    private val _lightningUiState = MutableStateFlow(LightningProtectionUiState())
     val lightningUiState: StateFlow<LightningProtectionUiState> = _lightningUiState.asStateFlow()
 
     // Store the current report ID for editing
