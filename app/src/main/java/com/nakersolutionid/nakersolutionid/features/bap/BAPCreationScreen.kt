@@ -113,8 +113,12 @@ fun BAPCreationScreen(
                         viewModel.onSaveClick(subInspectionType, hasInternetConnection(context))
                     }
                 },
+                onCopyClick = {
+                    viewModel.onCopyClick(subInspectionType, hasInternetConnection(context))
+                },
                 name = subInspectionType.toDisplayString(),
-                actionEnable = uiState.isLoading
+                actionEnable = uiState.isLoading,
+                editMode = editMode
             )
         },
         snackbarHost = {

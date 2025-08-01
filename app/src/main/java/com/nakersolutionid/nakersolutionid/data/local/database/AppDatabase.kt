@@ -20,7 +20,7 @@ import com.nakersolutionid.nakersolutionid.data.local.entity.RemoteKeyEntity
         InspectionFtsEntity::class,
         RemoteKeyEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true // Set to true for production apps to export schema for migration testing
 )
 abstract class AppDatabase : RoomDatabase() {
