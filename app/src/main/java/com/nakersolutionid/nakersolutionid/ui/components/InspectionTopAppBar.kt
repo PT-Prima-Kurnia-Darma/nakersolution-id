@@ -3,11 +3,14 @@ package com.nakersolutionid.nakersolutionid.ui.components
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.FileCopy
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
@@ -29,8 +32,10 @@ fun InspectionTopAppBar(
     name: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actionEnable: Boolean,
+    editMode: Boolean,
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    onCopyClick: () -> Unit
 ) {
     MediumTopAppBar(
         expandedHeight = TopAppBarDefaults.MediumAppBarCollapsedHeight,
@@ -42,11 +47,36 @@ fun InspectionTopAppBar(
             ) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back") }
         },
         actions = {
-            TextButton(
+            if (editMode) {
+                IconButton(
+                    modifier = Modifier,
+                    onClick = onCopyClick,
+                    enabled = actionEnable,
+                    colors = IconButtonDefaults.iconButtonColors(
+                        disabledContainerColor = Color.Unspecified,
+                        disabledContentColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    if (!actionEnable) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    } else {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Default.FileCopy,
+                            contentDescription = "Copy"
+                        )
+                    }
+                }
+            }
+
+            IconButton(
                 modifier = Modifier,
-                onClick = { onSaveClick() },
+                onClick = onSaveClick,
                 enabled = actionEnable,
-                colors = ButtonDefaults.textButtonColors(
+                colors = IconButtonDefaults.iconButtonColors(
                     disabledContainerColor = Color.Unspecified,
                     disabledContentColor = MaterialTheme.colorScheme.primary
                 )
@@ -57,10 +87,10 @@ fun InspectionTopAppBar(
                         color = MaterialTheme.colorScheme.primary
                     )
                 } else {
-                    Text(
-                        text = "Simpan",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Default.Save,
+                        contentDescription = "Save"
                     )
                 }
             }
@@ -74,6 +104,13 @@ fun InspectionTopAppBar(
 @Composable
 fun ElevatorTopAppBarPreview() {
     NakersolutionidTheme {
-        InspectionTopAppBar(onBackClick = {}, name = "Instalasi Listrik dan Penyalur Petir", onSaveClick = {}, actionEnable = true)
+        InspectionTopAppBar(
+            onBackClick = {},
+            name = "Instalasi Listrik dan Penyalur Petir",
+            onSaveClick = {},
+            actionEnable = true,
+            editMode = false,
+            onCopyClick = {}
+        )
     }
 }

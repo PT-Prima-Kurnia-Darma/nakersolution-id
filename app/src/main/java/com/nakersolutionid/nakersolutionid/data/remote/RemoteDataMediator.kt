@@ -57,7 +57,7 @@ class RemoteDataMediator(
     private val appDatabase: AppDatabase,
     private val gson: Gson
 ) : RemoteMediator<Int, InspectionWithDetails>() {
-    override suspend fun initialize(): InitializeAction {
+    /*override suspend fun initialize(): InitializeAction {
         val cacheTimeout = TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES)
 
         return if (System.currentTimeMillis() - (localDataSource.getLatestKey()?.createdAt ?: 0) < cacheTimeout) {
@@ -65,7 +65,7 @@ class RemoteDataMediator(
         } else {
             InitializeAction.LAUNCH_INITIAL_REFRESH
         }
-    }
+    }*/
 
     override suspend fun load(
         loadType: LoadType,
@@ -171,7 +171,7 @@ class RemoteDataMediator(
                 localDataSource.clearAllRemoteKeys()
             }
 
-            val nextKey = if (endOfPaginationReached) null else page + 1
+            val nextKey = if (endOfPaginationReached) null else auditResponse.paging.currentPage + 1
 
             localDataSource.insertKey(RemoteKeyEntity(nextKey = nextKey))
 

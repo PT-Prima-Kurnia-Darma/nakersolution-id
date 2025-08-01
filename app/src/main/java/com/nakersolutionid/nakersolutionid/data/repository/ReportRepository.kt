@@ -624,7 +624,7 @@ class ReportRepository(
     private suspend fun processReports(
         reports: List<InspectionWithDetailsDomain>,
         token: String,
-        action: suspend (String, String, String, InspectionWithDetailsDomain, Boolean) -> ApiResponse<Any>
+        action: suspend (String, String, String, InspectionWithDetailsDomain) -> ApiResponse<Any>
     ): Boolean {
         var fail = 0
         reports.forEach { report ->
@@ -635,7 +635,7 @@ class ReportRepository(
             }
             val id = if (report.inspection.documentType == DocumentType.BAP) report.inspection.moreExtraId else report.inspection.extraId
             val isEdited = report.inspection.isEdited
-            when (val apiResponse = action(token, path, id, report, isEdited)) {
+            when (val apiResponse = action(token, path, id, report)) {
                 is ApiResponse.Success -> handleSyncSuccess(apiResponse.data) { fail++ }
                 is ApiResponse.Error -> fail++
                 is ApiResponse.Empty -> Unit
@@ -648,8 +648,13 @@ class ReportRepository(
         val listReports = localDataSource.getPendingSyncReports().map { it.toDomain() }
         if (listReports.isEmpty()) return true
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"
-        return processReports(listReports, token) { t, p, i, r, isEdited ->
-            val isInCloud = i.isNotEmpty()
+        return processReports(listReports, token) { t, p, i, r ->
+            var isInCloud = i.isNotEmpty()
+            val isSynced = r.inspection.isSynced
+            val isEdited = r.inspection.isEdited
+
+            if (!isSynced) isInCloud = false
+
             if (isInCloud && isEdited) {
                 when (r.inspection.documentType) {
                     DocumentType.LAPORAN -> when (r.inspection.subInspectionType) {
@@ -822,6 +827,7 @@ class ReportRepository(
     override suspend fun deleteReport(id: Long) {
         val data = localDataSource.getInspection(id).map { it.toDomain() }.firstOrNull() ?: return
         if (!data.inspection.isSynced) {
+            localDataSource.deleteInspection(id)
             return
         }
         val token = "Bearer ${userPreference.getUserToken() ?: ""}"

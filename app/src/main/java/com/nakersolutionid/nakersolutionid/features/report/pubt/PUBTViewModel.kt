@@ -8,6 +8,8 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralMeasurementResultItem
 import com.nakersolutionid.nakersolutionid.features.report.pubt.general.GeneralUiState
@@ -76,6 +78,32 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     onUpdatePUBTState { it.copy(mlLoading = false) }
                 }
             }
+        }
+    }
+
+    fun onCopyClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.General_PUBT -> {
+                    val electricalInspection = _generalUiState.value.toInspectionWithDetailsDomain(currentTime, _pubtUiState.value.editMode, 0)
+                    triggerCopy(electricalInspection, isInternetAvailable)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun triggerCopy(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val id = saveReport(inspection)
+
+        if (id == null) return
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            createReport(cloudInspection)
+        } else {
+            _pubtUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
         }
     }
 

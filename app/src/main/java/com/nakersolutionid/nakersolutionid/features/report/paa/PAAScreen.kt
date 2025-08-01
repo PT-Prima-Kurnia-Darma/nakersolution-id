@@ -136,7 +136,9 @@ fun PAAScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !paaUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
+                editMode = editMode,
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) },
+                onCopyClick = { viewModel.onCopyClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {

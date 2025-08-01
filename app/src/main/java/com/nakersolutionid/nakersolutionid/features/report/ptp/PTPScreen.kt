@@ -129,7 +129,9 @@ fun PTPScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !ptpUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
+                editMode = editMode,
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) },
+                onCopyClick = { viewModel.onCopyClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {
