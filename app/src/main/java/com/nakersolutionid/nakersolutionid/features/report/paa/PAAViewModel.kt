@@ -7,6 +7,8 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftLoadTestItem
 import com.nakersolutionid.nakersolutionid.features.report.paa.forklift.ForkliftNdeChainItem
@@ -130,6 +132,48 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
                     onUpdatePAAState { it.copy(mlLoading = false) }
                 }
             }
+        }
+    }
+
+    fun onCopyClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Forklift -> {
+                    val inspection = _forkliftUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, 0)
+                    triggerCopy(inspection, isInternetAvailable)
+                }
+                SubInspectionType.Mobile_Crane -> {
+                    val inspection = _mobileCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, 0)
+                    triggerCopy(inspection, isInternetAvailable)
+                }
+                SubInspectionType.Overhead_Crane -> {
+                    val inspection = _overheadCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, 0)
+                    triggerCopy(inspection, isInternetAvailable)
+                }
+                SubInspectionType.Gantry_Crane -> {
+                    val inspection = _gantryCraneUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, 0)
+                    triggerCopy(inspection, isInternetAvailable)
+                }
+                SubInspectionType.Gondola -> {
+                    val inspection = _gondolaUiState.value.toInspectionWithDetailsDomain(currentTime, _paaUiState.value.editMode, 0)
+                    triggerCopy(inspection, isInternetAvailable)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun triggerCopy(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val id = saveReport(inspection)
+
+        if (id == null) return
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            createReport(cloudInspection)
+        } else {
+            _paaUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
         }
     }
 

@@ -37,7 +37,7 @@ interface InspectionDao {
 
     /**
      * A transactional method to insert a full report with all its details.
-     * You would call this from your repository.
+     * This remains as a helper function for the main upsert logic.
      */
     @Transaction
     suspend fun insertInspectionWithDetails(
@@ -48,7 +48,9 @@ interface InspectionDao {
     ): Long {
         val inspectionId = insertInspection(inspectionEntity)
 
-        // Associate the returned ID with each related item
+        // Associate the returned ID with each related item.
+        // When a parent row is replaced due to OnConflictStrategy.REPLACE,
+        // the ForeignKey's onDelete = CASCADE will automatically remove the old children.
         insertCheckItems(checkItems.map { it.copy(inspectionId = inspectionId) })
         insertFindings(findings.map { it.copy(inspectionId = inspectionId) })
         insertTestResults(testResults.map { it.copy(inspectionId = inspectionId) })
@@ -56,15 +58,69 @@ interface InspectionDao {
         return inspectionId
     }
 
+    /**
+     * Fetches a single complete inspection with all its details by its unique backend ID.
+     * This is used to check if an inspection already exists locally and to get its children for comparison.
+     */
+    @Transaction
+    @Query("SELECT * FROM inspections WHERE extra_id = :extraId LIMIT 1")
+    suspend fun getInspectionWithDetailsByExtraId(extraId: String): InspectionWithDetails?
+
+    /**
+     * MODIFIED: This function now implements a conditional "upsert" (update or insert) logic.
+     * It performs a deep comparison, checking for changes in the main entity AND all its related lists
+     * (checkItems, findings, testResults) before performing a database write.
+     * This preserves the local `isDownloaded` and `filePath` state.
+     */
     @Transaction
     suspend fun insertAllInspectionsWithDetails(inspections: List<InspectionWithDetails>) {
-        for (details in inspections) {
-            insertInspectionWithDetails(
-                details.inspectionEntity,
-                details.checkItems,
-                details.findings,
-                details.testResults
-            )
+        for (newDetails in inspections) {
+            val oldDetails = getInspectionWithDetailsByExtraId(newDetails.inspectionEntity.extraId)
+
+            if (oldDetails == null) {
+                // This inspection is not in the database yet. Insert it.
+                insertInspectionWithDetails(
+                    newDetails.inspectionEntity,
+                    newDetails.checkItems,
+                    newDetails.findings,
+                    newDetails.testResults
+                )
+            } else {
+                // The inspection exists. Check if an update is needed by comparing content.
+
+                // 1. Compare the main InspectionEntity, ignoring local-only fields.
+                val isEntityDifferent = oldDetails.inspectionEntity.copy(isDownloaded = false, filePath = "") !=
+                        newDetails.inspectionEntity.copy(isDownloaded = false, filePath = "")
+
+                // 2. Compare the child lists, ignoring auto-generated IDs and list order.
+                // We map the items to a version without IDs and then convert to a Set for comparison.
+                val areCheckItemsDifferent = oldDetails.checkItems.map { it.copy(id = 0, inspectionId = 0) }.toSet() !=
+                        newDetails.checkItems.map { it.copy(id = 0, inspectionId = 0) }.toSet()
+
+                val areFindingsDifferent = oldDetails.findings.map { it.copy(id = 0, inspectionId = 0) }.toSet() !=
+                        newDetails.findings.map { it.copy(id = 0, inspectionId = 0) }.toSet()
+
+                val areTestResultsDifferent = oldDetails.testResults.map { it.copy(id = 0, inspectionId = 0) }.toSet() !=
+                        newDetails.testResults.map { it.copy(id = 0, inspectionId = 0) }.toSet()
+
+                if (isEntityDifferent || areCheckItemsDifferent || areFindingsDifferent || areTestResultsDifferent) {
+                    // The data from the server is different. Update it, but preserve local state.
+                    val entityToUpdate = newDetails.inspectionEntity.copy(
+                        id = oldDetails.inspectionEntity.id, // CRUCIAL: Use the existing primary key to trigger a REPLACE on the correct row.
+                        isDownloaded = false,
+                        filePath = ""
+                    )
+
+                    // This will replace the main entity and its children.
+                    insertInspectionWithDetails(
+                        entityToUpdate,
+                        newDetails.checkItems,
+                        newDetails.findings,
+                        newDetails.testResults
+                    )
+                }
+                // If nothing is different, do nothing. The local data is up-to-date.
+            }
         }
     }
 

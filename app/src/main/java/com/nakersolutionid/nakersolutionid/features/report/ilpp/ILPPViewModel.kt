@@ -7,6 +7,8 @@ import com.nakersolutionid.nakersolutionid.data.Resource
 import com.nakersolutionid.nakersolutionid.data.local.utils.SubInspectionType
 import com.nakersolutionid.nakersolutionid.domain.model.InspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.domain.usecase.ReportUseCase
+import com.nakersolutionid.nakersolutionid.features.report.ee.elevator.toInspectionWithDetailsDomain
+import com.nakersolutionid.nakersolutionid.features.report.ee.eskalator.toInspectionWithDetailsDomain
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalInspectionReport
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalSdpInternalViewItem
 import com.nakersolutionid.nakersolutionid.features.report.ilpp.electric.ElectricalUiState
@@ -109,6 +111,36 @@ class ILPPViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
                 }
                 else -> {}
             }
+        }
+    }
+
+    fun onCopyClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Electrical -> {
+                    val elevatorInspection = _electricalUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, 0)
+                    triggerCopy(elevatorInspection, isInternetAvailable)
+                }
+                SubInspectionType.Lightning_Conductor -> {
+                    val escalatorInspection = _lightningUiState.value.toInspectionWithDetailsDomain(currentTime, _ilppUiState.value.editMode, 0)
+                    triggerCopy(escalatorInspection, isInternetAvailable)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun triggerCopy(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val id = saveReport(inspection)
+
+        if (id == null) return
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            createReport(cloudInspection)
+        } else {
+            _ilppUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
         }
     }
 

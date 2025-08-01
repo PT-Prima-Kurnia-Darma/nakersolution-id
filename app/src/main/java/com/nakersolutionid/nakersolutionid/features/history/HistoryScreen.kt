@@ -330,7 +330,7 @@ fun HistoryScreen(
                     viewModel.deleteReport(historyToDelete!!) // Kirim seluruh objek
                     showDeleteDialog = false
                     historyToDelete = null
-                    lazyPagingItems.refresh()
+//                    lazyPagingItems.refresh()
                 },
                 onDismiss = {
                     showDeleteDialog = false

@@ -53,6 +53,36 @@ class EEViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
         }
     }
 
+    fun onCopyClick(selectedIndex: SubInspectionType, isInternetAvailable: Boolean) {
+        viewModelScope.launch {
+            val currentTime = getCurrentTime()
+            when (selectedIndex) {
+                SubInspectionType.Elevator -> {
+                    val elevatorInspection = _elevatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, 0)
+                    triggerCopy(elevatorInspection, isInternetAvailable)
+                }
+                SubInspectionType.Escalator -> {
+                    val escalatorInspection = _eskalatorUiState.value.toInspectionWithDetailsDomain(currentTime, _eeUiState.value.editMode, 0)
+                    triggerCopy(escalatorInspection, isInternetAvailable)
+                }
+                else -> null
+            }
+        }
+    }
+
+    private suspend fun triggerCopy(inspection: InspectionWithDetailsDomain, isInternetAvailable: Boolean) {
+        val id = saveReport(inspection)
+
+        if (id == null) return
+
+        if (isInternetAvailable) {
+            val cloudInspection = inspection.copy(inspection = inspection.inspection.copy(id = id))
+            createReport(cloudInspection)
+        } else {
+            _eeUiState.update { it.copy(result = Resource.Success("Laporan berhasil disimpan")) }
+        }
+    }
+
     fun onGetMLResult(selectedIndex: SubInspectionType) {
         viewModelScope.launch {
             val currentTime = getCurrentTime()

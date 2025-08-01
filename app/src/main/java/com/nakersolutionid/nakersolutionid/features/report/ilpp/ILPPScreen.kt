@@ -129,7 +129,11 @@ fun ILPPScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !ilppUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
+                editMode = editMode,
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) },
+                onCopyClick = { viewModel.onCopyClick(selectedFilter,
+                    hasInternetConnection(context)
+                ) }
             )
         },
         snackbarHost = {

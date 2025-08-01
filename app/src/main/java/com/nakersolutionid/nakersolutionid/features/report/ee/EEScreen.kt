@@ -141,7 +141,9 @@ fun EEScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !eeUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
+                editMode = editMode,
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) },
+                onCopyClick = { viewModel.onCopyClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {

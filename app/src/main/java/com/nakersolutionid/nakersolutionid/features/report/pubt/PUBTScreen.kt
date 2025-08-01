@@ -127,7 +127,9 @@ fun PUBTScreen(
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick,
                 actionEnable = !pubtUiState.isLoading,
-                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) }
+                editMode = editMode,
+                onSaveClick = { viewModel.onSaveClick(selectedFilter, hasInternetConnection(context)) },
+                onCopyClick = { viewModel.onCopyClick(selectedFilter, hasInternetConnection(context)) }
             )
         },
         snackbarHost = {
