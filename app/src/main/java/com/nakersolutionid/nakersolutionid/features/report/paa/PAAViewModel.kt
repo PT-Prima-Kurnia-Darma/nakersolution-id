@@ -61,19 +61,24 @@ class PAAViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private var currentReportId: Long? = null
     private var isSynced = false
 
-    private val _forkliftUiState = MutableStateFlow(ForkliftUiState.createDummyForkliftUiState())
+//    private val _forkliftUiState = MutableStateFlow(ForkliftUiState.createDummyForkliftUiState())
+    private val _forkliftUiState = MutableStateFlow(ForkliftUiState())
     val forkliftUiState: StateFlow<ForkliftUiState> = _forkliftUiState.asStateFlow()
 
-    private val _gantryCraneUiState = MutableStateFlow(GantryCraneUiState.createDummyGantryCraneUiState())
+//    private val _gantryCraneUiState = MutableStateFlow(GantryCraneUiState.createDummyGantryCraneUiState())
+    private val _gantryCraneUiState = MutableStateFlow(GantryCraneUiState())
     val gantryCraneUiState: StateFlow<GantryCraneUiState> = _gantryCraneUiState.asStateFlow()
 
-    private val _gondolaUiState = MutableStateFlow(GondolaUiState.createDummyGondolaUiState())
+//    private val _gondolaUiState = MutableStateFlow(GondolaUiState.createDummyGondolaUiState())
+    private val _gondolaUiState = MutableStateFlow(GondolaUiState())
     val gondolaUiState: StateFlow<GondolaUiState> = _gondolaUiState.asStateFlow()
 
-    private val _mobileCraneUiState = MutableStateFlow(MobileCraneUiState.createDummyMobileCraneUiState())
+//    private val _mobileCraneUiState = MutableStateFlow(MobileCraneUiState.createDummyMobileCraneUiState())
+    private val _mobileCraneUiState = MutableStateFlow(MobileCraneUiState())
     val mobileCraneUiState: StateFlow<MobileCraneUiState> = _mobileCraneUiState.asStateFlow()
 
-    private val _overheadCraneUiState = MutableStateFlow(OverheadCraneUiState.createDummyOverheadCraneUiState())
+//    private val _overheadCraneUiState = MutableStateFlow(OverheadCraneUiState.createDummyOverheadCraneUiState())
+    private val _overheadCraneUiState = MutableStateFlow(OverheadCraneUiState())
     val overheadCraneUiState: StateFlow<OverheadCraneUiState> = _overheadCraneUiState.asStateFlow()
 
     fun onGetMLResult(selectedIndex: SubInspectionType) {

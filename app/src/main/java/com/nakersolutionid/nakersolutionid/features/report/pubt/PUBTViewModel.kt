@@ -34,7 +34,8 @@ class PUBTViewModel(private val reportUseCase: ReportUseCase) : ViewModel() {
     private val _pubtUiState = MutableStateFlow(PUBTUiState())
     val pubtUiState: StateFlow<PUBTUiState> = _pubtUiState.asStateFlow()
 
-    private val _generalUiState = MutableStateFlow(GeneralUiState.createDummyGeneralUiState())
+//    private val _generalUiState = MutableStateFlow(GeneralUiState.createDummyGeneralUiState())
+    private val _generalUiState = MutableStateFlow(GeneralUiState())
     val generalUiState: StateFlow<GeneralUiState> = _generalUiState.asStateFlow()
 
     // Store the current report ID for editing

@@ -26,10 +26,12 @@ class EEViewModel(private val reportUseCase: ReportUseCase, ) : ViewModel() {
     private val _eeUiState = MutableStateFlow(EEUiState())
     val eeUiState: StateFlow<EEUiState> = _eeUiState.asStateFlow()
 
-    private val _elevatorUiState = MutableStateFlow(ElevatorUiState.createDummyElevatorUiState())
+//    private val _elevatorUiState = MutableStateFlow(ElevatorUiState.createDummyElevatorUiState())
+    private val _elevatorUiState = MutableStateFlow(ElevatorUiState())
     val elevatorUiState: StateFlow<ElevatorUiState> = _elevatorUiState.asStateFlow()
 
-    private val _eskalatorUiState = MutableStateFlow(EskalatorUiState.createDummyEskalatorUiState())
+//    private val _eskalatorUiState = MutableStateFlow(EskalatorUiState.createDummyEskalatorUiState())
+    private val _eskalatorUiState = MutableStateFlow(EskalatorUiState())
     val eskalatorUiState: StateFlow<EskalatorUiState> = _eskalatorUiState.asStateFlow()
 
     // Track current report ID for edit mode
